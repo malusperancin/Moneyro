@@ -3,14 +3,16 @@
   "description": "Projeto de Praticas Profissionais II",
   "version": "1.0.0",
   "author": "Giovanna Pavani Martelli, Vinícius Martins Cotrim, Maria Luiza Sperancin Mancebo",
-  "license": "",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
-    "vue": "^2.5.11"
+    "vue": "^2.5.11",
+    "vue-resource": "^1.5.1",
+    "vue-router": "^3.1.6"
   },
   "browserslist": [
     "> 1%",
