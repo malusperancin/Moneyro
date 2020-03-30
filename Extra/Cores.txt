@@ -1,0 +1,5 @@
+amarelo claro - 255 227 74
+amarelo escuro - 241 194 50
+cinza rodape - 67 67 67
+azul claro 11 83 148
+azul escuro 12 64 111

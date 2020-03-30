@@ -1,43 +1,43 @@
-create table MTags
+create table Tags
 (
     idTag int identity primary key,
     nome varchar(25) not null
 )
 
-create table MAssuntos
+create table Assuntos
 (
     idAssunto int identity primary key,
     assunto varchar(50) not null
 )
 
-create table MTips
+create table Tips
 (
     idTips int identity primary key,
     idAssunto int,
     dica varchar(200),
     CONSTRAINT FK_idAssuntoT FOREIGN KEY (idAssunto)
-    REFERENCES MAssuntos(idAssunto)
+    REFERENCES Assuntos(idAssunto)
 )
 
-create table MVideos
+create table Videos
 (
     idVideo int identity primary key,
     idAssunto int not null,
     video varchar(250) not null,
     CONSTRAINT FK_idAssuntoV FOREIGN KEY (idAssunto)
-    REFERENCES MAssuntos(idAssunto)
+    REFERENCES Assuntos(idAssunto)
 )
 
-create table MArtigos
+create table Artigos
 (
     idArtigo int identity primary key,
     idAssunto int not null,
     artigo varchar(300),
     CONSTRAINT FK_idAssuntoA FOREIGN KEY (idAssunto)
-    REFERENCES MAssuntos(idAssunto)
+    REFERENCES Assuntos(idAssunto)
 )
 
-create table MUsuarios
+create table Usuarios
 (
     idUsuario int identity primary key,
     nome varchar(70) not null,
@@ -55,7 +55,7 @@ create table MUsuarios
     saldo money
 )
 
-create table MReceitas
+create table Receitas
 (
     idReceita int identity primary key,
     idUsuario int not null,
@@ -63,10 +63,19 @@ create table MReceitas
     nome varchar(40),
     quantia money not null,
     CONSTRAINT FK_idUsuario FOREIGN KEY (idUsuario)
-    REFERENCES MUsuarios(idUsuario)
+    REFERENCES Usuarios(idUsuario)
 )
 
-create table MDespesas
+create table Compartilhamentos
+(
+    idCompartilhamento int identity primary key,
+	codCompartilhamento int,
+    idUsuario int not null,
+    CONSTRAINT FK_idUsuarioComp FOREIGN KEY (idUsuario)
+    REFERENCES Usuarios(idUsuario)
+)
+
+create table Despesas
 (
     idDespesa int identity primary key,
     idUsuario int not null,
@@ -78,32 +87,20 @@ create table MDespesas
     quantia money not null,
     idCompartilhamento int,
     CONSTRAINT FK_idUsuarioDesp FOREIGN KEY (idUsuario)
-    REFERENCES MUsuarios(idUsuario),
+    REFERENCES Usuarios(idUsuario),
     CONSTRAINT FK_idTagDesp FOREIGN KEY (idTag)
-    REFERENCES MTags(idTag),
+    REFERENCES Tags(idTag),
     CONSTRAINT FK_idCompartilhamento FOREIGN KEY (idCompartilhamento)
-    REFERENCES MCompartilhamentos(idCompartilhamento)
+    REFERENCES Compartilhamentos(idCompartilhamento)
 )
 
-create table MCompartilhamentos
-(
-    idCompartilhamento int identity primary key,
-	codCompartilhamento int,
-    idUsuario int not null,
-    CONSTRAINT FK_idUsuarioComp FOREIGN KEY (idUsuario)
-    REFERENCES MUsuarios(idUsuario)
-)
-
-create table MAmigos
+create table Amigos
 (
     idAmigos int identity primary key,
     idAmigo1 int not null,
     idAmigo2 int not null,
     CONSTRAINT FK_idUsuarioA1 FOREIGN KEY (idAmigo1)
-    REFERENCES MUsuarios(idUsuario),
+    REFERENCES Usuarios(idUsuario),
     CONSTRAINT FK_idUsuarioA2 FOREIGN KEY (idAmigo2)
-    REFERENCES MUsuarios(idUsuario)
+    REFERENCES Usuarios(idUsuario)
 )
-
--- util: 
--- alter table MTips ALTER COLUMN idAssunto int null
