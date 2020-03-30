@@ -1,0 +1,186 @@
+dia 18/02 - 7h30 a 9h10
+jovana fez metade do curso e tava anotando
+
+dia 20/02 - 8h a 10h15
+jovana terminou o curso e tava anotando
+
+CONTROLE DE VERSAO
+sistema p gerenciar diferentes versoes de um doc 
+-git sao as linha de codigo td e o sistema q versifica
+-ja o github é um lugar na nuvem em q os projetos versificados
+pelo git podem ser armazenados
+
+===============================GIT===============================
+git config --global user.name "jovana"
+git config --global user.email "jovana@metiradaqui.com"
+mkdir git-course // criar pasta
+cd git-course
+git init
+
+=============== inutil =============
+vi nomeArquivo.bla // abre arquivo
+i    // entra em modo INSERT
+esc  // sai do modo insert
+:wq  // sai do arquivo e salva
+ls   // p ver aquivos
+====================================
+
+CICLO DE VIDA
+untracked --> unmodified --> modified --> staged
+
+git status // reportar como ta o repositorio (se tem coisa p dar commit etc)
+git add nomeArquivo.bla // prepara p ser commitado
+git commit -m "mensagem do q fez" // commit 
+// SEMPRE tem q add o arquivo pra dps dar commit
+
+
+GIT LOG
+git log // ve os detalhes do commit
+git log --decorate // mais detalhes ainda
+git log --author"nomedoAutor"
+git shortlog // ver os contribuintes e tals
+
+// hash -> numerozao
+git show ~hash~
+
+git diff // mostra as alteracoes q vc fez (usar antes de dar commit)
+git diff --name-only
+
+git checkout ~nome do arquivo~ // desfaz td a edicao(o q estiver no diff )
+
+RECUPERAR - desfazer o commit
+git reset
+
+git reset --soft ~hash~ // vai so retirar o q vc fez naquele commit e ja vai estar 
+staged pra dar outro commit
+
+git reset --mixed ~hash~ // vai retirar o q vc fez MAS vai estar modified
+
+git reset --hard ~hash~ // ele vai matar o commit, ele vai ignora-lo, é cm se nunca 
+tivesse existido CUIDADO(only se n tiver outras pessoas mexendo)
+
+
+GITHUB
+
+- ligar maquina ao github
+
+SSH - protocolo p identificação
+generate a new SSH key AND add your SSH key
+
+seguir o tutorial do 1º
+[git]
+cd ~/.ssh/  --> pasta onde ficam as chaves
+ls          --> ver chaves
+cat nomeChave.pub
+
+[github]
+settings>>SSH and GPG keys>> colar key do git AND title: nome da máquina
+
+- subir codigo do git pro github
+
+criar repositorio
+entra nele, aba <code>
+push an existing repository from code line
+
+[git]
+git remote add origin ~link~
+git remote // da o nome
+              |
+git push -u origin master
+
+git push origin master
+
+- clonar repositorio
+[git]
+pega o endereco do repositorio
+sai de tds as pastas 
+g clone ~endereço~ nome-da-pasta
+
+- dar fork
+clicar no fork de algum repositorio de alguem p/ fzr contribuições e mandar p/ dono
+
+
+- branch
+ponteiro q aponta para um commit
+pra q? pode mudar arquivos q estao dando bug, sem mexer no master, no projeto "final/oficial"
+        da pra criar a apagar mt ez
+        as pessoas podem trabalhar em varios brenchs --> sem conflitos
+
+* criar branch
+git checkout -b ~nomeBranch~ // cria um branch e te leva nele
+
+git branch // mostra tds os branchs existente no repositorio e * no q vc está agr
+              sendo o "master" o oficial/real
+
+* navegar pelos branchs
+git checkout ~nomeBranch~ // te leva ao branch
+
+* apagar branchs
+git branch -D ~nomeBranch~ // apagar branch
+
+* UNINDO branchs
+
+- Merge: cria um novo commit p juntar os branches
+(operação não destrutiva, porém commit extra e histórico poluído)
+
+- Rebase: pega os commits dos branches e bota pra frente, na frente do master, e meio q exclui o q tava la
+(evitar commits etras e hitórico linear, porém perde ordem cronológica e pd dar merda por ter outras pessoas mexendo no branch)
+
+NA PRÁTICA
+ 
+git merge ~nomeDoBranch~ // usa qnd a gnt tem q ver q foi unido
+git rebase ~nomeDoBranch~ // linear e +facil de ler / usar qnd for fznd varios branchs e tals
+
+EXTRAS
+
+- .gitignore
+tem arquivineos q a gnt n quer subir e n quer q seja trackeaveis, mas q precisa estar no projeto
+
+vi .gitignore // vi == editor de texto
+i
+*.json         // extensoes especificas
+umArquivo.html // ou arquivos
+
+[esc]
+:wq // salvar e fechar
+
+tem um repositorio de gitignore q ja ta feitin pra nozes
+
+- comandos importantes
+
+*git stash 
+guarda modificação e deixa em stand by
+git stash appy // aplica a modificação
+git stash list // mostra as q tao em stand by
+git stash clear 
+
+*alias
+cria atalhos para comandos
+
+git config --global alias.s status
+// em vez de escrever git status, podemos escrver apenas git s
+
+*tags
+mei inutil, mas meio q versiona e deixa mais facil pras pessoa
+sempre dá commit, add a tag e da push
+git tag -a 1.0 -m "Readme finalizado" // cria tag
+git push origin master --tags // sobe a tag
+git tag // mostra lista
+
+*git revert
+vc deu commit num codigo errado e deu pau, mas o codigo é quase aquele
+se desse reset, a gnt ia perder td q a gnt fez
+o revert tira o codigo do projeto mas salva o q vc tinha feito, as modificações ficam no historico
+git revert ~hashCommit~
+
+*apagar tags e branches 
+localmente: git tag -d ~nomeTag~/ git branch -d ~nomeBranch~
+porem isso n vai pro github, elas continuam la
+
+git push origin :1.0
+git push origin :~nomeBranch~
+
+
+
+
+
