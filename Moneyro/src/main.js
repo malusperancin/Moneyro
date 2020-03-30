@@ -8,11 +8,11 @@ Vue.use(VueResource);
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-  routes: routes
+    routes: routes
 });
 
 new Vue({
-  el: '#app',
-  router,
-  render: h => h(App)
+    el: '#app',
+    router,
+    render: h => h(App)
 })
