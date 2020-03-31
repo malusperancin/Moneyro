@@ -1,7 +1,9 @@
 <template>
   <div class="corpo">
     <router-view></router-view>
-    <footer>RODAPE</footer>
+    <div id="footer">
+      <p>&copy; Copyright Moneyro. Nenhum Direito Reservado.</p>
+    </div>
   </div>
 </template>
 
@@ -29,23 +31,20 @@ export default {
   font-family: "Baloo Chettan 2", cursive;
 }
 
-html {
+html,
+body {
   height: 100%;
+  width: 100%;
 }
 
-footer {
-  width: 100%;
-  height: 20%;
-  bottom: 0;
-  left: 0;
+#footer {
+  height: 15%;
+  padding: 30px;
   color: white;
   background-color: rgb(67, 67, 67);
-  position: absolute;
 }
 
 .corpo {
-  height: 100%;
-  background-color: initial;
   height: 100%;
   width: 100%;
 }

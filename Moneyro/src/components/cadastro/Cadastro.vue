@@ -7,4 +7,8 @@ export default {};
 </script>
 
 <style>
+.pag {
+  padding: 15px;
+  height: 100%;
+}
 </style>
