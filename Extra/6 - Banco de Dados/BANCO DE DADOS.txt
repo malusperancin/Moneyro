@@ -1,0 +1,27 @@
+BANCO DE DADOS
+
+-tabela usuario
+id
+nome completo
+apelido
+email
+celular
+data de nascimento
+cidade, estado, país
+foto de perfil
+senha
+
+-tabela despesa
+id
+data
+nome
+tag
+descricao
+lugar
+quantia
+
+-tabela receita
+id
+data
+nome null
+quantia
