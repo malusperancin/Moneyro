@@ -7,7 +7,7 @@ jovana terminou o curso e tava anotando
 CONTROLE DE VERSAO
 sistema p gerenciar diferentes versoes de um doc 
 -git sao as linha de codigo td e o sistema q versifica
--ja o github é um lugar na nuvem em q os projetos versificados
+-ja o github ï¿½ um lugar na nuvem em q os projetos versificados
 pelo git podem ser armazenados
 
 ===============================GIT===============================
@@ -56,7 +56,7 @@ staged pra dar outro commit
 
 git reset --mixed ~hash~ // vai retirar o q vc fez MAS vai estar modified
 
-git reset --hard ~hash~ // ele vai matar o commit, ele vai ignora-lo, é cm se nunca 
+git reset --hard ~hash~ // ele vai matar o commit, ele vai ignora-lo, ï¿½ cm se nunca 
 tivesse existido CUIDADO(only se n tiver outras pessoas mexendo)
 
 
@@ -64,17 +64,17 @@ GITHUB
 
 - ligar maquina ao github
 
-SSH - protocolo p identificação
+SSH - protocolo p identificaï¿½ï¿½o
 generate a new SSH key AND add your SSH key
 
-seguir o tutorial do 1º
+seguir o tutorial do 1ï¿½
 [git]
 cd ~/.ssh/  --> pasta onde ficam as chaves
 ls          --> ver chaves
 cat nomeChave.pub
 
 [github]
-settings>>SSH and GPG keys>> colar key do git AND title: nome da máquina
+settings>>SSH and GPG keys>> colar key do git AND title: nome da mï¿½quina
 
 - subir codigo do git pro github
 
@@ -94,10 +94,10 @@ git push origin master
 [git]
 pega o endereco do repositorio
 sai de tds as pastas 
-g clone ~endereço~ nome-da-pasta
+g clone ~endereï¿½o~ nome-da-pasta
 
 - dar fork
-clicar no fork de algum repositorio de alguem p/ fzr contribuições e mandar p/ dono
+clicar no fork de algum repositorio de alguem p/ fzr contribuiï¿½ï¿½es e mandar p/ dono
 
 
 - branch
@@ -109,7 +109,7 @@ pra q? pode mudar arquivos q estao dando bug, sem mexer no master, no projeto "f
 * criar branch
 git checkout -b ~nomeBranch~ // cria um branch e te leva nele
 
-git branch // mostra tds os branchs existente no repositorio e * no q vc está agr
+git branch // mostra tds os branchs existente no repositorio e * no q vc estï¿½ agr
               sendo o "master" o oficial/real
 
 * navegar pelos branchs
@@ -121,12 +121,12 @@ git branch -D ~nomeBranch~ // apagar branch
 * UNINDO branchs
 
 - Merge: cria um novo commit p juntar os branches
-(operação não destrutiva, porém commit extra e histórico poluído)
+(operaï¿½ï¿½o nï¿½o destrutiva, porï¿½m commit extra e histï¿½rico poluï¿½do)
 
 - Rebase: pega os commits dos branches e bota pra frente, na frente do master, e meio q exclui o q tava la
-(evitar commits etras e hitórico linear, porém perde ordem cronológica e pd dar merda por ter outras pessoas mexendo no branch)
+(evitar commits etras e hitï¿½rico linear, porï¿½m perde ordem cronolï¿½gica e pd dar merda por ter outras pessoas mexendo no branch)
 
-NA PRÁTICA
+NA PRï¿½TICA
  
 git merge ~nomeDoBranch~ // usa qnd a gnt tem q ver q foi unido
 git rebase ~nomeDoBranch~ // linear e +facil de ler / usar qnd for fznd varios branchs e tals
@@ -149,8 +149,8 @@ tem um repositorio de gitignore q ja ta feitin pra nozes
 - comandos importantes
 
 *git stash 
-guarda modificação e deixa em stand by
-git stash appy // aplica a modificação
+guarda modificaï¿½ï¿½o e deixa em stand by
+git stash appy // aplica a modificaï¿½ï¿½o
 git stash list // mostra as q tao em stand by
 git stash clear 
 
@@ -162,15 +162,15 @@ git config --global alias.s status
 
 *tags
 mei inutil, mas meio q versiona e deixa mais facil pras pessoa
-sempre dá commit, add a tag e da push
+sempre dï¿½ commit, add a tag e da push
 git tag -a 1.0 -m "Readme finalizado" // cria tag
 git push origin master --tags // sobe a tag
 git tag // mostra lista
 
 *git revert
-vc deu commit num codigo errado e deu pau, mas o codigo é quase aquele
+vc deu commit num codigo errado e deu pau, mas o codigo ï¿½ quase aquele
 se desse reset, a gnt ia perder td q a gnt fez
-o revert tira o codigo do projeto mas salva o q vc tinha feito, as modificações ficam no historico
+o revert tira o codigo do projeto mas salva o q vc tinha feito, as modificaï¿½ï¿½es ficam no historico
 git revert ~hashCommit~
 
 *apagar tags e branches 

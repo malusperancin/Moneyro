@@ -3,7 +3,7 @@ IDEIAS
 -login
 -cadastro
 -diquinhas diarias "enquanto carrega" e em algum canto
--add gasto (nome e preço // data automatica) --> entra para especificações(alterar: data(hj, ontem, outro dia), descricao, lugar, tags)
+-add gasto (nome e preï¿½o // data automatica) --> entra para especificaï¿½ï¿½es(alterar: data(hj, ontem, outro dia), descricao, lugar, tags)
 -gerar graficos e tabelas
 -sistema de ganhar estrelinhas(cada dia ganha estrelinha cifrao) - ranking entre amigos
 ganha quem escrver naquele dia
@@ -11,7 +11,7 @@ ganha quem escrver naquele dia
 "VC EH O ECONOMISTA DA SEMANA"
 - despesa por categoria
 -?? planejamento mensal/semanal //// objetivos
--lista de transacoes (saldo) por mês ou por semana
+-lista de transacoes (saldo) por mï¿½s ou por semana
 -lugar para add categorias(despesas ou receitas)
 - quando vamos ao restaurante e divide conta, uma pessoa coloca e tem opcao de dividir cm amigos, ent vai automatico pros outros
 - colocar despesas ou receitas q sao periodicas 

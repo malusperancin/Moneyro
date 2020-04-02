@@ -3,7 +3,6 @@ import Comunidade from './components/comunidade/Comunidade.vue';
 import Configuracoes from './components/configuracoes/Configuracoes.vue';
 import Despesas from './components/despesas/Despesas.vue';
 import Home from './components/home/Home.vue';
-import Login from './components/login/Login.vue';
 import Perfil from './components/perfil/Perfil.vue';
 import Planilha from './components/planilhas/Planilhas.vue';
 import Receitas from './components/receitas/Receitas.vue';
@@ -14,7 +13,6 @@ import Amigos from './components/amigos/Amigos.vue';
 export const routes = [
 
     { path: '', component: Home, titulo: 'Home' },
-    { path: '/login', component: Login, titulo: 'Login' },
     { path: '/cadastro', component: Cadastro, titulo: 'Cadastro' },
     { path: '/registrar', component: Registrar, titulo: 'Registrar' },
     { path: '/planilha', component: Planilha, titulo: 'Planilha de Gastos' },

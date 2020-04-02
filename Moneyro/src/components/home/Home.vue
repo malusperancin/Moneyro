@@ -2,7 +2,7 @@
   <div class="pag">
     <div id="moneyro">
       <h1>
-        Moneyro
+        <p>Moneyro</p>
         <img id="logo" src="src/images/logo.png" alt />
       </h1>
     </div>
@@ -13,9 +13,7 @@
       </h2>
       <img id="imgCenter" src="src/images/Imagem1.png" alt />
       <div id="botoes">
-        <button>
-          <router-link to="/Login">Login</router-link>
-        </button>
+        <button v-on:click="openMenu">Login</button>
         <button>
           <router-link to="/Cadastro">Cadastro</router-link>
         </button>
@@ -67,14 +65,29 @@
         </tr>
       </table>
     </div>
+    <login :visivel="active"></login>
   </div>
 </template>
 
 <script>
+import Login from "../login/Login.vue";
+
 export default {
-  data() {},
-  methods() {
-    btnLogin;
+  components: {
+    login: Login
+  },
+  data() {
+    return {
+      active: false
+    };
+  },
+  methods: {
+    openMenu: function() {
+      if (this.active) {
+        this.active = false;
+        this.active = true;
+      } else this.active = true;
+    }
   }
 };
 </script>
@@ -102,17 +115,20 @@ a {
   position: fixed;
 }
 
+#moneyro p {
+  margin-top: 20px;
+  display: inline-block;
+}
+
 #moneyro h1 {
   margin-left: 42%;
-  padding: 20px;
 }
 
 #logo {
   border-radius: 40px;
   width: 70px;
   float: left;
-  margin-top: -13px;
-  margin-right: 8px;
+  margin: 10px;
   border: 2px solid rgb(255, 227, 74);
 }
 
@@ -143,6 +159,7 @@ a {
   background-color: rgb(241 194 50);
   z-index: 1;
   cursor: pointer;
+  color: #000;
 }
 
 #botoes button:hover {
@@ -167,9 +184,6 @@ table {
 td {
   margin: auto;
   width: 130px;
-  /* background-color: rgb(212, 167, 29);
-  padding: 12px;
-  border-radius: 15px; */
 }
 
 .pqs {
@@ -184,4 +198,5 @@ td {
   width: 50px;
 }
 </style>
+
 
