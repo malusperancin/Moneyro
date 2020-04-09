@@ -33,8 +33,8 @@ export default {
 
 html,
 body {
-  height: 100%;
   width: 100%;
+  height: 100%;
 }
 
 #footer {
@@ -42,10 +42,16 @@ body {
   padding: 30px;
   color: white;
   background-color: rgb(67, 67, 67);
+  z-index: 10;
 }
 
 .corpo {
-  height: 100%;
   width: 100%;
+  height: 100%;
+}
+
+.pag {
+  width: 100%;
+  height: 100%;
 }
 </style>

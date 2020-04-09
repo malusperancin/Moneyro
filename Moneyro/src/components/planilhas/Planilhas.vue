@@ -1,9 +1,17 @@
 <template>
-  <div class="pag">plan</div>
+  <div class="pag">
+    <menu-bar></menu-bar>planilhas
+  </div>
 </template>
 
 <script>
-export default {};
+import Menu from "../shared/menu/Menu.vue";
+
+export default {
+  components: {
+    "menu-bar": Menu
+  }
+};
 </script>
 
 <style>

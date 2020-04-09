@@ -92,11 +92,7 @@ export default {
 };
 </script>
 
-<style>
-.pag {
-  width: 100%;
-}
-
+<style scoped>
 #titulo {
   text-align: center;
   padding-top: -15px;

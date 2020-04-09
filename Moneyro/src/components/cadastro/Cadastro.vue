@@ -1,65 +1,60 @@
 <template>
-  <div class="pag">
+  <div class="pagCadastro">
     <div id="moneyro">
       <h1>
         <p>Cadastro</p>
         <img id="logo" src="src/images/logo.png" alt />
       </h1>
     </div>
-    <div id="topo">
-      <h1>Casdatre-se!</h1>
-      <h3>Frasesinha esgraçada hahaha</h3>
-    </div>
-    <div id="formCadastro">
-      <form action method="post">
-        <input type="text" class="campo" id="nome" placeholder="Nome" maxlength="70" />
+    <div id="formCadastro" v-on:click="openMenu">
+      <form action method="post" id="formCad">
+        <input type="text" class="campos" id="nome" placeholder="Nome" maxlength="70" />
         <br />
 
-        <input type="email" class="campo" id="email" placeholder="E-mail" maxlength="40" />
+        <input type="email" class="campos" id="email" placeholder="E-mail" maxlength="40" />
         <br />
 
-        <input type="password" class="campo" id="senha" placeholder="Senha" maxlength="20" />
+        <input type="password" class="campos" id="senha" placeholder="Senha" maxlength="20" />
         <br />
 
-        <input type="text" class="campo" id="apelido" placeholder="Apelido" maxlength="20" />
+        <input type="text" class="campos" id="apelido" placeholder="Apelido" maxlength="20" />
         <br />
 
-        <div id="dataNasc">
-          <fieldset>
-            <legend>Nascimento</legend>
-            <input
-              type="number"
-              class="campo"
-              id="dia"
-              placeholder="Dia"
-              min="1"
-              max="31"
-              maxlength="2"
-            />
-            <input
-              type="number"
-              class="campo"
-              id="mes"
-              placeholder="Mês"
-              min="1"
-              max="12"
-              maxlength="2"
-            />
-            <input
-              type="number"
-              class="campo"
-              id="ano"
-              placeholder="Ano"
-              min="1900"
-              max="3000"
-              maxlength="4"
-              minlength="4"
-            />
-          </fieldset>
-        </div>
+        <fieldset id="dataNasc">
+          <legend>Nascimento</legend>
+          <input
+            type="number"
+            class="campos"
+            id="dia"
+            placeholder="Dia"
+            min="1"
+            max="31"
+            maxlength="2"
+          />
+          <input
+            type="number"
+            class="campos"
+            id="mes"
+            placeholder="Mês"
+            min="1"
+            max="12"
+            maxlength="2"
+          />
+          <input
+            type="number"
+            class="campos"
+            id="ano"
+            placeholder="Ano"
+            min="1900"
+            max="3000"
+            maxlength="4"
+            minlength="4"
+          />
+        </fieldset>
+
         <input
           type="tel"
-          class="campo"
+          class="campos"
           pattern="([0-9]{2})9[0-9]{4}-[0-9]{4}"
           id="celular"
           placeholder="Celular"
@@ -67,11 +62,13 @@
         />
         <br />
 
-        <input type="text" class="campo" id="Cidade" placeholder="Cidade" maxlength="30" />
+        <div id="cidadeEstado">
+          <input type="text" class="campos" id="Cidade" placeholder="Cidade" maxlength="30" />
 
-        <select>
-          <option :value="item" v-for="item in siglas" :key="item.sigla" s>{{item.sigla}}</option>
-        </select>
+          <select>
+            <option :value="item" v-for="item in siglas" :key="item.sigla" s>{{item.sigla}}</option>
+          </select>
+        </div>
         <br />
         <br />
 
@@ -89,7 +86,7 @@
         <!-- Fazer btnClick q mostra modal esplicando o modo anonimo -->
 
         <div class="button">
-          <button type="submit">Cadastrar</button>
+          <button type="submit" class="botoes">Cadastrar</button>
         </div>
         <br />
         <div class="divi"></div>
@@ -104,7 +101,7 @@
         </div>-->
       </form>
     </div>
-    <menu :visivel="active"></menu>
+    <!-- <menu :visivel="active"></menu> -->
   </div>
 </template>
 
@@ -160,10 +157,9 @@ export default {
 };
 </script>
 
-<style>
-.pag {
+<style scoped>
+.pagCadastro {
   background-color: rgb(11, 83, 148);
-  height: 900px;
 }
 
 #moneyro {
@@ -190,7 +186,13 @@ export default {
   border: 2px solid rgb(255, 227, 74);
 }
 
-/* aaaaaaaaaaaaa */
+#cidadeEstado select {
+  height: 41px;
+}
+
+#cidadeEstado .campos {
+  width: 80%;
+}
 
 .link {
   display: inline-block;
@@ -198,19 +200,17 @@ export default {
   cursor: pointer;
 }
 
-#dataNasc input {
-  width: 30%;
-  margin: auto;
-  margin-left: 7px;
-}
-
-fieldset {
+#dataNasc {
+  width: 100%;
   color: rgb(226, 226, 226);
   padding: 4px;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  width: 100%;
   border: 0;
+  padding: 0px 5px;
+}
+
+#dataNasc input {
+  width: 29%;
+  margin: 5px 15px 5px 3px;
 }
 
 .labels {
@@ -221,13 +221,12 @@ select {
   background-color: whitesmoke;
   border-radius: 5px;
   border: 1px solid gray;
-  height: 30px;
   margin: 5px 0 5px 0;
-  padding: 2px 8px;
+  padding: 8px 15px;
   float: right;
 }
 
-.campo {
+.campos {
   font-size: 1em;
   background-color: whitesmoke;
   border-radius: 5px;
@@ -238,9 +237,9 @@ select {
   box-sizing: border-box;
 }
 
-button {
+.botoes {
   font-size: 20px;
-  background-color: rgb(12, 65, 111);
+  background-color: rgba(0, 0, 0, 0.2);
   color: white;
   padding: 14px 20px;
   margin: 8px 0;
@@ -253,22 +252,22 @@ button {
 .divi {
   width: 100%;
   background-color: rgba(0, 0, 0, 0.2);
-  height: 5px;
+  height: 3px;
   border-radius: 15px;
 }
 
-form {
-  width: 95%;
-  padding: 5px;
+#formCad {
+  padding: 35px;
   margin: auto;
   text-align: start;
+  background: rgb(0, 0, 0, 0.2);
+  border-radius: 15px;
+  width: 35%;
 }
 
 #formCadastro {
-  padding: 20px;
-  width: 32%;
-  margin: 5% auto 5%;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
+  width: 100%;
+  padding: 10% 0px 5%;
+  margin: auto;
 }
 </style>

@@ -1,9 +1,18 @@
 <template>
-  <div class="pag">comunidade</div>
+  <div class="pag">
+    <menu-bar></menu-bar>comunidade
+  </div>
 </template>
 
 <script>
-export default {};
+import Menu from "../shared/menu/Menu.vue";
+
+export default {
+  components: {
+    "menu-bar": Menu
+  },
+  methods: {}
+};
 </script>
 
 <style>
