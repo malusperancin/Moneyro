@@ -1,13 +1,16 @@
 <template>
   <div class="pag">
-    <menu-bar></menu-bar>
-    <div id="texto">
-      <p>Bem-vindo(a) de volta</p>
-      <h1>Seu saldo é R$</h1>
-      <h4>
-        seu saldo ta ruim seu gastao irreponsavel de merda
-        <br />ai q bonitineo c ta no positivo
-      </h4>
+    <Menu />
+    <Perfil />
+    <div class="centro">
+      <div id="texto">
+        <p>Bem-vindo(a) de volta geraldo13</p>
+        <h1>Seu saldo é R$-90,00</h1>
+        <h4>
+          seu saldo ta ruim seu gastao irreponsavel tsc tsc...
+          <br />OU ai q bonitineo c ta no positivo
+        </h4>
+      </div>
     </div>
   </div>
 </template>
@@ -16,25 +19,20 @@
 <script>
 import $ from "jquery";
 import Menu from "../shared/menu/Menu.vue";
+import Perfil from "../shared/float-perfil/Float-Perfil.vue";
 
 export default {
   components: {
-    "menu-bar": Menu
+    Menu,
+    Perfil
   },
   methods: {}
 };
 </script>
 
 <style scoped>
-.pag {
-  height: 100%;
-  background-color: rgb(255, 227, 74);
-}
 #texto {
   margin: auto;
-  float: right;
-  margin-right: 34%;
-  width: 30%;
   text-align: center;
 }
 #texto p {

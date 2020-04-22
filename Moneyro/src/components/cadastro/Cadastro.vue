@@ -1,12 +1,7 @@
 <template>
   <div class="pagCadastro">
-    <div id="moneyro">
-      <h1>
-        <p>Cadastro</p>
-        <img id="logo" src="src/images/logo.png" alt />
-      </h1>
-    </div>
-    <div id="formCadastro" v-on:click="openMenu">
+    <cabecalho :titulo="'Cadastro'"></cabecalho>
+    <div id="formCadastro">
       <form action method="post" id="formCad">
         <input type="text" class="campos" id="nome" placeholder="Nome" maxlength="70" />
         <br />
@@ -93,7 +88,7 @@
         <br />
         <p style="color:white">
           Já tem conta?
-          <span v-on:click="openMenu" class="link">Fazer login</span>
+          <span v-on:click="abrirLogin" class="link">Fazer login</span>
         </p>
         <!-- <div>
         <label for="msg">Mensagem:</label>
@@ -101,16 +96,18 @@
         </div>-->
       </form>
     </div>
-    <!-- <menu :visivel="active"></menu> -->
+    <login :visivel="active"></login>
   </div>
 </template>
 
 <script>
-import Login from "../login/Login.vue";
+import Login from "../shared/login/Login.vue";
+import Header from "../shared/header/Header.vue";
 
 export default {
   components: {
-    login: Login
+    login: Login,
+    cabecalho: Header
   },
   data() {
     return {
@@ -147,7 +144,7 @@ export default {
     };
   },
   methods: {
-    openMenu: function() {
+    abrirLogin: function() {
       if (this.active) {
         this.active = false;
         this.active = true;
@@ -179,11 +176,9 @@ export default {
 }
 
 #logo {
-  border-radius: 40px;
   width: 70px;
   float: left;
   margin: 10px;
-  border: 2px solid rgb(255, 227, 74);
 }
 
 #cidadeEstado select {

@@ -1,19 +1,27 @@
 <template>
   <div class="pag">
-    <menu-bar></menu-bar>comunidade
+    <Menu />
+    <Perfil />
+    <div class="centro">comunity</div>
   </div>
 </template>
 
 <script>
 import Menu from "../shared/menu/Menu.vue";
+import Perfil from "../shared/float-perfil/Float-Perfil.vue";
 
 export default {
   components: {
-    "menu-bar": Menu
+    Menu,
+    Perfil
   },
-  methods: {}
+  data() {
+    return {
+      routes
+    };
+  }
 };
 </script>
 
-<style>
+<style scoped>
 </style>

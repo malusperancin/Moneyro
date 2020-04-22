@@ -2,7 +2,7 @@
   <div class="pag">
     <Menu />
     <Perfil />
-    <div class="centro">config</div>
+    <div class="centro">metas</div>
   </div>
 </template>
 

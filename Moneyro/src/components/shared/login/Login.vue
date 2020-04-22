@@ -15,7 +15,9 @@
         </label>
         <input type="Senha" name="senha" required />
 
-        <button id="btnlogin" type="submit">Login</button>
+        <button id="btnlogin" type="submit">
+          <router-link to="/Usuario" style="color: white">Login</router-link>
+        </button>
       </div>
 
       <div class="container" style="background-color:#f1f1f1">
@@ -37,7 +39,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 input[type="text"],
 input[type="Senha"] {
   border-radius: 3px;
@@ -100,7 +102,7 @@ span.psw {
   left: 0;
   display: block;
   position: fixed;
-  z-index: 5;
+  z-index: 999;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.3);
