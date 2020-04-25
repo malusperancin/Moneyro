@@ -3,7 +3,7 @@
     <img src="src/images/perfil11.png" alt id="imgPerfil" />
     <span id="notificacaoIcone" v-on:click="abrirNotificacoes"></span>
     <div id="notificacoes">
-      <div class="notificacao" v-for="notif in notificacoes">{{notif.descricao}}</div>
+      <div class="notificacao" v-for="(notif, i) in notificacoes" v-bind:key="i">{{notif.descricao}}</div>
     </div>
   </div>
 </template>

@@ -16,9 +16,7 @@ export default {
     Perfil
   },
   data() {
-    return {
-      routes
-    };
+    return {};
   }
 };
 </script>

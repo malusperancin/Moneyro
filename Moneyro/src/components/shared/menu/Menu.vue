@@ -1,11 +1,11 @@
 <template>
-  <div id="menu">
+  <div id="menu" @mouseenter="ativo = true" @mouseleave="ativo = false">
     <table cellspacing="0" border="0">
       <tr id="btnAdd">
         <td class="icones">
           <img src="../../../images/adicionar.png" alt="a" />
         </td>
-        <td class="titulos">
+        <td class="titulos" @mouseenter="tipos = true" @mouseleave="tipos = false">
           <p>Adicionar</p>
           <ul id="opcoesCard">
             <li v-on:click="abrirCard">Despesa ou Receita</li>
@@ -75,49 +75,24 @@
         </td>
       </tr>
     </table>
-    <div id="card">
-      <card-dual v-on:fecharCard="fechar('card')" v-if="card"></card-dual>
-    </div>
-    <div id="meta">
-      <card-meta v-on:fecharMeta="fechar('meta')" v-if="meta"></card-meta>
-    </div>
+    <Card v-on:fecharCard="fechar('card')" v-if="card"></Card>
+    <Meta v-on:fecharMeta="fechar('meta')" v-if="meta"></Meta>
   </div>
 </template>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
-import $ from "jquery";
-
-$(document).ready(function() {
-  $(".titulos").hide();
-
-  $(".icones").mouseenter(function() {
-    $(".titulos").show();
-  });
-  $("#menu").mouseleave(function() {
-    $(".titulos").hide();
-  });
-
-  $("#btnAdd").mouseenter(function() {
-    $("#opcoesCard").css("display", "block");
-  });
-
-  $("#btnAdd").mouseleave(function() {
-    $("#opcoesCard").css("display", "none");
-  });
-});
-
 import Card from "../cards/Card.vue";
 import Meta from "../cards/Metas.vue";
 
 export default {
   components: {
-    "card-dual": Card,
-    "card-meta": Meta
+    Card,
+    Meta
   },
   data() {
     return {
-      active: false,
+      ativo: false,
+      tipos: false,
       card: false,
       meta: false
     };
@@ -137,61 +112,33 @@ export default {
       }
     }
   },
-  events: {
-    fecharMeta() {
-      this.fechar("meta");
+  watch: {
+    ativo() {
+      var div = document.getElementsByClassName("titulos");
+      if (this.ativo)
+        for (var i = 0; i < div.length; i++)
+          div.item(i).style = "display: block";
+      else
+        for (var i = 0; i < div.length; i++)
+          div.item(i).style = "display: none";
     },
-    fecharCard() {
-      this.fechar("card");
+    tipos() {
+      var tipos = document.getElementById("opcoesCard");
+      if (this.tipos) tipos.style = "display: block";
+      else tipos.style = "display: none";
     }
   }
 };
 </script>
 
 <style scoped>
-/*
-@keyframes fadein {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeout {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
- #meta,
-#card {
-  opacity: 1;
-  -webkit-trasition: opacity 0.3s ease-in-out;
-  -moz-transition: opacity 0.3s ease-in-out;
-  -ms-transition: opacity 0.3s ease-in-out;
-  -o-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
-}
-
-#meta.fade {
-  opacity: 0;
-}
-#card.fade {
-  opacity: 0;
-} 
-
-*/
-
 #menu {
   width: fit-content;
   height: 100%;
   z-index: 5;
   position: fixed;
+  box-shadow: 5px 0px 5px #00000040;
+  overflow: auto;
 }
 
 table {
@@ -224,19 +171,23 @@ table {
   padding-right: 30px;
   background: rgb(11, 83, 148);
   font-size: 1.2em;
+  height: 100%;
+  display: none;
 }
 
 .titulos:hover {
   background-color: #0c406f;
 }
 
-#divisor {
-  height: 100%;
-}
-
-a {
+.titulos a {
   text-decoration: none;
   color: rgb(0, 0, 0);
+  float: left;
+  margin-top: 18px;
+}
+
+#divisor {
+  height: 100%;
 }
 
 #btnAdd td {

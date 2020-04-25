@@ -38,7 +38,6 @@
                 {{reg.quantia}}
               </td>
             </tr>
-            <span></span>
           </table>
         </div>
       </div>
@@ -151,20 +150,8 @@ export default {
   font-size: 1.25em;
 }
 
-.umDia td:first-child {
-  border-left-width: 1px;
-}
-
-.nome {
-  width: 65%;
-}
-
-.quantia {
-  width: 15%;
-}
-
-.tag {
-  width: 20%;
+tr {
+  text-align: start;
 }
 
 .data {
@@ -175,19 +162,35 @@ export default {
 .despesa:hover {
   background-color: rgba(241, 69, 69, 0.85);
   cursor: pointer;
+  transform: scale(1.01);
 }
 
 .receita:hover {
   background-color: rgba(10, 194, 10, 0.72);
   cursor: pointer;
+  transform: scale(1.01);
 }
 
 .despesa {
   background-color: rgba(255, 104, 104, 0.75);
+  transition: transform 0.5s;
 }
 
 .receita {
   background-color: rgba(70, 228, 70, 0.75);
+  transition: transform 0.5s;
+}
+
+.tag {
+  width: 25%;
+}
+
+.nome {
+  width: 60%;
+}
+
+.quantia {
+  width: 20%;
 }
 
 #buscaNome {
@@ -216,16 +219,14 @@ export default {
 }
 
 .moedaImg {
-  width: 26px;
-  margin-top: -1px;
-  position: absolute;
-  margin-left: -45px;
+  width: 25px;
+  float: left;
+  margin: 3px;
 }
 
 .tagImg {
   width: 25px;
-  margin-top: 20px;
-  margin-left: -35px;
-  position: absolute;
+  float: left;
+  margin: 3px;
 }
 </style>

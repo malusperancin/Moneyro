@@ -3,23 +3,15 @@
     <Menu />
     <Perfil />
     <div class="centro">
-      <span id="busca">
-        <input
-          type="search"
-          class="filtro"
-          placeholder="Filtre pelo Nome do Amigo"
-          v-model="filtro"
-        />
-        <button id="btnAdd">
-          <img id="imgAdd" src="../../images/adicAmigo.png" />
-        </button>
-      </span>
-      <br />
-      <ul id="lista-alunos">
-        <li id="lista-alunos-item" v-for="amigo of filtraNome" :key="amigo.nome">
+      <div id="busca">
+        <input class="filtro" type="search" placeholder="Pesquisar" v-model="filtro" />
+        <img id="imgAdd" class="icone" src="../../images/adicAmigo.png" />
+      </div>
+      <div id="lista-alunos">
+        <div id="lista-alunos-item" v-for="amigo of filtraNome" :key="amigo.nome">
           <Painel :nome="amigo.nome" :foto="amigo.foto"></Painel>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -39,8 +31,8 @@ export default {
     return {
       filtro: "",
       amigos: [
-        // 💩👺💩
-        { nome: "jovana ಥ‿ಥ✌", foto: "11" },
+        // 💩👺💩 jovana ಥ‿ಥ✌2345678901
+        { nome: "0123456789012345", foto: "11" },
         { nome: "maru✌ʕ•́ᴥ•̀ʔっ", foto: "6" },
         { nome: "venizius😘😎", foto: "7" },
         { nome: "drigo", foto: "9" },
@@ -51,75 +43,80 @@ export default {
   },
   computed: {
     filtraNome() {
-      if (this.filtroNome) {
-        let exp = new RegExp(this.filtroNome.trim(), "i");
+      if (this.filtro) {
+        let exp = new RegExp(this.filtro.trim(), "i");
         return this.amigos.filter(amigo => exp.test(amigo.nome));
       } else {
         return this.amigos;
       }
     }
-
     // methods: {}
   }
 };
 </script>
 
 <style scoped>
-#busca {
-  padding: 0px;
-  margin: 0;
+.centro {
+  margin-left: 7%;
 }
+
 #lista-alunos {
+  margin-top: 20px;
   list-style: none;
   width: 100%;
 }
 
 #lista-alunos #lista-alunos-item {
   display: inline-block;
-  margin: 1%;
+  margin: 0.5%;
 }
 
 #busca {
-  margin-left: 22%;
+  display: -ms-flexbox;
+  display: inline-flex;
+  width: 100%;
+  margin-bottom: 15px;
+  box-sizing: border-box;
 }
 
 .filtro {
-  font-size: 1em;
-  width: 50%;
-  /* margin-top: 12px; */
+  width: 80%;
   padding: 7px 14px;
-  border: 0px;
+  outline: none;
   border-radius: 5px;
-  color: black;
+  border: none;
+  font-size: 1.2em;
   background: rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  margin-right: -8%;
 }
 
-/* #btnAdd {
-  border: none;
-  width: 50px;
-  height: 50px;
-  color: black;
-  border-radius: 50px;
-  background-color: rgb(11, 83, 148);
-  /* margin: auto; 
-  cursor: pointer;
-  /* margin: 10px 0 -15px 10px; 
-} */
-#btnAdd {
-  width: 50px;
-  height: 50px;
-  border-radius: 50px;
-  background-color: rgb(11, 83, 148);
-  border: none;
-  margin-left: 10px;
-  /* margin-top: 20px; */
+.filtro:focus {
+  border: 1px solid rgba(5, 0, 0, 0.233);
 }
 
 #imgAdd {
-  width: 100%;
+  width: 60px;
+  margin: auto;
+}
+
+.icone {
+  cursor: pointer;
+  padding: 10px;
+  color: white;
+  min-width: 50px;
+  text-align: center;
+  background-color: rgba(36, 107, 170, 0.719);
+  border-radius: 87px;
+  box-sizing: border-box;
+}
+
+.icone:hover {
+  background-color: rgb(26, 81, 129);
 }
 
 ::-webkit-input-placeholder {
   color: rgb(47, 49, 51);
+  padding-left: 1%;
 }
 </style>
