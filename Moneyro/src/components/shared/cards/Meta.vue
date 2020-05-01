@@ -1,12 +1,12 @@
 <template>
   <div id="card">
-    <div id="cardContent">
-      <span id="close" v-on:click="fechar">&times;</span>
+    <div id="cardContent" class="animate">
+      <span id="close" v-on:click="$emit('fecharMeta')">&times;</span>
       <div class="tipos">
         <label>Metah</label>
       </div>
       <form>
-        <input placeholder="Nome" type="text" id="nome" class="campos" />
+        <input placeholder="Nome" type="text" id="nome" class="campos" v-model="nome" />
         <span class="dinheiro">
           <p class="escrito">Objetivo</p>
           <br />
@@ -18,11 +18,13 @@
             max="1000000.00"
             step="10.00"
             class="campos quantia"
+            v-model="objetivo"
           />
         </span>
         <span class="dinheiro">
           <br />
-          <p class="escrito">Inicial</p>
+          <p class="escrito" v-if="atual">Atual</p>
+          <p class="escrito" v-else>Inicial</p>
           <br />
           <p>R$</p>
           <input
@@ -32,11 +34,12 @@
             max="1000000.00"
             step="10.00"
             class="campos quantia"
+            v-model="atual"
           />
         </span>
         <br />
         <p class="escritah">Data limite</p>
-        <input placeholder="Data" type="date" id="data" class="campos" />
+        <input placeholder="Data" type="date" id="data" class="campos" v-model="dataLimite" />
         <div class="dropdown">
           <div v-on:click="mostrarAmigos" id="btnDrop" class="campos">Compartilhar com... ▾</div>
           <div id="listaAmigos" class="dropdown-content">
@@ -52,7 +55,10 @@
           </div>
         </div>
       </form>
-      <span id="save" v-on:click="save">Salvar</span>
+      <div id="botoes">
+        <span id="excluir" v-on:click="excluir" v-if="id">Excluir</span>
+        <span id="salvar" v-on:click="salvar">Salvar</span>
+      </div>
     </div>
   </div>
 </template>
@@ -61,10 +67,10 @@
 import $ from "jquery";
 
 export default {
+  props: ["id", "nome", "objetivo", "atual", "dataLimite", "compartilhado"],
   data() {
     return {
       expanded: false,
-      frase: "",
       filtroNome: "",
       tags: [
         { tag: "tag1" },
@@ -98,10 +104,8 @@ export default {
         this.expanded = false;
       }
     },
-    save: function() {},
-    fechar: function() {
-      this.$emit("fecharMeta");
-    },
+    salvar: function() {},
+    excluir: function() {},
     mostrarAmigos: function() {
       if (
         document.getElementById("listaAmigos").style.display == "inline-block"
@@ -196,7 +200,7 @@ export default {
 #cardContent {
   position: fixed;
   top: 8%;
-  left: 39.5%;
+  /* left: 39.5%; */
   border-radius: 5px;
   height: 500px;
   width: 350px;
@@ -270,24 +274,38 @@ form {
   font-weight: bold;
 }
 
-#save {
-  width: 92.5%;
+#botoes {
+  display: flex;
+  background: #1e90ff;
+}
+
+#excluir,
+#salvar {
+  width: 100%;
   border-radius: 25px;
   text-align: center;
   font-weight: bold;
   cursor: pointer;
-  background: rgb(0, 255, 0, 0.5);
   font-size: 1.5em;
-  position: absolute;
-  bottom: 0;
-  margin-bottom: 15px;
 }
 
-#save:hover {
+#excluir {
+  background: rgba(255, 0, 0, 0.5);
+}
+
+#salvar {
+  background: rgb(0, 255, 0, 0.5);
+}
+
+#salvar:hover {
   background: rgb(0, 255, 0);
 }
 
 #close:hover {
+  background: rgba(255, 0, 0);
+}
+
+#excluir:hover {
   background: rgba(255, 0, 0);
 }
 
@@ -365,5 +383,28 @@ span p {
   font-size: 1.218em;
   color: gray;
   margin-left: 5px;
+}
+
+.animate {
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s;
+}
+
+@-webkit-keyframes animatezoom {
+  from {
+    -webkit-transform: scale(0);
+  }
+  to {
+    -webkit-transform: scale(1);
+  }
+}
+
+@keyframes animatezoom {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 </style>

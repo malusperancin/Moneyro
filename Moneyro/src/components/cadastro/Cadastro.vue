@@ -3,6 +3,19 @@
     <cabecalho :titulo="'Cadastro'"></cabecalho>
     <div id="formCadastro">
       <form action method="post" id="formCad">
+        <div id="foto">
+          <div id="editar" v-on:click="mudarFoto = true">
+            <img src="src/images/editar.png" id="imgEditar" />
+          </div>
+          <img :src="'src/images/perfil' + this.informacoes.foto + '.png'" id="imgPerfil" />
+          <Lista
+            v-on:receber="receber"
+            v-on:fechar="mudarFoto = false"
+            v-if="mudarFoto"
+            :atual="informacoes.foto"
+          />
+        </div>
+
         <input type="text" class="campos" id="nome" placeholder="Nome" maxlength="70" />
         <br />
 
@@ -15,37 +28,37 @@
         <input type="text" class="campos" id="apelido" placeholder="Apelido" maxlength="20" />
         <br />
 
-        <fieldset id="dataNasc">
-          <legend>Nascimento</legend>
+        <label class="labels">Nascimento</label>
+        <div id="dataNasc">
           <input
+            placeholder="Dia"
             type="number"
             class="campos"
             id="dia"
-            placeholder="Dia"
             min="1"
             max="31"
             maxlength="2"
           />
           <input
+            placeholder="Mês"
             type="number"
             class="campos"
             id="mes"
-            placeholder="Mês"
             min="1"
             max="12"
             maxlength="2"
           />
           <input
+            placeholder="Ano"
             type="number"
             class="campos"
             id="ano"
-            placeholder="Ano"
             min="1900"
             max="3000"
             maxlength="4"
             minlength="4"
           />
-        </fieldset>
+        </div>
 
         <input
           type="tel"
@@ -88,7 +101,7 @@
         <br />
         <p style="color:white">
           Já tem conta?
-          <span v-on:click="abrirLogin" class="link">Fazer login</span>
+          <span v-on:click="login = true" class="link">Fazer login</span>
         </p>
         <!-- <div>
         <label for="msg">Mensagem:</label>
@@ -96,22 +109,35 @@
         </div>-->
       </form>
     </div>
-    <login :visivel="active"></login>
+    <login v-if="login" v-on:fechar="login = false"></login>
   </div>
 </template>
 
 <script>
 import Login from "../shared/login/Login.vue";
 import Header from "../shared/header/Header.vue";
+import Lista from "../shared/lista-fotos/Lista-Fotos.vue";
 
 export default {
   components: {
     login: Login,
-    cabecalho: Header
+    cabecalho: Header,
+    Lista: Lista
   },
   data() {
     return {
-      active: false,
+      informacoes: {
+        apelido: "",
+        nome: "",
+        foto: "1",
+        email: "",
+        diaNasc: 1,
+        mesNasc: 1,
+        anoNasc: 1900,
+        celular: "",
+        cidade: "",
+        estado: ""
+      },
       siglas: [
         { sigla: "AC" },
         { sigla: "AL" },
@@ -140,39 +166,52 @@ export default {
         { sigla: "SP" },
         { sigla: "SE" },
         { sigla: "TO" }
-      ]
+      ],
+      login: false,
+      mudarFoto: false
     };
   },
   methods: {
-    abrirLogin: function() {
-      if (this.active) {
-        this.active = false;
-        this.active = true;
-      } else this.active = true;
+    receber: function(numero) {
+      this.informacoes.foto = numero;
     }
   }
 };
 </script>
 
 <style scoped>
+#foto {
+  width: 150px;
+  height: 150px;
+  margin: -15px auto 15px;
+}
+
+#editar {
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  background: rgba(0, 0, 0, 0.32);
+  display: none;
+  border-radius: 15px;
+}
+
+#imgEditar {
+  margin: auto;
+  width: 80px;
+}
+
+#foto:hover #editar {
+  display: grid;
+  cursor: pointer;
+}
+
+#imgPerfil {
+  width: inherit;
+  border-radius: 15px;
+}
+
 .pagCadastro {
   background-color: rgb(11, 83, 148);
-}
-
-#moneyro {
-  width: 100%;
-  color: white;
-  background-color: rgba(12, 65, 111, 0.9);
-  position: fixed;
-}
-
-#moneyro p {
-  margin-top: 20px;
-  display: inline-block;
-}
-
-#moneyro h1 {
-  margin-left: 42%;
 }
 
 #logo {
@@ -197,15 +236,14 @@ export default {
 
 #dataNasc {
   width: 100%;
-  color: rgb(226, 226, 226);
-  padding: 4px;
   border: 0;
   padding: 0px 5px;
+  display: flex;
+  justify-content: space-around;
 }
 
 #dataNasc input {
-  width: 29%;
-  margin: 5px 15px 5px 3px;
+  width: 30%;
 }
 
 .labels {
@@ -222,7 +260,7 @@ select {
 }
 
 .campos {
-  font-size: 1em;
+  font-size: 1.2em;
   background-color: whitesmoke;
   border-radius: 5px;
   border: 1px solid gray;

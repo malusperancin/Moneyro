@@ -1,19 +1,19 @@
 <template>
-  <div v-if="visivel" class="modal">
+  <div class="modal">
     <form class="modal-content animate" method="post">
       <div class="imgcontainer">
-        <span v-on:click="visivel =!visivel" class="close" title="Close Modal">&times;</span>
+        <span v-on:click="$emit('fechar')" class="close" title="Close Modal">&times;</span>
       </div>
       <div class="container">
         <label for="uname">
-          <b>Nome</b>
+          <b>Apelido</b>
         </label>
-        <input type="text" name="nomeusuario" required />
+        <input type="text" name="nomeusuario" required v-model="apelido" />
 
         <label for="psw">
           <b>Senha</b>
         </label>
-        <input type="Senha" name="senha" required />
+        <input type="password" name="senha" required v-model="senha" />
 
         <button id="btnlogin" type="submit">
           <router-link to="/Usuario" style="color: white">Login</router-link>
@@ -21,7 +21,7 @@
       </div>
 
       <div class="container" style="background-color:#f1f1f1">
-        <button type="button" v-on:click="visivel =!visivel" id="btncancelar">Cancelar</button>
+        <button type="button" v-on:click="$emit('fechar')" id="btncancelar">Cancelar</button>
         <span class="psw">
           Esqueceu a
           <a href="#">Senha?</a>
@@ -33,15 +33,18 @@
 
 <script>
 export default {
-  props: {
-    visivel: Boolean
+  data() {
+    return {
+      apelido: "",
+      senha: ""
+    };
   }
 };
 </script>
 
 <style scoped>
 input[type="text"],
-input[type="Senha"] {
+input[type="password"] {
   border-radius: 3px;
   width: 100%;
   padding: 12px 20px;

@@ -1,7 +1,7 @@
 <template>
   <div id="card">
-    <div id="cardContent">
-      <span id="close" v-on:click="fechar">&times;</span>
+    <div id="cardContent" class="animate">
+      <span id="close" v-on:click="$emit('fecharCard')">&times;</span>
       <div class="tipos">
         <input
           type="radio"
@@ -111,9 +111,6 @@ export default {
     },
     save: function() {
       alert(1);
-    },
-    fechar: function() {
-      this.$emit("fecharCard");
     },
     aparecer: function(card) {
       this.despesa = false;
@@ -337,5 +334,28 @@ span p {
   margin-left: 19%;
   padding-bottom: 2%;
   color: gray;
+}
+
+.animate {
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s;
+}
+
+@-webkit-keyframes animatezoom {
+  from {
+    -webkit-transform: scale(0);
+  }
+  to {
+    -webkit-transform: scale(1);
+  }
+}
+
+@keyframes animatezoom {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 </style>

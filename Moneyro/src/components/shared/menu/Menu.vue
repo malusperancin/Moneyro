@@ -8,8 +8,8 @@
         <td class="titulos" @mouseenter="tipos = true" @mouseleave="tipos = false">
           <p>Adicionar</p>
           <ul id="opcoesCard">
-            <li v-on:click="abrirCard">Despesa ou Receita</li>
-            <li v-on:click="abrirMeta">Meta</li>
+            <li v-on:click="card = true">Despesa ou Receita</li>
+            <li v-on:click="meta = true">Meta</li>
           </ul>
         </td>
       </tr>
@@ -75,14 +75,14 @@
         </td>
       </tr>
     </table>
-    <Card v-on:fecharCard="fechar('card')" v-if="card"></Card>
-    <Meta v-on:fecharMeta="fechar('meta')" v-if="meta"></Meta>
+    <Card v-on:fecharCard="card = false" v-if="card"></Card>
+    <Meta v-on:fecharMeta="meta = false" v-if="meta"></Meta>
   </div>
 </template>
 
 <script>
 import Card from "../cards/Card.vue";
-import Meta from "../cards/Metas.vue";
+import Meta from "../cards/Meta.vue";
 
 export default {
   components: {
@@ -97,21 +97,7 @@ export default {
       meta: false
     };
   },
-  methods: {
-    abrirCard: function() {
-      this.card = true;
-    },
-    abrirMeta: function() {
-      this.meta = true;
-    },
-    fechar(comp) {
-      if (comp == "meta") {
-        this.meta = false;
-      } else {
-        this.card = false;
-      }
-    }
-  },
+  methods: {},
   watch: {
     ativo() {
       var div = document.getElementsByClassName("titulos");
@@ -202,7 +188,6 @@ table {
   margin: 0;
   width: fit-content;
   height: fit-content;
-  display: none;
 }
 
 #opcoesCard li {

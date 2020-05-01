@@ -8,7 +8,7 @@
       </h2>
       <img id="imgCenter" src="src/images/Imagem1.png" alt />
       <div id="botoes">
-        <button v-on:click="openMenu">Login</button>
+        <button v-on:click="login = true">Login</button>
         <button>
           <router-link to="/Cadastro">Cadastro</router-link>
         </button>
@@ -60,7 +60,7 @@
         </tr>
       </table>
     </div>
-    <login :visivel="active"></login>
+    <login v-if="login" v-on:fechar="login = false"></login>
   </div>
 </template>
 
@@ -75,17 +75,10 @@ export default {
   },
   data() {
     return {
-      active: false
+      login: false
     };
   },
-  methods: {
-    openMenu: function() {
-      if (this.active) {
-        this.active = false;
-        this.active = true;
-      } else this.active = true;
-    }
-  }
+  methods: {}
 };
 </script>
 

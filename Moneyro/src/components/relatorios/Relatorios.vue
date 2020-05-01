@@ -15,7 +15,7 @@
           </select>
         </div>
         <div class="geral">
-          <div id="linechart_material"></div>
+          <div id="grafico_ano"></div>
         </div>
       </div>
 
@@ -29,7 +29,7 @@
         </div>
         <div class="geral">
           <div>
-            <div id="linechart_material2"></div>
+            <div id="grafico_mes"></div>
           </div>
         </div>
       </div>
@@ -42,7 +42,7 @@
           </select>
         </div>
         <div class="geral">
-          <div id="piechart"></div>
+          <div id="grafico_gastos"></div>
         </div>
       </div>
     </div>
@@ -84,26 +84,31 @@ export default {
         fontSize: 15,
         bold: true,
         italic: false,
-        width: 850,
-        height: 500,
+        width: "100%",
+        height: 400,
         backgroundColor: "",
         tooltip: { isHtml: true }
       },
       optionsPizza: {
-        title: "My Daily Activities",
-        backgroundColor: ""
-      }
+        backgroundColor: "",
+        width: "100%",
+        fontSize: 16,
+        height: 300
+      },
+      dataAno: null,
+      dataMes: null,
+      dataPizza: null
     };
   },
   methods: {
-    drawChart() {
-      var data = new google.visualization.DataTable();
-      data.addColumn("number", "Mês");
-      data.addColumn("number", "Receita");
-      data.addColumn("number", "Despesa");
-      data.addColumn("number", "Saldo");
+    drawAno() {
+      this.dataAno = new google.visualization.DataTable();
+      this.dataAno.addColumn("number", "Mês");
+      this.dataAno.addColumn("number", "Receita");
+      this.dataAno.addColumn("number", "Despesa");
+      this.dataAno.addColumn("number", "Saldo");
 
-      data.addRows([
+      this.dataAno.addRows([
         [1, 37.8, 80.8, 41.8],
         [2, 30.9, 69.5, 32.4],
         [3, 25.4, 57, 25.7],
@@ -115,66 +120,109 @@ export default {
         [9, 16.9, 42.9, 14.8],
         [10, 12.8, 30.9, 11.6],
         [11, 5.3, 7.9, 4.7],
-        [12, 6.6, 8.4, 5.2],
-        [13, 4.8, 6.3, 3.6],
-        [14, 4.2, 6.2, 3.4]
+        [12, 6.6, 8.4, 5.2]
       ]);
 
-      new google.charts.Line(
-        document.getElementById("linechart_material")
-      ).draw(data, google.charts.Line.convertOptions(this.options));
+      new google.charts.Line(document.getElementById("grafico_ano")).draw(
+        this.dataAno,
+        google.charts.Line.convertOptions(this.options)
+      );
+    },
+    drawMes() {
+      this.dataMes = new google.visualization.DataTable();
+      this.dataMes.addColumn("number", "Mês");
+      this.dataMes.addColumn("number", "Receita");
+      this.dataMes.addColumn("number", "Despesa");
+      this.dataMes.addColumn("number", "Saldo");
 
-      new google.charts.Line(
-        document.getElementById("linechart_material2")
-      ).draw(data, google.charts.Line.convertOptions(this.options));
+      this.dataMes.addRows([
+        [1, 1, -30, 41.8],
+        [2, 30.9, 69.5, 32.4],
+        [3, 0, 57, 25.7],
+        [4, 11.7, 18.8, 10.5],
+        [5, 11.9, 17.6, 10.4],
+        [6, 8.8, 13.6, 7.7],
+        [7, 7.6, 0, 9.6],
+        [8, 12.3, 29.2, 10.6],
+        [9, 16.9, 42.9, 14.8],
+        [10, 12.8, 30.9, 11.6],
+        [11, 5.3, 7.9, 4.7],
+        [12, 6.6, 8.4, 5.2],
+        [13, 4.8, 6.3, 3.6],
+        [14, 4.2, 6.2, 3.4],
+        [15, 30.9, 69.5, 32.4],
+        [16, 25.4, 57, 25.7],
+        [17, 11.7, 0, 10.5],
+        [18, 11.9, 17.6, 10.4],
+        [19, 0, 13.6, 7.7],
+        [20, 7.6, 12.3, 9.6],
+        [21, 12.3, 29.2, 10.6],
+        [22, 16.9, 42.9, 14.8],
+        [23, 12.8, 0, 11.6],
+        [24, 5.3, 7.9, 4.7],
+        [25, 6.6, 8.4, 5.2],
+        [26, 4.8, 6.3, 3.6],
+        [27, 0, 6.2, 3.4],
+        [28, 30, 6.2, 24],
+        [29, 4.2, 0, 3.4],
+        [30, 4.2, 52, 3.4]
+      ]);
+
+      new google.charts.Line(document.getElementById("grafico_mes")).draw(
+        this.dataMes,
+        google.charts.Line.convertOptions(this.options)
+      );
     },
     drawPizza() {
-      var dataPizza = google.visualization.arrayToDataTable([
-        ["Task", "Hours per Day"],
-        ["Work", 11],
-        ["Eat", 2],
-        ["Commute", 2],
-        ["Watch TV", 2],
-        ["Sleep", 7]
+      this.dataPizza = google.visualization.arrayToDataTable([
+        ["Gastos", "Quantidade"],
+        ["Alimentação", 11],
+        ["Vestuario", 2],
+        ["Lazer", 2],
+        ["Higiene", 2],
+        ["Transporte", 6]
       ]);
 
       new google.visualization.PieChart(
-        document.getElementById("piechart")
-      ).draw(dataPizza, this.optionsPizza);
+        document.getElementById("grafico_gastos")
+      ).draw(this.dataPizza, this.optionsPizza);
     }
   },
   mounted() {
     google.charts.load("current", { packages: ["line", "corechart"] });
-    google.charts.setOnLoadCallback(this.drawChart);
+    google.charts.setOnLoadCallback(this.drawAno);
+    google.charts.setOnLoadCallback(this.drawMes);
     google.charts.setOnLoadCallback(this.drawPizza);
   },
   watch: {}
 };
 </script>
 
-<style scoped>                                                      
+<style scoped>
 .relatorio {
   padding: 10px;
   margin-bottom: 15px;
 }
 
-.cadaUm {
-  display: flex;
-  justify-content: space-around;
+.geral {
+  /* background: rgb(11, 83, 148); */
+  background: white;
+  border-radius: 10px;
+  margin: 5px;
+  padding: 50px;
 }
 
-.cadaUm div {
-  display: inline;
-  background: blue;
-  width: 100%;
-  margin: 5px;
+.relatorio {
+  padding: 10px;
+  margin-bottom: 15px;
 }
 
 .geral {
-  background: rgb(11, 83, 148);
+  /* background: rgb(11, 83, 148); */
+  background: white;
   border-radius: 10px;
   margin: 5px;
-  padding: 30px;
+  padding: 50px;
 }
 
 #mes,

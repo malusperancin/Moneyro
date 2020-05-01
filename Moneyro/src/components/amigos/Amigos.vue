@@ -32,13 +32,14 @@ export default {
       filtro: "",
       amigos: [
         // 💩👺💩 jovana ಥ‿ಥ✌2345678901
-        { nome: "0123456789012345", foto: "11" },
+        { nome: "jovana ಥ‿ಥ✌", foto: "11" }, // apelido : varchar(14)
         { nome: "maru✌ʕ•́ᴥ•̀ʔっ", foto: "6" },
         { nome: "venizius😘😎", foto: "7" },
         { nome: "drigo", foto: "9" },
         { nome: "illy", foto: "10" },
         { nome: "zoen", foto: "5" }
-      ]
+      ],
+      alunos: []
     };
   },
   computed: {
@@ -50,7 +51,17 @@ export default {
         return this.amigos;
       }
     }
-    // methods: {}
+  },
+  created() {
+    this.$http
+      .get("https://localhost:5001/api/aluno")
+      // promise que converte os dados recebidos em JSON
+      .then(res => res.json())
+      // promise que atribui os dados retornados ao array alunos
+      .then(
+        dadosRetornados => (this.alunos = dadosRetornados),
+        err => console.log(err)
+      );
   }
 };
 </script>
