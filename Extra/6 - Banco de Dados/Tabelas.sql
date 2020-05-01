@@ -104,3 +104,14 @@ create table Amigos
     CONSTRAINT FK_idUsuarioA2 FOREIGN KEY (idAmigo2)
     REFERENCES Usuarios(idUsuario)
 )
+
+create table Metas(
+ idMeta int identity primary key,
+ nome varchar(20) not null,
+ objetivo money not null,
+ inicial money,
+ dataLimite datetime not null,
+ idCompartilhamento int,
+ CONSTRAINT FK_idCompartilhamentoM FOREIGN KEY (idCompartilhamento)
+ REFERENCES Compartilhamentos(idCompartilhamento)
+)
