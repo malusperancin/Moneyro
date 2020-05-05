@@ -3,7 +3,7 @@
     <div class="icone">
       <img class="imgIcone" src="src/images/citacao.png" :alt="texto" />
     </div>
-    <div class="citacao">{{texto}}"</div>
+    <div class="citacao">{{texto}}</div>
     <div class="autor">{{autor}}</div>
   </div>
 </template>

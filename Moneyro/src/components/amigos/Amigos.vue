@@ -5,7 +5,7 @@
     <div class="centro">
       <div id="busca">
         <input class="filtro" type="search" placeholder="Pesquisar" v-model="filtro" />
-        <img id="imgAdd" class="icone" src="../../images/adicAmigo.png" />
+        <img title="Adicionar um amigo" id="imgAdd" class="icone" src="../../images/adicAmigo.png" />
       </div>
       <div id="lista-alunos">
         <div id="lista-alunos-item" v-for="amigo of filtraNome" :key="amigo.nome">
@@ -51,17 +51,6 @@ export default {
         return this.amigos;
       }
     }
-  },
-  created() {
-    this.$http
-      .get("https://localhost:5001/api/aluno")
-      // promise que converte os dados recebidos em JSON
-      .then(res => res.json())
-      // promise que atribui os dados retornados ao array alunos
-      .then(
-        dadosRetornados => (this.alunos = dadosRetornados),
-        err => console.log(err)
-      );
   }
 };
 </script>

@@ -1,11 +1,11 @@
 <template>
   <div :id="'meta'+id" class="meta">
     <div class="bolinha"></div>
-    <div class="amigos" v-if="compartilhado">
+    <!-- <div class="amigos" v-if="compartilhado">
       <div v-for="amigo in compartilhado" :title="amigo.nome" v-bind:key="amigo.nome">
         <img :src="'/images/'+ amigo.foto" alt />
       </div>
-    </div>
+    </div>-->
     <div class="conteudo">
       <div class="porcentagem">
         <div :id="'id' + id" class="grafico"></div>

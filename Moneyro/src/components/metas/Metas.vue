@@ -40,12 +40,12 @@ export default {
           atual: "1",
           objetivo: "3",
           nome: "Open de Caldicana😎😎",
-          dataLimite: "01/05/2020",
-          compartilhado: [
-              { id: 1,
-              nome: "Maria",
-              foto: 6 }, 
-              {"Giovanna"}]
+          dataLimite: "01/05/2020"
+          // compartilhado: [
+          //     { id: 1,
+          //     nome: "Maria",
+          //     foto: 6 },
+          //     {"Giovanna"}]
         },
         {
           id: 2,
