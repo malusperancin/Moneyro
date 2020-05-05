@@ -1,19 +1,14 @@
 <template>
   <div class="pag">
-    <div id="moneyro">
-      <h1>
-        <p>Moneyro</p>
-        <img id="logo" src="src/images/logo.png" alt />
-      </h1>
-    </div>
+    <cabecalho :titulo="'Moneyro'"></cabecalho>
     <div id="inicio">
       <h2>
         Para de usar esses aplicativozinho ruim
-        de gestao e vem pro melhor porr
+        de gestao e vem pro melhor!!!!!!!
       </h2>
       <img id="imgCenter" src="src/images/Imagem1.png" alt />
       <div id="botoes">
-        <button v-on:click="openMenu">Login</button>
+        <button v-on:click="login = true">Login</button>
         <button>
           <router-link to="/Cadastro">Cadastro</router-link>
         </button>
@@ -65,38 +60,29 @@
         </tr>
       </table>
     </div>
-    <login :visivel="active"></login>
+    <login v-if="login" v-on:fechar="login = false"></login>
   </div>
 </template>
 
 <script>
-import Login from "../login/Login.vue";
+import Login from "../shared/login/Login.vue";
+import Header from "../shared/header/Header.vue";
 
 export default {
   components: {
-    login: Login
+    login: Login,
+    cabecalho: Header
   },
   data() {
     return {
-      active: false
+      login: false
     };
   },
-  methods: {
-    openMenu: function() {
-      if (this.active) {
-        this.active = false;
-        this.active = true;
-      } else this.active = true;
-    }
-  }
+  methods: {}
 };
 </script>
 
-<style>
-.pag {
-  width: 100%;
-}
-
+<style scoped>
 #titulo {
   text-align: center;
   padding-top: -15px;
@@ -106,30 +92,6 @@ export default {
 a {
   text-decoration: none;
   color: black;
-}
-
-#moneyro {
-  width: 100%;
-  color: white;
-  background-color: rgba(12, 65, 111, 0.9);
-  position: fixed;
-}
-
-#moneyro p {
-  margin-top: 20px;
-  display: inline-block;
-}
-
-#moneyro h1 {
-  margin-left: 42%;
-}
-
-#logo {
-  border-radius: 40px;
-  width: 70px;
-  float: left;
-  margin: 10px;
-  border: 2px solid rgb(255, 227, 74);
 }
 
 #inicio {
@@ -174,7 +136,7 @@ a {
 #porque {
   background-color: rgb(241, 194, 50);
   font-size: 1.5em;
-  padding: 35px;
+  padding: 10px;
 }
 
 table {
@@ -190,8 +152,8 @@ td {
   font-size: 15px;
   text-align: center;
   float: left;
-  margin: 15px;
   font-weight: bold;
+  margin: 10px;
 }
 
 .pqs img {

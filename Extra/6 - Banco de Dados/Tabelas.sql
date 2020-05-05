@@ -105,15 +105,13 @@ create table Amigos
     REFERENCES Usuarios(idUsuario)
 )
 
-create table Metas
-(
-    idMeta int identity primary key,
-    nome varchar(50) not null,
-    quantia money not null,
-    atual money not null,
-    idTag int,
-    dataVencimento datetime,
-    arquivada bit not null,
-    CONSTRAINT FK_idTagMeta FOREIGN KEY (idTag)
-    REFERENCES Tags(idTag)
+create table Metas(
+ idMeta int identity primary key,
+ nome varchar(20) not null,
+ objetivo money not null,
+ atual money,
+ dataLimite datetime not null,
+ idCompartilhamento int,
+ CONSTRAINT FK_idCompartilhamentoM FOREIGN KEY (idCompartilhamento)
+ REFERENCES Compartilhamentos(idCompartilhamento)
 )

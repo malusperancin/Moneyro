@@ -1,80 +1,203 @@
 <template>
-  <div class="pag">
-    <div id="header">
-      <div id="menuIcon" v-on:click="openMenu()"></div>
-
-      <span class="Menubar"></span>
-
-      <div v-for="route in routes">
-        <router-link :to="route.path ? route.path : '/'">{{ route.titulo }}</router-link>
-      </div>
-    </div>
+  <div id="menu" @mouseenter="ativo = true" @mouseleave="ativo = false">
+    <table cellspacing="0" border="0">
+      <tr id="btnAdd">
+        <td class="icones">
+          <img src="../../../images/adicionar.png" alt="a" />
+        </td>
+        <td class="titulos" @mouseenter="tipos = true" @mouseleave="tipos = false">
+          <p>Adicionar</p>
+          <ul id="opcoesCard">
+            <li v-on:click="card = true">Despesa ou Receita</li>
+            <li v-on:click="meta = true">Meta</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td class="icones">
+          <img src="../../../images/planilha.png" alt="a" />
+        </td>
+        <td class="titulos">
+          <router-link to="/planilhas">Planilhas</router-link>
+        </td>
+      </tr>
+      <tr>
+        <td class="icones">
+          <img src="../../../images/comunidade.png" alt="a" />
+        </td>
+        <td class="titulos">
+          <router-link to="/comunidade">Comunidade</router-link>
+        </td>
+      </tr>
+      <tr>
+        <td class="icones">
+          <img src="../../../images/relatorios.png" alt="a" />
+        </td>
+        <td class="titulos">
+          <router-link to="/relatorios">Relatórios</router-link>
+        </td>
+      </tr>
+      <tr>
+        <td class="icones">
+          <img src="../../../images/amigos.png" alt="a" />
+        </td>
+        <td class="titulos">
+          <router-link to="/amigos" class="menuIcon">Amigos</router-link>
+        </td>
+      </tr>
+      <tr>
+        <td class="icones">
+          <img src="../../../images/metas.png" alt="a" />
+        </td>
+        <td class="titulos">
+          <router-link to="/metas">Metas</router-link>
+        </td>
+      </tr>
+      <tr id="divisor">
+        <td class="icones"></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="icones">
+          <img src="../../../images/configuracao.png" alt="a" />
+        </td>
+        <td class="titulos">
+          <router-link to="/configuracoes">Configurações</router-link>
+        </td>
+      </tr>
+      <tr>
+        <td class="icones">
+          <img src="../../../images/sair.png" alt="a" />
+        </td>
+        <td class="titulos">
+          <router-link to="/" style="color: black">Sair</router-link>
+          <!-- <a v-on="sair()">Sair</a> -->
+        </td>
+      </tr>
+    </table>
+    <Card v-on:fecharCard="card = false" v-if="card"></Card>
+    <Meta v-on:fecharMeta="meta = false" v-if="meta"></Meta>
   </div>
 </template>
 
 <script>
+import Card from "../cards/Card.vue";
+import Meta from "../cards/Meta.vue";
+
 export default {
+  components: {
+    Card,
+    Meta
+  },
   data() {
     return {
-      routes,
-      active: false
+      ativo: false,
+      tipos: false,
+      card: false,
+      meta: false
     };
   },
-  methods: {
-    openMenu: function() {
-      var cab = document.getElementById("header");
-      var item = document.getElementById("menuItem");
-
-      if (this.active) {
-        cab.style.width = "6%";
-        item.style.display = "none";
-        this.active = false;
-      } else {
-        cab.style.width = "20%";
-        item.style.display = "block";
-        this.active = true;
-      }
+  methods: {},
+  watch: {
+    ativo() {
+      var div = document.getElementsByClassName("titulos");
+      if (this.ativo)
+        for (var i = 0; i < div.length; i++)
+          div.item(i).style = "display: block";
+      else
+        for (var i = 0; i < div.length; i++)
+          div.item(i).style = "display: none";
+    },
+    tipos() {
+      var tipos = document.getElementById("opcoesCard");
+      if (this.tipos) tipos.style = "display: block";
+      else tipos.style = "display: none";
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
 #menu {
-  background: rgb(153, 105, 105);
+  width: fit-content;
+  height: 100%;
+  z-index: 5;
+  position: fixed;
+  box-shadow: 5px 0px 5px #00000040;
+  overflow: auto;
 }
 
-#menuItem {
-  color: white;
-  margin-top: 5px;
-  padding-left: 10px;
+table {
+  background-color: rgb(11, 83, 148);
+  height: 100%;
+  box-sizing: border-box;
+  transition: all 0.5s;
+}
+
+/* tr td:nth-child(2) {
+} */
+
+.icones {
+  text-align: start;
+  background-color: #0c406f;
+  padding: 20px;
+}
+
+.icones img {
+  width: 30px;
+  display: table-column;
+}
+
+/* tr td:nth-child(2) {
+} */
+
+.titulos {
+  box-sizing: border-box;
+  padding-left: 15px;
+  padding-right: 30px;
+  background: rgb(11, 83, 148);
+  font-size: 1.2em;
+  height: 100%;
   display: none;
-  font-size: 1.5em;
 }
 
-.Menubar {
-  width: 100%;
-  height: 3px;
-  align-self: baseline;
-  background: #fff;
+.titulos:hover {
+  background-color: #0c406f;
 }
 
-#menuIcon {
-  width: 100%;
-  height: 105px;
-  background: #f5ba30;
+.titulos a {
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  float: left;
+  margin-top: 18px;
 }
 
-#menuIcon:hover {
+#divisor {
+  height: 100%;
+}
+
+#btnAdd td {
+  background-color: rgb(8, 45, 77);
+  color: white;
+}
+
+#opcoesCard {
+  position: fixed;
+  top: 0;
+  left: 186px; /*arrumar esse left*/
+  margin: 0;
+  width: fit-content;
+  height: fit-content;
+}
+
+#opcoesCard li {
+  list-style: none;
+  padding: 15px 20px;
+  background: #0c406f;
   cursor: pointer;
 }
 
-#header {
-  width: 6%;
-  background-color: #e2aa33;
-  position: fixed;
-  height: 100%;
-  transition: width 0.7s;
-  z-index: 5;
+#opcoesCard li:hover {
+  background: rgb(8, 45, 77);
 }
 </style>

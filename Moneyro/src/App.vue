@@ -23,29 +23,40 @@ export default {
 };
 </script>
 
-<style>
+<style >
 * {
-  margin: 0;
-  padding: 0;
   transition: all 0.3s;
   font-family: "Baloo Chettan 2", cursive;
 }
 
-html,
 body {
+  min-height: 100%;
+  margin: 0;
   height: 100%;
-  width: 100%;
+}
+
+html {
+  height: 100%;
 }
 
 #footer {
-  height: 15%;
-  padding: 30px;
+  height: 15vh;
+  padding: 30px 100px;
   color: white;
   background-color: rgb(67, 67, 67);
 }
 
 .corpo {
   height: 100%;
-  width: 100%;
+}
+
+.pag {
+  background-color: rgb(255, 227, 74);
+  min-height: 100%;
+}
+
+.centro {
+  height: 100%;
+  padding: 3% 15%;
 }
 </style>
