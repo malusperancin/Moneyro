@@ -41,7 +41,7 @@ create table Usuarios
 (
     idUsuario int identity primary key,
     nome varchar(70) not null,
-    apelido varchar(20) not null,
+    apelido varchar(15) not null,
     email varchar(40) not null,
     celular varchar(14) not null,
     dataDeNascimento date not null,
@@ -103,4 +103,17 @@ create table Amigos
     REFERENCES Usuarios(idUsuario),
     CONSTRAINT FK_idUsuarioA2 FOREIGN KEY (idAmigo2)
     REFERENCES Usuarios(idUsuario)
+)
+
+create table Metas
+(
+    idMeta int identity primary key,
+    nome varchar(50) not null,
+    quantia money not null,
+    atual money not null,
+    idTag int,
+    dataVencimento datetime,
+    arquivada bit not null,
+    CONSTRAINT FK_idTagMeta FOREIGN KEY (idTag)
+    REFERENCES Tags(idTag)
 )

@@ -93,3 +93,76 @@ select @dif = quantia from Inserted
 set @saldo = @saldo - @dif
 update Usuarios set saldo = @saldo where idUsuario = @idUsuario
 End
+
+select * from despesas
+select * from receitas
+select * from usuarios
+
+alter proc planilha_sp
+@id int = null
+as
+declare @idRegistro int
+declare @data datetime
+declare @idTag int
+declare @nome varchar(40)
+declare @quantia money
+Begin
+create table #Planilha
+(
+  id int primary key identity,
+  idRegistro int,
+  data datetime,
+  idTag int,
+  nome varchar(50),
+  quantia money
+)
+declare receitaCursor scroll cursor for
+select 
+idReceita as 'idRegistro', data as 'data', idTag as 'idTag', nome as 'nome', quantia as 'quantia'
+from
+Receitas
+where idUsuario = @id
+open receitaCursor
+fetch next from receitaCursor into @idRegistro, @data, @idTag, @nome, @quantia
+while @@FETCH_STATUS = 0
+begin
+ insert into #Planilha values(@idRegistro, @data, @idTag, @nome, @quantia)
+ fetch next from receitaCursor into @idRegistro, @data, @idTag, @nome, @quantia
+end
+close receitaCursor
+deallocate receitaCursor
+
+declare despesaCursor scroll cursor for
+select idDespesa as 'idRegistro', data as 'data', idTag as 'idTag', nome as 'nome', quantia as 'quantia'
+from
+Despesas
+where idUsuario = @id
+open despesaCursor
+fetch next from despesaCursor into @idRegistro, @data, @idTag, @nome, @quantia
+while @@FETCH_STATUS = 0
+begin
+ insert into #Planilha values(@idRegistro, @data, @idTag, @nome, -@quantia)
+ fetch next from despesaCursor into @idRegistro, @data, @idTag, @nome, @quantia
+end
+close despesaCursor
+deallocate despesaCursor
+select * from #Planilha group by data
+End
+
+planilha_sp 2
+
+select count(data), data from receitas where idUsuario=2 group by data
+select count(data), data from despesas where idUsuario=2 group by data
+
+alter table despesas
+ALTER COLUMN data date not null
+
+insert into receitas values(2, GETDATE(), 'salario', 1.00, 2)
+insert into receitas values(2, GETDATE(), 'salariosds', 2.00, 2)
+
+create proc countDias_sp
+@id int = null
+Begin
+select count(data), data from receitas where idUsuario=2 group by data
+select count(data), data from despesas where idUsuario=2 group by data
+End
