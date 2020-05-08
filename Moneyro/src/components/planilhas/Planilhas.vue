@@ -2,6 +2,8 @@
   <div class="pag">
     <Menu />
     <Perfil />
+    <Card v-if="verCard" :id="id" v-on:fecharCard="verCard = false" />
+    <Topo />
     <div class="centro">
       <select id="filtro">
         <option value>Filtrar por...</option>
@@ -12,27 +14,28 @@
       </select>
       <input type="search" id="buscaNome" placeholder />
       <br />
-      <div id="registros" v-for="dia in registrosData">
+      <div id="registros" v-for="(dia, i) in registrosData" :key="i">
         <div class="umDia">
           <p class="data">Dia {{dia.data}}</p>
           <table cellspacin="0">
-            <tr class="despesa" v-for="reg in dia.registros" v-if="reg.quantia < 0">
+            <tr
+              v-for="(reg, j) in dia.registros"
+              :key="j"
+              :class="[{'despesa' : reg.quantia < 0}, {'receita' : reg.quantia > 0}]"
+              v-on:click="abrirCard(reg.id)"
+            >
               <td class="tag">
                 <img src="src/images/tag.png" alt class="tagImg" />
                 {{reg.tag}}
               </td>
               <td class="nome">{{reg.nome}}</td>
-              <td class="quantia">
-                <img src="src/images/moeda.png" alt class="moedaImg" />
-                {{reg.quantia}}
+              <td class="comp">
+                <div class="amigos" v-if="reg.compartilhado">
+                  <div v-for="(amigo, i) in reg.compartilhado" :title="amigo.nome" v-bind:key="i">
+                    <img :src="'src/images/perfil'+ amigo.foto + '.png'" alt />
+                  </div>
+                </div>
               </td>
-            </tr>
-            <tr class="receita" v-else>
-              <td class="tag">
-                <img src="src/images/tag.png" alt class="tagImg" />
-                {{reg.tag}}
-              </td>
-              <td class="nome">{{reg.nome}}</td>
               <td class="quantia">
                 <img src="src/images/moeda.png" alt class="moedaImg" />
                 {{reg.quantia}}
@@ -44,62 +47,84 @@
     </div>
   </div>
 </template>
-
 <script>
 import Menu from "../shared/menu/Menu.vue";
 import Perfil from "../shared/float-perfil/Float-Perfil.vue";
+import Card from "../shared/cards/Card.vue";
+import Topo from "../shared/voltar-topo/Voltar-Topo.vue";
+
 export default {
   components: {
     Menu,
-    Perfil
+    Perfil,
+    Card,
+    Topo
   },
   data() {
     return {
       registros: [],
-      registrosData: []
+      registrosData: [],
+      verCard: false,
+      id: null
     };
   },
-  methods: {},
+  methods: {
+    abrirCard(id) {
+      this.id = id;
+      this.verCard = true;
+    }
+  },
   computed: {},
   mounted() {
     this.registros.push(
       {
+        id: 1,
         nome: "almoço",
-        data: "12/02/2004",
+        data: "2004-12-02",
         tag: "Alimentação",
-        quantia: -85
+        quantia: -85,
+        compartilhado: [
+          { id: 1, nome: "Maria", foto: 6 },
+          { id: 2, nome: "Giovanna", foto: 11 }
+        ]
       },
       {
+        id: 2,
         nome: "janta",
-        data: "12/02/2004",
+        data: "2004-12-02",
         tag: "Alimentação",
         quantia: -35
       },
       {
+        id: 3,
         nome: "cinema",
         data: "12/02/2004",
         tag: "Lazer",
         quantia: -40
       },
       {
+        id: 4,
         nome: "bico da padaria",
         data: "16/04/2020",
         tag: "Job",
         quantia: 150
       },
       {
+        id: 5,
         nome: "camiseta",
         data: "18/02/2004",
         tag: "Vestiario",
         quantia: -20
       },
       {
-        nome: "sorvete",
+        id: 6,
+        nome: "titia vania presente",
         data: "18/02/2004",
-        tag: "Alimentação",
-        quantia: -15
+        tag: "Presente",
+        quantia: 50
       },
       {
+        id: 7,
         nome: "arroz",
         data: "22/04/2020",
         tag: "Alimentação",
@@ -112,9 +137,11 @@ export default {
 
     for (var i = 0; i < reg.length; i++) {
       novos.push({
+        id: reg[i].id,
         nome: reg[i].nome,
         tag: reg[i].tag,
-        quantia: reg[i].quantia
+        quantia: reg[i].quantia,
+        compartilhado: reg[i].compartilhado
       });
 
       if (i + 1 == reg.length) {
@@ -138,6 +165,24 @@ export default {
 </script>
 
 <style scoped>
+.amigos {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.amigos div {
+  margin-left: -15px;
+  margin-bottom: 0;
+}
+
+.amigos img {
+  border: 3px solid rgb(236, 228, 228);
+  width: 30px;
+  border-radius: 87px;
+  margin-bottom: -5px;
+}
+
 .umDia table {
   width: 100%;
   box-sizing: border-box;
@@ -182,11 +227,15 @@ tr {
 }
 
 .tag {
-  width: 25%;
+  width: 20%;
 }
 
 .nome {
-  width: 60%;
+  width: 30%;
+}
+
+.comp {
+  width: 30%;
 }
 
 .quantia {

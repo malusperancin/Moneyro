@@ -44,6 +44,9 @@ export default {
 <style scoped>
 .fundo {
   background: rgba(0, 0, 0, 0.199);
+  display: flex;
+  justify-content: center;
+  align-content: center;
   position: fixed;
   height: 100%;
   width: 100%;
@@ -54,7 +57,7 @@ export default {
 }
 
 .imagem {
-  width: 120px;
+  width: 100px;
   margin: 10px;
   transition: transform 0.5s;
   box-shadow: 5px 5px 5px #00000040;
@@ -71,9 +74,9 @@ export default {
   background: rgba(50, 51, 51, 0.856);
   padding: 10px;
   margin: auto;
-  width: 38%;
-  max-height: 550px;
-  overflow: auto;
+  width: 80%;
+  max-width: 650px;
+  overflow: hidden;
   box-shadow: 5px 5px 5px #00000040;
   border-radius: 8px;
 }

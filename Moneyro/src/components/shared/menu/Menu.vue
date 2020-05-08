@@ -8,8 +8,8 @@
         <td class="titulos" @mouseenter="tipos = true" @mouseleave="tipos = false">
           <p>Adicionar</p>
           <ul id="opcoesCard">
-            <li v-on:click="card = true">Despesa ou Receita</li>
-            <li v-on:click="meta = true">Meta</li>
+            <li v-on:click="verCard = true">Despesa ou Receita</li>
+            <li v-on:click="verMeta = true">Meta</li>
           </ul>
         </td>
       </tr>
@@ -75,8 +75,8 @@
         </td>
       </tr>
     </table>
-    <Card v-on:fecharCard="card = false" v-if="card"></Card>
-    <Meta v-on:fecharMeta="meta = false" v-if="meta"></Meta>
+    <Card v-on:fecharCard="verCard = false" v-if="verCard"></Card>
+    <Meta v-on:fecharMeta="verMeta = false" v-if="verMeta"></Meta>
   </div>
 </template>
 
@@ -93,8 +93,8 @@ export default {
     return {
       ativo: false,
       tipos: false,
-      card: false,
-      meta: false
+      verCard: false,
+      verMeta: false
     };
   },
   methods: {},

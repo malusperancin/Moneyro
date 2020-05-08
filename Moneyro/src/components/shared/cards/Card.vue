@@ -2,17 +2,23 @@
   <div id="card">
     <div id="cardContent" class="animate">
       <span id="close" v-on:click="$emit('fecharCard')">&times;</span>
-      <div class="tipos">
+      <div v-if="!this.id" class="tipos">
         <input
           type="radio"
           id="desp"
           name="tipo"
           value="despensa"
           checked
-          v-on:click="aparecer('despesa')"
+          v-on:click="despesa = true, receita = false"
         />
         <label for="desp">Despesa</label>
-        <input type="radio" id="rend" name="tipo" value="renda" v-on:click="aparecer('receita')" />
+        <input
+          type="radio"
+          id="rend"
+          name="tipo"
+          value="receita"
+          v-on:click="despesa = false, receita = true"
+        />
         <label for="rend">Receita</label>
       </div>
       <form id="despesa" v-if="despesa">
@@ -25,17 +31,18 @@
             max="1000000.00"
             step="10.00"
             class="campos quantia"
+            v-model="quantia"
           />
         </span>
-        <input placeholder="Nome" type="text" id="nome" class="campos" />
+        <input placeholder="Nome" type="text" id="nome" class="campos" v-model="nome" />
 
         <select name="tag" id="tag" class="campos">
-          <option>Tag</option>
-          <option v-for="tag of tags" :key="tag.nome" :value="tag.nome">@{{ tag.nome }}</option>-->
+          <option value="default">Tag: Nenhuma</option>
+          <option v-for="(tag, i) of tags" :key="i" :value="tag.nome">{{ tag.nome }}</option>
         </select>
 
-        <input placeholder="Data" type="date" id="data" class="campos" />
-        <input placeholder="Local" type="text" id="local" class="campos" />
+        <input type="date" id="data" class="campos" v-model="data" />
+        <input placeholder="Local" type="text" id="local" class="campos" v-model="local" />
 
         <div class="dropdown">
           <div v-on:click="mostrarAmigos" id="btnDrop" class="campos">Compartilhar com... ▾</div>
@@ -43,7 +50,7 @@
             <input type="search" placeholder="Pesquisar" v-model="filtroNome" />
             <div v-for="amigo of filtraNome" :key="amigo.nome" class="amigos">
               <div class="pretty p-default p-curve p-fill">
-                <input type="checkbox" :id="amigo.nome" :name="amigo.nome" />
+                <input type="checkbox" :id="'amigo'+amigo.id" :name="amigo.nome" />
                 <div class="state p-primary">
                   <label class="nomeAmigo">{{amigo.nome}}</label>
                 </div>
@@ -53,7 +60,7 @@
         </div>
       </form>
 
-      <form id="receita" v-if="renda">
+      <form id="receita" v-if="receita">
         <span>
           <p>R$</p>
           <input
@@ -64,38 +71,46 @@
             step="10.00"
             class="campos quantia"
             formaction="0.00"
+            v-model="quantia"
           />
         </span>
-        <input placeholder="Nome" type="text" id="nome" class="campos" />
-        <input placeholder="Data" type="date" id="data" class="campos" />
+        <input placeholder="Nome" type="text" id="nome" class="campos" v-model="nome" />
+        <input type="date" id="data" class="campos" v-model="data" />
+        <select name="tag" id="tag" class="campos">
+          <option value="default">Tag: Nenhuma</option>
+          <option
+            v-for="(tag, i) of tags"
+            :key="i"
+            :value="tag.nome"
+            :id="'tag'+tag.nome"
+          >{{ tag.nome }}</option>
+        </select>
       </form>
-      <span id="save" v-on:click="save">Salvar</span>
+      <div id="botoes">
+        <span id="excluir" v-on:click="excluir" v-if="id">Excluir</span>
+        <span id="salvar" v-on:click="salvar">Salvar</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import $ from "jquery";
-
 export default {
+  props: ["id"],
   data() {
     return {
       expanded: false,
       despesa: true,
-      renda: false,
+      receita: false,
       filtroNome: "",
-      tags: [
-        { nome: "tag1" },
-        { nome: "tag2" },
-        { nome: "tag3" },
-        { nome: "tag4" }
-      ],
-      amigos: [
-        { nome: "Jovana" },
-        { nome: "Maria" },
-        { nome: "Venizius" },
-        { nome: "Illy" }
-      ]
+      tags: [],
+      amigos: [],
+      nome: "",
+      data: Date,
+      tag: "",
+      quantia: 0.0,
+      compartilhado: [],
+      local: ""
     };
   },
   methods: {
@@ -109,15 +124,13 @@ export default {
         this.expanded = false;
       }
     },
-    save: function() {
-      alert(1);
+    salvar() {
+      //
     },
-    aparecer: function(card) {
-      this.despesa = false;
-      this.renda = false;
-      if (card == "despesa") this.despesa = true;
-      else this.renda = true;
+    excluir() {
+      //DELETE REGISTRO WHERE THIS.ID
     },
+    aparecer: function(card) {},
     mostrarAmigos: function() {
       if (
         document.getElementById("listaAmigos").style.display == "inline-block"
@@ -126,6 +139,26 @@ export default {
       else {
         document.getElementById("listaAmigos").style.display = "inline-block";
       }
+      if (this.id) this.checkarAmigos();
+    },
+
+    checkarAmigos: function() {
+      for (var a = 0; a < this.amigos.length; a++) {
+        document.getElementById("amigo" + this.amigos[a].id).checked = false;
+      }
+      for (var i = 0; i < this.compartilhado.length; i++) {
+        for (var a = 0; a < this.amigos.length; a++) {
+          if (this.compartilhado[i].id == this.amigos[a].id) {
+            document.getElementById("amigo" + this.amigos[a].id).checked = true;
+          }
+        }
+      }
+    },
+    checkarTag: function() {
+      var comboTags = document.getElementById("tag");
+      if (this.tag) comboTags.value = this.tag;
+      // pegar do banco o nome da tag e o id
+      else comboTags.value = "default";
     }
   },
   computed: {
@@ -139,7 +172,45 @@ export default {
     }
   },
   mounted() {
-    $("#card").fadeIn();
+    this.checkarTag();
+  },
+  created() {
+    if (this.id) {
+      // var registro = GET META NO BANCO
+      var registro = {
+        id: 1,
+        nome: "almoço",
+        data: "2004-12-02",
+        tag: "Alimentação",
+        quantia: -85,
+        local: "mc donalds",
+        compartilhado: [
+          { id: 1, nome: "Maria", foto: 6 },
+          { id: 2, nome: "Giovanna", foto: 11 }
+        ]
+      };
+      this.nome = registro.nome;
+      this.data = registro.data;
+      this.tag = registro.tag;
+      this.quantia = registro.quantia;
+      this.compartilhado = registro.compartilhado;
+      this.local = registro.local;
+    }
+
+    //GET ALL TAGS
+    this.tags = [
+      { nome: "Alimentação" },
+      { nome: "Lazer" },
+      { nome: "tag3" },
+      { nome: "tag4" }
+    ];
+
+    this.amigos = [
+      { id: 1, nome: "Maria" },
+      { id: 2, nome: "Giovanna" },
+      { id: 3, nome: "Illy" },
+      { id: 4, nome: "Venizius" }
+    ];
   }
 };
 
@@ -223,8 +294,8 @@ form {
 .tipos label {
   background-color: #e4e4e4;
   color: black;
-  font-size: 1;
-  line-height: 1;
+  font-size: 1em;
+  line-height: 1em;
   text-align: center;
   padding: 12px 20px;
   margin-right: -1px;
@@ -270,40 +341,55 @@ form {
   font-weight: bold;
 }
 
-#save {
-  width: 92.5%;
-  border-radius: 25px;
-  text-align: center;
-  font-weight: bold;
-  cursor: pointer;
-  background: rgb(0, 255, 0, 0.5);
-  font-size: 1.5em;
-  position: absolute;
-  bottom: 0;
-  margin-bottom: 15px;
-}
-
-#save:hover {
-  background: rgb(0, 255, 0);
-}
-
 #close:hover {
   background: rgba(255, 0, 0);
 }
 
+#botoes {
+  display: flex;
+  justify-content: space-around;
+}
+
+#excluir,
+#salvar {
+  padding: 4px 35px;
+  border-radius: 25px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.5em;
+}
+
+#excluir {
+  background: rgba(255, 0, 0, 0.5);
+}
+
+#salvar {
+  background: rgb(0, 255, 0, 0.5);
+}
+
+#salvar:hover {
+  background: rgb(0, 255, 0);
+}
+
+#excluir:hover {
+  background: rgba(255, 0, 0);
+}
+
 #card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
   background: rgba(0, 0, 0, 0.3);
+  z-index: 500;
 }
 
 #cardContent {
-  position: fixed;
-  top: 8%;
-  left: 39.5%;
   border-radius: 5px;
   height: 530px;
   width: 350px;

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\vinic\\ProjetoPratica_API\\ProjetoPratica_API.csproj": {}
+    "C:\\Users\\vinic\\OneDrive\\Documentos\\GitHub\\Projeto-PraticaII\\ProjetoPratica_API\\ProjetoPratica_API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\vinic\\ProjetoPratica_API\\ProjetoPratica_API.csproj": {
+    "C:\\Users\\vinic\\OneDrive\\Documentos\\GitHub\\Projeto-PraticaII\\ProjetoPratica_API\\ProjetoPratica_API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vinic\\ProjetoPratica_API\\ProjetoPratica_API.csproj",
+        "projectUniqueName": "C:\\Users\\vinic\\OneDrive\\Documentos\\GitHub\\Projeto-PraticaII\\ProjetoPratica_API\\ProjetoPratica_API.csproj",
         "projectName": "ProjetoPratica_API",
-        "projectPath": "C:\\Users\\vinic\\ProjetoPratica_API\\ProjetoPratica_API.csproj",
+        "projectPath": "C:\\Users\\vinic\\OneDrive\\Documentos\\GitHub\\Projeto-PraticaII\\ProjetoPratica_API\\ProjetoPratica_API.csproj",
         "packagesPath": "C:\\Users\\vinic\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vinic\\ProjetoPratica_API\\obj\\",
+        "outputPath": "C:\\Users\\vinic\\OneDrive\\Documentos\\GitHub\\Projeto-PraticaII\\ProjetoPratica_API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

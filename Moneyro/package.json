@@ -10,6 +10,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "jquery": "^3.4.1",
     "pretty-checkbox": "^3.0.3",
     "progressbar.js": "^1.1.0",
