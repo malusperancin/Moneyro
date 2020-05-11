@@ -204,7 +204,8 @@ export default {
 
 <style scoped>
 #informacoes {
-  display: flex;
+  display: inline-flex;
+  width: 70vw;
 }
 
 #principal {
@@ -212,13 +213,14 @@ export default {
   padding: 15px;
   background: rgba(0, 0, 0, 0.05);
   border-radius: 15px;
+  width: 100%;
 }
 
 #outrasInfos {
   padding: 15px;
-
   background: rgba(0, 0, 0, 0.05);
   border-radius: 15px;
+  width: 100%;
 }
 
 #foto {

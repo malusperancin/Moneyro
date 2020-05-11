@@ -290,16 +290,24 @@ select {
 }
 
 #formCad {
-  padding: 35px;
+  font-size: 1.1em;
   margin: auto;
   text-align: start;
   background: rgb(0, 0, 0, 0.2);
   border-radius: 15px;
-  width: 35%;
+  width: 40vw;
+  padding: 3em;
 }
 
+/* @media only screen and (max-width: 600px) {
+  #formCad {
+    width: 80%;
+    padding: 1em;
+  }
+} */
+
 #formCadastro {
-  width: 100%;
+  /* width: 100%; */
   padding: 10% 0px 5%;
   margin: auto;
 }
