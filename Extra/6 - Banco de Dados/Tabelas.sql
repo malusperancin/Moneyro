@@ -15,6 +15,7 @@ create table Tips
     idTips int identity primary key,
     idAssunto int,
     dica varchar(200),
+    autor varchar(60) not null,
     CONSTRAINT FK_idAssuntoT FOREIGN KEY (idAssunto)
     REFERENCES Assuntos(idAssunto)
 )
@@ -24,6 +25,7 @@ create table Videos
     idVideo int identity primary key,
     idAssunto int not null,
     video varchar(250) not null,
+    titulo varchar(60) not null,
     CONSTRAINT FK_idAssuntoV FOREIGN KEY (idAssunto)
     REFERENCES Assuntos(idAssunto)
 )
@@ -33,6 +35,7 @@ create table Artigos
     idArtigo int identity primary key,
     idAssunto int not null,
     artigo varchar(300),
+    titulo varchar(60) not null,
     CONSTRAINT FK_idAssuntoA FOREIGN KEY (idAssunto)
     REFERENCES Assuntos(idAssunto)
 )
@@ -49,7 +52,6 @@ create table Usuarios
     senha varchar(20) not null,
     cidade varchar(30) not null,
     estado varchar(25) not null,
-    pais varchar(25) not null,
     notificacoes bit not null,		 
     modoAnonimo bit not null,
     saldo money
@@ -59,17 +61,20 @@ create table Receitas
 (
     idReceita int identity primary key,
     idUsuario int not null,
+    idTag int not null,
     data Smalldatetime not null,
     nome varchar(40),
     quantia money not null,
     CONSTRAINT FK_idUsuario FOREIGN KEY (idUsuario)
-    REFERENCES Usuarios(idUsuario)
+    REFERENCES Usuarios(idUsuario),
+    CONSTRAINT FK_idTagR FOREIGN KEY (idTag)
+    REFERENCES Tags(idTag)
 )
 
 create table Compartilhamentos
 (
     idCompartilhamento int identity primary key,
-	codCompartilhamento int,
+    codCompartilhamento int,
     idUsuario int not null,
     CONSTRAINT FK_idUsuarioComp FOREIGN KEY (idUsuario)
     REFERENCES Usuarios(idUsuario)
@@ -114,4 +119,14 @@ create table Metas(
  idCompartilhamento int,
  CONSTRAINT FK_idCompartilhamentoM FOREIGN KEY (idCompartilhamento)
  REFERENCES Compartilhamentos(idCompartilhamento)
+)
+
+create table Avaliacoes(
+ idAvaliacao int identity primary key,
+ qtdEstrelas tinyint not null,
+ comentario varchar(250), 
+ data datetime not null, 
+ usuario int not null,
+ CONSTRAINT FK_idUsuario FOREIGN KEY (idUsuario)
+ REFERENCES Usuarios(idUsuario)
 )
