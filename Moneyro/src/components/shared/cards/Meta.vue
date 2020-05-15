@@ -1,6 +1,6 @@
 <template>
   <div id="card">
-    <div id="cardContent" class="animate">
+    <div id="cardContent" class="animate" v-on:click="teste">
       <span id="close" v-on:click="$emit('fecharMeta')">&times;</span>
       <div class="tipos">
         <label>
@@ -85,8 +85,14 @@
           <div id="listaAmigos" class="dropdown-content">
             <input type="search" placeholder="Pesquisar" v-model="filtroNome" />
             <div v-for="amigo of filtraNome" :key="amigo.nome" class="amigos">
-              <div class="pretty p-default p-curve p-fill">
-                <input type="checkbox" :id="'amigo'+amigo.id" :name="amigo.nome" :value="amigo.id" />
+              <div class="pretty p-default p-curve p-fill checks">
+                <input
+                  type="checkbox"
+                  :id="'amigo'+amigo.id"
+                  :name="amigo.nome"
+                  :value="amigo.id"
+                  v-on:click="addToList(id)"
+                />
                 <div class="state p-primary">
                   <label class="nomeAmigo">{{amigo.nome}}</label>
                 </div>
@@ -109,13 +115,15 @@ export default {
   data() {
     return {
       expanded: false,
+      qtdAmigos: 0,
       filtroNome: "",
       amigos: [],
       nome: "",
       atual: 0.0,
       objetivo: 0.0,
       dataLimite: Date,
-      compartilhado: []
+      compartilhado: [],
+      listCheckedOptions: []
     };
   },
   methods: {
@@ -129,12 +137,22 @@ export default {
         this.expanded = false;
       }
     },
+
+    checkAmg: function(id) {
+      if (this.amigos >= 5) {
+        document.getElementById(id).checked = false;
+        alert("no");
+      }
+    },
     salvar: function() {
       if (this.meta.id) {
         //UPDATE TANANA
       } else {
         //INSERT TANANA
       }
+    },
+    teste(event) {
+      alert(event.target.tagName);
     },
     excluir: function() {
       // DELETAR A META COM O META.ID
@@ -161,6 +179,18 @@ export default {
           }
         }
       }
+    },
+    addToList: function(id) {
+      var checkObj = document.getElementById(id);
+      if (checkObj.checked) this.qtdAmigos++;
+      else this.qtdAmigos--;
+      checkAmg(id);
+      // this.qtdAmigos++;
+      // if (this.qtdAmigos == 5) {
+      //   alert("no puedes continuar");
+      //   for (var i = 0; i < document.getElementByClass("amigos").length; i++)
+      //     document.getElementByClass("checks").item(i).disabled = true;
+      // }
     }
   },
   computed: {
@@ -199,7 +229,11 @@ export default {
       { id: 1, nome: "Maria" },
       { id: 2, nome: "Giovanna" },
       { id: 3, nome: "Illy" },
-      { id: 4, nome: "Venizius" }
+      { id: 4, nome: "Venizius" },
+      { id: 5, nome: "Enzo" },
+      { id: 6, nome: "Rodrigo" },
+      { id: 7, nome: "Queen" },
+      { id: 8, nome: "Rossi" }
     ];
     // this.amigos (id e nome) = get all amigos by id
   }

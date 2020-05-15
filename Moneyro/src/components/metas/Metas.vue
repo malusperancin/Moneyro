@@ -2,6 +2,7 @@
   <div class="pag">
     <Menu />
     <Perfil />
+    <Topo />
     <Meta v-if="verMeta" :id="id" v-on:fecharMeta="verMeta = false" />
     <div class="centro">
       <div id="lista-metas">
@@ -26,13 +27,15 @@ import Menu from "../shared/menu/Menu.vue";
 import Perfil from "../shared/float-perfil/Float-Perfil.vue";
 import Meta from "../shared/cards/Meta.vue";
 import Painel from "../shared/meta-exibicao/Meta-Exibicao.vue";
+import Topo from "../shared/voltar-topo/Voltar-Topo.vue";
 
 export default {
   components: {
     Menu,
     Perfil,
     Meta,
-    Painel
+    Painel,
+    Topo
   },
   data() {
     return {

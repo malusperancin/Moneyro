@@ -1,10 +1,13 @@
 <template>
   <div class="mensagem">
     <div class="conteudo animate">
-      <p>{{mensagem}}</p>
+      <div class="titulo">
+        <strong>{{titulo}}</strong>
+      </div>
+      <div class="texto">{{mensagem}}</div>
       <div class="botoes">
-        <span class="botoes" id="cancelar" v-on:click="cancelar">Cancelar</span>
-        <span class="botoes" id="ok" v-on:click="fechar">OK</span>
+        <span class="botao" id="cancelar" v-if="this.sair" v-on:click="$emit('cancelar')">Cancelar</span>
+        <span class="botao" id="ok" v-on:click="$emit('ok')">OK</span>
       </div>
     </div>
   </div>
@@ -12,7 +15,7 @@
 
 <script>
 export default {
-  props: ["mensagem"],
+  props: ["mensagem", "sair", "titulo"],
   data() {
     return {};
   }
@@ -26,17 +29,23 @@ export default {
   height: 100%;
   width: 100%;
   display: flex;
-  display: none;
   justify-content: center;
   align-items: center;
 }
 
 .conteudo {
-  padding: 20px;
   color: rgb(255, 255, 255);
-  background: rgba(0, 0, 0, 0.692);
+  background: rgb(46, 48, 46);
   border-radius: 5px;
   height: fit-content;
+}
+
+.titulo {
+  padding: 10px;
+}
+
+.texto {
+  padding: 10px;
 }
 
 .animate {
@@ -80,12 +89,22 @@ export default {
   }
 }
 
+.botoes {
+  background: rgb(37, 33, 33);
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
 .botao {
   background: rgb(53, 71, 128);
-  padding: 8px 16px;
   text-align: center;
   border-radius: 5px;
+  padding: 5px 18px;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .botao:hover {

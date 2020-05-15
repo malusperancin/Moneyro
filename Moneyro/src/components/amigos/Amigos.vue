@@ -2,10 +2,25 @@
   <div class="pag">
     <Menu />
     <Perfil />
+    <Topo />
+    <Mensagem
+      v-if="mensagem"
+      v-on:ok="mensagem = false"
+      mensagem="Receita registrada com sucesso!"
+      titulo="Toma o titulo"
+      sair="oi"
+    ></Mensagem>
+    <Add v-if="adicionar" v-on:fechar="adicionar= false"></Add>
     <div class="centro">
       <div id="busca">
         <input class="filtro" type="search" placeholder="Pesquisar" v-model="filtro" />
-        <img title="Adicionar um amigo" id="imgAdd" class="icone" src="../../images/adicAmigo.png" />
+        <img
+          title="Adicionar um amigo"
+          id="imgAdd"
+          class="icone"
+          src="../../images/adicAmigo.png"
+          v-on:click="adicionar = true"
+        />
       </div>
       <div id="lista-alunos">
         <div id="lista-alunos-item" v-for="amigo of filtraNome" :key="amigo.nome">
@@ -20,12 +35,18 @@
 import Painel from "../shared/amigo/Amigo.vue";
 import Menu from "../shared/menu/Menu.vue";
 import Perfil from "../shared/float-perfil/Float-Perfil.vue";
+import Topo from "../shared/voltar-topo/Voltar-Topo.vue";
+import Mensagem from "../shared/mensagem/Mensagem.vue";
+import Add from "../shared/adicionar-amigo/Adicionar-Amigo.vue";
 
 export default {
   components: {
     Menu,
     Painel,
-    Perfil
+    Perfil,
+    Topo,
+    Mensagem,
+    Add
   },
   data() {
     return {
@@ -39,7 +60,9 @@ export default {
         { nome: "illy", foto: "10" },
         { nome: "zoen", foto: "5" }
       ],
-      alunos: []
+      alunos: [],
+      mensagem: false,
+      adicionar: false
     };
   },
   computed: {

@@ -7,70 +7,58 @@
         </td>
         <td class="titulos" @mouseenter="tipos = true" @mouseleave="tipos = false">
           <p>Adicionar</p>
-          <ul id="opcoesCard">
-            <li v-on:click="verCard = true">Despesa ou Receita</li>
-            <li v-on:click="verMeta = true">Meta</li>
-          </ul>
+          <table id="opcoesCard">
+            <tr v-on:click="verCard = true">Despesa ou Receita</tr>
+            <tr v-on:click="verMeta = true">Meta</tr>
+          </table>
         </td>
       </tr>
-      <tr>
+      <tr v-on:click="$router.push('planilhas')">
         <td class="icones">
           <img src="../../../images/planilha.png" alt="a" />
         </td>
-        <td class="titulos">
-          <router-link to="/planilhas">Planilhas</router-link>
-        </td>
+        <td class="titulos">Planilhas</td>
       </tr>
-      <tr>
+      <tr v-on:click="$router.push('comunidade')">
         <td class="icones">
           <img src="../../../images/comunidade.png" alt="a" />
         </td>
-        <td class="titulos">
-          <router-link to="/comunidade">Comunidade</router-link>
-        </td>
+        <td class="titulos">Comunidade</td>
       </tr>
-      <tr>
+      <tr v-on:click="$router.push('relatorios')">
         <td class="icones">
           <img src="../../../images/relatorios.png" alt="a" />
         </td>
-        <td class="titulos">
-          <router-link to="/relatorios">Relatórios</router-link>
-        </td>
+        <td class="titulos">Relatórios</td>
       </tr>
-      <tr>
+      <tr v-on:click="$router.push('amigos')">
         <td class="icones">
           <img src="../../../images/amigos.png" alt="a" />
         </td>
-        <td class="titulos">
-          <router-link to="/amigos" class="menuIcon">Amigos</router-link>
-        </td>
+        <td class="titulos">Amigos</td>
       </tr>
-      <tr>
+      <tr v-on:click="$router.push('metas')">
         <td class="icones">
           <img src="../../../images/metas.png" alt="a" />
         </td>
-        <td class="titulos">
-          <router-link to="/metas">Metas</router-link>
-        </td>
+        <td class="titulos">Metas</td>
       </tr>
       <tr id="divisor">
         <td class="icones"></td>
         <td></td>
       </tr>
-      <tr>
+      <tr v-on:click="$router.push('configuracoes')">
         <td class="icones">
           <img src="../../../images/configuracao.png" alt="a" />
         </td>
-        <td class="titulos">
-          <router-link to="/configuracoes">Configurações</router-link>
-        </td>
+        <td class="titulos">Configurações</td>
       </tr>
-      <tr>
+      <tr v-on:click="$router.push('http://localhost:8080/#/')">
         <td class="icones">
           <img src="../../../images/sair.png" alt="a" />
         </td>
         <td class="titulos">
-          <router-link to="/" style="color: black">Sair</router-link>
+          Sair
           <!-- <a v-on="sair()">Sair</a> -->
         </td>
       </tr>
@@ -103,7 +91,7 @@ export default {
       var div = document.getElementsByClassName("titulos");
       if (this.ativo)
         for (var i = 0; i < div.length; i++)
-          div.item(i).style = "display: block";
+          div.item(i).style = "display: flex";
       else
         for (var i = 0; i < div.length; i++)
           div.item(i).style = "display: none";
@@ -141,6 +129,7 @@ table {
   text-align: start;
   background-color: #0c406f;
   padding: 20px;
+  cursor: pointer;
 }
 
 .icones img {
@@ -159,17 +148,12 @@ table {
   font-size: 1.2em;
   height: 100%;
   display: none;
+  cursor: pointer;
+  align-items: center;
 }
 
 .titulos:hover {
   background-color: #0c406f;
-}
-
-.titulos a {
-  text-decoration: none;
-  color: rgb(0, 0, 0);
-  float: left;
-  margin-top: 18px;
 }
 
 #divisor {
@@ -182,9 +166,9 @@ table {
 }
 
 #opcoesCard {
-  position: fixed;
+  /* position: fixed;
   top: 0;
-  left: 186px; /*arrumar esse left*/
+  left: 186px; */
   margin: 0;
   width: fit-content;
   height: fit-content;

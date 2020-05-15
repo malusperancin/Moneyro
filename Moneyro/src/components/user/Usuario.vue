@@ -2,7 +2,13 @@
   <div class="pag">
     <Menu />
     <Perfil />
-    <Mensagem mensagem="Receita registrada com sucesso!" id="msg"></Mensagem>
+    <Mensagem
+      v-if="mensagem"
+      v-on:ok="mensagem = false"
+      mensagem="Receita registrada com sucesso!"
+      titulo="Toma o titulo"
+      sair="oi"
+    ></Mensagem>
     <div class="centro">
       <div id="texto">
         <p>Bem-vindo(a) de volta geraldo13</p>
@@ -30,7 +36,8 @@ export default {
   },
   data() {
     return {
-      info: ""
+      info: "",
+      mensagem: false
     };
   },
   methods: {},

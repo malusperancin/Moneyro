@@ -1,6 +1,6 @@
 <!-- alunopic/src/components/shared/painel/Painel.vue -->
 <template>
-  <div class="painel">
+  <div class="painel animate">
     <div class="info">
       <div class="imagem">
         <img class="imgPerfil" :src="'../src/images/perfil' + foto + '.png'" />
@@ -27,6 +27,19 @@ export default {
 </script>
 
 <style scoped>
+.animate {
+  animation: zoom 0.2s;
+}
+
+@keyframes zoom {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 .painel {
   padding: 15px;
   width: 13em;
