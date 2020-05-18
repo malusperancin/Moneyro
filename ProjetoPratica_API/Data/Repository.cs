@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProjetoPratica_API.Data;
 using Microsoft.EntityFrameworkCore;
 using ProjetoPratica_API.Models;
+using System;
 
 namespace ProjetoPratica_API.Data
 {
@@ -38,21 +39,24 @@ namespace ProjetoPratica_API.Data
             this.Context.Update(entity);
         }
 
-        public async Task<Usuario[]> GetAllUsuariosAsync()
+        public async Task<Usuarios[]> GetAllUsuariosAsync()
         {
             //throw new System.NotImplementedException();
             //Retornar para uma query qualquer do tipo Aluno
-            IQueryable<Usuario> consultaUsuarios = (IQueryable<Usuario>)this.Context.Usuarios;
+            IQueryable<Usuarios> consultaUsuarios = (IQueryable<Usuarios>)this.Context.Usuarios;
             consultaUsuarios = consultaUsuarios.OrderBy(u => u.Id);
             return await consultaUsuarios.ToArrayAsync();
         }
-        public async Task<Usuario> GetAllUsuarioAsyncByID(int Id)
+        public async Task<Usuarios> GetAllUsuarioAsyncByID(int Id)
         {
+         
             //throw new System.NotImplementedException();
             //Retornar para uma query qualquer do tipo Aluno
-            IQueryable<Usuario> consultaUsuario = (IQueryable<Usuario>)this.Context.Usuario;
+            IQueryable<Usuarios> consultaUsuario = (IQueryable<Usuarios>)this.Context.Usuario;
+            Console.WriteLine(consultaUsuario.FirstOrDefaultAsync());
             consultaUsuario = consultaUsuario.OrderBy(u => u.Id).Where(usuario => usuario.Id == Id);
             // aqui efetivamente ocorre o SELECT no BD
+            Console.WriteLine(consultaUsuario.FirstOrDefaultAsync() + "ola");
             return await consultaUsuario.FirstOrDefaultAsync();
         }
     }

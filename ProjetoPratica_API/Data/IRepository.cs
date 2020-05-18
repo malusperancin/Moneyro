@@ -11,7 +11,7 @@ namespace ProjetoPratica_API.Data
         void Delete<T>(T entity) where T : class;
         Task<bool> SaveChangesAsync();
 
-        Task<Usuario[]> GetAllUsuariosAsync();
-        Task<Usuario> GetAllUsuarioAsyncByID(int id);
+        Task<Usuarios[]> GetAllUsuariosAsync();
+        Task<Usuarios> GetAllUsuarioAsyncByID(int id);
     }
 }

@@ -1,17 +1,23 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cors;
 using ProjetoPratica_API.Data;
 using ProjetoPratica_API.Models;
 
 namespace ProjetoPratica_API.Controllers
 {
+    [EnableCors("*")]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuarioController : Controller
+    public class UsuariosController : Controller
     {
         public IRepository Repo { get; }
-        public UsuarioController(IRepository repo)
+        public UsuariosController(IRepository repo)
         {
             this.Repo = repo;
         }
@@ -36,7 +42,9 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
+                 Console.WriteLine("infernooooooo");
                 var result = await this.Repo.GetAllUsuarioAsyncByID(UsuarioId);
+                Console.WriteLine(result);
                 return Ok(result);
             }
             catch
@@ -46,7 +54,7 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> post(Usuario modelo)
+        public async Task<IActionResult> post(Usuarios modelo)
         {
             try
             {
@@ -66,7 +74,7 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpPut("{UsuarioId}")]
-        public async Task<IActionResult> put(int UsuarioId, Usuario model)
+        public async Task<IActionResult> put(int UsuarioId, Usuarios model)
         {
             try
             {

@@ -30,9 +30,13 @@ namespace ProjetoPratica_API
             services.AddDbContext<MoneyroContext>(
             x => x.UseSqlServer(Configuration.GetConnectionString("StringConexaoSQLServer"))
             );
-
             services.AddControllers();
             services.AddScoped<IRepository, Repository>();
+            
+            services.AddCors(options =>
+            {
+                options.AddPolicy("*", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,9 +47,11 @@ namespace ProjetoPratica_API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("*");
 
             app.UseAuthorization();
 
