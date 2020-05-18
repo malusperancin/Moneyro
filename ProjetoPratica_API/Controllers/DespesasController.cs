@@ -14,21 +14,35 @@ namespace ProjetoPratica_API.Controllers
     [EnableCors("*")]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuariosController : Controller
+    public class DespesasController : Controller
     {
         public IRepository Repo { get; }
-        public UsuariosController(IRepository repo)
+        public DespesasController(IRepository repo)
         {
             this.Repo = repo;
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             try
             {
-                var result = await this.Repo.GetAllUsuarios();
+                var result = await this.Repo.GetAllDespesas();
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+
+        [HttpGet("{DespesaId}")]
+        public async Task<IActionResult> Get(int DespesaId)
+        {
+            try
+            {
+                var result = await this.Repo.GetDespesaById(DespesaId);
                 return Ok(result);
             }
             catch
@@ -42,7 +56,7 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                var result = await this.Repo.GetUsuarioById(UsuarioId);
+                var result = await this.Repo.GetDespesasByUsuario(UsuarioId);
                 return Ok(result);
             }
             catch
@@ -52,16 +66,16 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> post(Usuarios modelo)
+        public async Task<IActionResult> post(Despesas modelo)
         {
             try
             {
                 this.Repo.Add(modelo);
-                //
+
                 if (await this.Repo.SaveChangesAsync())
                 {
                     return Ok();
-                    //return Created($"/api/usuarios/{modelo.Id}", modelo);
+                    // return Created($"/api/{modelo.Id}", modelo);
                 }
             }
             catch
@@ -71,22 +85,24 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpPut("{UsuarioId}")]
-        public async Task<IActionResult> put(int UsuarioId, Usuarios model)
+        [HttpPut("{DespesaId}")]
+        public async Task<IActionResult> put(int DespesaId, Despesas model)
         {
             try
             {
                 //verifica se existe aluno a ser alterado
-                var usuario = await this.Repo.GetUsuarioById(UsuarioId);
-                if (usuario == null) return NotFound(); //método do EF
+                var despesa = await this.Repo.GetDespesaById(DespesaId);
+                if (despesa == null) return NotFound();
+
                 this.Repo.Update(model);
-                //
+
                 if (await this.Repo.SaveChangesAsync())
                 {
-                    return Ok();
+
                     //pegar o aluno novamente, agora alterado para devolver pela rota abaixo
-                    //usuario = await this.Repo.GetUsuarioByID(UsuarioId);
-                    //return Created($"/api/usuarios/{model.Id}", model);
+                    //despesa = await this.Repo.GetDespesaByID(DespesaId);
+                    //return Created($"/api/despesas/{model.Id}", model);
+                    return Ok();
                 }
             }
             catch
@@ -97,15 +113,15 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("{UsuarioId}")]
-        public async Task<IActionResult> delete(int UsuarioId)
+        [HttpDelete("{DespesaId}")]
+        public async Task<IActionResult> delete(int DespesaId)
         {
             try
             {
                 //verifica se existe aluno a ser excluído
-                var usuario = await this.Repo.GetUsuarioById(UsuarioId);
-                if (usuario == null) return NotFound(); //método do EF
-                this.Repo.Delete(usuario);
+                var despesa = await this.Repo.GetDespesaById(DespesaId);
+                if (despesa == null) return NotFound(); //método do EF
+                this.Repo.Delete(despesa);
                 //
                 if (await this.Repo.SaveChangesAsync())
                 {

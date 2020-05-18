@@ -14,21 +14,20 @@ namespace ProjetoPratica_API.Controllers
     [EnableCors("*")]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuariosController : Controller
+    public class AvaliacoesController : Controller
     {
         public IRepository Repo { get; }
-        public UsuariosController(IRepository repo)
+        public AvaliacoesController(IRepository repo)
         {
             this.Repo = repo;
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             try
             {
-                var result = await this.Repo.GetAllUsuarios();
+                var result = await this.Repo.GetAllAvaliacoes();
                 return Ok(result);
             }
             catch
@@ -37,12 +36,12 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
-        [HttpGet("{UsuarioId}")]
-        public async Task<IActionResult> Get(int UsuarioId)
+        [HttpGet("{AvaliacaoId}")]
+        public async Task<IActionResult> Get(int AvaliacaoId)
         {
             try
             {
-                var result = await this.Repo.GetUsuarioById(UsuarioId);
+                var result = await this.Repo.GetAvaliacaoById(AvaliacaoId);
                 return Ok(result);
             }
             catch
@@ -52,16 +51,16 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> post(Usuarios modelo)
+        public async Task<IActionResult> post(Avaliacoes modelo)
         {
             try
             {
                 this.Repo.Add(modelo);
-                //
+
                 if (await this.Repo.SaveChangesAsync())
                 {
                     return Ok();
-                    //return Created($"/api/usuarios/{modelo.Id}", modelo);
+                    // return Created($"/api/{modelo.Id}", modelo);
                 }
             }
             catch
@@ -71,22 +70,24 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpPut("{UsuarioId}")]
-        public async Task<IActionResult> put(int UsuarioId, Usuarios model)
+        [HttpPut("{AvaliacaoId}")]
+        public async Task<IActionResult> put(int AvaliacaoId, Avaliacoes model)
         {
             try
             {
                 //verifica se existe aluno a ser alterado
-                var usuario = await this.Repo.GetUsuarioById(UsuarioId);
-                if (usuario == null) return NotFound(); //método do EF
+                var avaliacao = await this.Repo.GetAvaliacaoById(AvaliacaoId);
+                if (avaliacao == null) return NotFound();
+
                 this.Repo.Update(model);
-                //
+
                 if (await this.Repo.SaveChangesAsync())
                 {
-                    return Ok();
+
                     //pegar o aluno novamente, agora alterado para devolver pela rota abaixo
-                    //usuario = await this.Repo.GetUsuarioByID(UsuarioId);
-                    //return Created($"/api/usuarios/{model.Id}", model);
+                    //avaliacao = await this.Repo.GetAvaliacaoByID(AvaliacaoId);
+                    //return Created($"/api/avaliacoes/{model.Id}", model);
+                    return Ok();
                 }
             }
             catch
@@ -97,15 +98,15 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("{UsuarioId}")]
-        public async Task<IActionResult> delete(int UsuarioId)
+        [HttpDelete("{AvaliacaoId}")]
+        public async Task<IActionResult> delete(int AvaliacaoId)
         {
             try
             {
                 //verifica se existe aluno a ser excluído
-                var usuario = await this.Repo.GetUsuarioById(UsuarioId);
-                if (usuario == null) return NotFound(); //método do EF
-                this.Repo.Delete(usuario);
+                var avaliacao = await this.Repo.GetAvaliacaoById(AvaliacaoId);
+                if (avaliacao == null) return NotFound(); //método do EF
+                this.Repo.Delete(avaliacao);
                 //
                 if (await this.Repo.SaveChangesAsync())
                 {

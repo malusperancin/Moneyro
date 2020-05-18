@@ -14,27 +14,12 @@ namespace ProjetoPratica_API.Controllers
     [EnableCors("*")]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuariosController : Controller
+    public class AmigosController : Controller
     {
         public IRepository Repo { get; }
-        public UsuariosController(IRepository repo)
+        public AmigosController(IRepository repo)
         {
             this.Repo = repo;
-        }
-
-
-        [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            try
-            {
-                var result = await this.Repo.GetAllUsuarios();
-                return Ok(result);
-            }
-            catch
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
-            }
         }
 
         [HttpGet("{UsuarioId}")]
@@ -42,7 +27,7 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                var result = await this.Repo.GetUsuarioById(UsuarioId);
+                var result = await this.Repo.GetAmigosByUsuario(UsuarioId);
                 return Ok(result);
             }
             catch
@@ -52,7 +37,7 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> post(Usuarios modelo)
+        public async Task<IActionResult> post(Amigos modelo)
         {
             try
             {
@@ -61,7 +46,7 @@ namespace ProjetoPratica_API.Controllers
                 if (await this.Repo.SaveChangesAsync())
                 {
                     return Ok();
-                    //return Created($"/api/usuarios/{modelo.Id}", modelo);
+                    //return Created($"/api/amigos/{modelo.Id}", modelo);
                 }
             }
             catch
@@ -71,22 +56,21 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpPut("{UsuarioId}")]
-        public async Task<IActionResult> put(int UsuarioId, Usuarios model)
+        [HttpPut("{AmigoId}")]
+        public async Task<IActionResult> put(int AmigoId, Amigos model)
         {
             try
             {
                 //verifica se existe aluno a ser alterado
-                var usuario = await this.Repo.GetUsuarioById(UsuarioId);
-                if (usuario == null) return NotFound(); //método do EF
+                var amigos = await this.Repo.GetAmigoByID(AmigoId);
                 this.Repo.Update(model);
                 //
                 if (await this.Repo.SaveChangesAsync())
                 {
                     return Ok();
                     //pegar o aluno novamente, agora alterado para devolver pela rota abaixo
-                    //usuario = await this.Repo.GetUsuarioByID(UsuarioId);
-                    //return Created($"/api/usuarios/{model.Id}", model);
+                    // amigos = await this.Repo.GetAmigoByID(AmigoId);
+                    //return Created($"/api/amigos/{model.Id}", model);
                 }
             }
             catch
@@ -97,15 +81,15 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("{UsuarioId}")]
-        public async Task<IActionResult> delete(int UsuarioId)
+        [HttpDelete("{AmigoId}")]
+        public async Task<IActionResult> delete(int AmigoId)
         {
             try
             {
                 //verifica se existe aluno a ser excluído
-                var usuario = await this.Repo.GetUsuarioById(UsuarioId);
-                if (usuario == null) return NotFound(); //método do EF
-                this.Repo.Delete(usuario);
+                var amigo = await this.Repo.GetAmigoById(AmigoId);
+                if (amigo == null) return NotFound(); //método do EF
+                this.Repo.Delete(amigo);
                 //
                 if (await this.Repo.SaveChangesAsync())
                 {

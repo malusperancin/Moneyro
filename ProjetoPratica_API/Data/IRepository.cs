@@ -11,7 +11,47 @@ namespace ProjetoPratica_API.Data
         void Delete<T>(T entity) where T : class;
         Task<bool> SaveChangesAsync();
 
-        Task<Usuarios[]> GetAllUsuariosAsync();
-        Task<Usuarios> GetAllUsuarioAsyncByID(int id);
+        Task<Usuarios[]> GetAllUsuarios();
+        Task<Usuarios> GetUsuarioById(int Id);
+
+        Task<Receitas[]> GetAllReceitas();
+        Task<Receitas> GetReceitaById(int Id);
+        Task<Receitas> GetReceitasByUsuario(int UsuarioId);
+
+        Task<Despesas[]> GetAllDespesas();
+        Task<Despesas> GetDespesaById(int Id);
+        Task<Despesas[]> GetDespesasByUsuario(int UsuarioId);
+
+        Task<Metas[]> GetAllMetas();
+        Task<Metas> GetMetaById(int Id);
+        Task<Metas[]> GetMetasByUsuario(int UsuarioId);
+
+        Task<Assuntos[]> GetAllAssuntos();
+        Task<Assuntos> GetAssuntoById(int Id);
+
+
+        Task<Tips[]> GetAllTips();
+        Task<Tips[]> GetTipsByAssunto(string Assunto);
+        Task<Tips> GetTipById(int Id);
+
+        Task<Videos[]> GetAllVideos();
+        Task<Videos> GetVideoById(int Id);
+
+        Task<Amigos> GetAmigoById(int Id);
+        Task<Amigos[]> GetAmigosByUsuario(int UsuarioId);
+        Task<Amigos[]> GetAllAmigos();
+
+        Task<Artigos[]> GetAllArtigos();
+        Task<Artigos[]> GetArtigosByAssunto(string Assunto);
+        Task<Artigos> GetArtigoById(int Id);
+
+        Task<Compartilhamentos[]> GetCompartilhamentosByCodigo(int Codigo);
+        Task<Compartilhamentos> GetCompartilhamentoById(int Id);
+
+        Task<Avaliacoes[]> GetAllAvaliacoes();
+        Task<Avaliacoes> GetAvaliacaoById(int Id);
+
+        Task<Tags[]> GetAllTags();
+        Task<Tags> GetTagById(int Id);
     }
 }

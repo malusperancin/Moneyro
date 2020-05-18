@@ -14,21 +14,34 @@ namespace ProjetoPratica_API.Controllers
     [EnableCors("*")]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuariosController : Controller
+    public class MetasController : Controller
     {
         public IRepository Repo { get; }
-        public UsuariosController(IRepository repo)
+        public MetasController(IRepository repo)
         {
             this.Repo = repo;
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             try
             {
-                var result = await this.Repo.GetAllUsuarios();
+                var result = await this.Repo.GetAllMetas();
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+        [HttpGet("{MetaId}")]
+        public async Task<IActionResult> Get(int MetaId)
+        {
+            try
+            {
+                var result = await this.Repo.GetMetaById(MetaId);
                 return Ok(result);
             }
             catch
@@ -42,7 +55,7 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                var result = await this.Repo.GetUsuarioById(UsuarioId);
+                var result = await this.Repo.GetMetasByUsuario(UsuarioId);
                 return Ok(result);
             }
             catch
@@ -52,16 +65,16 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> post(Usuarios modelo)
+        public async Task<IActionResult> post(Metas modelo)
         {
             try
             {
                 this.Repo.Add(modelo);
-                //
+
                 if (await this.Repo.SaveChangesAsync())
                 {
                     return Ok();
-                    //return Created($"/api/usuarios/{modelo.Id}", modelo);
+                    // return Created($"/api/{modelo.Id}", modelo);
                 }
             }
             catch
@@ -71,22 +84,24 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpPut("{UsuarioId}")]
-        public async Task<IActionResult> put(int UsuarioId, Usuarios model)
+        [HttpPut("{MetaId}")]
+        public async Task<IActionResult> put(int MetaId, Metas model)
         {
             try
             {
                 //verifica se existe aluno a ser alterado
-                var usuario = await this.Repo.GetUsuarioById(UsuarioId);
-                if (usuario == null) return NotFound(); //método do EF
+                var meta = await this.Repo.GetMetaById(MetaId);
+                if (meta == null) return NotFound();
+
                 this.Repo.Update(model);
-                //
+
                 if (await this.Repo.SaveChangesAsync())
                 {
-                    return Ok();
+
                     //pegar o aluno novamente, agora alterado para devolver pela rota abaixo
-                    //usuario = await this.Repo.GetUsuarioByID(UsuarioId);
+                    //meta = await this.Repo.GetMetaByID(MetaId);
                     //return Created($"/api/usuarios/{model.Id}", model);
+                    return Ok();
                 }
             }
             catch
@@ -97,15 +112,15 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("{UsuarioId}")]
-        public async Task<IActionResult> delete(int UsuarioId)
+        [HttpDelete("{MetaId}")]
+        public async Task<IActionResult> delete(int MetaId)
         {
             try
             {
                 //verifica se existe aluno a ser excluído
-                var usuario = await this.Repo.GetUsuarioById(UsuarioId);
-                if (usuario == null) return NotFound(); //método do EF
-                this.Repo.Delete(usuario);
+                var meta = await this.Repo.GetMetaById(MetaId);
+                if (meta == null) return NotFound(); //método do EF
+                this.Repo.Delete(meta);
                 //
                 if (await this.Repo.SaveChangesAsync())
                 {

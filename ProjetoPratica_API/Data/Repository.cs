@@ -39,25 +39,148 @@ namespace ProjetoPratica_API.Data
             this.Context.Update(entity);
         }
 
-        public async Task<Usuarios[]> GetAllUsuariosAsync()
+        public async Task<Usuarios[]> GetAllUsuarios()
         {
             //throw new System.NotImplementedException();
             //Retornar para uma query qualquer do tipo Aluno
             IQueryable<Usuarios> consultaUsuarios = (IQueryable<Usuarios>)this.Context.Usuarios;
-            consultaUsuarios = consultaUsuarios.OrderBy(u => u.Id);
+            Console.WriteLine("yess");
+            //consultaUsuarios = consultaUsuarios.OrderBy(u => u.IdUsuario);
             return await consultaUsuarios.ToArrayAsync();
         }
-        public async Task<Usuarios> GetAllUsuarioAsyncByID(int Id)
+        public async Task<Usuarios> GetUsuarioByID(int Id)
         {
-         
+
             //throw new System.NotImplementedException();
             //Retornar para uma query qualquer do tipo Aluno
-            IQueryable<Usuarios> consultaUsuario = (IQueryable<Usuarios>)this.Context.Usuario;
-            Console.WriteLine(consultaUsuario.FirstOrDefaultAsync());
+            IQueryable<Usuarios> consultaUsuario = (IQueryable<Usuarios>)this.Context.Usuarios;
             consultaUsuario = consultaUsuario.OrderBy(u => u.Id).Where(usuario => usuario.Id == Id);
             // aqui efetivamente ocorre o SELECT no BD
-            Console.WriteLine(consultaUsuario.FirstOrDefaultAsync() + "ola");
             return await consultaUsuario.FirstOrDefaultAsync();
+        }
+
+        public async Task<Receitas[]> GetAllReceitas()
+        {
+
+        }
+        public async Task<Receitas> GetReceitaById(int Id)
+        {
+
+        }
+        public async Task<Receitas> GetReceitasByUsuario(int UsuarioId)
+        {
+
+        }
+
+        public async Task<Despesas[]> GetAllDespesas()
+        {
+
+        }
+        public async Task<Despesas> GetDespesaById(int Id)
+        {
+
+        }
+        public async Task<Despesas[]> GetDespesasByUsuario(int UsuarioId)
+        {
+
+        }
+
+        public async Task<Metas[]> GetAllMetas()
+        {
+
+        }
+        public async Task<Metas> GetMetaById(int Id)
+        {
+
+        }
+        public async Task<Metas[]> GetMetasByUsuario(int UsuarioId)
+        {
+
+        }
+
+        public async Task<Assuntos[]> GetAllAssuntos()
+        {
+
+        }
+        public async Task<Assuntos> GetAssuntoById(int Id)
+        {
+
+        }
+
+
+        public async Task<Tips[]> GetAllTips()
+        {
+
+        }
+        public async Task<Tips[]> GetTipsByAssunto(string Assunto)
+        {
+
+        }
+        public async Task<Tips> GetTipById(int Id)
+        {
+
+        }
+
+        public async Task<Videos[]> GetAllVideos()
+        {
+
+        }
+        public async Task<Videos> GetVideoById(int Id)
+        {
+
+        }
+
+        public async Task<Amigos> GetAmigoById(int Id)
+        {
+
+        }
+        public async Task<Amigos[]> GetAmigosByUsuario(int UsuarioId)
+        {
+
+        }
+        public async Task<Amigos[]> GetAllAmigos()
+        {
+
+        }
+
+        public async Task<Artigos[]> GetAllArtigos()
+        {
+
+        }
+        public async Task<Artigos[]> GetArtigosByAssunto(string Assunto)
+        {
+
+        }
+        public async Task<Artigos> GetArtigoById(int Id)
+        {
+
+        }
+
+        public async Task<Compartilhamentos[]> GetCompartilhamentosByCodigo(int Codigo)
+        {
+
+        }
+        public async Task<Compartilhamentos> GetCompartilhamentoById(int Id)
+        {
+
+        }
+
+        public async Task<Avaliacoes[]> GetAllAvaliacoes()
+        {
+
+        }
+        public async Task<Avaliacoes> GetAvaliacaoById(int Id)
+        {
+
+        }
+
+        public async Task<Tags[]> GetAllTags()
+        {
+
+        }
+        public async Task<Tags> GetTagById(int Id)
+        {
+
         }
     }
 }

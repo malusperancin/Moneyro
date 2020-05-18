@@ -11,8 +11,8 @@
     ></Mensagem>
     <div class="centro">
       <div id="texto">
-        <p>Bem-vindo(a) de volta geraldo13</p>
-        <h1>Seu saldo é R$-90,00</h1>
+        <p>Bem-vindo(a) de volta {{info.body.nome}}</p>
+        <h1>Seu saldo é R$ {{info.body.saldo}}</h1>
         <h4>
           seu saldo ta ruim seu gastao irreponsavel tsc tsc...
           <br />OU ai q bonitineo c ta no positivo
@@ -42,9 +42,9 @@ export default {
   },
   methods: {},
   mounted() {
-    // this.$http.get("https://localhost:5001/api/aluno").then(response => {
-    //   this.info = response;
-    // });
+    this.$http.get("https://localhost:5001/api/usuarios/2").then(response => {
+      this.info = response;
+    });
   }
 };
 </script>
