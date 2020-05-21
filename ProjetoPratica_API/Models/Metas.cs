@@ -1,8 +1,12 @@
+using System;
+
 namespace ProjetoPratica_API.Models
 {
     public class Metas
     {
         public int Id { get; set; }
+
+        public int IdUsuario { get; set; }
 
         public string Nome { get; set; }
 

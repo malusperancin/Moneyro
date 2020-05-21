@@ -6,8 +6,9 @@
       </div>
       <div class="texto">{{mensagem}}</div>
       <div class="botoes">
-        <span class="botao" id="cancelar" v-if="this.sair" v-on:click="$emit('cancelar')">Cancelar</span>
-        <span class="botao" id="ok" v-on:click="$emit('ok')">OK</span>
+        <span class="botao" v-if="ok" v-on:click="$emit('ok')">Ok</span>
+        <span class="botao" v-if="cancelar" v-on:click="$emit('cancelar')">Cancelar</span>
+        <span class="botao" v-if="sair" v-on:click="$emit('sair')">Sair</span>
       </div>
     </div>
   </div>
@@ -15,9 +16,25 @@
 
 <script>
 export default {
-  props: ["mensagem", "sair", "titulo"],
-  data() {
-    return {};
+  data: {
+    mensagem: "",
+    titulo: "",
+    sair: false,
+    cancelar: false,
+    ok: false,
+    teste: "aaa"
+  },
+  methods: {
+    mostrar(titulo, mensagem, ok, cancelar, sair) {
+      this.titulo = titulo;
+      this.mensagem = mensagem;
+      this.ok = ok;
+      this.cancelar = cancelar;
+      this.sair = sair;
+    }
+  },
+  created() {
+    //this.mostrar("aaa", "qnd o gado insistir em cantar", true, true, true);
   }
 };
 </script>
@@ -51,24 +68,6 @@ export default {
 .animate {
   -webkit-animation: animatezoom 0.6s;
   animation: animatezoom 0.6s;
-}
-
-#cancelar,
-#ok {
-  text-align: center;
-  font-weight: bold;
-}
-
-#cancelar {
-  background: rgba(255, 0, 0, 0.5);
-}
-
-#ok {
-  background: rgb(53, 71, 128);
-}
-
-#ok:hover {
-  background: rgb(0, 255, 0);
 }
 
 @-webkit-keyframes animatezoom {

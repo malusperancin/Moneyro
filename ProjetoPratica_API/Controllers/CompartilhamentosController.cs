@@ -23,8 +23,8 @@ namespace ProjetoPratica_API.Controllers
         }
 
 
-        [HttpGet("{CompartilhamentoCod}")]
-        public async Task<IActionResult> Get(int CompartilhamentoCod)
+        [HttpGet("cod/{CompartilhamentoCod}")]
+        public async Task<IActionResult> GetByCod(int CompartilhamentoCod)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpPut("CompartilhamentoId}")]
+        [HttpPut("{CompartilhamentoId}")]
         public async Task<IActionResult> put(int CompartilhamentoId, Compartilhamentos model)
         {
             try

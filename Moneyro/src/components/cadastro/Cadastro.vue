@@ -1,33 +1,66 @@
 <template>
   <div class="pagCadastro">
     <cabecalho :titulo="'Cadastro'"></cabecalho>
-    <div id="formCadastro">
-      <form action method="post" id="formCad">
+    <Mensagem v-if="mensagem"></Mensagem>
+    <div id="formCadastro" v-on:click="mostrarmsg">
+      <form v-on:submit.prevent="cadastrar" id="formCad">
         <div id="foto">
           <div id="editar" v-on:click="mudarFoto = true">
             <img src="src/images/editar.png" id="imgEditar" />
           </div>
-          <img :src="'src/images/perfil' + this.informacoes.foto + '.png'" id="imgPerfil" />
+          <img :src="'src/images/perfil' + informacoes.foto + '.png'" id="imgPerfil" />
           <Lista
-            v-on:receber="receber"
+            v-on:receber="num => informacoes.foto = num"
             v-on:fechar="mudarFoto = false"
             v-if="mudarFoto"
             :atual="informacoes.foto"
           />
         </div>
-
-        <input type="text" class="campos" id="nome" placeholder="Nome" maxlength="70" />
+        <input
+          type="text"
+          class="campos"
+          id="nome"
+          placeholder="Nome"
+          maxlength="70"
+          v-model="informacoes.nome"
+          required
+        />
         <br />
 
-        <input type="email" class="campos" id="email" placeholder="E-mail" maxlength="40" />
+        <input
+          type="email"
+          class="campos"
+          id="email"
+          placeholder="E-mail"
+          maxlength="40"
+          v-model="informacoes.email"
+          required
+        />
         <br />
 
-        <input type="password" class="campos" id="senha" placeholder="Senha" maxlength="20" />
+        <input
+          type="password"
+          class="campos"
+          id="senha"
+          placeholder="Senha"
+          maxlength="20"
+          minlength="8"
+          v-model="informacoes.senha"
+          required
+        />
         <br />
 
-        <input type="text" class="campos" id="apelido" placeholder="Apelido" maxlength="20" />
+        <input
+          type="text"
+          class="campos"
+          id="apelido"
+          placeholder="Apelido"
+          maxlength="20"
+          minlength="3"
+          v-model="informacoes.apelido"
+          required
+        />
         <br />
-
         <label class="labels">Nascimento</label>
         <div id="dataNasc">
           <input
@@ -38,6 +71,8 @@
             min="1"
             max="31"
             maxlength="2"
+            v-model="dia"
+            required
           />
           <input
             placeholder="Mês"
@@ -47,6 +82,8 @@
             min="1"
             max="12"
             maxlength="2"
+            v-model="mes"
+            required
           />
           <input
             placeholder="Ano"
@@ -57,33 +94,58 @@
             max="3000"
             maxlength="4"
             minlength="4"
+            v-model="ano"
+            required
           />
         </div>
 
         <input
           type="tel"
           class="campos"
-          pattern="([0-9]{2})9[0-9]{4}-[0-9]{4}"
+          pattern="(\([0-9]{2}\))([9]{1})?([0-9]{4})-([0-9]{4})"
           id="celular"
           placeholder="Celular"
+          title="Número de telefone precisa ser no formato (99)9999-9999 ou (99)99999-9999"
           maxlength="14"
+          v-model="informacoes.celular"
+          required
         />
         <br />
 
         <div id="cidadeEstado">
-          <input type="text" class="campos" id="Cidade" placeholder="Cidade" maxlength="30" />
+          <input
+            type="text"
+            class="campos"
+            id="Cidade"
+            placeholder="Cidade"
+            maxlength="30"
+            required
+            v-model="informacoes.cidade"
+          />
 
-          <select>
-            <option :value="item" v-for="item in siglas" :key="item.sigla" s>{{item.sigla}}</option>
+          <select required v-model="informacoes.estado">
+            <option :value="item" v-for="(item, i) in siglas" :key="i">{{item}}</option>
           </select>
         </div>
         <br />
         <br />
 
-        <input class="check" type="checkbox" id="notificacoes" name="notif" />
+        <input
+          class="check"
+          type="checkbox"
+          id="notificacoes"
+          name="notif"
+          v-model="informacoes.notificacoes"
+        />
         <label class="labels" for="notif">Deseja receber notifições?</label>
         <br />
-        <input class="check" type="checkbox" id="anonimo" name="amode" />
+        <input
+          class="check"
+          type="checkbox"
+          id="anonimo"
+          name="amode"
+          v-model="informacoes.modoAnonimo"
+        />
         <label class="labels" for="amode">
           Usar conta no
           <b id="mA">Modo Anônimo</b>
@@ -117,64 +179,134 @@
 import Login from "../shared/login/Login.vue";
 import Header from "../shared/header/Header.vue";
 import Lista from "../shared/lista-fotos/Lista-Fotos.vue";
+import Mensagem from "../shared/mensagem/Mensagem.vue";
 
 export default {
   components: {
     login: Login,
     cabecalho: Header,
-    Lista: Lista
+    Lista: Lista,
+    Mensagem
   },
   data() {
     return {
       informacoes: {
-        apelido: "",
         nome: "",
-        foto: "1",
+        apelido: "",
         email: "",
-        diaNasc: 1,
-        mesNasc: 1,
-        anoNasc: 1900,
         celular: "",
+        dataDeNascimento: "",
+        foto: 1,
+        senha: "",
         cidade: "",
-        estado: ""
+        estado: "",
+        modoAnonimo: false,
+        notificacoes: false,
+        saldo: 0.0
       },
+      dia: 1,
+      mes: 1,
+      ano: 1900,
       siglas: [
-        { sigla: "AC" },
-        { sigla: "AL" },
-        { sigla: "AP" },
-        { sigla: "AM" },
-        { sigla: "BA" },
-        { sigla: "CE" },
-        { sigla: "DF" },
-        { sigla: "ES" },
-        { sigla: "GO" },
-        { sigla: "MA" },
-        { sigla: "MT" },
-        { sigla: "MS" },
-        { sigla: "MG" },
-        { sigla: "PA" },
-        { sigla: "PB" },
-        { sigla: "PR" },
-        { sigla: "PE" },
-        { sigla: "PI" },
-        { sigla: "RJ" },
-        { sigla: "RN" },
-        { sigla: "RS" },
-        { sigla: "RO" },
-        { sigla: "RR" },
-        { sigla: "SC" },
-        { sigla: "SP" },
-        { sigla: "SE" },
-        { sigla: "TO" }
+        "AC",
+        "AL",
+        "AP",
+        "AM",
+        "BA",
+        "CE",
+        "DF",
+        "ES",
+        "GO",
+        "MA",
+        "MT",
+        "MS",
+        "MG",
+        "PA",
+        "PB",
+        "PR",
+        "PE",
+        "PI",
+        "RJ",
+        "RN",
+        "RS",
+        "RO",
+        "RR",
+        "SC",
+        "SP",
+        "SE",
+        "TO"
       ],
       login: false,
-      mudarFoto: false
+      mudarFoto: false,
+      mensagem: false
     };
   },
   methods: {
-    receber: function(numero) {
-      this.informacoes.foto = numero;
+    mostrarmsg() {
+      this.mensagem = true;
+      Mensagem.methods.mostrar(
+        "INÍCIO DE UM SONHO!",
+        "Você foi cadastrado com sucesso!\n Agora vá na página de login e entre.",
+        true,
+        false,
+        false
+      );
+      alert(Mensagem.data.mensagem);
+      Mensagem.data.mensagem = "asdfghjkl";
+      alert(Mensagem.data.mensagem);
+    },
+    cadastrar: function() {
+      var d = new Date();
+      d.setDate(parseInt(this.dia));
+      d.setMonth(parseInt(this.mes));
+      d.setFullYear(parseInt(this.ano));
+      this.informacoes.dataDeNascimento = d;
+
+      this.$http
+        .post("https://localhost:5001/api/usuarios", this.informacoes)
+        .then(
+          response => {
+            Mensagem.methods.mostrar(
+              "INÍCIO DE UM SONHO!",
+              "Você foi cadastrado com sucesso!\n Agora vá na página de login e entre.",
+              true,
+              true,
+              false
+            );
+            this.mensagem = true;
+          },
+          response => {
+            Mensagem.methods.mostrar(
+              "Deu tudo errado...",
+              response,
+              true,
+              false,
+              false
+            );
+            this.mensagem = true;
+          }
+        );
+
+      //  this.$http.get('/someUrl').then(response => {
+
+      // // get body data
+      // this.someData = response.body;
+
+      // }, response => {
+      //   // error callback
+      // });
     }
+  },
+  mounted() {},
+  created() {
+    // Mensagem.methods.mostrar(
+    //   "INÍCIO DE UM SONHO!",
+    //   "Você foi cadastrado com sucesso!\n Agora vá na página de login e entre.",
+    //   true,
+    //   false,
+    //   false
+    // );
+    // this.mensagem = true;
   }
 };
 </script>
@@ -220,12 +352,8 @@ export default {
   margin: 10px;
 }
 
-#cidadeEstado select {
-  height: 41px;
-}
-
-#cidadeEstado .campos {
-  width: 80%;
+#cidadeEstado {
+  display: flex;
 }
 
 .link {

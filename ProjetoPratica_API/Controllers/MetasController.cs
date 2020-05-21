@@ -50,8 +50,8 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
-        [HttpGet("{UsuarioId}")]
-        public async Task<IActionResult> Get(int UsuarioId)
+        [HttpGet("usu/{UsuarioId}")]
+        public async Task<IActionResult> GetByUsuario(int UsuarioId)
         {
             try
             {

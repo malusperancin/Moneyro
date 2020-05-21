@@ -1,3 +1,5 @@
+using System;
+
 namespace ProjetoPratica_API.Models
 {
     public class Receitas

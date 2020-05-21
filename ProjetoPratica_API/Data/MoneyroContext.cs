@@ -19,5 +19,6 @@ namespace ProjetoPratica_API.Data
         public DbSet<Tags> Tags { get; set; }
         public DbSet<Videos> Videos { get; set; }
         public DbSet<Avaliacoes> Avaliacoes { get; set; }
+        public DbSet<Tips> Tips { get; set; }
     }
 }

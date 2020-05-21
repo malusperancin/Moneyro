@@ -17,7 +17,7 @@ namespace ProjetoPratica_API.Controllers
     public class AssuntosController : Controller
     {
         public IRepository Repo { get; }
-        public ArtigosController(IRepository repo)
+        public AssuntosController(IRepository repo)
         {
             this.Repo = repo;
         }
@@ -90,7 +90,7 @@ namespace ProjetoPratica_API.Controllers
             try
             {
                 //verifica se existe aluno a ser excluído
-                var assunto = await this.Repo.GetAssuntoByID(AssuntoId);
+                var assunto = await this.Repo.GetAssuntoById(AssuntoId);
                 if (assunto == null) return NotFound(); //método do EF
                 this.Repo.Delete(assunto);
                 //

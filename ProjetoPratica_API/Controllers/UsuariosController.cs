@@ -56,6 +56,13 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
+
+                if (this.Repo.GetUsuarioByApelido(modelo.Apelido) != null)
+                    return this.StatusCode(StatusCodes.Status409Conflict, "Este apelido já está em uso T-T. Tente outro...");
+
+                if (this.Repo.GetUsuarioByEmail(modelo.Email) != null)
+                    return this.StatusCode(StatusCodes.Status409Conflict, "Este email já está cadastrado! Tente outro...");
+
                 this.Repo.Add(modelo);
                 //
                 if (await this.Repo.SaveChangesAsync())

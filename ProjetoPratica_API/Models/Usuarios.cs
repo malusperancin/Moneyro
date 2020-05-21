@@ -5,6 +5,7 @@ namespace ProjetoPratica_API.Models
     public class Usuarios
     {
         // [Key]
+        //public Usuarios(int id, string nome, string apelido, string email, string celular, DateTime data, int foto)
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Apelido { get; set; }

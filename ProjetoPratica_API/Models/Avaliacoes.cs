@@ -1,3 +1,5 @@
+using System;
+
 namespace ProjetoPratica_API.Data
 {
     public class Avaliacoes

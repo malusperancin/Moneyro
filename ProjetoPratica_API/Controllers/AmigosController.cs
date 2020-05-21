@@ -62,7 +62,7 @@ namespace ProjetoPratica_API.Controllers
             try
             {
                 //verifica se existe aluno a ser alterado
-                var amigos = await this.Repo.GetAmigoByID(AmigoId);
+                var amigos = await this.Repo.GetAmigoById(AmigoId);
                 this.Repo.Update(model);
                 //
                 if (await this.Repo.SaveChangesAsync())
