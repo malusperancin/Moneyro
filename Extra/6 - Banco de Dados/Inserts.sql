@@ -1,17 +1,17 @@
 -- INSERTS TESTES
 
 insert into Usuarios
-values('Giovanna Pavani Martelli', 'gigis', 'giovanna@gmail.com', '(19)99999-9999', '09/08/2004', 'https://www.cecom.unicamp.br/wp-content/uploads/2020/02/1800x1200_coronavirus_1.jpg', 'senha123', 'Campinas', 'S�o Paulo', 'Brasil', 0, 1, 0)
+values('Giovanna Pavani Martelli', 'gigis', 'giovanna@gmail.com', '(19)99999-9999', '09/08/2004', 1, 'senha123', 'Campinas', 'São Paulo', 0, 1, 0)
 insert into Usuarios
-values('Maria Luiza Sperancin Mancebo', 'malulis', 'malu@gmail.com', '(19)99999-9999', '02/06/2004', 'https://sigaband.files.wordpress.com/2013/11/6e6bd-f_216031.jpg', 'senha123', 'Valinhos', 'S�o Paulo', 'Brasil', 0, 0, 1000000)
+values('Maria Luiza Sperancin Mancebo', 'malulis', 'malu@gmail.com', '(19)99999-9999', '02/06/2004', 2, 'senha123', 'Valinhos', 'São Paulo',  0, 0, 1000000)
 insert into Usuarios
-values('Vinicius Martins Cotrim', 'venizius', 'vini@gmail.com', '(19)99999-9999', '12/02/2004', 'https://www.gfcasadecor.com/imagens/produtos/HA-3623/Detalhes/girafa-adulta-hansa-creation.jpg', 'senha123', 'Sumar�', 'S�o Paulo', 'Brasil', 0, 0, 10)
+values('Vinicius Martins Cotrim', 'venizius', 'vini@gmail.com', '(19)99999-9999', '12/02/2004', 3, 'senha123', 'Sumaré', 'São Paulo', 0, 0, 10)
 
 insert into Amigos
 values(2, 3)
 
 insert into Tags
-values('Alimenta��o')
+values('Alimentação')
 insert into Tags
 values('Higiene')
 insert into Tags
@@ -19,7 +19,7 @@ values('Transporte')
 insert into Tags
 values('Lazer')
 insert into Tags
-values('Vestu�rio')
+values('Vestuário')
 
 insert into Assuntos
 values('Noticias')
@@ -33,7 +33,7 @@ insert into Assuntos
 values('Ganhar MONEY')
 
 insert into Tips
-values(3, 'N�o gaste o que voc� n�o tem porr' )
+values(3, 'Não gaste o que você não tem porr' )
 
 insert into Videos
 values(1, 'https://www.youtube.com/watch?v=DPniYsHaE44')

@@ -12,6 +12,75 @@ codCompartilhamento = @codComp
 
 usuariosCOMP_sp 3
 
+create proc filtroUsuarios_sp
+@filtro varchar(50) = null
+as
+select u.idUsuario, u.nome, u.apelido, u.foto
+from Usuarios u
+where 
+u.nome like '%' + @filtro + '%' or 
+u.apelido like '%' + @filtro + '%'
+
+filtroUsuarios_sp 'is'
+
+
+create table Amigos
+(
+    idAmigos int identity primary key,
+    idAmigo1 int not null,
+    idAmigo2 int not null,
+    aceitou int not null,
+    CONSTRAINT FK_idUsuarioA1 FOREIGN KEY (idAmigo1)
+    REFERENCES Usuarios(idUsuario),
+    CONSTRAINT FK_idUsuarioA2 FOREIGN KEY (idAmigo2)
+    REFERENCES Usuarios(idUsuario)
+)
+drop table amigos
+
+insert into amigos values(2, 3, 1)
+insert into amigos values(1, 2, 0)
+
+alter proc filtroUsuarios_sp
+@filtro varchar(50) = null,
+@idUsuario int = null
+as
+declare @idAmigo int
+declare @nome varchar(100)
+declare @apelido varchar(20)
+declare @foto varchar(300)
+declare @aceitou int
+Begin
+create table #ListaUsuarios
+(
+  id int primary key identity,
+  idAmigo int,
+  nome varchar(100),
+  apelido varchar(20),
+  foto varchar(300),
+  aceitou int
+)
+declare listAmigosCursor scroll cursor for
+select u.idUsuario, u.nome, u.apelido, u.foto
+from Usuarios u
+where 
+u.nome like '%' + @filtro + '%' or 
+u.apelido like '%' + @filtro + '%'
+open listAmigosCursor
+fetch next from listAmigosCursor into @idAmigo, @nome, @apelido, @foto
+while @@FETCH_STATUS = 0
+begin
+ select @aceitou = aceitou from Amigos where idAmigo1=@idUsuario and idAmigo2=@idAmigo or idAmigo2=@idUsuario and idAmigo1=@idAmigo
+ insert into #ListaUsuarios values(@idAmigo, @nome, @apelido, @foto, @aceitou)
+ fetch next from listAmigosCursor into @idAmigo, @nome, @apelido, @foto
+end
+close listAmigosCursor
+deallocate listAmigosCursor
+-- a.aceitou 
+select * from amigos
+
+--a.idAmigo1 = @thisUsuario and a.idAmigo2 = @outroUsuario or
+--a.idAmigo1 = @outroUsuario and a.idAmigo2 = @thisUsuario and
+
 
 create trigger Receita_tg on Receitas
 for update, insert
@@ -98,7 +167,7 @@ select * from despesas
 select * from receitas
 select * from usuarios
 
-alter proc planilha_sp
+create proc planilha_sp
 @id int = null
 as
 declare @idRegistro int
