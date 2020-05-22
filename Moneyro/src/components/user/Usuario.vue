@@ -45,6 +45,7 @@ export default {
     this.$http.get("https://localhost:5001/api/usuarios/2").then(response => {
       this.info = response;
     });
+    alert(this.$session.id());
   }
 };
 </script>

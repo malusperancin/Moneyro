@@ -2,13 +2,17 @@
   <div class="mensagem">
     <div class="conteudo animate">
       <div class="titulo">
-        <strong>{{titulo}}</strong>
+        <strong>{{msg.titulo}}</strong>
       </div>
-      <div class="texto">{{mensagem}}</div>
+      <div class="texto">{{msg.mensagem}}</div>
       <div class="botoes">
-        <span class="botao" v-if="ok" v-on:click="$emit('ok')">Ok</span>
-        <span class="botao" v-if="cancelar" v-on:click="$emit('cancelar')">Cancelar</span>
-        <span class="botao" v-if="sair" v-on:click="$emit('sair')">Sair</span>
+        <span
+          class="botao"
+          v-if="msg.ok.mostrar"
+          v-on:click="$emit(msg.ok.evento)"
+        >{{msg.ok.mensagem}}</span>
+        <span class="botao" v-if="msg.cancelar" v-on:click="$emit('cancelar')">Cancelar</span>
+        <span class="botao" v-if="msg.sair" v-on:click="$emit('sair')">Sair</span>
       </div>
     </div>
   </div>
@@ -16,25 +20,17 @@
 
 <script>
 export default {
-  data: {
-    mensagem: "",
-    titulo: "",
-    sair: false,
-    cancelar: false,
-    ok: false,
-    teste: "aaa"
-  },
-  methods: {
-    mostrar(titulo, mensagem, ok, cancelar, sair) {
-      this.titulo = titulo;
-      this.mensagem = mensagem;
-      this.ok = ok;
-      this.cancelar = cancelar;
-      this.sair = sair;
-    }
-  },
-  created() {
-    //this.mostrar("aaa", "qnd o gado insistir em cantar", true, true, true);
+  props: ["msg"],
+  data() {
+    return {
+      Mensagem: {
+        mensagem: "",
+        titulo: "",
+        sair: false,
+        cancelar: false,
+        ok: false
+      }
+    };
   }
 };
 </script>
@@ -58,11 +54,12 @@ export default {
 }
 
 .titulo {
-  padding: 10px;
+  padding: 20px;
 }
 
 .texto {
-  padding: 10px;
+  padding: 20px;
+  white-space: pre-line;
 }
 
 .animate {

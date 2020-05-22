@@ -1,8 +1,13 @@
 <template>
   <div class="pagCadastro">
     <cabecalho :titulo="'Cadastro'"></cabecalho>
-    <Mensagem v-if="mensagem"></Mensagem>
-    <div id="formCadastro" v-on:click="mostrarmsg">
+    <Mensagem
+      :msg="msg"
+      v-if="exibirMsg"
+      v-on:login="login = true, exibirMsg = false"
+      v-on:cancelar="exibirMsg = false"
+    ></Mensagem>
+    <div id="formCadastro">
       <form v-on:submit.prevent="cadastrar" id="formCad">
         <div id="foto">
           <div id="editar" v-on:click="mudarFoto = true">
@@ -236,25 +241,23 @@ export default {
         "SE",
         "TO"
       ],
+      msg: {
+        titulo: "",
+        mensagem: "",
+        ok: {
+          mensagem: "",
+          mostrar: false,
+          evento: "login"
+        },
+        cancelar: false,
+        sair: false
+      },
       login: false,
       mudarFoto: false,
-      mensagem: false
+      exibirMsg: false
     };
   },
   methods: {
-    mostrarmsg() {
-      this.mensagem = true;
-      Mensagem.methods.mostrar(
-        "INÍCIO DE UM SONHO!",
-        "Você foi cadastrado com sucesso!\n Agora vá na página de login e entre.",
-        true,
-        false,
-        false
-      );
-      alert(Mensagem.data.mensagem);
-      Mensagem.data.mensagem = "asdfghjkl";
-      alert(Mensagem.data.mensagem);
-    },
     cadastrar: function() {
       var d = new Date();
       d.setDate(parseInt(this.dia));
@@ -266,47 +269,30 @@ export default {
         .post("https://localhost:5001/api/usuarios", this.informacoes)
         .then(
           response => {
-            Mensagem.methods.mostrar(
-              "INÍCIO DE UM SONHO!",
-              "Você foi cadastrado com sucesso!\n Agora vá na página de login e entre.",
-              true,
-              true,
-              false
-            );
-            this.mensagem = true;
+            this.msg.titulo = "INÍCIO DE UM SONHO!";
+            this.msg.mensagem =
+              "Você foi cadastrado com sucesso!\n Agora vá na página de login e entre.";
+
+            this.msg.ok.mostrar = true;
+            this.msg.ok.evento = "login";
+            this.msg.ok.mensagem = "Fazer login";
+            this.msg.cancelar = true;
+            this.msg.sair = false;
+            this.exibirMsg = true;
           },
           response => {
-            Mensagem.methods.mostrar(
-              "Deu tudo errado...",
-              response,
-              true,
-              false,
-              false
-            );
-            this.mensagem = true;
+            this.msg.titulo = "Deu tudo errado...";
+            this.msg.mensagem = response.bodyText;
+
+            this.msg.ok.mostrar = true;
+            this.msg.ok.evento = "cancelar";
+            this.msg.ok.mensagem = "Ok";
+
+            this.msg.cancelar = false;
+            this.exibirMsg = true;
           }
         );
-
-      //  this.$http.get('/someUrl').then(response => {
-
-      // // get body data
-      // this.someData = response.body;
-
-      // }, response => {
-      //   // error callback
-      // });
     }
-  },
-  mounted() {},
-  created() {
-    // Mensagem.methods.mostrar(
-    //   "INÍCIO DE UM SONHO!",
-    //   "Você foi cadastrado com sucesso!\n Agora vá na página de login e entre.",
-    //   true,
-    //   false,
-    //   false
-    // );
-    // this.mensagem = true;
   }
 };
 </script>
