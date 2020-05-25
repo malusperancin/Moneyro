@@ -52,16 +52,37 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpPost]
+        [Route("login/{apelido}/{senha}")]
+        public async Task<IActionResult> Get(string apelido, string senha)
+        {
+            try
+            {
+                var result = await this.Repo.GetUsuarioByApelido(apelido);
+
+                if (result == null)
+                    return this.StatusCode(StatusCodes.Status409Conflict, "Este apelido não está registrado T-T.");
+
+                if (result.Senha != senha)
+                    return this.StatusCode(StatusCodes.Status409Conflict, "Senha incorreta.");
+
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> post(Usuarios modelo)
         {
             try
             {
+                if (this.Repo.GetUsuarioByApelido(modelo.Apelido).Result != null)
+                    return this.StatusCode(StatusCodes.Status409Conflict, "Este apelido já está em uso T-T. \nTente outro...");
 
-                if (this.Repo.GetUsuarioByApelido(modelo.Apelido) != null)
-                    return this.StatusCode(StatusCodes.Status409Conflict, "Este apelido já está em uso T-T. Tente outro...");
-
-                if (this.Repo.GetUsuarioByEmail(modelo.Email) != null)
-                    return this.StatusCode(StatusCodes.Status409Conflict, "Este email já está cadastrado! Tente outro...");
+                if (this.Repo.GetUsuarioByEmail(modelo.Email).Result != null)
+                    return this.StatusCode(StatusCodes.Status409Conflict, "Este email já está cadastrado! \nTente outro...");
 
                 this.Repo.Add(modelo);
                 //

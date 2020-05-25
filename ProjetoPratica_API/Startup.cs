@@ -32,10 +32,19 @@ namespace ProjetoPratica_API
             );
             services.AddControllers();
             services.AddScoped<IRepository, Repository>();
-            
+
             services.AddCors(options =>
             {
                 options.AddPolicy("*", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
+
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(20);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
             });
         }
 
@@ -53,7 +62,10 @@ namespace ProjetoPratica_API
 
             app.UseCors("*");
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

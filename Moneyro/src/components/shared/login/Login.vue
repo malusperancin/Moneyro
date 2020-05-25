@@ -1,6 +1,6 @@
 <template>
   <div class="modal">
-    <form class="modal-content animate" method="post">
+    <form class="modal-content animate" v-on:submit.prevent="logar">
       <div class="imgcontainer">
         <span v-on:click="$emit('fechar')" class="close" title="Close Modal">&times;</span>
       </div>
@@ -16,8 +16,9 @@
         <input type="password" name="senha" required v-model="senha" />
 
         <button id="btnlogin" type="submit">
-          <router-link to="/Usuario" style="color: white">Login</router-link>
+          <router-link style="color: white">Login</router-link>
         </button>
+        <div id="erro">{{erro}}</div>
       </div>
 
       <div class="container" style="background-color:#f1f1f1">
@@ -36,13 +37,49 @@ export default {
   data() {
     return {
       apelido: "",
-      senha: ""
+      senha: "",
+      erro: ""
     };
+  },
+  methods: {
+    logar: function() {
+      this.$http
+        .post(
+          "https://localhost:5001/api/usuarios/login/" +
+            this.apelido +
+            "/" +
+            this.senha
+        )
+        .then(
+          function(response) {
+            if (response.status === 200 && "token" in response.body) {
+              this.$session.start();
+              this.$session.set("jwt", response.body.token);
+              this.$session.set("id", 2);
+              Vue.http.headers.common["Authorization"] =
+                "Bearer " + response.body.token;
+              this.$router.push("/usuario");
+            }
+          },
+          function(err) {
+            this.erro = err.bodyText;
+          }
+        );
+    }
   }
 };
 </script>
 
 <style scoped>
+a {
+  color: white;
+}
+
+#erro {
+  font-weight: 1000;
+  color: #f44336;
+}
+
 input[type="text"],
 input[type="password"] {
   border-radius: 3px;
