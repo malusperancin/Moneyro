@@ -2,13 +2,8 @@
   <div class="pag">
     <Menu />
     <Perfil />
-    <Mensagem
-      v-if="mensagem"
-      v-on:ok="mensagem = false"
-      mensagem="Receita registrada com sucesso!"
-      titulo="Toma o titulo"
-      sair="oi"
-    ></Mensagem>
+    <mensagem
+    ></mensagem>
     <div class="centro">
       <div id="texto">
         <p>Bem-vindo(a) de volta {{info.body.nome}}</p>

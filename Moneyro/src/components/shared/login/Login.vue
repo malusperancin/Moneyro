@@ -8,15 +8,15 @@
         <label for="uname">
           <b>Apelido</b>
         </label>
-        <input type="text" name="nomeusuario" required v-model="apelido" />
+        <input type="text" name="nomeusuario" required v-model="usuario.apelido" />
 
         <label for="psw">
           <b>Senha</b>
         </label>
-        <input type="password" name="senha" required v-model="senha" />
+        <input type="password" name="senha" required v-model="usuario.senha" />
 
         <button id="btnlogin" type="submit">
-          <router-link style="color: white">Login</router-link>
+          Login
         </button>
         <div id="erro">{{erro}}</div>
       </div>
@@ -38,20 +38,33 @@ export default {
     return {
       apelido: "",
       senha: "",
-      erro: ""
+      erro: "",
+      usuario: {
+        Nome: "",
+        Apelido: "",
+        Email: "",
+        Celular: "",
+        DataDeNascimento: "",
+        Foto: 1,
+        Senha: "",
+        Cidade: "",
+        Estado: "",
+        ModoAnonimo: false,
+        Notificacoes: false,
+        Saldo: 0.0
+      }
     };
   },
   methods: {
     logar: function() {
+    //   this.$http.get("https://localhost:5001/api/usuarios/2").then(response => {
+    //   this.info = response;
+    // });
       this.$http
-        .post(
-          "https://localhost:5001/api/usuarios/login/" +
-            this.apelido +
-            "/" +
-            this.senha
-        )
+        .post(".https://localhost:5001/api/usuarios/login/",this.usuario)
         .then(
           function(response) {
+            alert("deu certo");
             if (response.status === 200 && "token" in response.body) {
               this.$session.start();
               this.$session.set("jwt", response.body.token);
@@ -62,6 +75,7 @@ export default {
             }
           },
           function(err) {
+            alert("nao foi");
             this.erro = err.bodyText;
           }
         );
@@ -71,10 +85,6 @@ export default {
 </script>
 
 <style scoped>
-a {
-  color: white;
-}
-
 #erro {
   font-weight: 1000;
   color: #f44336;

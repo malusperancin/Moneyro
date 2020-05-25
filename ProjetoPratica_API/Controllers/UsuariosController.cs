@@ -52,17 +52,18 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpPost]
-        [Route("login/{apelido}/{senha}")]
-        public async Task<IActionResult> Get(string apelido, string senha)
+        [Route("login/")]
+        public async Task<IActionResult> post(Usuarios modelo)
         {
+            Console.WriteLine("ENTRO SENHO");
             try
             {
-                var result = await this.Repo.GetUsuarioByApelido(apelido);
+                var result = await this.Repo.GetUsuarioByApelido(modelo.Apelido);
 
                 if (result == null)
                     return this.StatusCode(StatusCodes.Status409Conflict, "Este apelido não está registrado T-T.");
 
-                if (result.Senha != senha)
+                if (result.Senha != modelo.Senha)
                     return this.StatusCode(StatusCodes.Status409Conflict, "Senha incorreta.");
 
                 return Ok(result);
