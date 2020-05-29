@@ -53,7 +53,7 @@ namespace ProjetoPratica_API.Controllers
 
         [HttpPost]
         [Route("login/")]
-        public async Task<IActionResult> PostLogin(Usuarios modelo)
+        public async Task<IActionResult> postLogin(Usuarios modelo)
         {
             try
             {
@@ -78,11 +78,13 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
+                if (this.Repo.GetUsuarioByEmail(modelo.Email).Result != null)
+                    return this.StatusCode(StatusCodes.Status409Conflict, "Este email já está cadastrado! \nTente outro...");
+
                 if (this.Repo.GetUsuarioByApelido(modelo.Apelido).Result != null)
                     return this.StatusCode(StatusCodes.Status409Conflict, "Este apelido já está em uso T-T. \nTente outro...");
 
-                if (this.Repo.GetUsuarioByEmail(modelo.Email).Result != null)
-                    return this.StatusCode(StatusCodes.Status409Conflict, "Este email já está cadastrado! \nTente outro...");
+
 
                 this.Repo.Add(modelo);
                 //
@@ -104,13 +106,16 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
+                Console.WriteLine("entrou");
                 //verifica se existe aluno a ser alterado
                 var usuario = await this.Repo.GetUsuarioById(UsuarioId);
                 if (usuario == null) return NotFound(); //método do EF
                 this.Repo.Update(model);
+                Console.WriteLine("3");
                 //
                 if (await this.Repo.SaveChangesAsync())
                 {
+                    Console.Write("ifzao");
                     return Ok();
                     //pegar o aluno novamente, agora alterado para devolver pela rota abaixo
                     //usuario = await this.Repo.GetUsuarioByID(UsuarioId);

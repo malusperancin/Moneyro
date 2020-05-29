@@ -160,6 +160,14 @@ export default {
         novos = [];
       }
     }
+  },
+  beforeCreate() {
+    if (!this.$session.exists()) {
+      this.$router.push('/')
+    }
+  },
+  created(){
+    document.title = "Planilhas";
   }
 };
 </script>

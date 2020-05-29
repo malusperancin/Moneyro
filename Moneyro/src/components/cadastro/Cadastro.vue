@@ -4,8 +4,9 @@
     <Mensagem
       :msg="msg"
       v-if="msg.visivel"
-      v-on:login="login = true, exibirMsg = false"
-      v-on:ok="exibirMsg = false"
+      v-on:login="login = true, msg.visivel = false"
+      v-on:home="msg.visivel = false, $router.push('/')"
+      v-on:fechar="msg.visivel = false"
     ></Mensagem>
     <div id="formCadastro">
       <form v-on:submit.prevent="cadastrar" id="formCad">
@@ -106,12 +107,12 @@
         <input
           type="tel"
           class="campos"
-          pattern="(\([0-9]{2}\))([9]{1})?([0-9]{4})-([0-9]{4})"
+          pattern="(\([0-9]{2}\))\s([9]{1})?([0-9]{4})-([0-9]{4})"
           id="celular"
           placeholder="Celular"
-          title="Número de telefone precisa ser no formato (99)9999-9999 ou (99)99999-9999"
-          maxlength="14"
-          v-model="informacoes.celular"
+          title="Número de telefone precisa ser no formato (99) 9999-9999 ou (99) 99999-9999"
+          maxlength="15"
+          v-model="informacoes.celular"                 
           required
         />
         <br />
@@ -175,7 +176,7 @@
         </div>-->
       </form>
     </div>
-    <login v-if="login" v-on:fechar="login = false"></login>
+    <login v-if="login" v-on:fechar="login = false, $router.push('/')"></login>
   </div>
 </template>
 
@@ -210,7 +211,7 @@ export default {
       },
       dia: 1,
       mes: 1,
-      ano: 1900,
+      ano: 2000,
       siglas: [],
       msg: {
         visivel: false,
@@ -226,7 +227,7 @@ export default {
     cadastrar: function() {
       var d = new Date();
       d.setDate(parseInt(this.dia));
-      d.setMonth(parseInt(this.mes));
+      d.setMonth(parseInt(this.mes) - 1);
       d.setFullYear(parseInt(this.ano));
       this.informacoes.dataDeNascimento = d;
 
@@ -238,27 +239,29 @@ export default {
             this.msg.mensagem =
               "Você foi cadastrado com sucesso!\n Agora vá na página de login e entre.";
 
-            this.msg.botoes.push(
+            this.msg.botoes = [
               {
                 mensagem: "Fazer login",
                 evento: "login"
               },
               {
                 mensagem: "OK",
-                evento: "ok"
+                evento: "home"
               }
-            );
+            ];
 
-            this.msm.visivel = true;
+            this.msg.visivel = true;
           },
           response => {
             this.msg.titulo = "Deu tudo errado...";
             this.msg.mensagem = response.bodyText;
 
-            this.msg.botoes.push({
+            this.msg.botoes = [
+              {
               mensagem: "Ok",
-              evento: "ok"
-            });
+              evento: "fechar"
+             }
+            ];
 
             this.msg.visivel = true;
           }
@@ -272,6 +275,7 @@ export default {
         for (var i = 0; i < response.body.length; i++)
           this.siglas.push(response.body[i].sigla);
       });
+  document.title = "Cadastro";
   }
 };
 </script>

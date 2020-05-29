@@ -1,0 +1,77 @@
+/*  
+ *  Pure CSS star rating that works without reversing order
+ *  of inputs
+ *  -------------------------------------------------------
+ *  NOTE: For the styling to work, there needs to be a radio
+ *        input selected by default. There also needs to be a
+ *        radio input before the first star, regardless of
+ *        whether you offer a 'no rating' or 0 stars option
+ *  
+ *  This codepen uses FontAwesome icons
+ */
+
+
+/* use display:inline-flex to prevent whitespace issues. alternatively, you can put all the children of .rating-group on a single line */
+
+.rating-group {
+    display: inline-flex;
+}
+
+
+/* make hover effect work properly in IE */
+
+.rating__icon {
+    pointer-events: none;
+}
+
+
+/* hide radio inputs */
+
+.rating__input {
+    position: absolute !important;
+    left: -9999px !important;
+}
+
+
+/* hide 'none' input from screenreaders */
+
+.rating__input--none {
+    display: none
+}
+
+
+/* set icon padding and size */
+
+.rating__label {
+    cursor: pointer;
+    padding: 0 0.1em;
+    font-size: 2rem;
+}
+
+
+/* set default star color */
+
+.rating__icon--star {
+    color: orange;
+}
+
+
+/* if any input is checked, make its following siblings grey */
+
+.rating__input:checked~.rating__label .rating__icon--star {
+    color: #ddd;
+}
+
+
+/* make all stars orange on rating group hover */
+
+.rating-group:hover .rating__label .rating__icon--star {
+    color: orange;
+}
+
+
+/* make hovered input's following siblings grey on hover */
+
+.rating__input:hover~.rating__label .rating__icon--star {
+    color: #ddd;
+}

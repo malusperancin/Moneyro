@@ -74,6 +74,14 @@ export default {
         return this.amigos;
       }
     }
+  },
+  beforeCreate() {
+    if (!this.$session.exists()) {
+      this.$router.push('/')
+    }
+  },
+  created(){
+    document.title = "Amigos";
   }
 };
 </script>

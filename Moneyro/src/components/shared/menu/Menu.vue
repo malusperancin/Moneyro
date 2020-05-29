@@ -1,5 +1,11 @@
 <template>
   <div id="menu" @mouseenter="ativo = true" @mouseleave="ativo = false">
+    <mensagem
+    :msg="msg"
+    v-if="msg.visivel"
+    v-on:sair="msg.visivel = false, $session.destroy(), $router.push('/')"
+    v-on:fechar="msg.visivel = false"
+    ></mensagem>
     <table cellspacing="0" border="0">
       <tr id="btnAdd">
         <td class="icones">
@@ -57,13 +63,12 @@
         </td>
         <td class="titulos">Configurações</td>
       </tr>
-      <tr v-on:click="$router.push('http://localhost:8080/#/')">
+      <tr v-on:click="sair()">
         <td class="icones">
           <img src="../../../images/sair.png" alt="a" />
         </td>
         <td class="titulos">
           Sair
-          <!-- <a v-on="sair()">Sair</a> -->
         </td>
       </tr>
     </table>
@@ -75,21 +80,48 @@
 <script>
 import Card from "../cards/Card.vue";
 import Meta from "../cards/Meta.vue";
+import Mensagem from "../mensagem/Mensagem.vue";
 
 export default {
   components: {
     registro: Card,
-    "meta-registro": Meta
+    "meta-registro": Meta,
+    mensagem: Mensagem
   },
   data() {
     return {
       ativo: false,
       tipos: false,
       verCard: false,
-      verMeta: false
+      verMeta: false,
+      msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: []
+      }
     };
+    
   },
-  methods: {},
+  methods: {
+    sair(){
+      this.msg.titulo = "Sair da sessão";
+      this.msg.mensagem =
+        "Você realmente deseja sair?";
+
+      this.msg.botoes = [
+        {
+          mensagem: "Sair",
+          evento: "sair"
+        },
+        {
+          mensagem: "Cancelar",
+          evento: "fechar"
+        }
+      ];
+      this.msg.visivel = true;     
+    }
+  },
   watch: {
     ativo() {
       var div = document.getElementsByClassName("titulos");

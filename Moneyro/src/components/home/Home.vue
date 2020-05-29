@@ -78,7 +78,10 @@ export default {
       login: false
     };
   },
-  methods: {}
+  methods: {},
+  created(){
+    document.title = "Moneyro";
+  }
 };
 </script>
 

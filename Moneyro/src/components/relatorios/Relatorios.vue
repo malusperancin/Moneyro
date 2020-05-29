@@ -194,7 +194,15 @@ export default {
     google.charts.setOnLoadCallback(this.drawMes);
     google.charts.setOnLoadCallback(this.drawPizza);
   },
-  watch: {}
+  watch: {},
+  beforeCreate() {
+    if (!this.$session.exists()) {
+      this.$router.push('/')
+    }
+  },
+ created(){
+   document.title = "Relatórios";
+ }
 };
 </script>
 

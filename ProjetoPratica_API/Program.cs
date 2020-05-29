@@ -24,3 +24,5 @@ namespace ProjetoPratica_API
                 });
     }
 }
+
+

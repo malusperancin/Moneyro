@@ -2,27 +2,27 @@
   <div class="pag">
     <Menu />
     <Histrograma v-if="avaliacoes" v-on:fechar="avaliacoes= false" />
+    <mudar-senha v-if="senha" v-on:fechar="senha = false"></mudar-senha>
     <Mensagem
-      v-if="mensagem"
-      v-on:ok="mensagem = false"
-      mensagem="Receita registrada com sucesso!"
-      titulo="Toma o titulo"
-      sair="oi"
+      :msg="msg"
+      v-if="msg.visivel"
+      v-on:home="msg.visivel = false, $router.push('/')"
+      v-on:fechar="msg.visivel = false"
     ></Mensagem>
     <div class="centro">
-      <form action method="post" id="informacoes">
+      <form v-on:submit.prevent="salvar"  id="informacoes">
         <div id="principal">
           <div id="mudaessenome">
             <div id="foto">
               <div id="editar" v-on:click="mudarFoto = true">
                 <img src="src/images/editar.png" id="imgEditar" />
               </div>
-              <img :src="'src/images/perfil' + this.informacoes.foto + '.png'" id="imgPerfil" />
+              <img :src="'src/images/perfil' + usuario.foto + '.png'" id="imgPerfil" />
               <Lista
                 v-on:receber="receber"
                 v-on:fechar="mudarFoto = false"
                 v-if="mudarFoto"
-                :atual="this.informacoes.foto"
+                :atual="usuario.foto"
               />
             </div>
             <div id="coisas">
@@ -33,34 +33,25 @@
                 class="campos"
                 name="apelido"
                 maxlength="14"
-                :value="this.informacoes.apelido"
+                v-model="usuario.apelido"
               />
-              <label class="enunciado" for="apelido">Senha</label>
-              <input
-                type="password"
-                class="campos"
-                name="senha"
-                :value="this.informacoes.senha"
-                readonly
-                disabled
-              />
-              <button id="trocarSenha">Trocar senha</button>
-              <div class="pretty p-switch p-fill">
-                <input type="checkbox" />
-                <div class="state">
+              <div class="pretty p-switch p-fill p-primary">
+                <input type="checkbox" v-model="usuario.notificacoes"/>
+                <div class="state p-primary">
                   <label>Receber Notificações</label>
                 </div>
               </div>
               <br />
               <div class="pretty p-switch p-fill p-primary">
-                <input type="checkbox" />
+                <input type="checkbox" v-model="usuario.modoAnonimo"/>
                 <div class="state p-primary">
                   <label>Modo Anônimo</label>
                 </div>
               </div>
+              <button v-on:submit.prevent="" id="trocarSenha" v-on:click="senha = true">Trocar senha</button>
             </div>
           </div>
-          <div id="avaliacao">
+          <form v-on:submit.prevent="enviarAvaliacao" id="avaliacao">
             <label
               class="enunciado"
               v-on:click="avaliacoes = true"
@@ -69,23 +60,33 @@
             >Avaliações do Aplicativo</label>
             <br />
             <label>Nota:</label>
-            <span
-              id="estrelas"
-              v-on:click="setEstrelas(num)"
-              @mouseenter="colorirEstrela(num)"
-              @mouseleave="descolorirEstrelas"
-              v-for="num in [1,2,3,4,5]"
-              :key="num"
-              class="fa fa-star"
-              :title="num"
-            ></span>
+            <div>
+              <div class="rating-group">
+                  <input disabled  class="rating__input rating__input--none" name="rating3" id="rating3-none" value="0" type="radio">
+
+                    <label aria-label="1 star" class="rating__label" for="rating3-1"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+                    <input class="rating__input" name="rating3" id="rating3-1" value="1" type="radio">
+
+                    <label aria-label="2 stars" class="rating__label" for="rating3-2"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+                    <input class="rating__input" name="rating3" id="rating3-2" value="2" type="radio">
+
+                    <label aria-label="3 stars" class="rating__label" for="rating3-3"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+                    <input class="rating__input" name="rating3" id="rating3-3" value="3" type="radio">
+
+                    <label aria-label="4 stars" class="rating__label" for="rating3-4"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+                    <input class="rating__input" name="rating3" id="rating3-4" value="4" type="radio">
+
+                    <label aria-label="5 stars" class="rating__label" for="rating3-5"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+                    <input class="rating__input" name="rating3" id="rating3-5" value="5" type="radio">
+              </div>
+            </div>
             <div id="comentario">
               <label c="titulo">Deixe sua opinião:</label>
               <br />
-              <textarea maxlength="200" id="opiniao" v-model="avaliacao"></textarea>
+              <textarea maxlength="200" id="opiniao" v-model="comentario"></textarea>
             </div>
             <button type="submit" class="botoes" id="enviar">Enviar</button>
-          </div>
+          </form>
         </div>
         <div class="divi"></div>
         <div id="outrasInfos">
@@ -93,7 +94,7 @@
           <input
             type="text"
             class="campos"
-            :value="this.informacoes.email"
+            v-model="usuario.email"
             maxlength="70"
             name="email"
             readonly
@@ -104,12 +105,14 @@
           <input
             type="text"
             class="campos"
-            :value="this.informacoes.nome"
+            v-model="usuario.nome"
             maxlength="70"
             name="nome"
           />
           <br />
-          <label class="enunciado">Data de Nascimento</label>
+          
+          <label for="data" class="enunciado">Data de Nascimento</label>
+          <!-- <input type="date" class="campos" name="data" v-model="usuario.dataDeNascimento"> -->
           <div id="dataNasc">
             <input
               type="number"
@@ -117,7 +120,7 @@
               min="1"
               max="31"
               maxlength="2"
-              :value="this.informacoes.diaNasc"
+              v-model="dia"
             />
             <p class="barra">/</p>
             <input
@@ -126,17 +129,17 @@
               min="1"
               max="12"
               maxlength="2"
-              :value="this.informacoes.mesNasc"
+              v-model="mes"
             />
             <p class="barra">/</p>
             <input
               type="number"
               class="campos"
               min="1900"
-              max="3000"
+              max="this"
               maxlength="4"
               minlength="4"
-              :value="this.informacoes.anoNasc"
+              v-model="ano"
             />
           </div>
 
@@ -146,17 +149,17 @@
             <input
               type="tel"
               class="campos"
-              pattern="([0-9]{2})9[0-9]{4}-[0-9]{4}"
-              maxlength="14"
-              :value="this.informacoes.celular"
+              pattern="(\([0-9]{2}\))\s([9]{1})?([0-9]{4})-([0-9]{4})"
+              maxlength="15"
+              v-model="usuario.celular"
             />
             <br />
             <label for="cidade" class="enunciado">Cidade</label>
             <br />
-            <input type="text" class="campos" :value="this.informacoes.cidade" maxlength="30" />
-            <select id="estado" class="campos" name="estado">
-              <option :value="item" v-for="(item, i) in siglas" :key="i">{{item.sigla}}</option>
-            </select>
+            <input type="text" class="campos" v-model="usuario.cidade" maxlength="30" />
+            <select id="estado" class="campos" name="estado" required v-model="usuario.estado">
+             <option :value="item" v-for="(item, i) in siglas" :key="i">{{item}}</option>
+          </select>
           </div>
           <div>
             <button class="cancelar botoes">Cancelar</button>
@@ -164,105 +167,196 @@
           </div>
         </div>
       </form>
+        {{a}}
     </div>
   </div>
 </template>
-
 
 <script>
 import Menu from "../shared/menu/Menu.vue";
 import Lista from "../shared/lista-fotos/Lista-Fotos.vue";
 import Histrograma from "../shared/histograma/Histograma.vue";
 import Mensagem from "../shared/mensagem/Mensagem.vue";
+import Senha from '../shared/mudar-senha/Mudar-Senha.vue';
 
 export default {
   components: {
     Menu,
     Lista,
     Histrograma,
-    Mensagem
+    Mensagem,
+    "mudar-senha": Senha
   },
   data() {
     return {
-      informacoes: {
-        apelido: "maru",
-        senha: "senhadamalu",
-        nome: "Maria Luiza Sperancin Mancebo",
-        foto: "6",
-        email: "malu@gmail.com",
-        diaNasc: 2,
-        mesNasc: 6,
-        anoNasc: 2004,
-        celular: "(19)999000206",
-        cidade: "Valinhos",
-        estado: "SP"
+      usuario: {
+        id: 0,
+        nome: "",
+        apelido: "",
+        email: "",
+        celular: "",
+        dataDeNascimento: "",
+        foto: 1,
+        senha: "",
+        cidade: "",
+        estado: "",
+        modoAnonimo: false,
+        notificacoes: false,
+        saldo: 0.0
       },
-      siglas: [
-        { sigla: "AC" },
-        { sigla: "AL" },
-        { sigla: "AP" },
-        { sigla: "AM" },
-        { sigla: "BA" },
-        { sigla: "CE" },
-        { sigla: "DF" },
-        { sigla: "ES" },
-        { sigla: "GO" },
-        { sigla: "MA" },
-        { sigla: "MT" },
-        { sigla: "MS" },
-        { sigla: "MG" },
-        { sigla: "PA" },
-        { sigla: "PB" },
-        { sigla: "PR" },
-        { sigla: "PE" },
-        { sigla: "PI" },
-        { sigla: "RJ" },
-        { sigla: "RN" },
-        { sigla: "RS" },
-        { sigla: "RO" },
-        { sigla: "RR" },
-        { sigla: "SC" },
-        { sigla: "SP" },
-        { sigla: "SE" },
-        { sigla: "TO" }
-      ],
+      dia: 1,
+      mes: 1,
+      ano: 2000,
+      siglas: [],
       mudarFoto: false,
       estrelas: 0,
-      avaliacao: "",
+      comentario: "",
       avaliacoes: false,
-      mensagem: false
+      senha: false,
+      msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: []
+      },
+      a: ""
     };
   },
   methods: {
     receber: function(numero) {
-      this.informacoes.foto = numero;
+      this.usuario.foto = numero;
     },
     setEstrelas(num) {
-      for (var i = 0; i < num; i++) estrelas.item(i).classList.add("checked");
-      this.estrelas = num;
+      // for (var i = 0; i < num; i++) estrelas.item(i).classList.add("checked");
+      // this.estrelas = num;
     },
     colorirEstrela(num) {
-      for (var i = 0; i < 5; i++) estrelas.item(i).classList.remove("checked");
-      for (var i = 0; i < num; i++) estrelas.item(i).classList.add("checked");
+      // for (var i = 0; i < 5; i++) estrelas.item(i).classList.remove("checked");
+      // for (var i = 0; i < num; i++) estrelas.item(i).classList.add("checked");
     },
     descolorirEstrelas() {
-      for (var i = 0; i < 5; i++) estrelas.item(i).classList.remove("checked");
-      for (var i = 0; i < this.estrelas; i++)
-        estrelas.item(i).classList.add("checked");
+      // for (var i = 0; i < 5; i++) estrelas.item(i).classList.remove("checked");
+      // for (var i = 0; i < this.estrelas; i++)
+        // estrelas.item(i).classList.add("checked");
+    },
+    getUsuario(){
+      this.$http
+            .get("https://localhost:5001/api/usuarios/" + this.$session.get("id"))
+            .then(response => {
+              this.usuario = response.body;
+
+              var data = new Date(response.body.dataDeNascimento);
+
+              this.dia = data.getDate();
+              this.mes = data.getMonth();
+              this.ano = data.getFullYear();
+            });
     },
     enviarAvaliacao() {
-      // var avaliacao = {
-      // }
-      // this.$http.post()
+      var today = new Date();
+
+      var dd = String(today.getDate()).padStart(2, '0');
+      var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+      var yyyy = today.getFullYear();
+      today = yyyy + '-' + mm + '-' + dd;
+      
+      var avaliacao = {
+       qtdEstrelas: 3,
+       comentario: this.comentario,
+       data: today,
+       idUsuario: this.$session.get('id')
+      }
+
+       this.$http.post("https://localhost:5001/api/avaliacoes", avaliacao).then(
+          response => {
+            this.msg.titulo = "Enviado!";
+            this.msg.mensagem =
+              "Sua avaliacao de " + this.estrelas + "⭐ foi enviada com sucesso";
+            this.msg.botoes = [
+              {
+                mensagem: "OK",
+                evento: "fechar"
+              }
+            ];
+            this.qtdEstrelas = "";
+            this.comentario = "";
+            this.msg.visivel = true;
+          },
+          response => {
+            this.msg.titulo = "Opa neném";
+            this.msg.mensagem = "Algo deu errado ao enviar sua avaliação.";
+            this.msg.botoes = [
+             {
+               mensagem: "Tentar Novamente",
+               evento: "fechar"
+             }
+            ];
+            this.msg.visivel = true;
+          }
+        );
+    },
+    salvar(){
+      var dd = String(this.dia).padStart(2, '0');
+      var mm = String(this.mes + 1).padStart(2, '0');
+      this.usuario.dataDeNascimento = this.ano + "-" + mm + "-" + dd;
+
+      this.$http.put("https://localhost:5001/api/usuarios/"+this.$session.get('id'), this.usuario)
+      .then(
+          response => {
+            this.msg.titulo = "Sucesso";
+            this.msg.mensagem =
+              "Suas informações foram alteradas sucesso";
+            this.msg.botoes = [
+              {
+                mensagem: "OK",
+                evento: "fechar"
+              }
+            ];
+          },
+          response => {
+            this.a=response;
+            this.msg.titulo = "Opa neném";
+            this.msg.mensagem = "Algo deu errado ao alterar suas informações";
+            this.msg.botoes = [
+              {
+               mensagem: "Tentar Novamente",
+               evento: "fechar"
+             }
+            ];
+
+            this.msg.visivel = true;
+
+            this.getUsuario();
+          }
+        );
     }
+
   },
   mounted() {
     var lista = document.getElementById("estado");
-    lista.value = this.informacoes.estado;
+    lista.value = this.usuario.estado;
+  },
+  created() {
+    this.$http
+      .get("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+      .then(response => {
+        for (var i = 0; i < response.body.length; i++)
+          this.siglas.push(response.body[i].sigla);
+      });
+
+      this.getUsuario();
+
+      document.title = "Configurações";
+  },
+  beforeCreate() {
+    if (!this.$session.exists()) {
+      this.$router.push('/')
+    }
   }
 };
 </script>
 
+<style src="../../css/estrelas.css"></style>
 <style scoped>
 #enviar {
   border-top: 0px;
@@ -326,7 +420,8 @@ export default {
   padding: 8px 16px;
   /* width: fit-content; */
   height: max-content;
-  background: #ecb3188f;
+  /* background: #ecb3188f; */
+  background: rgb(144, 112, 175);
 }
 
 #avaliacao div {
@@ -343,6 +438,8 @@ export default {
   background: rgba(0, 0, 0, 0.05);
   border-radius: 15px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 #foto {
@@ -396,7 +493,6 @@ export default {
   background-color: rgba(116, 116, 116, 0.452);
   border: 0px solid gray;
   padding: 4px 15px;
-  margin: 2% 0;
   color: rgb(0, 0, 0);
   font-size: 1.3em;
 }
@@ -424,12 +520,13 @@ export default {
 #dataNasc {
   border: 0;
   display: flex;
-  justify-content: start;
+  justify-content: space-around;
 }
 
 #dataNasc input {
   width: fit-content;
 }
+
 #dia,
 #mes {
   width: 58%;
@@ -462,6 +559,10 @@ export default {
   border: none;
   cursor: pointer;
   border-radius: 3px;
+}
+
+.botoes:active{
+  outline: none;
 }
 
 .cancelar {

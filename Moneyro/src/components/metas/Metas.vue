@@ -106,6 +106,14 @@ export default {
   },
   mounted() {
     //
+  },
+  created(){
+    document.title = "Metas";
+  },
+  beforeCreate() {
+    if (!this.$session.exists()) {
+      this.$router.push('/')
+    }
   }
 };
 </script>

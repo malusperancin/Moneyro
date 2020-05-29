@@ -81,7 +81,6 @@
 </template>
 <script scoped>
 export default {
-  props: ["avaliacoes"],
   data() {
     return {
       avaliacoes: [

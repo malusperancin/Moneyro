@@ -45,9 +45,16 @@ export default {
         dados = dados.body;
         this.usuario.id = dados.id;
         this.usuario.nome = dados.nome;
-        this.usuario.salto = dados.saldo;
+        this.usuario.saldo = dados.saldo;
       });
-  }
+
+    document.title = "Bem-Vindah";    
+  },
+   beforeCreate() {
+    if (!this.$session.exists()) {
+      this.$router.push('/')
+    }
+  },
 };
 </script>
 

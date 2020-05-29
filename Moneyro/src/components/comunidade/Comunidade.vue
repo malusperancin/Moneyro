@@ -150,6 +150,14 @@ export default {
         return this.artigos;
       }
     }
+  },
+  beforeCreate() {
+    if (!this.$session.exists()) {
+      this.$router.push('/')
+    }
+  },
+  created(){
+    document.title = "Comunidade";
   }
 };
 </script>
