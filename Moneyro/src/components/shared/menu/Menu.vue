@@ -5,11 +5,15 @@
         <td class="icones">
           <img src="../../../images/adicionar.png" alt="a" />
         </td>
-        <td class="titulos" @mouseenter="tipos = true" @mouseleave="tipos = false">
+        <td class="titulos adicionar" @mouseenter="tipos = true" @mouseleave="tipos = false">
           <p>Adicionar</p>
           <table id="opcoesCard">
-            <tr v-on:click="verCard = true">Despesa ou Receita</tr>
-            <tr v-on:click="verMeta = true">Meta</tr>
+            <tr v-on:click="verCard = true">
+              <td>Despesa ou Receita</td>
+            </tr>
+            <tr v-on:click="verMeta = true">
+              <td>Meta</td>
+            </tr>
           </table>
         </td>
       </tr>
@@ -63,8 +67,8 @@
         </td>
       </tr>
     </table>
-    <Card v-on:fecharCard="verCard = false" v-if="verCard"></Card>
-    <Meta v-on:fecharMeta="verMeta = false" v-if="verMeta"></Meta>
+    <registro v-on:fecharCard="verCard = false" v-if="verCard"></registro>
+    <meta-registro v-on:fecharMeta="verMeta = false" v-if="verMeta"></meta-registro>
   </div>
 </template>
 
@@ -74,8 +78,8 @@ import Meta from "../cards/Meta.vue";
 
 export default {
   components: {
-    Card,
-    Meta
+    registro: Card,
+    "meta-registro": Meta
   },
   data() {
     return {
@@ -112,7 +116,7 @@ export default {
   z-index: 5;
   position: fixed;
   box-shadow: 5px 0px 5px #00000040;
-  overflow: auto;
+  overflow: visible;
 }
 
 table {
@@ -152,7 +156,8 @@ table {
   align-items: center;
 }
 
-.titulos:hover {
+.titulos:hover,
+#opcoesCard td:hover {
   background-color: #0c406f;
 }
 
@@ -165,23 +170,21 @@ table {
   color: white;
 }
 
+#btnAdd td:nth-child(2) {
+  position: relative;
+}
+
 #opcoesCard {
-  /* position: fixed;
+  position: absolute;
   top: 0;
-  left: 186px; */
-  margin: 0;
-  width: fit-content;
-  height: fit-content;
+  left: 100%;
+  border-collapse: collapse;
+  background: transparent;
+  width: 130%;
 }
 
-#opcoesCard li {
-  list-style: none;
-  padding: 15px 20px;
-  background: #0c406f;
-  cursor: pointer;
-}
-
-#opcoesCard li:hover {
-  background: rgb(8, 45, 77);
+#opcoesCard td {
+  background: rgb(11, 83, 148);
+  padding: 10px 20px;
 }
 </style>

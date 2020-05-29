@@ -3,7 +3,11 @@
     <div id="imagem" @mouseenter="notificacoes.push({ descricao: 'oinc' })">
       <div id="conteudo">
         <div id="notificacaoIcone" v-on:click="abrirNotificacoes"></div>
-        <img src="src/images/perfil7.png" alt="foto de perfil" id="imgPerfil" />
+        <img
+          :src="'src/images/perfil' + $session.get('foto') + '.png'"
+          alt="foto de perfil"
+          id="imgPerfil"
+        />
       </div>
     </div>
     <div id="notificacoes" @mouseleave="fecharNotificacoes">

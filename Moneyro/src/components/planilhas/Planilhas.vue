@@ -49,7 +49,7 @@
 </template>
 <script>
 import Menu from "../shared/menu/Menu.vue";
-import Perfil from "../shared/float-perfil/Float-Perfil.vue";
+import Perfil from "../shared/perfil/Perfil.vue";
 import Card from "../shared/cards/Card.vue";
 import Topo from "../shared/voltar-topo/Voltar-Topo.vue";
 

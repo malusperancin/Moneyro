@@ -1,5 +1,5 @@
 <template>
-  <div class="corpo">
+  <div class="web">
     <router-view></router-view>
     <div id="footer">
       <p>&copy; Copyright Moneyro. Nenhum Direito Reservado.</p>
@@ -46,8 +46,8 @@ html {
   background-color: rgb(67, 67, 67);
 }
 
-.corpo {
-  height: 100%;
+.web {
+  height: 100vh;
 }
 
 .pag {

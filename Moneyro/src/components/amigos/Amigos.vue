@@ -34,7 +34,7 @@
 <script>
 import Painel from "../shared/amigo/Amigo.vue";
 import Menu from "../shared/menu/Menu.vue";
-import Perfil from "../shared/float-perfil/Float-Perfil.vue";
+import Perfil from "../shared/perfil/Perfil.vue";
 import Topo from "../shared/voltar-topo/Voltar-Topo.vue";
 import Mensagem from "../shared/mensagem/Mensagem.vue";
 import Add from "../shared/adicionar-amigo/Adicionar-Amigo.vue";

@@ -1,94 +1,113 @@
 <template>
-  <div id="card">
-    <div id="cardContent" class="animate">
-      <span id="close" v-on:click="$emit('fecharCard')">&times;</span>
-      <div v-if="!this.id" class="tipos">
-        <input
-          type="radio"
-          id="desp"
-          name="tipo"
-          value="despensa"
-          checked
-          v-on:click="despesa = true, receita = false"
-        />
-        <label for="desp">Despesa</label>
-        <input
-          type="radio"
-          id="rend"
-          name="tipo"
-          value="receita"
-          v-on:click="despesa = false, receita = true"
-        />
-        <label for="rend">Receita</label>
-      </div>
-      <form id="despesa" v-if="despesa">
-        <span>
-          <p>R$</p>
+  <div class="modal">
+    <div class="modal-conteudo animate width-30">
+      <div class="cima">
+        <div v-if="!this.id" class="tipos">
           <input
-            placeholder="0,00"
-            type="number"
-            min="0.00"
-            max="1000000.00"
-            step="10.00"
-            class="campos quantia"
-            v-model="quantia"
+            type="radio"
+            id="desp"
+            name="tipo"
+            value="despensa"
+            checked
+            v-on:click="despesa = true, receita = false"
           />
-        </span>
-        <input placeholder="Nome" type="text" id="nome" class="campos" v-model="nome" />
+          <label for="desp">Despesa</label>
+          <input
+            type="radio"
+            id="rend"
+            name="tipo"
+            value="receita"
+            v-on:click="despesa = false, receita = true"
+          />
+          <label for="rend">Receita</label>
+        </div>
+        <div class="tipos" v-else>
+          <input type="radio" />
+          <label id="edit">Edição</label>
+        </div>
+        <span class="fechar" v-on:click="$emit('fecharCard')">&times;</span>
+      </div>
 
-        <select name="tag" id="tag" class="campos">
-          <option value="default">Tag: Nenhuma</option>
-          <option v-for="(tag, i) of tags" :key="i" :value="tag.nome">{{ tag.nome }}</option>
-        </select>
+      <div class="corpo">
+        <form>
+          <div class="quantia">
+            <big>R$</big>
+            <input
+              placeholder="0,00"
+              type="number"
+              min="0.00"
+              max="1000000.00"
+              step="10.00"
+              class="campos"
+              v-model="quantia"
+            />
+          </div>
 
-        <input type="date" id="data" class="campos" v-model="data" />
-        <input placeholder="Local" type="text" id="local" class="campos" v-model="local" />
+          <input placeholder="Nome" type="text" id="nome" class="campos" v-model="nome" />
 
-        <div class="dropdown">
-          <div v-on:click="mostrarAmigos" id="btnDrop" class="campos">Compartilhar com... ▾</div>
-          <div id="listaAmigos">
-            <input type="search" placeholder="Pesquisar" v-model="filtroNome" />
-            <div v-for="amigo of filtraNome" :key="amigo.nome" class="amigos">
-              <div class="pretty p-default p-curve p-fill">
-                <input type="checkbox" :id="'amigo'+amigo.id" :name="amigo.nome" />
-                <div class="state p-primary">
-                  <label class="nomeAmigo">{{amigo.nome}}</label>
+          <input type="date" id="data" class="campos" v-model="data" />
+
+          <input
+            v-if="despesa"
+            placeholder="Local"
+            type="text"
+            id="local"
+            class="campos"
+            v-model="local"
+          />
+
+          <select name="tag" id="tag" class="campos" v-model="tag">
+            <option value="default">Tag: Nenhuma</option>
+            <option v-for="(tag, i) of tags" :key="i" :value="tag.nome">{{ tag.nome }}</option>
+          </select>
+
+          <div class="dropdown" v-if="despesa">
+            <div v-on:click="mostrarAmigos" id="btnDrop" class="campos">Compartilhar com... ▾</div>
+            <div id="listaAmigos">
+              <input type="search" placeholder="Pesquisar" v-model="filtroNome" />
+              <div v-for="amigo of filtraNome" :key="amigo.nome" class="amigos">
+                <div class="pretty p-default p-curve p-fill">
+                  <input type="checkbox" :id="'amigo'+amigo.id" :name="amigo.nome" />
+                  <div class="state p-primary">
+                    <label class="nomeAmigo">{{amigo.nome}}</label>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
 
-      <form id="receita" v-if="receita">
-        <span>
-          <p>R$</p>
-          <input
-            placeholder="0,00"
-            type="number"
-            min="0.00"
-            max="1000000.00"
-            step="10.00"
-            class="campos quantia"
-            formaction="0.00"
-            v-model="quantia"
-          />
-        </span>
-        <input placeholder="Nome" type="text" id="nome" class="campos" v-model="nome" />
-        <input type="date" id="data" class="campos" v-model="data" />
-        <select name="tag" id="tag" class="campos">
-          <option value="default">Tag: Nenhuma</option>
-          <option
-            v-for="(tag, i) of tags"
-            :key="i"
-            :value="tag.nome"
-            :id="'tag'+tag.nome"
-          >{{ tag.nome }}</option>
-        </select>
-      </form>
-      <div id="botoes">
-        <span id="excluir" v-on:click="excluir" v-if="id">Excluir</span>
-        <span id="salvar" v-on:click="salvar">Salvar</span>
+        <!-- <form id="receita" v-if="receita">
+          <span>
+            <big>R$</big>
+            <input
+              placeholder="0,00"
+              type="number"
+              min="0.00"
+              max="1000000.00"
+              step="10.00"
+              class="campos quantia"
+              formaction="0.00"
+              v-model="quantia"
+            />
+          </span>
+          <input placeholder="Nome" type="text" id="nome" class="campos" v-model="nome" />
+          <input type="date" id="data" class="campos" v-model="data" />
+          <select name="tag" id="tag" class="campos">
+            <option value="default">Tag: Nenhuma</option>
+            <option
+              v-for="(tag, i) of tags"
+              :key="i"
+              :value="tag.nome"
+              :id="'tag'+tag.nome"
+            >{{ tag.nome }}</option>
+          </select>
+        </form>-->
+      </div>
+
+      <div class="baixo">
+        <span class="excluir" v-on:click="excluir" v-if="id">Excluir</span>
+        <span class="salvar" v-on:click="salvar">Salvar</span>
       </div>
     </div>
   </div>
@@ -96,7 +115,9 @@
 
 <script>
 export default {
-  props: ["id"],
+  props: {
+    id: Number
+  },
   data() {
     return {
       expanded: false,
@@ -108,7 +129,7 @@ export default {
       nome: "",
       data: Date,
       tag: "",
-      quantia: 0.0,
+      quantia: null,
       compartilhado: [],
       local: ""
     };
@@ -211,12 +232,16 @@ export default {
       { id: 3, nome: "Illy" },
       { id: 4, nome: "Venizius" }
     ];
+  },
+  watch: {
+    quantia() {}
   }
 };
 
 // this.$set(this.someObject, "b", 2);
 </script>
 
+<style src="../../../css/modal.css"></style>
 <style scoped>
 #btnDrop {
   font-size: 1.2em;
@@ -297,7 +322,7 @@ form {
   font-size: 1em;
   line-height: 1em;
   text-align: center;
-  padding: 12px 20px;
+  padding: 14px 20px;
   margin-right: -1px;
 }
 
@@ -307,6 +332,10 @@ form {
 
 .tipos input:checked + label {
   background-color: rgba(49, 45, 45, 0.349);
+}
+
+#edit {
+  border-radius: 4px;
 }
 
 .tipos label:first-of-type {
@@ -320,128 +349,33 @@ form {
 .campos {
   border-radius: 5px;
   width: 100%;
-  margin-top: 12px;
+  margin-bottom: 10px;
   border: 0px;
   padding: 7px 14px;
   box-sizing: border-box;
   color: black;
   font-size: 1.2em;
-  background: rgba(0, 0, 0, 0.082);
-}
-
-#close {
-  float: right;
-  width: 40px;
-  height: 40px;
-  border-radius: 25px;
-  background: rgba(255, 0, 0, 0.5);
-  text-align: center;
-  cursor: pointer;
-  font-size: 1.6em;
-  font-weight: bold;
-}
-
-#close:hover {
-  background: rgba(255, 0, 0);
-}
-
-#botoes {
-  display: flex;
-  justify-content: space-around;
-}
-
-#excluir,
-#salvar {
-  padding: 4px 35px;
-  border-radius: 25px;
-  text-align: center;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 1.5em;
-}
-
-#excluir {
-  background: rgba(255, 0, 0, 0.5);
-}
-
-#salvar {
-  background: rgb(0, 255, 0, 0.5);
-}
-
-#salvar:hover {
-  background: rgb(0, 255, 0);
-}
-
-#excluir:hover {
-  background: rgba(255, 0, 0);
-}
-
-#card {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 500;
-}
-
-#cardContent {
-  border-radius: 5px;
-  height: 530px;
-  width: 350px;
-  background: #fff;
-  padding: 15px;
+  background: rgba(0, 0, 0, 0.08);
 }
 
 .quantia {
+  font-size: 2em;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  padding: 0 0 15px;
+}
+
+.quantia input {
   border-bottom: 1px black solid;
-  background-color: white;
-  width: 39%;
   text-align: right;
   padding: 0px 0px 0px;
   border-radius: 0;
+  background: inherit;
+  width: 50%;
 }
 
 #tag {
   width: 100%;
-}
-
-span .quantia,
-p {
-  font-size: 2.5em;
-  display: inline-block;
-}
-
-span p {
-  margin-left: 19%;
-  padding-bottom: 2%;
-  color: gray;
-}
-
-.animate {
-  -webkit-animation: animatezoom 0.6s;
-  animation: animatezoom 0.6s;
-}
-
-@-webkit-keyframes animatezoom {
-  from {
-    -webkit-transform: scale(0);
-  }
-  to {
-    -webkit-transform: scale(1);
-  }
-}
-
-@keyframes animatezoom {
-  from {
-    transform: scale(0);
-  }
-  to {
-    transform: scale(1);
-  }
 }
 </style>

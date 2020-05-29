@@ -61,7 +61,7 @@ namespace ProjetoPratica_API.Data
         public async Task<Usuarios> GetUsuarioByApelido(string apelido)
         {
             IQueryable<Usuarios> consultaUsuario = (IQueryable<Usuarios>)this.Context.Usuarios;
-            consultaUsuario = consultaUsuario.OrderBy(u => u.Id).Where(usuario => usuario.Apelido == apelido);
+            consultaUsuario = consultaUsuario.OrderBy(u => u.Id).Where(usuario => usuario.Apelido.Equals(apelido));
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaUsuario.FirstOrDefaultAsync();
         }

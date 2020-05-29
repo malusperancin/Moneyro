@@ -50,6 +50,8 @@ export default {
   margin: 5px;
   box-sizing: border-box;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .info {
@@ -80,6 +82,7 @@ export default {
   text-align: center;
   font-size: 1.1em;
   background: rgba(99, 88, 160, 0.336);
+  border-bottom: 5px solid rgba(77, 63, 158, 0);
   margin: 10px 0px;
 }
 

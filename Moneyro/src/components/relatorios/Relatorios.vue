@@ -51,7 +51,7 @@
 
 <script>
 import Menu from "../shared/menu/Menu.vue";
-import Perfil from "../shared/float-perfil/Float-Perfil.vue";
+import Perfil from "../shared/perfil/Perfil.vue";
 
 export default {
   components: {

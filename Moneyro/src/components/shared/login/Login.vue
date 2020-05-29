@@ -1,27 +1,24 @@
 <template>
   <div class="modal">
-    <form class="modal-content animate" v-on:submit.prevent="logar">
-      <div class="imgcontainer">
-        <span v-on:click="$emit('fechar')" class="close" title="Close Modal">&times;</span>
+    <form class="modal-conteudo animate width-30" v-on:submit.prevent="logar">
+      <div class="cima">
+        <span v-on:click="$emit('fechar')" class="fechar" title="Fechar login">&times;</span>
       </div>
-      <div class="container">
-        <label for="uname">
+      <div class="corpo">
+        <label for="apelido">
           <b>Apelido</b>
         </label>
-        <input type="text" name="nomeusuario" required v-model="usuario.apelido" />
+        <input type="text" name="apelido" required v-model="apelido" />
 
-        <label for="psw">
+        <label for="senha">
           <b>Senha</b>
         </label>
-        <input type="password" name="senha" required v-model="usuario.senha" />
+        <input type="password" name="senha" required v-model="senha" />
 
-        <button id="btnlogin" type="submit">
-          Login
-        </button>
+        <button id="btnlogin" type="submit">Login</button>
         <div id="erro">{{erro}}</div>
       </div>
-
-      <div class="container" style="background-color:#f1f1f1">
+      <div class="baixo">
         <button type="button" v-on:click="$emit('fechar')" id="btncancelar">Cancelar</button>
         <span class="psw">
           Esqueceu a
@@ -38,45 +35,29 @@ export default {
     return {
       apelido: "",
       senha: "",
-      erro: "",
-      usuario: {
-        Nome: "",
-        Apelido: "",
-        Email: "",
-        Celular: "",
-        DataDeNascimento: "",
-        Foto: 1,
-        Senha: "",
-        Cidade: "",
-        Estado: "",
-        ModoAnonimo: false,
-        Notificacoes: false,
-        Saldo: 0.0
-      }
+      erro: ""
     };
   },
   methods: {
     logar: function() {
-    //   this.$http.get("https://localhost:5001/api/usuarios/2").then(response => {
-    //   this.info = response;
-    // });
       this.$http
-        .post(".https://localhost:5001/api/usuarios/login/",this.usuario)
+        .post("https://localhost:5001/api/usuarios/login", {
+          apelido: this.apelido,
+          senha: this.senha
+        })
         .then(
           function(response) {
-            alert("deu certo");
-            if (response.status === 200 && "token" in response.body) {
+            if (response.status === 200 && "id" in response.body) {
               this.$session.start();
-              this.$session.set("jwt", response.body.token);
-              this.$session.set("id", 2);
-              Vue.http.headers.common["Authorization"] =
-                "Bearer " + response.body.token;
+              this.$session.set("id", response.body.id);
+              this.$session.set("foto", response.body.foto);
+              this.$http.headers.common["Authorization"] =
+                "Bearer " + response.body.id;
               this.$router.push("/usuario");
             }
           },
           function(err) {
-            alert("nao foi");
-            this.erro = err.bodyText;
+            this.erro = err.body;
           }
         );
     }
@@ -84,6 +65,7 @@ export default {
 };
 </script>
 
+<style src="../../../css/modal.css"></style>
 <style scoped>
 #erro {
   font-weight: 1000;
@@ -94,21 +76,32 @@ input[type="text"],
 input[type="password"] {
   border-radius: 3px;
   width: 100%;
-  padding: 12px 20px;
+  padding: 8px 14px;
   margin: 8px 0;
-  display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;
+  font-size: 20px;
 }
 
 #btnlogin {
   background-color: rgb(12, 65, 111);
+  font-size: 18px;
   color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
+  padding: 8px 14px;
+  margin: 8px 0 0px;
   border: none;
   cursor: pointer;
   width: 100%;
+  border-radius: 3px;
+}
+
+#btncancelar {
+  background-color: rgba(255, 0, 0, 0.5);
+  font-size: 18px;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
   border-radius: 3px;
 }
 
@@ -117,100 +110,6 @@ input[type="password"] {
 }
 
 #btncancelar:hover {
-  opacity: 0.9;
-}
-
-#btncancelar {
-  width: auto;
-  padding: 10px 18px;
-  background-color: #f44336;
-  color: white;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-.imgcontainer {
-  text-align: center;
-  margin: 24px 0 12px 0;
-  position: relative;
-}
-
-.container {
-  padding: 16px;
-}
-
-span.psw {
-  float: right;
-  padding-top: 16px;
-}
-
-.modal {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: block;
-  position: fixed;
-  z-index: 999;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
-.modal-content {
-  background-color: #fefefe;
-  margin: 8% auto 10% auto;
-  border: 1px solid #888;
-  width: 35%;
-}
-
-.close {
-  position: absolute;
-  right: 25px;
-  top: 0;
-  color: #000;
-  font-size: 35px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: red;
-  cursor: pointer;
-}
-
-.animate {
-  -webkit-animation: animatezoom 0.6s;
-  animation: animatezoom 0.6s;
-}
-
-@-webkit-keyframes animatezoom {
-  from {
-    -webkit-transform: scale(0);
-  }
-  to {
-    -webkit-transform: scale(1);
-  }
-}
-
-@keyframes animatezoom {
-  from {
-    transform: scale(0);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-
-/* Change styles for span and cancel button on extra small screens */
-@media screen and (max-width: 300px) {
-  span.psw {
-    display: block;
-    float: none;
-  }
-  .cancelbtn {
-    width: 100%;
-  }
+  background: red;
 }
 </style>

@@ -1,18 +1,22 @@
 <template>
-  <div class="fundo">
-    <div class="fotos animate">
-      <div class="imgFechar">
+  <div class="modal">
+    <div class="modal-conteudo width-45 animate">
+      <div class="cima">
+        <big>Selecione uma foto</big>
         <span class="fechar" v-on:click="$emit('fechar')">&times;</span>
       </div>
-      <p>Selecione uma foto</p>
-      <img
-        :src="'src/images/perfil' + num + '.png'"
-        v-for="num in qtdImagem"
-        v-bind:key="num"
-        class="imagem"
-        :id="num"
-        v-on:click="enviar(num)"
-      />
+      <div class="corpo">
+        <div class="over">
+          <img
+            :src="'src/images/perfil' + num + '.png'"
+            v-for="num in qtdImagem"
+            v-bind:key="num"
+            class="imagem"
+            :id="num"
+            v-on:click="enviar(num)"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -41,19 +45,22 @@ export default {
 };
 </script>
 
+<style src="../../../css/modal.css"></style>
 <style scoped>
-.fundo {
-  background: rgba(0, 0, 0, 0.199);
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  position: fixed;
-  height: 100%;
-  width: 100%;
-  left: 0;
-  top: 0;
-  z-index: 5;
-  display: grid;
+.corpo {
+  background: rebeccapurple;
+  border-radius: 0 0 5px 5px;
+  height: 60vh;
+}
+
+.cima {
+  background: rgb(114, 51, 177);
+  box-shadow: #00000040 0px 2px 5px;
+}
+
+big {
+  font-size: 2em;
+  color: white;
 }
 
 .imagem {
@@ -70,81 +77,7 @@ export default {
   cursor: pointer;
 }
 
-.fotos {
-  background: rgba(50, 51, 51, 0.856);
-  padding: 10px;
-  margin: auto;
-  width: 80%;
-  max-width: 650px;
-  overflow: hidden;
-  box-shadow: 5px 5px 5px #00000040;
-  border-radius: 8px;
-}
-
-.imgFechar {
-  text-align: center;
-  top: 2%;
-  right: 2%;
-  position: relative;
-}
-
-.fechar {
-  padding: 0px 18px;
-  font-size: 2.2em;
-  border-radius: 87px;
-  background: rgb(236, 65, 65);
-  position: absolute;
-  right: 0;
-  top: 0;
-  font-weight: bold;
-}
-
-.fechar:hover {
-  background: red;
-  cursor: pointer;
-}
-
-p {
-  margin-left: 4%;
-  font-size: 1.8em;
-  color: white;
-}
-
 .selecionada {
   border: 4px solid white !important;
-}
-
-.animate {
-  -webkit-animation: animatezoom 0.6s;
-  animation: animatezoom 0.6s;
-}
-
-@-webkit-keyframes animatezoom {
-  from {
-    -webkit-transform: scale(0);
-  }
-  to {
-    -webkit-transform: scale(1);
-  }
-}
-
-@keyframes animatezoom {
-  from {
-    transform: scale(0);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-
-/* Change styles for span and cancel button on extra small screens */
-@media screen and (max-width: 300px) {
-  span.psw {
-    display: block;
-    float: none;
-  }
-  .cancelbtn {
-    width: 100%;
-  }
 }
 </style>

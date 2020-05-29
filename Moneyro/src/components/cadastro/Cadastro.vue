@@ -3,9 +3,9 @@
     <cabecalho :titulo="'Cadastro'"></cabecalho>
     <Mensagem
       :msg="msg"
-      v-if="exibirMsg"
+      v-if="msg.visivel"
       v-on:login="login = true, exibirMsg = false"
-      v-on:cancelar="exibirMsg = false"
+      v-on:ok="exibirMsg = false"
     ></Mensagem>
     <div id="formCadastro">
       <form v-on:submit.prevent="cadastrar" id="formCad">
@@ -31,7 +31,6 @@
           required
         />
         <br />
-
         <input
           type="email"
           class="campos"
@@ -182,7 +181,7 @@
 
 <script>
 import Login from "../shared/login/Login.vue";
-import Header from "../shared/header/Header.vue";
+import Header from "../shared/cabecalho/Cabecalho.vue";
 import Lista from "../shared/lista-fotos/Lista-Fotos.vue";
 import Mensagem from "../shared/mensagem/Mensagem.vue";
 
@@ -212,49 +211,15 @@ export default {
       dia: 1,
       mes: 1,
       ano: 1900,
-      siglas: [
-        "AC",
-        "AL",
-        "AP",
-        "AM",
-        "BA",
-        "CE",
-        "DF",
-        "ES",
-        "GO",
-        "MA",
-        "MT",
-        "MS",
-        "MG",
-        "PA",
-        "PB",
-        "PR",
-        "PE",
-        "PI",
-        "RJ",
-        "RN",
-        "RS",
-        "RO",
-        "RR",
-        "SC",
-        "SP",
-        "SE",
-        "TO"
-      ],
+      siglas: [],
       msg: {
+        visivel: false,
         titulo: "",
         mensagem: "",
-        ok: {
-          mensagem: "",
-          mostrar: false,
-          evento: "login"
-        },
-        cancelar: false,
-        sair: false
+        botoes: []
       },
       login: false,
-      mudarFoto: false,
-      exibirMsg: false
+      mudarFoto: false
     };
   },
   methods: {
@@ -273,26 +238,40 @@ export default {
             this.msg.mensagem =
               "Você foi cadastrado com sucesso!\n Agora vá na página de login e entre.";
 
-            this.msg.ok.mostrar = true;
-            this.msg.ok.evento = "login";
-            this.msg.ok.mensagem = "Fazer login";
-            this.msg.cancelar = true;
-            this.msg.sair = false;
-            this.exibirMsg = true;
+            this.msg.botoes.push(
+              {
+                mensagem: "Fazer login",
+                evento: "login"
+              },
+              {
+                mensagem: "OK",
+                evento: "ok"
+              }
+            );
+
+            this.msm.visivel = true;
           },
           response => {
             this.msg.titulo = "Deu tudo errado...";
             this.msg.mensagem = response.bodyText;
 
-            this.msg.ok.mostrar = true;
-            this.msg.ok.evento = "cancelar";
-            this.msg.ok.mensagem = "Ok";
+            this.msg.botoes.push({
+              mensagem: "Ok",
+              evento: "ok"
+            });
 
-            this.msg.cancelar = false;
-            this.exibirMsg = true;
+            this.msg.visivel = true;
           }
         );
     }
+  },
+  created() {
+    this.$http
+      .get("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+      .then(response => {
+        for (var i = 0; i < response.body.length; i++)
+          this.siglas.push(response.body[i].sigla);
+      });
   }
 };
 </script>

@@ -8,11 +8,10 @@
       <div class="botoes">
         <span
           class="botao"
-          v-if="msg.ok.mostrar"
-          v-on:click="$emit(msg.ok.evento)"
-        >{{msg.ok.mensagem}}</span>
-        <span class="botao" v-if="msg.cancelar" v-on:click="$emit('cancelar')">Cancelar</span>
-        <span class="botao" v-if="msg.sair" v-on:click="$emit('sair')">Sair</span>
+          v-for="(botao, i) in msg.botoes"
+          :key="i"
+          v-on:click="$emit(botao.evento)"
+        >{{botao.mensagem}}</span>
       </div>
     </div>
   </div>
@@ -22,15 +21,7 @@
 export default {
   props: ["msg"],
   data() {
-    return {
-      Mensagem: {
-        mensagem: "",
-        titulo: "",
-        sair: false,
-        cancelar: false,
-        ok: false
-      }
-    };
+    return {};
   }
 };
 </script>

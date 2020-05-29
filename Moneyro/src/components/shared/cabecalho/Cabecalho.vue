@@ -18,17 +18,15 @@ export default {
   color: white;
   background-color: rgba(12, 65, 111, 0.9);
   position: fixed;
-  height: 100px;
+  height: 8vh;
   width: 100%;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 #logo {
   width: 100px;
-}
-
-h1 {
-  display: inline-table;
-  vertical-align: 80%;
 }
 </style>

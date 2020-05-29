@@ -53,9 +53,8 @@ namespace ProjetoPratica_API.Controllers
 
         [HttpPost]
         [Route("login/")]
-        public async Task<IActionResult> post(Usuarios modelo)
+        public async Task<IActionResult> PostLogin(Usuarios modelo)
         {
-            Console.WriteLine("ENTRO SENHO");
             try
             {
                 var result = await this.Repo.GetUsuarioByApelido(modelo.Apelido);

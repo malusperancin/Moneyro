@@ -66,7 +66,7 @@
 
 <script>
 import Login from "../shared/login/Login.vue";
-import Header from "../shared/header/Header.vue";
+import Header from "../shared/cabecalho/Cabecalho.vue";
 
 export default {
   components: {

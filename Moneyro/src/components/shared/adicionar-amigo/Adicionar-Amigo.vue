@@ -1,16 +1,11 @@
 <template>
-  <div id="fundo">
-    <div id="conteudo">
-      <div id="topo">
+  <div class="modal">
+    <div class="modal-conteudo width-35 animate">
+      <div class="cima">
         <div id="titulo">Adicionar Friends</div>
-        <div id="fechar" v-on:click="$emit('fechar')">
-          <span>&times;</span>
-        </div>
+        <div class="fechar" v-on:click="$emit('fechar')">&times;</div>
       </div>
-      <div id="busca">
-        <input type="search" v-model="filtro" placeholder="Pesquise um usuário" />
-      </div>
-      <div id="lista">
+      <div class="corpo">
         <table cellspacing="0">
           <tr class="usuario-item" v-for="(usuario, i) of filtraNome" :key="i">
             <td class="td-img">
@@ -44,6 +39,12 @@
             </td>
           </tr>
         </table>
+      </div>
+      <div class="baixo">
+        <span>Busque um amigo:</span>
+        <div id="busca">
+          <input type="search" v-model="filtro" placeholder="Pesquisar" />
+        </div>
       </div>
     </div>
   </div>
@@ -128,15 +129,34 @@ export default {
 };
 </script>
 
+<style src="../../../css/modal.css"></style>
 <style scoped>
+.corpo {
+  background: rebeccapurple;
+  height: 60vh;
+}
+
+.cima {
+  background: #7233b1;
+  box-shadow: #00000040 0px 2px 5px;
+  color: white;
+}
+
+.baixo {
+  box-shadow: 0px -2px 5px #00000040;
+  background: #7233b1;
+}
+
+.baixo span {
+  color: white;
+  font-size: 1.3em;
+  margin-right: 15px;
+}
+
 .usuario-item {
-  /* background-image: linear-gradient(
-    to right,
-    rgb(64, 74, 163),
-    rgb(115, 124, 206)
-  ); */
   animation: zoomOut 0.5s;
-  background-color: rgb(111, 87, 170);
+  /* background-color: rgb(111, 87, 170); */
+  background: blueviolet;
 }
 
 .apelido {
@@ -148,17 +168,6 @@ export default {
 .td-info span {
   margin-bottom: -5px;
   padding-bottom: -5px;
-}
-
-#fundo {
-  background-color: rgba(0, 0, 0, 0.2);
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  z-index: 9999;
 }
 
 .td-btn button {
@@ -176,7 +185,7 @@ export default {
 .td-img img {
   width: 70px;
   margin: 5px 0 0 5px;
-  border-radius: 10px;
+  border-radius: 4px;
 }
 
 table {
@@ -186,7 +195,7 @@ table {
 
 .td-img {
   padding: 5px;
-  width: 25%;
+  width: 25px;
   text-align: center;
   align-items: center;
 }
@@ -210,49 +219,29 @@ td {
   padding: 0;
 }
 
-#lista {
-  margin-top: 15px;
-}
-
 ::-webkit-scrollbar {
   width: 11px;
   background: rgb(43, 19, 99);
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
   background: rgb(255, 255, 255);
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
 }
 
 .usuario-item {
   overflow: auto;
-  border-radius: 10px;
+  border-radius: 4px;
 }
 
 tr td:first-child {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
 }
 
 tr td:last-child {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-
-#conteudo {
-  height: 80vh;
-  width: 30vw;
-  color: white;
-  background: rgb(73, 43, 143);
-  padding: 15px;
-  animation: zoomIn 0.5s;
-  border-radius: 5px;
-  overflow: auto;
-}
-
-#topo {
-  display: flex;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
 }
 
 #titulo {
@@ -262,44 +251,10 @@ tr td:last-child {
   margin: auto;
 }
 
-#fechar {
-  background: red;
-  float: right;
-  padding: 2px 14px;
-  border-radius: 87px;
-  cursor: pointer;
-  font-size: 1.5em;
-  color: black;
-}
-
-#busca {
-  display: flex;
-  justify-content: center;
-  margin: 10px;
-}
-
 #busca input {
   border-radius: 5px;
   border: none;
   padding: 5px 10px;
   font-size: 1.2em;
-}
-
-@keyframes zoomIn {
-  from {
-    transform: scale(0.5);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-
-@keyframes zoomOut {
-  from {
-    transform: scale(1.1);
-  }
-  to {
-    transform: scale(1);
-  }
 }
 </style>
