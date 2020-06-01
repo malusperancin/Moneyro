@@ -10,7 +10,8 @@
       v-on:fechar="msg.visivel = false"
     ></Mensagem>
     <div class="centro">
-      <form v-on:submit.prevent="salvar"  id="informacoes">
+      <form  id="informacoes">
+        <!-- v-on:submit.prevent="salvar" -->
         <div id="principal">
           <div id="mudaessenome">
             <div id="foto">
@@ -48,7 +49,7 @@
                   <label>Modo Anônimo</label>
                 </div>
               </div>
-              <button v-on:submit.prevent="" id="trocarSenha" v-on:click="senha = true">Trocar senha</button>
+              <button id="trocarSenha" v-on:click="senha = true">Trocar senha</button>
             </div>
           </div>
           <form v-on:submit.prevent="enviarAvaliacao" id="avaliacao">
@@ -85,7 +86,7 @@
               <br />
               <textarea maxlength="200" id="opiniao" v-model="comentario"></textarea>
             </div>
-            <button type="submit" class="botoes" id="enviar">Enviar</button>
+            <button type="submit" v-on:submit.prevent="salvar" class="botoes" id="enviar">Enviar</button>
           </form>
         </div>
         <div class="divi"></div>
@@ -163,7 +164,7 @@
           </div>
           <div>
             <button class="cancelar botoes">Cancelar</button>
-            <button type="submit" class="botoes" id="salvar">Salvar</button>
+            <button v-on:click="salvar" class="botoes" id="salvar">Salvar</button>
           </div>
         </div>
       </form>

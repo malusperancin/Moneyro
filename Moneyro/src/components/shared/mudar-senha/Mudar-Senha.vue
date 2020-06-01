@@ -2,7 +2,7 @@
   <div class="modal">
       <form v-on:submit.prevent="mudarSenha" class="modal-conteudo animate width-30">
           <div class="cima">
-              Mude sua senha
+              Mude sua senha {{usuario.senha}} {{senha1}} {{senha2}}
               <span class="fechar" v-on:click="$emit('fechar')">&times;</span>
           </div>
           <div class="corpo">
@@ -12,6 +12,7 @@
           </div>
           <div class="baixo">
               {{erro}}
+              {{usuario}}
               <button type="submit">Mudar</button>
           </div>
       </form>
@@ -23,10 +24,24 @@ export default {
     data(){
         return{
             erro: "",
-            senhaUsuario: "",
             senha0: "",
             senha1: "",
-            senha2: ""
+            senha2: "",
+            usuario:{
+                id: 0,
+                nome: "",
+                apelido: "",
+                email: "",
+                celular: "",
+                dataDeNascimento: "",
+                foto: 1,
+                senha: "",
+                cidade: "",
+                estado: "",
+                modoAnonimo: false,
+                notificacoes: false,
+                saldo: 0.0
+            }
         }
     },
     methods: {
@@ -37,29 +52,37 @@ export default {
                 return;
             }
 
-            if(this.senhaUsuario != this.senha0)
+            if(this.usuario.senha != this.senha0)
             {
                 this.erro = "Senha atual incorreta";
                 return;
             }
             
             this.$http
-            .get("https://localhost:5001/api/usuarios/" + this.$session.get("id"))
+            .put("https://localhost:5001/api/usuarios/" + this.$session.get("id"), this.usuario
+            )
             .then(response => {
+                alert("atualizou");
               this.usuario = response.body;
 
               var data = new Date(response.body.dataDeNascimento);
               this.dia = data.getDate();
               this.mes = data.getMonth();
               this.ano = data.getFullYear();
-            });
+              // fazer os emit lá
+              this.$emit("senhaAlterada");
+            },
+                //fazer emite q deu errado
+                 alert("NAO atualizou")
+            );
+
             }
         },
     created(){
         this.$http
             .get("https://localhost:5001/api/usuarios/" + this.$session.get("id"))
             .then(response => {
-              this.senhaUsuario = response.body.senha;
+              this.usuario = response.body;
             });
     }
 }

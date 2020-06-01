@@ -14,10 +14,10 @@
         <td class="titulos adicionar" @mouseenter="tipos = true" @mouseleave="tipos = false">
           <p>Adicionar</p>
           <table id="opcoesCard">
-            <tr v-on:click="verCard = true">
+            <tr v-on:click="verCard = true, ativo = false">
               <td>Despesa ou Receita</td>
             </tr>
-            <tr v-on:click="verMeta = true">
+            <tr v-on:click="verMeta = true,  ativo = false">
               <td>Meta</td>
             </tr>
           </table>
