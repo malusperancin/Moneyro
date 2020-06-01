@@ -273,5 +273,11 @@ namespace ProjetoPratica_API.Data
 
             return await consultaTag.FirstOrDefaultAsync();
         }
+
+       public async Task<Situacoes[]> GetAllSituacoes()
+        {
+            IQueryable<Situacoes> consultaSituacoes = (IQueryable<Situacoes>)this.Context.Situacoes;
+            return await consultaSituacoes.ToArrayAsync();
+        }
     }
 }

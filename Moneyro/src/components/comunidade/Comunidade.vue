@@ -71,66 +71,9 @@ export default {
     return {
       buscaVideo: "",
       buscaArtigo: "",
-      videos: [
-        {
-          assunto: "Noticia semanal",
-          link: "https://www.youtube.com/embed/NP45AmnSRUs?rel=0", // &modestbranding=1&autohide=0&showinfo=0&controls=0
-          titulo: "ESQUENTANDO A JANTA DO MARIDÃO IRRRAAÁÁ"
-        },
-        {
-          assunto: "Top 10",
-          link: "https://www.youtube.com/embed/kBJgtvhMXx4?rel=0",
-          titulo: "TOP 10 TORNEIRAS"
-        },
-        {
-          assunto: "Aviso Importante",
-          link: "https://www.youtube.com/embed/qDH7-XPX9aE?rel=0",
-          titulo: "LAMBE MEU CU CHEIO DE MERDA"
-        }
-      ],
-      artigos: [
-        {
-          assunto: "Trabalho",
-          link:
-            "http://noticiasenegocios.com.br/2020/03/o-trabalho-remoto-durante-a-pandemia-do-coronavirus/",
-          titulo: "O trabalho remoto durante a pandemia do coronavírus",
-          foto:
-            "https://s2.glbimg.com/3whx-uMjWYJlmwse4fLBLc3Bo_Y=/640x424/i.glbimg.com/og/ig/infoglobo/f/original/2020/03/29/gret.jpg"
-        },
-        {
-          assunto: "Noticia semanal",
-          link:
-            "https://g1.globo.com/politica/noticia/2020/04/29/apos-decisao-de-moraes-bolsonaro-torna-sem-efeito-nomeacao-de-ramagem-para-direcao-da-pf.ghtml",
-          titulo:
-            "Após decisão de Moraes, governo desiste de nomear Ramagem e procura outro diretor para a PF",
-          foto:
-            "https://thumbs.dreamstime.com/z/not%C3%ADcia-extra-34903764.jpg"
-        }
-      ],
-      citacoes: [
-        {
-          texto: "lambe meu cu cheio de merda",
-          autor: "Web Diva Tula Luana"
-        },
-        {
-          texto: "Da bom dia pra sua mãe, aquela cachorra",
-          autor: "Vizinho"
-        },
-        {
-          texto:
-            "Se o mundo existe, gracas a deus, por que existe? por que, gracas a deus, nos fizemos o mundo gracas a deus porque deus fez o mundo mas eu falei uma palavra certo se nao nao existimono.. mos se nao existiamos nós, o que ia acontecer?",
-          autor: "Ines Brasil"
-        },
-        {
-          texto: "Gi, Sumaré só tem velho igual Valinhos?",
-          autor: "Vinicius irmão da jovanna"
-        },
-        {
-          texto:
-            "Nah, em sumaré todo mundo é jovem pq não chegam na velhice, eles morrem baleado.",
-          autor: "Jovana"
-        }
-      ]
+      videos: [],
+      artigos: [],
+      citacoes: []
     };
   },
   computed: {
@@ -158,6 +101,24 @@ export default {
   },
   created(){
     document.title = "Comunidade";
+    
+    this.$http
+      .get("https://localhost:5001/api/videos")
+      .then(response => {
+        this.videos = response.body;
+      });
+      
+    this.$http
+      .get("https://localhost:5001/api/artigos")
+      .then(response => {
+        this.artigos = response.body;
+      });
+
+    this.$http
+      .get("https://localhost:5001/api/citacoes")
+      .then(response => {
+        this.citacoes = response.body;
+      });
   }
 };
 </script>

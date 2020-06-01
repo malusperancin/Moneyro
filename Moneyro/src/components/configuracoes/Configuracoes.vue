@@ -2,7 +2,7 @@
   <div class="pag">
     <Menu />
     <Histrograma v-if="avaliacoes" v-on:fechar="avaliacoes= false" />
-    <mudar-senha v-if="senha" v-on:fechar="senha = false"></mudar-senha>
+    <mudar-senha v-on:sucesso="mudarSenha" v-if="senha" v-on:fechar="senha = false"></mudar-senha>
     <Mensagem
       :msg="msg"
       v-if="msg.visivel"
@@ -59,32 +59,18 @@
               style="margin-bottom:20px"
               title="clique para ver mais avaliações"
             >Avaliações do Aplicativo</label>
-            <br />
-            <label>Nota:</label>
-            <div>
-              <div class="rating-group">
-                  <input disabled  class="rating__input rating__input--none" name="rating3" id="rating3-none" value="0" type="radio">
-
-                    <label aria-label="1 star" class="rating__label" for="rating3-1"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-                    <input class="rating__input" name="rating3" id="rating3-1" value="1" type="radio">
-
-                    <label aria-label="2 stars" class="rating__label" for="rating3-2"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-                    <input class="rating__input" name="rating3" id="rating3-2" value="2" type="radio">
-
-                    <label aria-label="3 stars" class="rating__label" for="rating3-3"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-                    <input class="rating__input" name="rating3" id="rating3-3" value="3" type="radio">
-
-                    <label aria-label="4 stars" class="rating__label" for="rating3-4"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-                    <input class="rating__input" name="rating3" id="rating3-4" value="4" type="radio">
-
-                    <label aria-label="5 stars" class="rating__label" for="rating3-5"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-                    <input class="rating__input" name="rating3" id="rating3-5" value="5" type="radio">
-              </div>
+            <label class="tituloAva" style="color:black">Deixe sua opinião:</label>
+            <div id="estrelas">
+            <fieldset class="rating">
+                <input type="radio" id="star5" name="rating" value="5" v-on:click="estrelas = 5" /><label class = "full" for="star5" title="Bem Bem bon - 5 estrelas"></label>
+                <input type="radio" id="star4" name="rating" value="4" v-on:click="estrelas = 4"/><label class = "full" for="star4" title="Ben bon - 4 estrelas"></label>
+                <input type="radio" id="star3" name="rating" value="3" v-on:click="estrelas = 3"/><label class = "full" for="star3" title="Meh - 3 estrelas"></label>
+                <input type="radio" id="star2" name="rating" value="2" v-on:click="estrelas = 2"/><label class = "full" for="star2" title="Mei ruinzin - 2 estrelas"></label>
+                <input type="radio" id="star1" name="rating" value="1" v-on:click="estrelas = 1"/><label class = "full" for="star1" title="Ta um horrô - 1 estrela"></label>
+            </fieldset>
             </div>
             <div id="comentario">
-              <label c="titulo">Deixe sua opinião:</label>
-              <br />
-              <textarea maxlength="200" id="opiniao" v-model="comentario"></textarea>
+              <textarea maxlength="200" id="opiniao" v-model="comentario" required></textarea>
             </div>
             <button type="submit" v-on:submit.prevent="salvar" class="botoes" id="enviar">Enviar</button>
           </form>
@@ -168,7 +154,6 @@
           </div>
         </div>
       </form>
-        {{a}}
     </div>
   </div>
 </template>
@@ -220,25 +205,11 @@ export default {
         mensagem: "",
         botoes: []
       },
-      a: ""
     };
   },
   methods: {
     receber: function(numero) {
       this.usuario.foto = numero;
-    },
-    setEstrelas(num) {
-      // for (var i = 0; i < num; i++) estrelas.item(i).classList.add("checked");
-      // this.estrelas = num;
-    },
-    colorirEstrela(num) {
-      // for (var i = 0; i < 5; i++) estrelas.item(i).classList.remove("checked");
-      // for (var i = 0; i < num; i++) estrelas.item(i).classList.add("checked");
-    },
-    descolorirEstrelas() {
-      // for (var i = 0; i < 5; i++) estrelas.item(i).classList.remove("checked");
-      // for (var i = 0; i < this.estrelas; i++)
-        // estrelas.item(i).classList.add("checked");
     },
     getUsuario(){
       this.$http
@@ -249,7 +220,7 @@ export default {
               var data = new Date(response.body.dataDeNascimento);
 
               this.dia = data.getDate();
-              this.mes = data.getMonth();
+              this.mes = data.getMonth()+1;
               this.ano = data.getFullYear();
             });
     },
@@ -262,7 +233,7 @@ export default {
       today = yyyy + '-' + mm + '-' + dd;
       
       var avaliacao = {
-       qtdEstrelas: 3,
+       qtdEstrelas: this.estrelas,
        comentario: this.comentario,
        data: today,
        idUsuario: this.$session.get('id')
@@ -298,24 +269,23 @@ export default {
     },
     salvar(){
       var dd = String(this.dia).padStart(2, '0');
-      var mm = String(this.mes + 1).padStart(2, '0');
+      var mm = String(this.mes).padStart(2, '0');
       this.usuario.dataDeNascimento = this.ano + "-" + mm + "-" + dd;
 
-      this.$http.put("https://localhost:5001/api/usuarios/"+this.$session.get('id'), this.usuario)
+      this.$http.put("https://localhost:5001/api/usuarios/1", this.usuario)
       .then(
           response => {
             this.msg.titulo = "Sucesso";
             this.msg.mensagem =
-              "Suas informações foram alteradas sucesso";
+              "Suas informações foram alteradas com sucesso";
             this.msg.botoes = [
               {
                 mensagem: "OK",
                 evento: "fechar"
               }
-            ];
+            ]; 
           },
           response => {
-            this.a=response;
             this.msg.titulo = "Opa neném";
             this.msg.mensagem = "Algo deu errado ao alterar suas informações";
             this.msg.botoes = [
@@ -324,15 +294,29 @@ export default {
                evento: "fechar"
              }
             ];
-
-            this.msg.visivel = true;
-
+            
             this.getUsuario();
           }
         );
-    }
 
-  },
+        this.msg.visivel = true;
+    },
+     mudarSenha(){
+        this.msg.titulo = "Sucesso";
+            this.msg.mensagem =
+            "Sua senha foi alterada com sucesso";
+          this.msg.botoes = [
+            {
+              mensagem: "Ok",
+              evento: "fechar"
+            }
+          ];
+
+          this.msg.visivel = true;
+          this.senha = false;
+   },
+  
+    },
   mounted() {
     var lista = document.getElementById("estado");
     lista.value = this.usuario.estado;
@@ -353,12 +337,31 @@ export default {
     if (!this.$session.exists()) {
       this.$router.push('/')
     }
-  }
-};
+  
+}
+}
 </script>
 
 <style src="../../css/estrelas.css"></style>
 <style scoped>
+.rating>label {
+    color: #ddd;
+    float: right;
+    transform: scale(1.5);
+    margin: 2px;
+}
+
+.tituloAva{
+  font-size: 1.3em;
+  margin: 5px;
+  /* font-weight: bold; */
+}
+#estrelas{
+  /* padding-top:10px; */
+  text-align:center;
+  width:100%;
+}
+
 #enviar {
   border-top: 0px;
   background: rgb(11, 83, 148);
@@ -366,15 +369,17 @@ export default {
   color: white;
   margin-top: 1%;
   margin-bottom: 1%;
+  width: 50%;
 }
 
 #opiniao {
   width: 100%;
   resize: none;
   padding: 10px;
+  margin-top:10px;
   font-size: 1.2em;
   box-sizing: border-box;
-  border-radius: 15px;
+  border-radius: 10px;
 }
 
 #titulo {
@@ -419,14 +424,14 @@ export default {
   margin-top: 5.9%;
   border-radius: 10px;
   padding: 8px 16px;
-  /* width: fit-content; */
   height: max-content;
-  /* background: #ecb3188f; */
-  background: rgb(144, 112, 175);
+  background: #ecb318a6; 
+  display: flex;
+  flex-direction: column;
 }
 
 #avaliacao div {
-  width: 100%;
+  /* width: 100%; */
 }
 
 #avaliacao .enunciado:hover {
@@ -483,7 +488,7 @@ export default {
 .enunciado {
   font-size: 1.5em;
   color: rgb(11, 83, 148);
-  margin: 5px;
+  /* margin: 5px; */
   font-weight: bold;
 }
 
@@ -515,7 +520,7 @@ export default {
   border-radius: 87px;
   height: 100;
   margin: 5px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0);
 }
 
 #dataNasc {
@@ -581,4 +586,32 @@ export default {
   background: rgb(11, 83, 148);
   border-radius: 30px;
 }
+
+.rating>input:checked~label,
+
+/* show gold star when clicked */
+
+.rating:not(:checked)>label:hover,
+
+/* hover current star */
+
+.rating:not(:checked)>label:hover~label {
+    color: rgb(70, 117, 121);
+}
+
+/* hover previous stars in list */
+
+.rating>input:checked+label:hover,
+
+/* hover current star when changing rating */
+
+.rating>input:checked~label:hover,
+.rating>label:hover~input:checked~label,
+
+/* lighten current selection */
+
+.rating>input:checked~label:hover~label {
+    color: rgb(148, 155, 156);
+}
+
 </style>

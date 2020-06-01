@@ -2,18 +2,19 @@
   <div class="modal">
       <form v-on:submit.prevent="mudarSenha" class="modal-conteudo animate width-30">
           <div class="cima">
-              Mude sua senha {{usuario.senha}} {{senha1}} {{senha2}}
+                <big>
+                   <b>Altere sua senha</b>
+                </big>
               <span class="fechar" v-on:click="$emit('fechar')">&times;</span>
           </div>
           <div class="corpo">
-                <input required type="text" class="campos" placeholder="Senha atual" v-model="senha0">
-                <input required type="text" class="campos" placeholder="Nova senha" v-model="senha1">
-                <input required type="text" class="campos" placeholder="Repita a senha nova" v-model="senha2">   
+                <input required type="password" max="20" class="campos" placeholder="Senha atual" v-model="senha0" >
+                <input required type="password" max="20" class="campos" placeholder="Nova senha" v-model="senha1" >
+                <input required type="password" max="20" class="campos" placeholder="Repita a senha nova" v-model="senha2" >   
           </div>
           <div class="baixo">
               {{erro}}
-              {{usuario}}
-              <button type="submit">Mudar</button>
+              <span class="botao">Mudar</span>
           </div>
       </form>
   </div>
@@ -57,25 +58,18 @@ export default {
                 this.erro = "Senha atual incorreta";
                 return;
             }
+
+            this.usuario.senha = this.senha2;
             
             this.$http
-            .put("https://localhost:5001/api/usuarios/" + this.$session.get("id"), this.usuario
+            .put("https://localhost:5001/api/usuarios/1", this.usuario
             )
-            .then(response => {
-                alert("atualizou");
-              this.usuario = response.body;
-
-              var data = new Date(response.body.dataDeNascimento);
-              this.dia = data.getDate();
-              this.mes = data.getMonth();
-              this.ano = data.getFullYear();
-              // fazer os emit lá
-              this.$emit("senhaAlterada");
-            },
-                //fazer emite q deu errado
-                 alert("NAO atualizou")
-            );
-
+            .then(
+                response => {
+                    this.$emit("sucesso");
+                },response => {
+                    this.$emit("erro");
+                });
             }
         },
     created(){
@@ -100,6 +94,16 @@ export default {
   color: black;
   font-size: 1.2em;
   background: rgba(0, 0, 0, 0.08);
+}
+
+.botao{
+    background-color: rgba(11, 84, 148, 0.829);
+  font-size: 18px;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
 }
 
 </style>

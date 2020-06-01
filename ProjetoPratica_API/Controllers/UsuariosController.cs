@@ -106,11 +106,12 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                Console.WriteLine("entrouaaa" + UsuarioId);
-                //verifica se existe aluno a ser alterado
-                var usuario = await this.Repo.GetUsuarioById(UsuarioId);
-                if (usuario == null) return NotFound(); //método do EF
+                // //verifica se existe aluno a ser alterado
+                 var usuario = await this.Repo.GetUsuarioById(UsuarioId);
+                 if (usuario == null) return NotFound(); //método do EF
+
                 this.Repo.Update(model);
+
                 Console.WriteLine("DEU UPDATE");
                 //
                 if (await this.Repo.SaveChangesAsync())

@@ -1,77 +1,76 @@
-/*  
- *  Pure CSS star rating that works without reversing order
- *  of inputs
- *  -------------------------------------------------------
- *  NOTE: For the styling to work, there needs to be a radio
- *        input selected by default. There also needs to be a
- *        radio input before the first star, regardless of
- *        whether you offer a 'no rating' or 0 stars option
- *  
- *  This codepen uses FontAwesome icons
- */
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+fieldset,
+label {
+    margin: 0;
+    padding: 0;
+}
 
-
-/* use display:inline-flex to prevent whitespace issues. alternatively, you can put all the children of .rating-group on a single line */
-
-.rating-group {
-    display: inline-flex;
+h1 {
+    font-size: 1.5em;
+    margin: 10px;
 }
 
 
-/* make hover effect work properly in IE */
+/****** Style Star Rating Widget *****/
 
-.rating__icon {
+.rating {
+    border: none;
+    float: left;
+}
+
+.rating-exib {
     pointer-events: none;
 }
 
-
-/* hide radio inputs */
-
-.rating__input {
-    position: absolute !important;
-    left: -9999px !important;
+.rating>input {
+    display: none;
 }
 
-
-/* hide 'none' input from screenreaders */
-
-.rating__input--none {
-    display: none
+.rating>label:before {
+    margin: 5px;
+    font-size: 1.25em;
+    font-family: FontAwesome;
+    display: inline-block;
+    content: "\f005";
 }
 
-
-/* set icon padding and size */
-
-.rating__label {
-    cursor: pointer;
-    padding: 0 0.1em;
-    font-size: 2rem;
+.rating>.half:before {
+    content: "\f089";
+    position: absolute;
 }
 
-
-/* set default star color */
-
-.rating__icon--star {
-    color: orange;
-}
-
-
-/* if any input is checked, make its following siblings grey */
-
-.rating__input:checked~.rating__label .rating__icon--star {
+.rating>label {
     color: #ddd;
+    float: right;
 }
 
 
-/* make all stars orange on rating group hover */
+/***** CSS Magic to Highlight Stars on Hover *****/
 
-.rating-group:hover .rating__label .rating__icon--star {
-    color: orange;
+.rating>input:checked~label,
+
+/* show gold star when clicked */
+
+.rating:not(:checked)>label:hover,
+
+/* hover current star */
+
+.rating:not(:checked)>label:hover~label {
+    color: #FFD700;
 }
 
 
-/* make hovered input's following siblings grey on hover */
+/* hover previous stars in list */
 
-.rating__input:hover~.rating__label .rating__icon--star {
-    color: #ddd;
+.rating>input:checked+label:hover,
+
+/* hover current star when changing rating */
+
+.rating>input:checked~label:hover,
+.rating>label:hover~input:checked~label,
+
+/* lighten current selection */
+
+.rating>input:checked~label:hover~label {
+    color: #FFED85;
 }

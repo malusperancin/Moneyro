@@ -55,5 +55,7 @@ namespace ProjetoPratica_API.Data
 
         Task<Tags[]> GetAllTags();
         Task<Tags> GetTagById(int Id);
+
+        Task<Situacoes[]> GetAllSituacoes();
     }
 }
