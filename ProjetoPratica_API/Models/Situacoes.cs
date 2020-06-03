@@ -2,7 +2,7 @@ namespace ProjetoPratica_API.Models
 {
     public class Situacoes
     {
-        public int Codigo { get; set; }
+        public int Id { get; set; }
         public string Mensagem { get; set; }
 
     }

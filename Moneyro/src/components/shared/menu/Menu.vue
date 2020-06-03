@@ -212,11 +212,16 @@ table {
   left: 100%;
   border-collapse: collapse;
   background: transparent;
-  width: 130%;
+  width: 150%;
+  display: none;
 }
 
 #opcoesCard td {
   background: rgb(11, 83, 148);
-  padding: 10px 20px;
+  padding: 10px 30px 10px 15px;
+  box-sizing: border-box;
+  font-size: 1.2em;
+  height: 100%;
+  cursor: pointer;
 }
 </style>

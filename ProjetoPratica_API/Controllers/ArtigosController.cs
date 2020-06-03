@@ -36,7 +36,7 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
-        // [HttpGet("{Artigo}")]      //CASO QUEIRA FILTRAR POR ASSUNTOS 
+        // [HttpGet("{Assunto}")]      //CASO QUEIRA FILTRAR POR ASSUNTOS 
         // public async Task<IActionResult> Get(string Assunto)
         // {
         //     try

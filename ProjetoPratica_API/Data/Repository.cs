@@ -36,9 +36,7 @@ namespace ProjetoPratica_API.Data
         public void Update<T>(T entity) where T : class
         {
             //throw new System.NotImplementedException();
-            Console.WriteLine("foi no update");
             this.Context.Update(entity);
-            Console.WriteLine("passou");
         }
 
         public async Task<Usuarios[]> GetAllUsuarios()

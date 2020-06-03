@@ -7,6 +7,7 @@
           :src="'src/images/perfil' + $session.get('foto') + '.png'"
           alt="foto de perfil"
           id="imgPerfil"
+          v-on:click="$router.push('usuario')"
         />
       </div>
     </div>
@@ -150,6 +151,7 @@ export default {
 #imgPerfil {
   width: 8vw;
   border-radius: 100px;
+  cursor: pointer;
 }
 
 ::-webkit-scrollbar {

@@ -44,7 +44,7 @@
         <div class="titulo">Citações</div>
         <div class="conteudos">
           <div class="lista-citacoes-item" v-for="citacao in citacoes" :key="citacao.texto">
-            <Citacao :texto="citacao.texto" :autor="citacao.autor"></Citacao>
+            <Citacao :texto="citacoes.texto" :autor="citacao.autor"></Citacao>
           </div>
         </div>
       </div>
@@ -105,20 +105,24 @@ export default {
     this.$http
       .get("https://localhost:5001/api/videos")
       .then(response => {
+        alert("deu certo");
         this.videos = response.body;
+      }, 
+      response => {
+        alert("cu");
       });
       
-    this.$http
-      .get("https://localhost:5001/api/artigos")
-      .then(response => {
-        this.artigos = response.body;
-      });
+    // this.$http
+    //   .get("https://localhost:5001/api/artigos")
+    //   .then(response => {
+    //     this.artigos = response.body;
+    //   });
 
-    this.$http
-      .get("https://localhost:5001/api/citacoes")
-      .then(response => {
-        this.citacoes = response.body;
-      });
+    // this.$http
+    //   .get("https://localhost:5001/api/tips")
+    //   .then(response => {
+    //     this.citacoes = response.body;
+    //   });
   }
 };
 </script>
@@ -186,14 +190,14 @@ input:focus {
 }
 
 /* configurando scroll */
-.conteudos::-webkit-scrollbar-track {
-  /* background: rgba(190, 154, 154); */
-}
+/* .conteudos::-webkit-scrollbar-track {
+  /* background: rgba(190, 154, 154); 
+} */
 
 .conteudos::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background: rgba(87, 86, 86, 0.637);
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  /* -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5); */
 }
 
 /* .conteudos::-webkit-scrollbar-button {

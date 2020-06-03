@@ -25,13 +25,17 @@ namespace ProjetoPratica_API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+             Console.WriteLine("entrouaaa");
             try
             {
+                Console.WriteLine("entrou");
                 var result = await this.Repo.GetAllVideos();
+                Console.WriteLine("1");
                 return Ok(result);
             }
             catch
             {
+                Console.WriteLine("catch");
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
         }

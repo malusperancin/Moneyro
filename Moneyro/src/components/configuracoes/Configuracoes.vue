@@ -10,7 +10,7 @@
       v-on:fechar="msg.visivel = false"
     ></Mensagem>
     <div class="centro">
-      <form  id="informacoes">
+      <form v-on:submit.prevent="salvar" id="informacoes">
         <!-- v-on:submit.prevent="salvar" -->
         <div id="principal">
           <div id="mudaessenome">
@@ -72,7 +72,7 @@
             <div id="comentario">
               <textarea maxlength="200" id="opiniao" v-model="comentario" required></textarea>
             </div>
-            <button type="submit" v-on:submit.prevent="salvar" class="botoes" id="enviar">Enviar</button>
+            <button type="submit" class="botoes" id="enviar">Enviar</button>
           </form>
         </div>
         <div class="divi"></div>
@@ -150,7 +150,7 @@
           </div>
           <div>
             <button class="cancelar botoes">Cancelar</button>
-            <button v-on:click="salvar" class="botoes" id="salvar">Salvar</button>
+            <button type="submit" class="botoes" id="salvar">Salvar</button>
           </div>
         </div>
       </form>
@@ -430,9 +430,9 @@ export default {
   flex-direction: column;
 }
 
-#avaliacao div {
-  /* width: 100%; */
-}
+/* #avaliacao div {
+   width: 100%; 
+} */
 
 #avaliacao .enunciado:hover {
   text-decoration: underline;
