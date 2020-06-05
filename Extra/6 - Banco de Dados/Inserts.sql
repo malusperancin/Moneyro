@@ -76,3 +76,11 @@ SELECT *
 FROM AMIGOS
 SELECT *
 FROM TIPS
+
+
+insert into Compartilhamentos
+values(1, 1)
+insert into Registros
+values(3,4, 'Uniformes', 'Uniformes para o time ebinha','Centauro',CAST(getDate() AS smalldatetime),  -240, 1)
+insert into Registros
+values(2,6,'Mesadinha mes de junho',null,null,CAST(getDate() AS smalldatetime), 300,null)

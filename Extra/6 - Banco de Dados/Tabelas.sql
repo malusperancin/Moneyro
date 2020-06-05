@@ -56,7 +56,7 @@ create table Usuarios
     modoAnonimo bit not null,
     saldo money
 )
-
+/*
 create table Receitas
 (
     id int identity primary key,
@@ -70,16 +70,6 @@ create table Receitas
     CONSTRAINT FK_idTagR FOREIGN KEY (idTag)
     REFERENCES Tags(id)
 )
-
-create table Compartilhamentos
-(
-    id int identity primary key,
-    codigo int,
-    idUsuario int not null,
-    CONSTRAINT FK_idUsuarioComp FOREIGN KEY (idUsuario)
-    REFERENCES Usuarios(id)
-)
-
 create table Despesas
 (
     id int identity primary key,
@@ -97,7 +87,7 @@ create table Despesas
     REFERENCES Tags(id),
     CONSTRAINT FK_idCompartilhamento FOREIGN KEY (idCompartilhamento)
     REFERENCES Compartilhamentos(id)
-)
+)*/
 
 create table Amigos
 (
@@ -132,3 +122,30 @@ create table Avaliacoes(
  CONSTRAINT FK_idUsuarioA FOREIGN KEY (idUsuario)
  REFERENCES Usuarios(id)
 )
+create table Compartilhamentos(
+idCompartilhamento int primary key identity,
+idRegistro int not null,
+idUsuario int not null,
+constraint FK_idUsuarioC FOREIGN KEY (idUsuario)
+REFERENCES Usuarios(id)
+)
+
+create table Registros
+(
+    idRegistro int identity primary key,
+    idUsuario int not null,
+    idTag int,
+    nome varchar(40) not null,
+    descricao varchar(60),
+    lugar varchar(25),
+    data date not null,
+    quantia money not null,
+    idCompartilhamento int, 
+    CONSTRAINT FK_idUsuarioReg FOREIGN KEY (idUsuario)
+    REFERENCES Usuarios(id),
+    CONSTRAINT FK_idTagReg FOREIGN KEY (idTag)
+    REFERENCES Tags(id),
+)
+alter table Registros
+add cONSTRAINT FK_idRegistroC FOREIGN KEY (idRegistro)
+REFERENCES Registros(idRegistro)
