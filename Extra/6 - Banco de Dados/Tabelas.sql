@@ -123,29 +123,33 @@ create table Avaliacoes(
  REFERENCES Usuarios(id)
 )
 create table Compartilhamentos(
-idCompartilhamento int primary key identity,
-idRegistro int not null,
+id int primary key identity,
 idUsuario int not null,
-constraint FK_idUsuarioC FOREIGN KEY (idUsuario)
-REFERENCES Usuarios(id)
+constraint FK_idUsuario FOREIGN KEY (idUsuario)
+REFERENCES Usuarios(id),
 )
 
 create table Registros
 (
-    idRegistro int identity primary key,
+    id int identity primary key,
     idUsuario int not null,
     idTag int,
     nome varchar(40) not null,
     descricao varchar(60),
     lugar varchar(25),
     data date not null,
-    quantia money not null,
-    idCompartilhamento int, 
+    quantia money not null, 
     CONSTRAINT FK_idUsuarioReg FOREIGN KEY (idUsuario)
     REFERENCES Usuarios(id),
     CONSTRAINT FK_idTagReg FOREIGN KEY (idTag)
     REFERENCES Tags(id),
 )
-alter table Registros
-add cONSTRAINT FK_idRegistroC FOREIGN KEY (idRegistro)
-REFERENCES Registros(idRegistro)
+create table Ligacoes(
+id int primary key identity,
+idRegistro int,
+idCompartilhamento int,
+CONSTRAINT FK_idRegistro FOREIGN KEY (idRegistro)
+REFERENCES Registros(id),
+CONSTRAINT FK_idCompartilhamento FOREIGN KEY (idCompartilhamento)
+REFERENCES Compartilhamentos(id)
+)

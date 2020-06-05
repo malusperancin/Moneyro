@@ -77,10 +77,17 @@ FROM AMIGOS
 SELECT *
 FROM TIPS
 
-
 insert into Compartilhamentos
 values(1, 1)
 insert into Registros
-values(3,4, 'Uniformes', 'Uniformes para o time ebinha','Centauro',CAST(getDate() AS smalldatetime),  -240, 1)
+values(3,4, 'Uniformes', 'Uniformes para o time ebinha','Centauro',CAST(getDate() AS smalldatetime),  -240)
 insert into Registros
-values(2,6,'Mesadinha mes de junho',null,null,CAST(getDate() AS smalldatetime), 300,null)
+values(2,6,'Mesadinha mes de junho',null,null,CAST(getDate() AS smalldatetime), 300)
+insert into Compartilhamentos
+values(1)
+insert into Ligacoes values(1,1)
+
+
+select r.nome,r.quantia from Ligacoes l, Compartilhamentos c, Registros r where
+c.idUsuario = 1 and
+r.id = l.idRegistro
