@@ -17,6 +17,9 @@
             v-on:fecharMeta="verMeta = false"
           ></Painel>
         </div>
+        <div style="color: white">
+          {{metas}}
+        </div>
       </div>
     </div>
   </div>
@@ -39,51 +42,7 @@ export default {
   },
   data() {
     return {
-      metas: [
-        {
-          id: 1,
-          atual: "1",
-          objetivo: "3",
-          nome: "Open de Caldicana😎😎",
-          dataLimite: "2020-05-01",
-          compartilhado: [
-            { id: 1, nome: "Maria", foto: 6 },
-            { id: 2, nome: "Giovanna", foto: 11 }
-          ]
-        },
-        {
-          id: 2,
-          atual: "50",
-          objetivo: "3000",
-          nome: "cerular",
-          dataLimite: "2020-06-15",
-          compartilhado: null
-        },
-        {
-          id: 3,
-          atual: "120",
-          objetivo: "120",
-          nome: "Boot da naike",
-          dataLimite: "2020-07-10",
-          compartilhado: null
-        },
-        {
-          id: 4,
-          atual: "1",
-          objetivo: "3",
-          nome: "Presentenho da mamae",
-          dataLimite: "2021-03-04",
-          compartilhado: [{ id: 4, nome: "Vinícius", foto: 7 }]
-        },
-        {
-          id: 5,
-          atual: "3",
-          objetivo: "3",
-          nome: "Presentenho da mamae",
-          dataLimite: "2020-06-02",
-          compartilhado: null
-        }
-      ],
+      metas: [],
       verMeta: false,
       id: null
     };
@@ -94,11 +53,26 @@ export default {
       this.verMeta = true;
     },
     formataData(data) {
+      data = data.substring(0,10);
       var ano = data.split("-")[0];
       var mes = data.split("-")[1];
       var dia = data.split("-")[2];
       return ("0" + dia).slice(-2) + "/" + ("0" + mes).slice(-2) + "/" + ano;
       // Utilizo o .slice(-2) para garantir o formato com 2 digitos.
+    },
+    getUsuario(id, i)
+    { 
+      this.$http
+      .get("https://localhost:5001/api/usuarios/" + id)
+      .then(dados => {
+        this.metas[i].compartilhamentos.push({
+          id: dados.body.id,
+          nome: dados.body.nome,
+          foto: dados.body.foto
+        })
+      }, erro => {
+        alert("algo deu errado meta");
+      });
     }
   },
   computed: {
@@ -109,6 +83,45 @@ export default {
   },
   created(){
     document.title = "Metas";
+
+    this.$http
+      .get("https://localhost:5001/api/metas")
+      .then(dados => {
+        this.metas = dados.body;
+
+        for(var i = 0; i < dados.body.length; i++)
+        {
+          var ids = this.metas[i].compartilhamentos.trim().split(/(\s+)/);
+          this.metas[i].compartilhamentos = [];
+          
+          for(var j = 0; j < ids.length; j++)
+            this.methods.getUsuario(ids[j]);
+            
+        }
+      }, erro => {
+        alert("algo deu errado meta");
+      });
+
+      // { 
+      //   id: 1,
+      //   nome: "Open de Caldicana😎😎",
+      //   atual: "1",
+      //   objetivo: "3",
+      //   dataLimite: "2020-05-01",
+      //   compartilhado: [
+      //     { id: 1, nome: "Maria", foto: 6 },
+      //     { id: 2, nome: "Giovanna", foto: 11 }
+      //   ]
+      // },
+
+      // meta: {
+      //   idUsuario: this.$session.get("id"),
+      //   nome: "",
+      //   objetivo: 0,
+      //   atual: 0,
+      //   dataLimite: Date,
+      //   compartilhamentos: ""
+      // },
   },
   beforeCreate() {
     if (!this.$session.exists()) {

@@ -4,11 +4,12 @@
       <iframe
         width="360"
         height="230"
-        :src="link"
+        :src="video"
         frameborder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen
-      ></iframe>
+      ></iframe> 
+     
       <div class="assunto">{{assunto}}</div>
     </div>
     <h2 class="titulo">{{titulo}}</h2>
@@ -17,12 +18,9 @@
 
 <script>
 export default {
-  props: ["link", "titulo", "assunto"],
+  props: ["video", "titulo", "assunto"],
   data() {
     return {};
-  },
-  created() {
-    // alert(this.link + " " + this.titulo + " " + this.assunto);
   }
 };
 </script>
@@ -54,7 +52,7 @@ iframe {
   left: 8px;
 }
 
-.assunto:hover {
+.video:hover .assunto {
   display: none;
 }
 

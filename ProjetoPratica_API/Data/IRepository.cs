@@ -15,14 +15,10 @@ namespace ProjetoPratica_API.Data
         Task<Usuarios> GetUsuarioById(int Id);
         Task<Usuarios> GetUsuarioByApelido(string apelido);
         Task<Usuarios> GetUsuarioByEmail(string email);
-
-        Task<Receitas[]> GetAllReceitas();
-        Task<Receitas> GetReceitaById(int Id);
-        Task<Receitas[]> GetReceitasByUsuario(int IdUsuario);
-
-        Task<Despesas[]> GetAllDespesas();
-        Task<Despesas> GetDespesaById(int Id);
-        Task<Despesas[]> GetDespesasByUsuario(int IdUsuario);
+       
+        Task<Registros[]> GetAllRegistros();
+        Task<Registros> GetRegistroById(int Id);
+        Task<Registros[]> GetRegistrosByUsuario(int IdUsuario);
 
         Task<Metas[]> GetAllMetas();
         Task<Metas> GetMetaById(int Id);
@@ -46,9 +42,6 @@ namespace ProjetoPratica_API.Data
         Task<Artigos[]> GetAllArtigos();
         //Task<Artigos[]> GetArtigosByAssunto(string Assunto);
         Task<Artigos> GetArtigoById(int Id);
-
-        Task<Compartilhamentos[]> GetCompartilhamentosByCodigo(int Codigo);
-        Task<Compartilhamentos> GetCompartilhamentoById(int Id);
 
         Task<Avaliacoes[]> GetAllAvaliacoes();
         Task<Avaliacoes> GetAvaliacaoById(int Id);

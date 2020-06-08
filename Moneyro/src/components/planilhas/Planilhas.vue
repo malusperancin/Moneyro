@@ -5,15 +5,16 @@
     <Card v-if="verCard" :id="id" v-on:fecharCard="verCard = false" />
     <Topo />
     <div class="centro">
-      <select id="filtro">
-        <option value>Filtrar por...</option>
-        <option value>Despesas</option>
-        <option value>Receitas</option>
-        <option value>Mês</option>
-        <option value>Nenhum</option>
-      </select>
-      <input type="search" id="buscaNome" placeholder />
-      <br />
+      <div class="filtros">
+        <select id="filtro">
+          <option value>Filtrar por...</option>
+          <option value>Despesas</option>
+          <option value>Receitas</option>
+          <option value>Mês</option>
+          <option value>Nenhum</option>
+        </select>
+        <input type="search" id="buscaNome" placeholder />
+      </div>
       <div id="registros" v-for="(dia, i) in registrosData" :key="i">
         <div class="umDia">
           <p class="data">Dia {{dia.data}}</p>
@@ -43,6 +44,9 @@
             </tr>
           </table>
         </div>
+      </div>
+      <div>
+
       </div>
     </div>
   </div>
@@ -74,74 +78,26 @@ export default {
       this.verCard = true;
     }
   },
-  computed: {},
+  created(){
+    this.$http
+        .get("https://localhost:5001/api/registros")
+        .then(dados => {
+          this.registros = dados.body;
+        }, erro => {
+          alert("algo deu errado");
+        });
+  },
   mounted() {
-    this.registros.push(
-      {
-        id: 1,
-        nome: "almoço",
-        data: "2004-12-02",
-        tag: "Alimentação",
-        quantia: -85,
-        compartilhado: [
-          { id: 1, nome: "Maria", foto: 6 },
-          { id: 2, nome: "Giovanna", foto: 11 }
-        ]
-      },
-      {
-        id: 2,
-        nome: "janta",
-        data: "2004-12-02",
-        tag: "Alimentação",
-        quantia: -35
-      },
-      {
-        id: 3,
-        nome: "cinema",
-        data: "12/02/2004",
-        tag: "Lazer",
-        quantia: -40
-      },
-      {
-        id: 4,
-        nome: "bico da padaria",
-        data: "16/04/2020",
-        tag: "Job",
-        quantia: 150
-      },
-      {
-        id: 5,
-        nome: "camiseta",
-        data: "18/02/2004",
-        tag: "Vestiario",
-        quantia: -20
-      },
-      {
-        id: 6,
-        nome: "titia vania presente",
-        data: "18/02/2004",
-        tag: "Presente",
-        quantia: 50
-      },
-      {
-        id: 7,
-        nome: "arroz",
-        data: "22/04/2020",
-        tag: "Alimentação",
-        quantia: -30
-      }
-    );
 
     var novos = [];
     var reg = this.registros;
-
-    for (var i = 0; i < reg.length; i++) {
+        
+      for (var i = 0; i < reg.length; i++) {
       novos.push({
         id: reg[i].id,
         nome: reg[i].nome,
-        tag: reg[i].tag,
-        quantia: reg[i].quantia,
-        compartilhado: reg[i].compartilhado
+        tag: reg[i].idTag,
+        quantia: reg[i].quantia
       });
 
       if (i + 1 == reg.length) {
@@ -201,6 +157,7 @@ export default {
 .umDia td {
   padding: 5px 15px;
   font-size: 1.25em;
+  color: rgb(216, 201, 201);
 }
 
 tr {
@@ -210,32 +167,33 @@ tr {
 .data {
   margin: 0;
   font-size: 1.4em;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .despesa:hover {
-  background-color: rgba(241, 69, 69, 0.85);
+  background-color: rgb(184, 31, 31);
   cursor: pointer;
   transform: scale(1.01);
 }
 
 .receita:hover {
-  background-color: rgba(10, 194, 10, 0.72);
+  background-color: rgb(19, 134, 19);
   cursor: pointer;
   transform: scale(1.01);
 }
 
 .despesa {
-  background-color: rgba(255, 104, 104, 0.75);
+  background-color: rgba(170, 36, 36, 0.8);
   transition: transform 0.5s;
 }
 
 .receita {
-  background-color: rgba(70, 228, 70, 0.75);
+  background-color: rgba(19, 129, 19, 0.8);
   transition: transform 0.5s;
 }
 
 .tag {
-  width: 20%;
+  width: 25%;
 }
 
 .nome {
@@ -243,21 +201,27 @@ tr {
 }
 
 .comp {
-  width: 30%;
+  width: 25%;
 }
 
 .quantia {
   width: 20%;
 }
 
+.filtros{
+  display: flex;
+  justify-content: space-between;
+}
+
 #buscaNome {
   border-radius: 5px;
   border: none;
   padding: 7px 14px;
-  color: black;
+  box-sizing: border-box;
   font-size: 1.2em;
-  background: rgba(0, 0, 0, 0.082);
-  width: 35%;
+  width: 40%;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.078);
 }
 
 /*#buscaNome:focus {
@@ -268,11 +232,10 @@ tr {
   border-radius: 5px;
   border: 0px;
   padding: 7px 14px;
-  color: black;
+  color: rgba(255, 255, 255, 0.7);
   font-size: 1.2em;
-  background: rgba(0, 0, 0, 0.082);
+  background: rgba(255, 255, 255, 0.08);
   width: 50%;
-  margin-bottom: 20px;
 }
 
 .moedaImg {

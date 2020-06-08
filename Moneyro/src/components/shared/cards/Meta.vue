@@ -1,6 +1,6 @@
 <template>
   <div class="modal">
-    <div class="modal-conteudo animate" v-on:click="teste">
+    <form v-on:submit.prevent class="modal-conteudo animate width-40">
       <div class="cima">
         <div class="tipos">
           <label>{{ id ? "Edição" : "Metah"}}</label>
@@ -8,12 +8,11 @@
         <span class="fechar" v-on:click="$emit('fecharMeta')">&times;</span>
       </div>
       <div class="corpo">
-        <form>
-          <input placeholder="Nome" type="text" id="nome" class="campos" v-model="nome" />
+        <input placeholder="Nome" type="text" id="nome" class="campos" v-model="meta.nome" />
 
-          <div class="quantia">
-            <div class="dinheiro">
-              <span class="escrito">Objetivo</span>
+        <div class="quantia">
+          <div class="dinheiro">
+            <span class="escrito">Objetivo</span>
               <div class="campo">
                 <big>R$</big>
                 <input
@@ -21,59 +20,54 @@
                   type="number"
                   min="0.00"
                   max="1000000.00"
-                  step="10.00"
                   class="campos"
-                  v-model="objetivo"
+                  v-model="meta.objetivo"
                 />
               </div>
-            </div>
-            <div class="dinheiro">
-              <span class="escrito">{{ id ? "Atual" : "Inicial"}}</span>
-              <div class="campo">
-                <big>R$</big>
-                <input
-                  placeholder="0.00"
-                  type="number"
-                  min="0.00"
-                  :max="objetivo"
-                  step="10.00"
-                  class="campos"
-                  v-model="atual"
-                />
-              </div>
+          </div>
+          <div class="dinheiro">
+            <span class="escrito">{{ id ? "Atual" : "Inicial"}}</span>
+            <div class="campo">
+              <big>R$</big>
+              <input
+                placeholder="0.00"
+                type="number"
+                min="1.00"
+                :max="meta.objetivo"
+                class="campos"
+                v-model="meta.atual"
+              />
             </div>
           </div>
+        </div>
 
-          <span class="escrito">Data limite</span>
-          <input type="date" id="data" class="campos" v-model="dataLimite" />
+        <!-- </div> -->
+        <span class="escrito">Data limite</span>
+        <input type="date" id="data" class="campos" v-model="meta.dataLimite" />
 
-          <div class="dropdown">
-            <div v-on:click="mostrarAmigos" id="btnDrop" class="campos">Compartilhar com... ▾</div>
-            <div id="listaAmigos" class="dropdown-content">
-              <input type="search" placeholder="Pesquisar" v-model="filtroNome" />
-              <div v-for="amigo of filtraNome" :key="amigo.nome" class="amigos">
-                <div class="pretty p-default p-curve p-fill checks">
-                  <input
-                    type="checkbox"
-                    :id="'amigo'+amigo.id"
-                    :name="amigo.nome"
-                    :value="amigo.id"
-                    v-on:click="addToList(id)"
-                  />
-                  <div class="state p-primary">
-                    <label class="nomeAmigo">{{amigo.nome}}</label>
-                  </div>
+        <div class="dropdown">
+          <div v-on:click="expanded = !expanded" id="btnDrop" class="campos">Compartilhar com... ▾</div>
+          <div id="listaAmigos">
+            <input type="search" placeholder="Pesquisar" v-model="filtroNome" />
+            <div v-for="(amigo, i) of filtraNome" :key="i" class="amigos">
+              <div class="pretty p-default p-curve p-fill">
+                <input v-on:click="incluirAmg(amigo.id)" type="checkbox" :id="'amigo'+amigo.id" class="amigo" :name="amigo.nome" :value="amigo.id"/>
+                <div class="state p-primary">
+                  <label class="nomeAmigo">{{amigo.apelido}}</label>
                 </div>
               </div>
             </div>
           </div>
-        </form>
+        </div>
       </div>
+      
+      {{meta}}
       <div class="baixo">
-        <span class="excluir" v-on:click="excluir" v-if="id">Excluir</span>
-        <span class="salvar" v-on:click="salvar">Salvar</span>
+        <button class="excluir" v-on:click="excluir" v-if="id">Excluir</button>
+        <button class="salvar" v-if="id" v-on:click="atualizar">Salvar</button>
+        <button class="salvar" v-else v-on:click="salvar">Salvar</button>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 
@@ -86,26 +80,18 @@ export default {
       qtdAmigos: 0,
       filtroNome: "",
       amigos: [],
-      nome: "",
-      atual: 0,
-      objetivo: 0,
-      dataLimite: Date,
-      compartilhado: [],
-      listCheckedOptions: []
+      meta: {
+        idUsuario: this.$session.get("id"),
+        nome: "",
+        objetivo: 0,
+        atual: 0,
+        dataLimite: Date,
+        compartilhamentos: ""
+      },
+      compartilhado: []
     };
   },
   methods: {
-    showCheckboxes: function() {
-      var checkboxes = document.getElementById("checkboxes");
-      if (!expanded) {
-        checkboxes.style.display = "block";
-        this.expanded = true;
-      } else {
-        checkboxes.style.display = "none";
-        this.expanded = false;
-      }
-    },
-
     checkAmg: function(id) {
       if (this.amigos >= 5) {
         document.getElementById(id).checked = false;
@@ -113,28 +99,52 @@ export default {
       }
     },
     salvar: function() {
-      if (this.meta.id) {
-        //UPDATE TANANA
-      } else {
-        //INSERT TANANA
+    if(this.meta.objetivo == 0 )
+      {
+        alert("bota objetivo");
+        return;
       }
+      
+       for(var i = 0; i < this.compartilhado.length ; i++){
+         this.meta.compartilhamentos += (" "+this.compartilhado[i]);
+       }
+      
+      this.$http
+      .post("https://localhost:5001/api/metas", this.meta)
+      .then(dados=> {
+          alert("Adicionou a meta ebinha");
+        this.$router.push("metas");
+        this.$emit('fecharCard');
+      }, erro => {
+        alert("Erro ao adicionar meta");
+      });
     },
-    teste(event) {
-      // alert(event.target.tagName);
+    atualizar(){
+      
+    this.meta.compartilhamentos="";
+
+    for(var i = 0; i < this.compartilhado.length ; i++)
+      this.meta.compartilhamentos += (" "+this.compartilhado[i]);
+    
+      this.$http
+        .put("https://localhost:5001/api/metas/25", this.meta)
+        .then(dados=> {
+          this.$router.push("metas");
+          this.$emit('fecharCard');
+          alert("Alterar FUNFO EBA");
+        }, erro => {
+          alert("Alterar deu errado");
+        });
     },
     excluir: function() {
-      // DELETAR A META COM O META.ID
-    },
-    mostrarAmigos: function() {
-      if (
-        document.getElementById("listaAmigos").style.display == "inline-block"
-      )
-        document.getElementById("listaAmigos").style.display = "none";
-      else {
-        document.getElementById("listaAmigos").style.display = "inline-block";
-      }
-
-      if (this.id) this.checkarAmigos();
+      this.$http
+        .delete("https://localhost:5001/api/metas/", this.meta.id)
+        .then(dados=> {
+          this.$router.push("metas");
+          this.$emit('fecharCard');
+        }, erro => {
+          alert("algo deu errado");
+        });
     },
     checkarAmigos: function() {
       for (var a = 0; a < this.amigos.length; a++)
@@ -148,17 +158,30 @@ export default {
         }
       }
     },
-    addToList: function(id) {
-      var checkObj = document.getElementById(id);
-      if (checkObj.checked) this.qtdAmigos++;
-      else this.qtdAmigos--;
-      checkAmg(id);
-      // this.qtdAmigos++;
-      // if (this.qtdAmigos == 5) {
-      //   alert("no puedes continuar");
-      //   for (var i = 0; i < document.getElementByClass("amigos").length; i++)
-      //     document.getElementByClass("checks").item(i).disabled = true;
-      // }
+    incluirAmg: function(id) {
+      var checkObj = document.getElementById("amigo"+id);
+      
+      if (this.compartilhado.length >= 5)
+      {
+        checkObj.checked = false;
+        alert("máximo 5 pessoas!");
+        return;
+      }
+       
+      if (checkObj.checked)
+        this.compartilhado.push(id);
+      else
+      {
+        alert("entrou no else");
+        // var i = this.compartilhado.find(id);
+        this.compartilhado.filter(a => {
+          a != id
+        });
+        let exp = new RegExp(id, "i");
+        this.compartilhado.filter(amigo => exp.test(id));
+        //alert(i);
+        // nome.splice(0, i);
+      }
     }
   },
   computed: {
@@ -173,41 +196,85 @@ export default {
   },
   created() {
     if (this.id) {
-      // var meta = GET META NO BANCO
-      var meta = {
-        id: 1,
-        atual: "1",
-        objetivo: "3",
-        nome: "Open de Caldicana😎😎",
-        dataLimite: "2020-05-01",
-        compartilhado: [
-          { id: 1, nome: "Maria", foto: 6 },
-          { id: 2, nome: "Giovanna", foto: 11 }
-        ]
-      };
-      this.nome = meta.nome;
-      this.atual = meta.atual;
-      this.objetivo = meta.objetivo;
-      this.dataLimite = meta.dataLimite;
-      this.compartilhado = meta.compartilhado;
+      
+      this.$http
+      .get("https://localhost:5001/api/metas/" + this.id)
+      .then(dados => {
+        this.meta = dados.body;
+      }, erro => {
+        alert("algo deu errado meta");
+      });
+
+      // this.$http
+      // .get("https://localhost:5001/api/compartilhados/cod/" + this.registro.codigo)
+      // .then(dados => {
+      //   this.registro.compartilhado = dados.body.idUsuario;
+      // }, erro => {
+      //   alert("algo deu errado");
+      // });
     }
 
-    this.amigos = [
-      { id: 1, nome: "Maria" },
-      { id: 2, nome: "Giovanna" },
-      { id: 3, nome: "Illy" },
-      { id: 4, nome: "Venizius" },
-      { id: 5, nome: "Enzo" },
-      { id: 6, nome: "Rodrigo" },
-      { id: 7, nome: "Queen" },
-      { id: 8, nome: "Rossi" }
-    ];
-    // this.amigos (id e nome) = get all amigos by id
-  }
+    this.$http
+    .get("https://localhost:5001/api/tags")
+    .then(dados => {
+      this.tags = dados.body;
+    }, erro => {
+      alert("algo deu errado");
+    });
+    
+    this.$http
+    .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
+    .then(dados => {
+      var idList = [];
+
+      for(var i=0; i< dados.body.length; i++)
+      {
+          if(dados.body[i].idAmigoA == this.$session.get("id"))
+              idList.push(dados.body[i].idAmigoB);
+          else
+              idList.push(dados.body[i].idAmigoA);          
+      } 
+
+      for(var i=0; i<idList.length; i++)
+      {
+        this.$http
+        .get("https://localhost:5001/api/usuarios/" + idList[i])
+        .then(dados => {
+          this.amigos.push({
+            id: dados.body.id, apelido: dados.body.apelido});
+        }, erro => {
+          alert("algo deu errado");
+        });
+      }
+    }, erro => {
+      alert("algo deu errado");
+    });
+
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd;
+
+    this.meta.dataLimite = today;
+  },
+  watch: {
+    expanded(){
+      var checkboxes = document.getElementById("listaAmigos");
+      
+      if (this.expanded) 
+      {
+        if (this.id) this.checkarAmigos();
+        checkboxes.style.display = "block";
+      }   
+      else
+        checkboxes.style.display = "none";
+    }
+  },
 };
 </script>
 
-<style src="../../../css/modal.css"></style>
+<style scoped src="../../../css/modal.css"></style>
 <style scoped>
 .quantia {
   font-size: 1em;
@@ -255,14 +322,13 @@ export default {
 #btnDrop {
   font-size: 1.2em;
   background: rgba(0, 0, 0, 0.082);
-  width: fit-content;
   cursor: pointer;
-  display: inline-block;
+  width: fit-content;
 }
 
 #listaAmigos {
   margin-top: 10px;
-  padding: 15px;
+  padding: 10px;
   border-radius: 5px;
   z-index: 1;
   background-color: #f6f6f6;
@@ -270,7 +336,6 @@ export default {
   max-height: 200px;
   overflow: auto;
   display: none;
-  position: absolute;
 }
 
 #listaAmigos a {
@@ -305,10 +370,6 @@ export default {
 
 .amigos {
   font-size: 1.25em;
-}
-
-form {
-  padding: 10px;
 }
 
 .tipos {

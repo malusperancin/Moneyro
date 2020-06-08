@@ -60,7 +60,6 @@ export default {
         { nome: "illy", foto: "10" },
         { nome: "zoen", foto: "5" }
       ],
-      alunos: [],
       mensagem: false,
       adicionar: false
     };
@@ -111,15 +110,14 @@ export default {
 }
 
 .filtro {
-  width: 80%;
-  padding: 7px 14px;
-  outline: none;
-  border-radius: 5px;
+ border-radius: 5px;
   border: none;
-  font-size: 1.2em;
-  background: rgba(0, 0, 0, 0.1);
+  padding: 7px 14px;
   box-sizing: border-box;
-  margin-right: -8%;
+  font-size: 1.2em;
+  width: 80%;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.078);
 }
 
 .filtro:focus {

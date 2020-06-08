@@ -8,12 +8,13 @@
       v-if="msg.visivel"
       v-on:home="msg.visivel = false, $router.push('/')"
       v-on:fechar="msg.visivel = false"
+      v-on:restaurar="msg.visivel = false, getUsuario()"
+      v-on:cancelar="msg.visivel = false"
     ></Mensagem>
     <div class="centro">
-      <form v-on:submit.prevent="salvar" id="informacoes">
-        <!-- v-on:submit.prevent="salvar" -->
-        <div id="principal">
-          <div id="mudaessenome">
+      <form v-on:submit.prevent id="informacoes">
+        <div class="informacoes">
+          <div id="principal">
             <div id="foto">
               <div id="editar" v-on:click="mudarFoto = true">
                 <img src="src/images/editar.png" id="imgEditar" />
@@ -28,7 +29,6 @@
             </div>
             <div id="coisas">
               <label class="enunciado" for="apelido">Apelido</label>
-              <br />
               <input
                 type="text"
                 class="campos"
@@ -36,14 +36,13 @@
                 maxlength="14"
                 v-model="usuario.apelido"
               />
-              <div class="pretty p-switch p-fill p-primary">
+              <div class="pretty p-switch p-fill p-primary" style="margin: 10px 0">
                 <input type="checkbox" v-model="usuario.notificacoes"/>
                 <div class="state p-primary">
                   <label>Receber Notificações</label>
                 </div>
               </div>
-              <br />
-              <div class="pretty p-switch p-fill p-primary">
+              <div class="pretty p-switch p-fill p-primary" style="margin: 0 0 10px">
                 <input type="checkbox" v-model="usuario.modoAnonimo"/>
                 <div class="state p-primary">
                   <label>Modo Anônimo</label>
@@ -75,8 +74,10 @@
             <button type="submit" class="botoes" id="enviar">Enviar</button>
           </form>
         </div>
+
         <div class="divi"></div>
-        <div id="outrasInfos">
+
+        <div class="informacoes">
           <label class="enunciado" for="email">E-mail</label>
           <input
             type="text"
@@ -87,7 +88,7 @@
             readonly
             disabled
           />
-          <br />
+
           <label class="enunciado" for="nome">Nome</label>
           <input
             type="text"
@@ -96,10 +97,8 @@
             maxlength="70"
             name="nome"
           />
-          <br />
           
           <label for="data" class="enunciado">Data de Nascimento</label>
-          <!-- <input type="date" class="campos" name="data" v-model="usuario.dataDeNascimento"> -->
           <div id="dataNasc">
             <input
               type="number"
@@ -130,27 +129,28 @@
             />
           </div>
 
-          <div id="infos">
-            <label for="celular" class="enunciado">Celular</label>
-            <br />
-            <input
-              type="tel"
-              class="campos"
-              pattern="(\([0-9]{2}\))\s([9]{1})?([0-9]{4})-([0-9]{4})"
-              maxlength="15"
-              v-model="usuario.celular"
-            />
-            <br />
-            <label for="cidade" class="enunciado">Cidade</label>
-            <br />
+
+          <label for="celular" class="enunciado">Celular</label>
+          <input
+            type="tel"
+            class="campos"
+            pattern="(\([0-9]{2}\))\s([9]{1})?([0-9]{4})-([0-9]{4})"
+            maxlength="15"
+            v-model="usuario.celular"
+            style="width: 35%"
+          />
+
+          <label for="cidade" class="enunciado">Cidade</label>
+          <div id="outras">
             <input type="text" class="campos" v-model="usuario.cidade" maxlength="30" />
             <select id="estado" class="campos" name="estado" required v-model="usuario.estado">
-             <option :value="item" v-for="(item, i) in siglas" :key="i">{{item}}</option>
-          </select>
+              <option :value="item" v-for="(item, i) in siglas" :key="i">{{item}}</option>
+            </select>
           </div>
+
           <div>
-            <button class="cancelar botoes">Cancelar</button>
-            <button type="submit" class="botoes" id="salvar">Salvar</button>
+            <button v-on:click="cancelar" type="submit" name="action" value="cancelar" class="cancelar botoes">Cancelar</button>
+            <button v-on:click="salvar" type="submit" name="action" value="salvar" class="botoes" id="salvar">Salvar</button>
           </div>
         </div>
       </form>
@@ -193,18 +193,18 @@ export default {
       dia: 1,
       mes: 1,
       ano: 2000,
-      siglas: [],
+      senha: false,
       mudarFoto: false,
       estrelas: 0,
       comentario: "",
       avaliacoes: false,
-      senha: false,
       msg: {
         visivel: false,
         titulo: "",
         mensagem: "",
         botoes: []
       },
+      siglas: []
     };
   },
   methods: {
@@ -301,7 +301,23 @@ export default {
 
         this.msg.visivel = true;
     },
-     mudarSenha(){
+    cancelar(){
+        this.msg.titulo = "Cancelamento";
+        this.msg.mensagem =
+          "Deseja restaurar os valores anteriores?";
+        this.msg.botoes = [
+          {
+            mensagem: "Sim",
+            evento: "restaurar"
+          },
+          {
+            mensagem: "Não",
+            evento: "cancelar"
+          }
+        ];
+        this.msg.visivel = true; 
+    },
+    mudarSenha(){
         this.msg.titulo = "Sucesso";
             this.msg.mensagem =
             "Sua senha foi alterada com sucesso";
@@ -314,9 +330,8 @@ export default {
 
           this.msg.visivel = true;
           this.senha = false;
-   },
-  
-    },
+    }
+  },
   mounted() {
     var lista = document.getElementById("estado");
     lista.value = this.usuario.estado;
@@ -337,12 +352,11 @@ export default {
     if (!this.$session.exists()) {
       this.$router.push('/')
     }
-  
-}
+  }
 }
 </script>
 
-<style src="../../css/estrelas.css"></style>
+<style scoped src="../../css/estrelas.css"></style>
 <style scoped>
 .rating>label {
     color: #ddd;
@@ -354,10 +368,9 @@ export default {
 .tituloAva{
   font-size: 1.3em;
   margin: 5px;
-  /* font-weight: bold; */
 }
+
 #estrelas{
-  /* padding-top:10px; */
   text-align:center;
   width:100%;
 }
@@ -405,18 +418,29 @@ export default {
 }
 
 #informacoes {
-  display: inline-flex;
-  width: 70vw;
+  display: flex;
+}
+
+.informacoes {
+  width: 50%;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+#outras{
+  display: flex;
+}
+
+#outras input{
+  width: 50%;
 }
 
 #principal {
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 15px;
-  width: 100%;
-}
-
-#mudaessenome {
   display: flex;
 }
 
@@ -437,15 +461,6 @@ export default {
 #avaliacao .enunciado:hover {
   text-decoration: underline;
   cursor: pointer;
-}
-
-#outrasInfos {
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 15px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
 #foto {
@@ -483,24 +498,30 @@ export default {
   box-sizing: border-box;
   padding: 10px;
   padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .enunciado {
   font-size: 1.5em;
   color: rgb(11, 83, 148);
-  /* margin: 5px; */
   font-weight: bold;
+}
+
+label{
+  color: whitesmoke;
 }
 
 .campos {
   box-sizing: border-box;
   border-radius: 5px;
-  width: 100%;
-  background-color: rgba(116, 116, 116, 0.452);
-  border: 0px solid gray;
+  background-color: rgba(116, 116, 116, 0.45);
+  border: 1px solid gray;
   padding: 4px 15px;
-  color: rgb(0, 0, 0);
+  color: whitesmoke;
   font-size: 1.3em;
+  width: 100%;
 }
 
 #trocarSenha {
@@ -512,7 +533,7 @@ export default {
   padding: 4px 15px;
   cursor: pointer;
   width: 100%;
-  margin: 2% 0;
+  box-sizing: border-box;
 }
 
 .divi {
@@ -527,31 +548,19 @@ export default {
   border: 0;
   display: flex;
   justify-content: space-around;
+  box-sizing: border-box;
+  align-items: center;
+  width: 100%;
 }
 
 #dataNasc input {
-  width: fit-content;
-}
-
-#dia,
-#mes {
-  width: 58%;
+  margin: 5px;
 }
 
 .barra {
-  font-size: 2.3em;
+  font-size: 2.5em;
   color: rgb(11, 83, 148);
-  margin: 0px 5px;
-}
-
-#infos {
-  margin-top: 8px;
-  width: 100%;
-  border: 0;
-}
-
-#infos input {
-  width: 45%;
+  margin: 0;
 }
 
 #estado {
@@ -565,10 +574,7 @@ export default {
   border: none;
   cursor: pointer;
   border-radius: 3px;
-}
-
-.botoes:active{
-  outline: none;
+  color: whitesmoke;
 }
 
 .cancelar {
@@ -578,7 +584,7 @@ export default {
 }
 
 .cancelar:hover {
-  border: 2px solid rgb(49, 48, 48);
+  border: 2px solid rgb(73, 73, 73);
 }
 
 #salvar {

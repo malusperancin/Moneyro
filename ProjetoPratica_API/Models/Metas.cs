@@ -16,6 +16,6 @@ namespace ProjetoPratica_API.Models
 
         public DateTime DataLimite { get; set; }
 
-        public int IdCompartilhamento { get; set; }
+        public string Compartilhamentos { get; set; }
     }
 }

@@ -66,6 +66,10 @@
     margin: auto;
 }
 
+.baixo button {
+    margin: auto;
+}
+
 .fechar {
     color: #000;
     width: 25px;
@@ -94,6 +98,7 @@
     font-weight: bold;
     cursor: pointer;
     font-size: 1.5em;
+    border: none;
 }
 
 .excluir {

@@ -1,6 +1,6 @@
 <template>
   <div class="conteudo">
-    <a :href="this.link">
+    <a :href=link target="_blank">
       <h3 class="titulo">{{titulo}}</h3>
       <div class="imagem">
         <img class="foto" :src="foto" />
@@ -26,7 +26,7 @@ export default {
   padding: 15px;
   width: 335px;
   background: rgba(0, 0, 0, 0.1);
-  border-radius: 20px;
+  border-radius: 5px;
   margin: 10px;
   box-shadow: 5px 10px 18px rgba(26, 0, 0, 0.2);
 }

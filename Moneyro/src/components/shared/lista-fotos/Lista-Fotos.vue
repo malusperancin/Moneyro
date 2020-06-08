@@ -45,7 +45,7 @@ export default {
 };
 </script>
 
-<style src="../../../css/modal.css"></style>
+<style scoped src="../../../css/modal.css"></style>
 <style scoped>
 .corpo {
   background: rebeccapurple;

@@ -2,7 +2,7 @@ using System;
 
 namespace ProjetoPratica_API.Models
 {
-    public class Despesas
+    public class Registros
     {
         public int Id { get; set; }
 
@@ -14,12 +14,10 @@ namespace ProjetoPratica_API.Models
 
         public int IdTag { get; set; }
 
-        public string Descricao { get; set; }
-
         public string Lugar { get; set; }
 
         public decimal Quantia { get; set; }
 
-        public int IdCompartilhamento { get; set; }
+        public string Compartilhamentos { get; set; }
     }
 }

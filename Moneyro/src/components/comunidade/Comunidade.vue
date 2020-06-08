@@ -15,7 +15,7 @@
         </div>
         <div class="conteudos">
           <div class="lista-videos-item" v-for="(video, i) of filtraVideo" :key="i">
-            <Video class="slide" :titulo="video.titulo" :link="video.link" :assunto="video.assunto"></Video>
+            <Video class="slide" :titulo="video.titulo" :video="video.video" :assunto="assuntos[(video.idAssunto-1)].nome"></Video>
           </div>
         </div>
       </div>
@@ -33,8 +33,8 @@
           <div class="lista-artigos-item" v-for="(artigo,i) of filtraArtigo" :key="i">
             <Artigo
               :titulo="artigo.titulo"
-              :link="artigo.link"
-              :assunto="artigo.assunto"
+              :link="artigo.artigo"
+              :assunto="assuntos[(artigo.idAssunto-1)].nome"
               :foto="artigo.foto"
             ></Artigo>
           </div>
@@ -44,7 +44,7 @@
         <div class="titulo">Citações</div>
         <div class="conteudos">
           <div class="lista-citacoes-item" v-for="citacao in citacoes" :key="citacao.texto">
-            <Citacao :texto="citacoes.texto" :autor="citacao.autor"></Citacao>
+            <Citacao :texto="citacao.dica" :autor="citacao.autor"></Citacao>
           </div>
         </div>
       </div>
@@ -73,7 +73,8 @@ export default {
       buscaArtigo: "",
       videos: [],
       artigos: [],
-      citacoes: []
+      citacoes: [],
+      assuntos:[]
     };
   },
   computed: {
@@ -105,24 +106,36 @@ export default {
     this.$http
       .get("https://localhost:5001/api/videos")
       .then(response => {
-        alert("deu certo");
         this.videos = response.body;
       }, 
       response => {
         alert("cu");
       });
       
-    // this.$http
-    //   .get("https://localhost:5001/api/artigos")
-    //   .then(response => {
-    //     this.artigos = response.body;
-    //   });
+    this.$http
+      .get("https://localhost:5001/api/artigos")
+      .then(response => {
+        this.artigos = response.body;
+      },response => {
+        alert("cu");
+      });
 
-    // this.$http
-    //   .get("https://localhost:5001/api/tips")
-    //   .then(response => {
-    //     this.citacoes = response.body;
-    //   });
+    this.$http
+      .get("https://localhost:5001/api/tips")
+      .then(response => {
+        this.citacoes = response.body;
+      },response => {
+        alert("cu");
+      });
+
+      this.$http
+      .get("https://localhost:5001/api/assuntos")
+      .then(response => {
+        this.assuntos = response.body;
+      }, 
+      response => {
+        alert("cu");
+      });
   }
 };
 </script>

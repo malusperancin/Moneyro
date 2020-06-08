@@ -3,13 +3,19 @@
     <Menu />
     <Perfil />
     <div class="centro">
-      <div id="texto">
-        <p>Bem-vindo(a) de volta {{usuario.nome}}</p>
-        <h1>Seu saldo é R$ {{usuario.saldo}}</h1>
-        <h4>
-          {{msg}}
-          <br />
-        </h4>
+      <div class="inicio">
+        <div class="frase">
+          <small>Bem-vindah de volta,</small>
+          <big>{{nome}}</big> 
+        </div>
+        <span class="linha"></span>
+        <div class="saldo">
+          <span class="msg"> 
+            Seu saldo é R$ {{saldo}}<br>
+            {{msg}}
+          </span>
+          <img :src="'../../src/images/status' + situacao + '.png'">          
+        </div>
       </div>
     </div>
   </div>
@@ -19,77 +25,166 @@
 <script>
 import Menu from "../shared/menu/Menu.vue";
 import Perfil from "../shared/perfil/Perfil.vue";
-import Mensagem from "../shared/mensagem/Mensagem.vue";
 
 export default {
   components: {
     Menu,
-    Perfil,
-    mensagem: Mensagem
+    Perfil
   },
   data() {
     return {
       mensagem: false,
-      situacao: 0,
-      usuario: {
-        id: -1,
-        nome: "",
-        saldo: 0.0
-      },
-      text: ""
+      nome: "",
+      saldo: 0.0,
+      situacao: -1,
+      msg:"",
+      cor:""
     };
   },
+  methods: {
+    mudarSituacao(){
+      if(this.saldo <= -20)
+           this.situacao = 2;
+
+        if(this.saldo <= -200)
+          this.situacao = 1;
+
+        if(this.saldo >= 100)
+          this.situacao = 4;
+
+        if(this.saldo >= 500)
+           this.situacao = 5;
+           
+        if(this.saldo > -20 && this.saldo <100 )
+           this.situacao = 3;
+
+        this.$http
+          .get("https://localhost:5001/api/situacoes")
+          .then(dados => {
+            this.msg = dados.body[(this.situacao-1)].mensagem;
+            this.cor = dados.body[(this.situacao-1)].cor;
+            
+            document.getElementsByClassName("saldo")[0].style.backgroundColor = this.cor;
+            //document.getElementsByClassName("gradient-box")[0].background = "linear-gradient(to right, "+this.cor+", "+this.cor+")";
+          });
+    }
+  },
   created() {
-    this.$http
-      .get("https://localhost:5001/api/usuarios/" + this.$session.get("id"))
-      .then(dados => {
-        dados = dados.body;
-        this.usuario.id = dados.id;
-        this.usuario.nome = dados.nome;
-        this.usuario.saldo = dados.saldo;
-      });
-
-    document.title = "Bem-Vindah"; 
-
-    if(this.usuario.saldo <= -200)
-      this.situacao = 1;
-      else
-        if(this.usuario.saldo <= -100)
-          this.situacao = 2;
-          else
-            if(this.usuario.saldo >= -10 && this.usuario.saldo <=10 )
-              this.situacao = 3;
-            else
-              if(this.usuario.saldo >= 100)
-                this.situacao = 4;
-                else
-                  if(this.usuario.saldo >= 500)
-                    this.situacao = 5;
-    //document.getElementsByClassName("pag").style.background = "src/images/status" + this.situacao+".png";
+    document.title = "Bem-Vindah";
     
     this.$http
-      .get("https://localhost:5001/api/situacoes/" + this.situacao)
-      .then(dados => {
-        this.msg = response.body.mensagem;
-      }
-      );
-    
+        .get("https://localhost:5001/api/usuarios/" + this.$session.get("id"))
+        .then(dados => {
+          dados = dados.body;
+          
+          this.nome = dados.nome;
+          this.saldo = dados.saldo;
+          
+          this.mudarSituacao();
+        });
   },
    beforeCreate() {
     if (!this.$session.exists()) {
       this.$router.push('/')
     }
-  },
+  }
 };
 </script>
 
 <style scoped>
-#texto {
-  margin: auto;
-  text-align: center;
+*{
+  color: whitesmoke;
 }
-#texto p {
-  margin-top: 10%;
-  margin-bottom: 50px;
+
+.msg{
+  margin:auto;
 }
+
+img{
+  margin:4px;
+  height:80%;
+}
+
+.frase{
+  font-size: 3em;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 15px 20px;
+  background: #f5f5f517;
+  border-radius: 5px;
+}
+
+small{
+  font-size: 0.5em;
+}
+
+.inicio {
+  /* background: red; */
+  display: flex;
+  flex-direction: column;
+}
+
+.linha{
+  background: rgba(0, 0, 0, 0.9);
+  height: 1px;
+  width: 100%;
+  margin: 10px 0 10px;
+}
+
+.saldo{
+  display: inline-flex;
+  background: transparent;
+  border-radius: 5px;
+  position: relative;
+  font-weight: 700;
+  font-size: 2em;
+}
+/* -------------------------- */
+/* .gradient-box::before{
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: -1;
+  margin: border; /* !importanté 
+  border-radius: inherit; /* !importanté igualité fraternité liberté
+  background: linear-gradient(to right, red, orange);
+}
+
+.gradient-box{
+    position: relative;
+    box-sizing: border-box;
+    border: 5px solid white;
+    background-clip: padding-box; /* !importanté 
+} */
 </style>
+ /* .gradient-box {
+  
+  display: flex;
+  align-items: center;
+  width: 50vw;
+  width: 90%;
+  margin: auto;
+  max-width: 22em;
+
+  position: relative;
+  padding: 30% 2em;
+  box-sizing: border-box;
+
+  $border: 5px;
+  color: #FFF;
+  background: #000;
+  background-clip: padding-box; /* !importanté 
+  border: solid $border transparent; /* !importanté 
+  border-radius: 1em;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    z-index: -1;
+    margin: -$border; /* !importanté 
+    border-radius: inherit; /* !importanté 
+    background: linear-gradient(to right, red, orange);
+  }
+} */

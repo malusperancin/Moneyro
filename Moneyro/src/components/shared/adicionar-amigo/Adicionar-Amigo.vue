@@ -55,59 +55,8 @@ export default {
   data() {
     return {
       filtro: "",
-      usuarios: [
-        {
-          apelido: "12345678901234567890",
-          foto: "8",
-          nome: "NUMEROS TESTE",
-          aceitou: -1
-        },
-        {
-          apelido: "garupa papa✌ʕ•́ᴥ•̀ʔっ",
-          foto: "6",
-          nome: "malu diferente",
-          aceitou: 1
-        },
-        {
-          apelido: "cenizius😘😎",
-          foto: "1",
-          nome: "Cenicius lindo",
-          aceitou: 0
-        },
-        { apelido: "drigo", foto: "3", nome: "Rodrigao do Grau", aceitou: -1 },
-        { apelido: "elly", foto: "8", nome: "Elli gatona", aceitou: -1 },
-        { apelido: "foen", foto: "5", nome: "Enzo Fanho", aceitou: -1 },
-        { apelido: "malu", foto: "7", nome: "Não sei para esse", aceitou: -1 },
-        { apelido: "grigo", foto: "9", nome: "Grilo isso ae", aceitou: 0 },
-        { apelido: "glly", foto: "2", nome: "Sla cara cansei", aceitou: -1 },
-        { apelido: "hoen", foto: "5", nome: "Catarrando", aceitou: -1 },
-        { apelido: "iovana ಥ‿ಥ✌", foto: "10", nome: "Oiii", aceitou: -1 }, // apelido : varchar(14)
-        {
-          apelido: "jaru✌ʕ•́ᴥ•̀ʔっ",
-          foto: "6",
-          nome: "Jau aquela cidade",
-          aceitou: -1
-        },
-        { apelido: "aovana ಥ‿ಥ✌", foto: "11", nome: "Jovana", aceitou: -1 }, // apelido : varchar(14)
-        { apelido: "jenizius😘😎", foto: "3", nome: "Jeni", aceitou: -1 },
-        {
-          apelido: "jrigo",
-          foto: "9",
-          nome: "Nao tem nem como falar jreigo",
-          aceitou: -1
-        },
-        { apelido: "klly", foto: "4", nome: "Kelly nguiça", aceitou: -1 },
-        { apelido: "loen", foto: "4", nome: "Loen", aceitou: 0 },
-        { apelido: "lenizius😘😎", foto: "8", nome: "COMUNISTA", aceitou: -1 },
-        {
-          apelido: "dmrigo",
-          foto: "12",
-          nome: "Nao tem nem como falar tbm",
-          aceitou: -1
-        },
-        { apelido: "qually", foto: "2", nome: "Qualidade", aceitou: -1 },
-        { apelido: "zoen", foto: "3", nome: "O unico q ta certo", aceitou: -1 }
-      ]
+      usuarios: [],
+      amigos: []
     };
   },
   computed: {
@@ -123,13 +72,76 @@ export default {
   methods: {
     enviarSolicitacao(index) {
       var amigo = this.usuarios[index];
-      //ENVIA PRO BANCO COM amigo.id
+
+      this.$http
+        .post("https://localhost:5001/api/amigos", {
+          idAmigoA: this.$session.get("id"),
+          idAmigoB: amigo.id,
+          situacao: 0
+        })
+        .then(dados => {
+          this.usuarios[index].situacao = 0;
+        }, erro => {
+          alert("algo deu errado");
+        });
     }
+  },
+   created(){
+    var users = null;
+
+    this.$http
+      .get("https://localhost:5001/api/usuarios")
+      .then(response => {
+        users = response.body;
+        
+        for(var i = 0; i < users.length; i++)
+          this.usuarios.push({
+            id: users[i].id,
+            nome: users[i].nome,
+            apelido: users[i].apelido,
+            foto: users[i].foto,
+            aceitou: -1
+          })
+      }, 
+      response => {
+        alert("cu");
+      });
+
+      this.$http
+      .get("https://localhost:5001/api/amigos")
+      .then(response => {
+        this.amigos = response.body;
+
+        alert("pegou");
+
+          for(var j = 0; j < this.amigos.length; j++)
+          {
+            if(this.amigos[j].idAmigoA == this.$session.get("id"))
+            {
+              for(var i = 0; i < this.usuarios.length; i++)
+                if(this.usuarios[i].id == this.amigos[i].idAmigoB)
+                  this.usuarios[i].aceitou = amigos[i].aceitou;
+            }
+             
+            if(this.amigos[j].idAmigoB == this.$session.get("id"))
+            {
+              for(var i = 0; i < this.usuarios.length; i++)
+                if(this.usuarios[i].id == this.amigos[i].idAmigoA)
+                  this.usuarios[i].aceitou = amigos[i].aceitou;
+            }
+          }
+
+          alert("terminou");
+      }, 
+      response => {
+        alert("cutcghbfh");
+      });
   }
-};
+}
+
 </script>
 
-<style src="../../../css/modal.css"></style>
+<style scoped src="../../../css/modal.css"></style>
 <style scoped>
 .corpo {
   background: rebeccapurple;

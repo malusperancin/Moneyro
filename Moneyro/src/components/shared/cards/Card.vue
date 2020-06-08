@@ -1,6 +1,6 @@
 <template>
   <div class="modal">
-    <div class="modal-conteudo animate width-30">
+    <form v-on:submit.prevent class="modal-conteudo animate width-30">
       <div class="cima">
         <div v-if="!this.id" class="tipos">
           <input
@@ -17,7 +17,7 @@
             id="rend"
             name="tipo"
             value="receita"
-            v-on:click="despesa = false, receita = true"
+            v-on:click="despesa = false, receita = true, registro.lugar"
           />
           <label for="rend">Receita</label>
         </div>
@@ -27,25 +27,26 @@
         </div>
         <span class="fechar" v-on:click="$emit('fecharCard')">&times;</span>
       </div>
-
+<!-- step="10" -->
       <div class="corpo">
-        <form>
           <div class="quantia">
             <big>R$</big>
             <input
               placeholder="0,00"
+              
               type="number"
-              min="0.00"
-              max="1000000.00"
-              step="10.00"
+              min="0"
+              max="1000000"
+              step="any"
               class="campos"
-              v-model="quantia"
+              v-model="registro.quantia"
+              required
             />
           </div>
 
-          <input placeholder="Nome" type="text" id="nome" class="campos" v-model="nome" />
+          <input required placeholder="Nome" type="text" id="nome" class="campos" v-model="registro.nome" />
 
-          <input type="date" id="data" class="campos" v-model="data" />
+          <input required type="date" id="data" class="campos" v-model="registro.data" />
 
           <input
             v-if="despesa"
@@ -53,63 +54,36 @@
             type="text"
             id="local"
             class="campos"
-            v-model="local"
+            v-model="registro.lugar"
           />
 
-          <select name="tag" id="tag" class="campos" v-model="tag">
-            <option value="default">Tag: Nenhuma</option>
-            <option v-for="(tag, i) of tags" :key="i" :value="tag.nome">{{ tag.nome }}</option>
+          <select name="tag" id="tag" class="campos" v-model="registro.idTag">
+            <option class="tag" value="default">Tag</option>
+            <option class="tag" v-for="tag of tags" :key="tag.id" :value="tag.id">{{ tag.nome }}</option>
           </select>
 
-          <div class="dropdown" v-if="despesa">
-            <div v-on:click="mostrarAmigos" id="btnDrop" class="campos">Compartilhar com... ▾</div>
+          <div class="dropdown">
+            <div v-on:click="expanded = !expanded" id="btnDrop" class="campos">Compartilhar com... ▾</div>
             <div id="listaAmigos">
               <input type="search" placeholder="Pesquisar" v-model="filtroNome" />
-              <div v-for="amigo of filtraNome" :key="amigo.nome" class="amigos">
+              <div v-for="(amigo, i) of filtraNome" :key="i" class="amigos">
                 <div class="pretty p-default p-curve p-fill">
-                  <input type="checkbox" :id="'amigo'+amigo.id" :name="amigo.nome" />
+                  <input type="checkbox"  v-on:click="incluirAmg(amigo.id)" :id="'amigo'+amigo.id" class="amigo" :name="amigo.nome" :value="amigo.id"/>
                   <div class="state p-primary">
-                    <label class="nomeAmigo">{{amigo.nome}}</label>
+                    <label class="nomeAmigo">{{amigo.apelido}}</label>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </form>
-
-        <!-- <form id="receita" v-if="receita">
-          <span>
-            <big>R$</big>
-            <input
-              placeholder="0,00"
-              type="number"
-              min="0.00"
-              max="1000000.00"
-              step="10.00"
-              class="campos quantia"
-              formaction="0.00"
-              v-model="quantia"
-            />
-          </span>
-          <input placeholder="Nome" type="text" id="nome" class="campos" v-model="nome" />
-          <input type="date" id="data" class="campos" v-model="data" />
-          <select name="tag" id="tag" class="campos">
-            <option value="default">Tag: Nenhuma</option>
-            <option
-              v-for="(tag, i) of tags"
-              :key="i"
-              :value="tag.nome"
-              :id="'tag'+tag.nome"
-            >{{ tag.nome }}</option>
-          </select>
-        </form>-->
       </div>
 
       <div class="baixo">
-        <span class="excluir" v-on:click="excluir" v-if="id">Excluir</span>
-        <span class="salvar" v-on:click="salvar">Salvar</span>
+        <button class="excluir" v-on:click="excluir" v-if="id">Excluir</button>
+        <button class="salvar" v-if="id" v-on:click="atualizar">Salvar</button>
+        <button class="salvar" v-else v-on:click="adicionar">Salvar</button>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 
@@ -126,43 +100,84 @@ export default {
       filtroNome: "",
       tags: [],
       amigos: [],
-      nome: "",
-      data: Date,
-      tag: "",
-      quantia: null,
+      registro: {
+        idUsuario: this.$session.get("id"),
+        idTag: "default",
+        nome: "",
+        lugar: null,
+        data: Date,
+        quantia: 0,
+        compartilhamentos:""
+      },
       compartilhado: [],
-      local: ""
+      qtdAmigos: 0
     };
   },
   methods: {
-    showCheckboxes: function() {
-      var checkboxes = document.getElementById("checkboxes");
-      if (!expanded) {
-        checkboxes.style.display = "block";
-        this.expanded = true;
-      } else {
-        checkboxes.style.display = "none";
-        this.expanded = false;
+    adicionar() {
+      if(this.registro.quantia == 0)
+      {
+        alert("bota quantia");
+        return;
       }
-    },
-    salvar() {
-      //
-    },
-    excluir() {
-      //DELETE REGISTRO WHERE THIS.ID
-    },
-    aparecer: function(card) {},
-    mostrarAmigos: function() {
-      if (
-        document.getElementById("listaAmigos").style.display == "inline-block"
-      )
-        document.getElementById("listaAmigos").style.display = "none";
-      else {
-        document.getElementById("listaAmigos").style.display = "inline-block";
-      }
-      if (this.id) this.checkarAmigos();
-    },
+      
+      if(this.despesa)
+        this.registro.quantia = -(this.registro.quantia);
+      
+       for(var i = 0; i < this.compartilhado.length ; i++)
+        this.registro.compartilhamentos += (" "+this.compartilhado[i]);
+      
+      this.$http
+      .post("https://localhost:5001/api/registros", this.registro)
+      .then(dados=> {
+          alert("Adicionou ebinha");
+        this.$router.push("planilhas");
+        this.$emit('fecharCard');
+      }, erro => {
+        alert("Erro ao adicionar");
+      });
 
+      if(this.despesa)
+        this.registro.quantia = -(this.registro.quantia);
+    },
+    atualizar()
+    {
+      if(this.despesa)
+        this.registro.quantia = -(this.registro.quantia);
+        
+      this.registro.compartilhamentos="";
+
+       for(var i = 0; i < this.compartilhado.length ; i++)
+        this.registro.compartilhamentos += (" "+this.compartilhado[i]);
+
+      this.$http
+      .put("https://localhost:5001/api/registros/1", this.registro)
+      .then(dados => {
+           alert("Atualizou");
+          this.$router.push("planilhas");
+          this.$emit('fecharCard');
+            }, erro => {
+              alert("Erro ao atualizae");
+            });
+            
+      if(this.despesa)
+        this.registro.quantia = -(this.registro.quantia);
+    },
+    click( event)
+    {
+      alert(event.target.tagName);
+    },
+    excluir()
+    {
+      this.$http
+      .delete("https://localhost:5001/api/registros", this.registro.id)
+      .then(dados => {
+        this.$router.push("planilhas");
+        this.$emit('fecharCard');
+      }, erro => {
+        alert("Erro ao exluir");
+      });
+    },
     checkarAmigos: function() {
       for (var a = 0; a < this.amigos.length; a++) {
         document.getElementById("amigo" + this.amigos[a].id).checked = false;
@@ -175,11 +190,30 @@ export default {
         }
       }
     },
-    checkarTag: function() {
-      var comboTags = document.getElementById("tag");
-      if (this.tag) comboTags.value = this.tag;
-      // pegar do banco o nome da tag e o id
-      else comboTags.value = "default";
+    incluirAmg: function(id) {
+      var checkObj = document.getElementById("amigo"+id);
+      
+      if (this.compartilhado.length >= 5)
+      {
+        checkObj.checked = false;
+        alert("máximo 5 pessoas!");
+        return;
+      }
+       
+      if (checkObj.checked)
+        this.compartilhado.push(id);
+      else
+      {
+        alert("entrou no else");
+        // var i = this.compartilhado.find(id);
+        this.compartilhado.filter(a => {
+          a != id
+        });
+        let exp = new RegExp(id, "i");
+        this.compartilhado.filter(amigo => exp.test(id));
+        //alert(i);
+        // nome.splice(0, i);
+      }
     }
   },
   computed: {
@@ -192,68 +226,103 @@ export default {
       }
     }
   },
-  mounted() {
-    this.checkarTag();
-  },
   created() {
     if (this.id) {
-      // var registro = GET META NO BANCO
-      var registro = {
-        id: 1,
-        nome: "almoço",
-        data: "2004-12-02",
-        tag: "Alimentação",
-        quantia: -85,
-        local: "mc donalds",
-        compartilhado: [
-          { id: 1, nome: "Maria", foto: 6 },
-          { id: 2, nome: "Giovanna", foto: 11 }
-        ]
-      };
-      this.nome = registro.nome;
-      this.data = registro.data;
-      this.tag = registro.tag;
-      this.quantia = registro.quantia;
-      this.compartilhado = registro.compartilhado;
-      this.local = registro.local;
+      
+      this.$http
+      .get("https://localhost:5001/api/registros/" + this.id)
+      .then(dados => {
+        this.registro = dados.body;
+      }, erro => {
+        alert("algo deu errado");
+      });
+
+      // this.$http
+      // .get("https://localhost:5001/api/compartilhados/cod/" + this.registro.codigo)
+      // .then(dados => {
+      //   this.registro.compartilhado = dados.body.idUsuario;
+      // }, erro => {
+      //   alert("algo deu errado");
+      // });
     }
 
-    //GET ALL TAGS
-    this.tags = [
-      { nome: "Alimentação" },
-      { nome: "Lazer" },
-      { nome: "tag3" },
-      { nome: "tag4" }
-    ];
+    this.$http
+    .get("https://localhost:5001/api/tags")
+    .then(dados => {
+      this.tags = dados.body;
+    }, erro => {
+      alert("algo deu errado");
+    });
+    
+    this.$http
+    .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
+    .then(dados => {
+      var idList = [];
 
-    this.amigos = [
-      { id: 1, nome: "Maria" },
-      { id: 2, nome: "Giovanna" },
-      { id: 3, nome: "Illy" },
-      { id: 4, nome: "Venizius" }
-    ];
+      for(var i=0; i< dados.body.length; i++)
+      {
+          if(dados.body[i].idAmigoA == this.$session.get("id"))
+              idList.push(dados.body[i].idAmigoB);
+          else
+              idList.push(dados.body[i].idAmigoA);          
+      } 
+
+      for(var i=0; i<idList.length; i++)
+      {
+        this.$http
+        .get("https://localhost:5001/api/usuarios/" + idList[i])
+        .then(dados => {
+          this.amigos.push({
+            id: dados.body.id, apelido: dados.body.apelido});
+        }, erro => {
+          alert("algo deu errado");
+        });
+      }
+    }, erro => {
+      alert("algo deu errado");
+    });
+    
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd;
+
+    this.registro.data = today;
   },
   watch: {
-    quantia() {}
-  }
+    expanded(){
+      var checkboxes = document.getElementById("listaAmigos");
+      
+      if (this.expanded) 
+      {
+        if (this.id) 
+        {
+          this.checkarAmigos();
+          alert("tem id");
+        }
+        checkboxes.style.display = "block";
+      }   
+      else
+        checkboxes.style.display = "none";
+    }
+  },
 };
 
 // this.$set(this.someObject, "b", 2);
 </script>
 
-<style src="../../../css/modal.css"></style>
+<style scoped src="../../../css/modal.css"></style>
 <style scoped>
 #btnDrop {
   font-size: 1.2em;
   background: rgba(0, 0, 0, 0.082);
-  width: fit-content;
   cursor: pointer;
-  display: inline-block;
 }
 
 #listaAmigos {
   margin-top: 10px;
-  padding: 15px;
+  padding: 10px;
   border-radius: 5px;
   z-index: 1;
   background-color: #f6f6f6;
@@ -261,7 +330,6 @@ export default {
   max-height: 200px;
   overflow: auto;
   display: none;
-  position: absolute;
 }
 
 #listaAmigos a {
@@ -296,10 +364,6 @@ export default {
 
 .amigos {
   font-size: 1.25em;
-}
-
-form {
-  padding: 10px;
 }
 
 .tipos {

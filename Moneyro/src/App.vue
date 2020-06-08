@@ -9,15 +9,12 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
-var active = false;
-
 import { routes } from "./routes";
 
 export default {
   data() {
     return {
-      routes,
-      active: false
+      routes
     };
   }
 };
@@ -27,6 +24,7 @@ export default {
 * {
   transition: all 0.3s;
   font-family: "Baloo Chettan 2", cursive;
+  outline: none;
 }
 
 body {
@@ -51,7 +49,8 @@ html {
 }
 
 .pag {
-  background-color: rgb(255, 227, 74);
+  /* background-color: rgb(255, 227, 74); */
+   background-color: #0a0a0aeb;
   min-height: 100%;
 }
 

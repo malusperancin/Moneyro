@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -74,45 +75,24 @@ namespace ProjetoPratica_API.Data
             return await consultaUsuario.FirstOrDefaultAsync();
         }
 
-        public async Task<Receitas[]> GetAllReceitas()
+        public async Task<Registros[]> GetAllRegistros()
         {
-            IQueryable<Receitas> consultaReceitas = (IQueryable<Receitas>)this.Context.Receitas;
-            return await consultaReceitas.ToArrayAsync();
-
+            IQueryable<Registros> consultaRegistros = (IQueryable<Registros>)this.Context.Registros;
+            return await consultaRegistros.ToArrayAsync();
         }
-        public async Task<Receitas> GetReceitaById(int Id)
+        public async Task<Registros> GetRegistroById(int Id)
         {
-            IQueryable<Receitas> consultaReceita = (IQueryable<Receitas>)this.Context.Receitas;
-            consultaReceita = consultaReceita.OrderBy(r => r.Id).Where(receita => receita.Id == Id);
+            IQueryable<Registros> consultaRegistro = (IQueryable<Registros>)this.Context.Registros;
+            consultaRegistro = consultaRegistro.OrderBy(r => r.Id).Where(registro => registro.Id == Id);
             // aqui efetivamente ocorre o SELECT no BD
-            return await consultaReceita.FirstOrDefaultAsync();
+            return await consultaRegistro.FirstOrDefaultAsync();
         }
-        public async Task<Receitas[]> GetReceitasByUsuario(int IdUsuario)
+        public async Task<Registros[]> GetRegistrosByUsuario(int IdUsuario)
         {
-            IQueryable<Receitas> consultaReceita = (IQueryable<Receitas>)this.Context.Receitas;
-            consultaReceita = consultaReceita.OrderBy(receita => receita.Id).Where(receita => receita.IdUsuario == IdUsuario);
+            IQueryable<Registros> consultaRegistro = (IQueryable<Registros>)this.Context.Registros;
+            consultaRegistro = consultaRegistro.OrderBy(r => r.IdUsuario).Where(registro => registro.IdUsuario == IdUsuario);
             // aqui efetivamente ocorre o SELECT no BD
-            return await consultaReceita.ToArrayAsync();
-        }
-
-        public async Task<Despesas[]> GetAllDespesas()
-        {
-            IQueryable<Despesas> consultaDespesas = (IQueryable<Despesas>)this.Context.Despesas;
-            return await consultaDespesas.ToArrayAsync();
-        }
-        public async Task<Despesas> GetDespesaById(int Id)
-        {
-            IQueryable<Despesas> consultaDespesa = (IQueryable<Despesas>)this.Context.Despesas;
-            consultaDespesa = consultaDespesa.OrderBy(d => d.Id).Where(despesa => despesa.Id == Id);
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaDespesa.FirstOrDefaultAsync();
-        }
-        public async Task<Despesas[]> GetDespesasByUsuario(int IdUsuario)
-        {
-            IQueryable<Despesas> consultaDespesa = (IQueryable<Despesas>)this.Context.Despesas;
-            consultaDespesa = consultaDespesa.OrderBy(d => d.IdUsuario).Where(despesa => despesa.IdUsuario == IdUsuario);
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaDespesa.ToArrayAsync();
+            return await consultaRegistro.ToArrayAsync();
         }
 
         public async Task<Metas[]> GetAllMetas()
@@ -197,13 +177,18 @@ namespace ProjetoPratica_API.Data
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaAmigo.FirstOrDefaultAsync();
         }
+
         public async Task<Amigos[]> GetAmigosByUsuario(int IdUsuario)
         {
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
-            consultaAmigos = consultaAmigos.OrderBy(a => a.Id).Where(amigos => amigos.Id == IdUsuario);
-            // aqui efetivamente ocorre o SELECT no BD
+
+            // consultaAmigos = consultaAmigos.Where(a => a.Aceitou == true);
+            consultaAmigos = consultaAmigos.OrderBy(a => a.Id).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario); 
+            consultaAmigos = consultaAmigos.Where(a => a.Aceitou == 1);
+
             return await consultaAmigos.ToArrayAsync();
         }
+
         public async Task<Amigos[]> GetAllAmigos()
         {
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
@@ -227,21 +212,6 @@ namespace ProjetoPratica_API.Data
             consultaArtigo = consultaArtigo.OrderBy(a => a.Id).Where(artigo => artigo.Id == Id);
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaArtigo.FirstOrDefaultAsync();
-        }
-
-        public async Task<Compartilhamentos[]> GetCompartilhamentosByCodigo(int Codigo)
-        {
-            IQueryable<Compartilhamentos> consultaCompartilhamento = (IQueryable<Compartilhamentos>)this.Context.Compartilhamentos;
-            consultaCompartilhamento = consultaCompartilhamento.OrderBy(c => c.Id).Where(compartilhamento => compartilhamento.Codigo == Codigo);
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaCompartilhamento.ToArrayAsync();
-        }
-        public async Task<Compartilhamentos> GetCompartilhamentoById(int Id)
-        {
-            IQueryable<Compartilhamentos> consultaCompartilhamento = (IQueryable<Compartilhamentos>)this.Context.Compartilhamentos;
-            consultaCompartilhamento = consultaCompartilhamento.OrderBy(c => c.Id).Where(compartilhamento => compartilhamento.Id == Id);
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaCompartilhamento.FirstOrDefaultAsync();
         }
 
         public async Task<Avaliacoes[]> GetAllAvaliacoes()

@@ -13,9 +13,9 @@ namespace ProjetoPratica_API.Data
         public DbSet<Artigos> Artigos { get; set; }
         public DbSet<Assuntos> Assuntos { get; set; }
         public DbSet<Compartilhamentos> Compartilhamentos { get; set; }
-        public DbSet<Despesas> Despesas { get; set; }
+        public DbSet<Registros> Registros { get; set; }
         public DbSet<Metas> Metas { get; set; }
-        public DbSet<Receitas> Receitas { get; set; }
+        public DbSet<Ligacoes> Ligacoes { get; set; }
         public DbSet<Tags> Tags { get; set; }
         public DbSet<Videos> Videos { get; set; }
         public DbSet<Avaliacoes> Avaliacoes { get; set; }

@@ -22,6 +22,20 @@ namespace ProjetoPratica_API.Controllers
             this.Repo = repo;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                var result = await this.Repo.GetAllAmigos();
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
         [HttpGet("{UsuarioId}")]
         public async Task<IActionResult> Get(int UsuarioId)
         {

@@ -14,21 +14,20 @@ namespace ProjetoPratica_API.Controllers
     [EnableCors("*")]
     [Route("api/[controller]")]
     [ApiController]
-    public class CompartilhamentosController : Controller
+    public class RegistrosController : Controller
     {
         public IRepository Repo { get; }
-        public CompartilhamentosController(IRepository repo)
+        public RegistrosController(IRepository repo)
         {
             this.Repo = repo;
         }
 
-
-        [HttpGet("cod/{CompartilhamentoCod}")]
-        public async Task<IActionResult> GetByCod(int CompartilhamentoCod)
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var result = await this.Repo.GetCompartilhamentosByCodigo(CompartilhamentoCod);
+                var result = await this.Repo.GetAllRegistros();
                 return Ok(result);
             }
             catch
@@ -37,12 +36,27 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
-        [HttpGet("{CompartilhamentoId}")]
-        public async Task<IActionResult> Get(int CompartilhamentoId)
+
+        [HttpGet("{RegistroId}")]
+        public async Task<IActionResult> Get(int RegistroId)
         {
             try
             {
-                var result = await this.Repo.GetCompartilhamentoById(CompartilhamentoId);
+                var result = await this.Repo.GetRegistroById(RegistroId);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+        [HttpGet("usu/{UsuarioId}")]
+        public async Task<IActionResult> GetByUsuario(int UsuarioId)
+        {
+            try
+            {
+                var result = await this.Repo.GetRegistrosByUsuario(UsuarioId);
                 return Ok(result);
             }
             catch
@@ -52,7 +66,7 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> post(Compartilhamentos modelo)
+        public async Task<IActionResult> post(Registros modelo)
         {
             try
             {
@@ -71,14 +85,14 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpPut("{CompartilhamentoId}")]
-        public async Task<IActionResult> put(int CompartilhamentoId, Compartilhamentos model)
+        [HttpPut("{RegistroId}")]
+        public async Task<IActionResult> put(int RegistroId, Registros model)
         {
             try
             {
                 //verifica se existe aluno a ser alterado
-                var compartilhamento = await this.Repo.GetCompartilhamentoById(CompartilhamentoId);
-                if (compartilhamento == null) return NotFound();
+                var registro = await this.Repo.GetRegistroById(RegistroId);
+                if (registro == null) return NotFound();
 
                 this.Repo.Update(model);
 
@@ -86,8 +100,8 @@ namespace ProjetoPratica_API.Controllers
                 {
 
                     //pegar o aluno novamente, agora alterado para devolver pela rota abaixo
-                    //compartilhamento = await this.Repo.GetCompartilhamentoByID(CompartilhamentoId);
-                    //return Created($"/api/Compartilhamentos/{model.Id}", model);
+                    //despesa = await this.Repo.GetDespesaByID(DespesaId);
+                    //return Created($"/api/despesas/{model.Id}", model);
                     return Ok();
                 }
             }
@@ -99,15 +113,15 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("{CompartilhamentoId}")]
-        public async Task<IActionResult> delete(int CompartilhamentoId)
+        [HttpDelete("{RegistroId}")]
+        public async Task<IActionResult> delete(int RegistroId)
         {
             try
             {
                 //verifica se existe aluno a ser excluído
-                var compartilhamento = await this.Repo.GetCompartilhamentoById(CompartilhamentoId);
-                if (compartilhamento == null) return NotFound(); //método do EF
-                this.Repo.Delete(compartilhamento);
+                var registro = await this.Repo.GetRegistroById(RegistroId);
+                if (registro == null) return NotFound(); //método do EF
+                this.Repo.Delete(registro);
                 //
                 if (await this.Repo.SaveChangesAsync())
                 {

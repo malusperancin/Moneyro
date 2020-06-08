@@ -4,6 +4,6 @@ namespace ProjetoPratica_API.Models
     {
         public int Id { get; set; }
         public string Mensagem { get; set; }
-
+        public string Cor { get; set; }
     }
 }

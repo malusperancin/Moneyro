@@ -65,7 +65,7 @@ export default {
 };
 </script>
 
-<style src="../../../css/modal.css"></style>
+<style scoped src="../../../css/modal.css"></style>
 <style scoped>
 #erro {
   font-weight: 1000;
