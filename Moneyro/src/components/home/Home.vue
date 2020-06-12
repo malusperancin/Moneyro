@@ -83,8 +83,8 @@ export default {
     document.title = "Moneyro";
   },
   beforeCreate() {
-    // if(this.$session.exists())
-    //   this.$router.push("usuario");
+    if(this.$session.exists())
+      this.$router.push("usuario");
   },
 };
 </script>

@@ -62,7 +62,7 @@
             <option class="tag" v-for="tag of tags" :key="tag.id" :value="tag.id">{{ tag.nome }}</option>
           </select>
 
-          <div class="dropdown">
+          <div class="dropdown" v-if="despesa">
             <div v-on:click="expanded = !expanded" id="btnDrop" class="campos">Compartilhar com... ▾</div>
             <div id="listaAmigos">
               <input type="search" placeholder="Pesquisar" v-model="filtroNome" />
@@ -123,10 +123,14 @@ export default {
       
       if(this.despesa)
         this.registro.quantia = -(this.registro.quantia);
+      else
+        this.registro.compartilhamentos="";
       
        for(var i = 0; i < this.compartilhado.length ; i++)
         this.registro.compartilhamentos += (" "+this.compartilhado[i]);
-      
+
+      this.registro.quantia = parseFloat(this.registro.quatia);
+
       this.$http
       .post("https://localhost:5001/api/registros", this.registro)
       .then(dados=> {
@@ -179,7 +183,8 @@ export default {
     },
     checkarAmigos() {
       for (var a = 0; a < this.amigos.length; a++) {
-      document.getElementById("amigo" + this.amigos[a].id).checked = false;
+        //alert(this.amigos[a].id+this.amigos[a].nome);
+         document.getElementById("amigo" + this.amigos[a].id).checked = false;
       }
       for (var i = 0; i < this.compartilhado.length; i++) {
         for (var a = 0; a < this.amigos.length; a++) {
@@ -188,7 +193,6 @@ export default {
           }
         }
       }
-
 
     },
     incluirAmg: function(id) {

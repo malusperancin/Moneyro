@@ -80,6 +80,7 @@ export default {
       filtroNome: "",
       amigos: [],
       meta: {
+        id:0,
         idUsuario: this.$session.get("id"),
         nome: "",
         objetivo: 0,
@@ -98,90 +99,129 @@ export default {
       }
     },
     salvar: function() {
-        if(this.meta.objetivo == 0 )
-        {
-          alert("bota objetivo");
-          return;
-        }
+        //  var comp = "";
       
-       for(var i = 0; i < this.compartilhado.length ; i++)
-         this.meta.compartilhamentos += (" "+this.compartilhado[i]);
-      
-      this.$http
-      .post("https://localhost:5001/api/metas", this.meta)
-      .then(dados=> {
-          alert("Adicionou a meta ebinha");
-        // this.$router.push("metas");
-        // this.$emit('fecharCard');
-      }, erro => {
-        alert("Erro ao adicionar meta");
-      });
+        // if(this.meta.compartilhamentos[0])
+        //     for(var i = 0; i < this.meta.compartilhamentos.length ; i++)
+        //       comp += (" "+this.meta.compartilhamentos[i].id);
+        // else
+        //   comp = null;
+        
+        // this.meta.compartilhamentos = comp;
+
+        this.meta.compartilhamentos = this.getCompartilhados;
+          
+        this.meta.objetivo= parseFloat(this.meta.objetivo);
+        this.meta.atual= parseFloat(this.meta.atual);
+        
+        this.$http
+        .post("https://localhost:5001/api/metas", this.meta)
+        .then(dados=> {
+          // no no -> exibir msg
+          // if(this.$router.get.currentRoute() != 'metas')
+          //   alert("ta na metas")
+          // this.$router.push('metas');
+          // this.$router.push("metas"); 
+          alert("foi a meta");
+          this.$emit('atualizarMetas');
+          this.$emit('fecharMeta');
+        }, erro => {
+          alert("Erro ao adicionar meta");
+        });
+    },
+    getCompartilhados(){
+      var div = document.getElementsByClassName("amigo");
+      var comp = "";
+      for (var i = 0; i < div.length; i++) 
+        if(div.item(i).checked)
+          comp+= " "+div.item(i).value;
+      return comp;
     },
     atualizar(){
+      //var comp = "";
       
-    this.meta.compartilhamentos="";
+      // if(this.meta.compartilhamentos[0])
+      //     for(var i = 0; i < this.meta.compartilhamentos.length ; i++)
+      //       comp += (" "+this.meta.compartilhamentos[i].id);
+      // else
+      //   comp = null;
+      
+      this.meta.compartilhamentos = this.getCompartilhados;
 
-    for(var i = 0; i < this.compartilhado.length ; i++)
-      this.meta.compartilhamentos += (" "+this.compartilhado[i]);
-    
+      this.meta.objetivo= parseFloat(this.meta.objetivo);
+      this.meta.atual= parseFloat(this.meta.atual);
+
+      
       this.$http
-        .put("https://localhost:5001/api/metas/25", this.meta)
-        .then(dados=> {
-          this.$router.push("metas");
-          this.$emit('fecharCard');
-          alert("Alterar FUNFO EBA");
-        }, erro => {
-          alert("Alterar deu errado");
-        });
+      .put("https://localhost:5001/api/metas/40", this.meta)
+      .then(dados=> {
+        this.$emit('atualizarMetas');
+        this.$emit('fecharMeta');
+        alert("Alterar FUNFO EBA");
+      }, erro => {
+        alert("Alterar deu errado");
+      });
     },
     excluir: function() {
       alert(this.meta.id);
       this.$http
         .delete("https://localhost:5001/api/metas/", this.meta.id)
         .then(dados=> {
-          alert("deu certo");
-          this.$router.push("metas");
-          this.$emit('fecharCard');
+          alert("deu certo do delete"); 
+          // if(this.$router.currentRoute() != 'metas')
+          //   alert("ta na metas")
+            // this.$router.push('metas');
+
+          this.$emit('atualizarMetas');
+          this.$emit('fecharMeta');
         }, erro => {
-          alert("algo deu errado");
+          alert("Erro ao deletar meta");
         });
     },
     checkarAmigos: function() {
-      for (var a = 0; a < this.amigos.length; a++)
-        document.getElementById("amigo" + this.amigos[a].id).checked = false;
-
-      for (var i = 0; i < this.compartilhado.length; i++) {
-        for (var a = 0; a < this.amigos.length; a++) {
-          if (this.compartilhado[i].id == this.amigos[a].id) {
-            document.getElementById("amigo" + this.amigos[a].id).checked = true;
-          }
-        }
-      }
-    },
+      var div = document.getElementsByClassName("amigo");
+  
+      for (var i = 0; i < div.length; i++) 
+        for (var a = 0; a < this.meta.compartilhamentos.length; a++) 
+          if(div.item(i).value == this.meta.compartilhamentos[a].id)
+            div.item(i).checked = true;
+    }, 
     incluirAmg: function(id) {
       var checkObj = document.getElementById("amigo"+id);
       
-      if (this.compartilhado.length >= 5)
+      if(this.meta.compartilhamentos.length >= 5)
       {
         checkObj.checked = false;
         alert("máximo 5 pessoas!");
         return;
       }
-       
-      if (checkObj.checked)
-        this.compartilhado.push(id);
-      else
-      {
-        alert("entrou no else");
-        // var i = this.compartilhado.find(id);
-        this.compartilhado.filter(a => {
-          a != id
+
+      /*
+      [].filter(id(valor) =>
+        valor == id)
+      */
+    },
+    setCompartilhamentos(comp){
+      var ids = comp.trim().split(/(\s+)/);
+
+      this.meta.compartilhamentos = [];
+      
+      for(var i = 0; i < ids.length; i++)
+        if(ids[i] > 0)
+          this.getUsuario(ids[i]);
+    },
+    getUsuario(id){
+      this.$http
+      .get("https://localhost:5001/api/usuarios/" + id)
+      .then(dados => { 
+        this.meta.compartilhamentos.push({
+          id: dados.body.id,
+          apelido: dados.body.apelido
         });
-        let exp = new RegExp(id, "i");
-        this.compartilhado.filter(amigo => exp.test(id));
-        //alert(i);
-        // nome.splice(0, i);
-      }
+      }, 
+      erro => {
+        alert("algo deu errado metakkk" + erro.bodyText);
+      });
     }
   },
   computed: {
@@ -195,15 +235,22 @@ export default {
     }
   },
   created() {
-    if (this.id) { 
+    if (this.id) {
+
       this.$http
       .get("https://localhost:5001/api/metas/" + this.id)
       .then(dados => {
         this.meta = dados.body;
         this.meta.dataLimite = this.meta.dataLimite.substring(0, 10);
+        
+        if(this.meta.compartilhamentos != null)
+          this.setCompartilhamentos(this.meta.compartilhamentos);  
+        else
+          this.meta.compartilhamentos = [];
       }, erro => {
-        alert("algo deu errado meta");
+        alert("algo deu errado metakk");
       });
+
     }
 
     this.$http
@@ -221,10 +268,10 @@ export default {
 
       for(var i=0; i< dados.body.length; i++)
       {
-          if(dados.body[i].idAmigoA == this.$session.get("id"))
-              idList.push(dados.body[i].idAmigoB);
-          else
-              idList.push(dados.body[i].idAmigoA);          
+        if(dados.body[i].idAmigoA == this.$session.get("id"))
+            idList.push(dados.body[i].idAmigoB);
+        else
+            idList.push(dados.body[i].idAmigoA);          
       } 
 
       for(var i=0; i<idList.length; i++)
@@ -258,9 +305,9 @@ export default {
       
       if (this.expanded) 
       {
-        if (this.id) this.checkarAmigos();
+        this.checkarAmigos();
         checkboxes.style.display = "block";
-      }   
+      }
       else
         checkboxes.style.display = "none";
     }
@@ -325,7 +372,6 @@ big{
 }
 
 #listaAmigos {
-  margin-top: 10px;
   padding: 10px;
   border-radius: 5px;
   z-index: 1;
@@ -334,6 +380,7 @@ big{
   max-height: 200px;
   overflow: auto;
   display: none;
+  position: absolute;
 }
 
 #listaAmigos a {

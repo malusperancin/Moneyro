@@ -1,6 +1,6 @@
 <template>
   <div class="pag">
-    <Menu />
+    <Menu v-on:atualizarMetas="getTodos"/>
     <Perfil />
     <Topo />
     <Meta v-if="verMeta" :id="id" v-on:fecharMeta="verMeta = false" />
@@ -71,30 +71,24 @@ export default {
           foto: dados.body.foto
         });
       }, erro => {
-        alert("algo deu errado meta");
+        alert("algo deu errado metakkk" + erro.bodyText);
       });
-    }
-  },
-  computed: {
-    // Get all metas order by data e concluida
-  },
-  mounted() {
-    //
-  },
-  created(){
-    document.title = "Metas";
-
-    this.$http
+    },
+    getTodos()
+    {
+       this.$http
       .get("https://localhost:5001/api/metas")
       .then(dados => {
         this.metas = dados.body;
         // alert(this.metas[0].dataLimite);
 
-        for(var i = 0; i < dados.body.length; i++)
-        {
-          if(this.metas[i].compartilhamentos != null)
+        for(var i = 0; i < this.metas.length; i++)
+        { 
+          //alert("comp"+this.metas[i].compartilhamentos+" i:" + i);
+          if(this.metas[i].compartilhamentos != "" && this.metas[i].compartilhamentos!=null)
           {
             var ids = this.metas[i].compartilhamentos.trim().split(/(\s+)/);
+
             this.metas[i].compartilhamentos = [];
             
             for(var j = 0; j < ids.length; j++)
@@ -105,12 +99,25 @@ export default {
       }, erro => {
         alert("algo deu errado meta");
       });
+  }
+  },
+  computed: {
+    // Get all metas order by data e concluida
+  },
+  mounted() {
+    //
+  },
+  created(){
+    document.title = "Metas";
+    this.getTodos();
+   
   },
   beforeCreate() {
     if (!this.$session.exists()) {
       this.$router.push('/')
     }
   }
+    
 };
 </script>
 

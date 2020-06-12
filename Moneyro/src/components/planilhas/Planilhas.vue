@@ -33,10 +33,8 @@
               </td>
               <td class="nome">{{reg.nome}}</td>
               <td class="comp">
-                <div class="amigos" v-if="reg.compartilhado">
-                  <div v-for="(amigo, i) in reg.compartilhado" :title="amigo.nome" v-bind:key="i">
-                    <img :src="'src/images/perfil'+ amigo.foto + '.png'" alt />
-                  </div>
+                <div class="amigos">
+                  <img v-for="(amigo, i) in reg.compartilhamentos" :title="amigo.nome" v-bind:key="i" :src="'src/images/perfil'+ amigo.foto + '.png'" alt />
                 </div>
               </td>
               <td class="quantia">
@@ -52,6 +50,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import Menu from "../shared/menu/Menu.vue";
 import Perfil from "../shared/perfil/Perfil.vue";
@@ -70,7 +69,6 @@ export default {
       registros: [],
       registrosData: [],
       verCard: false,
-      id: null,
       filtro: ""
     };
   },
@@ -83,8 +81,7 @@ export default {
       return ("0" + dia).slice(-2) + "/" + ("0" + mes).slice(-2) + "/" + ano;
       // Utilizo o .slice(-2) para garantir o formato com 2 digitos.
     },
-    registro()
-    {
+    registro(){
       var select = document.getElementById('registro').value;
 
       if(select == "todos")
@@ -96,8 +93,7 @@ export default {
       if(select == "receita")
         this.getReceitas();
     },
-    ordem()
-    {
+    ordem(){
       var select = document.getElementById('ordem').value;
 
       if(select == "recentes")
@@ -115,7 +111,8 @@ export default {
           id: vetor[i].id,
           nome: vetor[i].nome,
           tag: this.tags[vetor[i].idTag-1].nome,
-          quantia: vetor[i].quantia
+          quantia: vetor[i].quantia,
+          compartilhamentos: vetor[i].compartilhamentos
         });
 
         if (i + 1 == vetor.length) {
@@ -137,35 +134,69 @@ export default {
 
       return ret;
     },
-    getDespesas()
-    {
+    getDespesas(){
       this.$http
       .get("https://localhost:5001/api/registros/despesas/" + this.$session.get("id") )
       .then(dados => {
         this.registros = dados.body;
+
+        for(var i = 0; i < this.registros.length; i++)
+            if(this.registros[i].compartilhamentos != null)
+              this.setCompartilhamentos(i, this.registros[i].compartilhamentos);
+              
       }, erro => {
         alert("algo deu errado");
       });
     },
-    getReceitas()
-    {
+    getReceitas(){
       this.$http
       .get("https://localhost:5001/api/registros/receitas/" + this.$session.get("id") )
       .then(dados => {
         this.registros = dados.body;
+
+        for(var i = 0; i < this.registros.length; i++)
+          if(this.registros[i].compartilhamentos != null)
+            this.setCompartilhamentos(i, this.registros[i].compartilhamentos);
+              
       }, erro => {
         alert("algo deu errado");
       });
     },
-    getTodos()
-    {
+    getTodos(){
       this.$http
         .get("https://localhost:5001/api/registros/todos/" + this.$session.get("id"))
         .then(dados => {
           this.registros = dados.body;
+
+          for(var i = 0; i < this.registros.length; i++)
+            if(this.registros[i].compartilhamentos != null)
+              this.setCompartilhamentos(i, this.registros[i].compartilhamentos);
+              
         }, erro => {
           alert("algo deu errado");
         });
+    },
+    setCompartilhamentos(indice, comp){
+      var ids = comp.trim().split(/(\s+)/);
+
+      this.registros[indice].compartilhamentos = [];
+      
+      for(var i = 0; i < ids.length; i++)
+        if(ids[i] > 0)
+          this.getUsuario(ids[i], indice);
+    },
+    getUsuario(id, i){
+      this.$http
+      .get("https://localhost:5001/api/usuarios/" + id)
+      .then(dados => { 
+        this.registros[i].compartilhamentos.push({
+          id: dados.body.id,
+          nome: dados.body.nome,
+          foto: dados.body.foto
+        });
+      }, erro => {
+        alert("algo deu errado metakkk" + erro.bodyText);
+      });
     },
   },
   beforeCreate() {
@@ -216,11 +247,13 @@ export default {
 .amigos div {
   margin-left: -15px;
   margin-bottom: 0;
+  display: flex;
 }
 
 .amigos img {
   border: 3px solid rgb(236, 228, 228);
   width: 30px;
+  margin-left: -10px;
   border-radius: 87px;
   margin-bottom: -5px;
 }
