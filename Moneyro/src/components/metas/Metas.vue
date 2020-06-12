@@ -13,12 +13,11 @@
             :objetivo="meta.objetivo"
             :atual="meta.atual"
             :dataLimite="formataData(meta.dataLimite)"
-            :compartilhado="meta.compartilhado"
+            :compartilhado="meta.compartilhamentos"
             v-on:fecharMeta="verMeta = false"
           ></Painel>
         </div>
         <div style="color: white">
-          {{metas}}
         </div>
       </div>
     </div>
@@ -52,6 +51,7 @@ export default {
       this.id = this.metas[indice].id;
       this.verMeta = true;
     },
+    //2020-06-12
     formataData(data) {
       data = data.substring(0,10);
       var ano = data.split("-")[0];
@@ -64,12 +64,12 @@ export default {
     { 
       this.$http
       .get("https://localhost:5001/api/usuarios/" + id)
-      .then(dados => {
+      .then(dados => { 
         this.metas[i].compartilhamentos.push({
           id: dados.body.id,
           nome: dados.body.nome,
           foto: dados.body.foto
-        })
+        });
       }, erro => {
         alert("algo deu errado meta");
       });
@@ -88,40 +88,23 @@ export default {
       .get("https://localhost:5001/api/metas")
       .then(dados => {
         this.metas = dados.body;
+        // alert(this.metas[0].dataLimite);
 
         for(var i = 0; i < dados.body.length; i++)
         {
-          var ids = this.metas[i].compartilhamentos.trim().split(/(\s+)/);
-          this.metas[i].compartilhamentos = [];
-          
-          for(var j = 0; j < ids.length; j++)
-            this.methods.getUsuario(ids[j]);
+          if(this.metas[i].compartilhamentos != null)
+          {
+            var ids = this.metas[i].compartilhamentos.trim().split(/(\s+)/);
+            this.metas[i].compartilhamentos = [];
             
+            for(var j = 0; j < ids.length; j++)
+              if(ids[j] != " ")
+                this.getUsuario(ids[j], i);
+          }
         }
       }, erro => {
         alert("algo deu errado meta");
       });
-
-      // { 
-      //   id: 1,
-      //   nome: "Open de Caldicana😎😎",
-      //   atual: "1",
-      //   objetivo: "3",
-      //   dataLimite: "2020-05-01",
-      //   compartilhado: [
-      //     { id: 1, nome: "Maria", foto: 6 },
-      //     { id: 2, nome: "Giovanna", foto: 11 }
-      //   ]
-      // },
-
-      // meta: {
-      //   idUsuario: this.$session.get("id"),
-      //   nome: "",
-      //   objetivo: 0,
-      //   atual: 0,
-      //   dataLimite: Date,
-      //   compartilhamentos: ""
-      // },
   },
   beforeCreate() {
     if (!this.$session.exists()) {
@@ -139,7 +122,7 @@ export default {
 }
 
 #lista-metas .lista-metas-item {
-  display: inline-block;
+  display: inline-flex;
   margin: 0.5%;
 }
 </style>

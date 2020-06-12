@@ -1,6 +1,6 @@
 <template>
   <div class="modal">
-    <form v-on:submit.prevent class="modal-conteudo animate width-40">
+    <form v-on:submit.prevent class="modal-conteudo animate width-30">
       <div class="cima">
         <div class="tipos">
           <label>{{ id ? "Edição" : "Metah"}}</label>
@@ -45,6 +45,7 @@
         <span class="escrito">Data limite</span>
         <input type="date" id="data" class="campos" v-model="meta.dataLimite" />
 
+      {{meta}}
         <div class="dropdown">
           <div v-on:click="expanded = !expanded" id="btnDrop" class="campos">Compartilhar com... ▾</div>
           <div id="listaAmigos">
@@ -60,8 +61,6 @@
           </div>
         </div>
       </div>
-      
-      {{meta}}
       <div class="baixo">
         <button class="excluir" v-on:click="excluir" v-if="id">Excluir</button>
         <button class="salvar" v-if="id" v-on:click="atualizar">Salvar</button>
@@ -99,22 +98,21 @@ export default {
       }
     },
     salvar: function() {
-    if(this.meta.objetivo == 0 )
-      {
-        alert("bota objetivo");
-        return;
-      }
+        if(this.meta.objetivo == 0 )
+        {
+          alert("bota objetivo");
+          return;
+        }
       
-       for(var i = 0; i < this.compartilhado.length ; i++){
+       for(var i = 0; i < this.compartilhado.length ; i++)
          this.meta.compartilhamentos += (" "+this.compartilhado[i]);
-       }
       
       this.$http
       .post("https://localhost:5001/api/metas", this.meta)
       .then(dados=> {
           alert("Adicionou a meta ebinha");
-        this.$router.push("metas");
-        this.$emit('fecharCard');
+        // this.$router.push("metas");
+        // this.$emit('fecharCard');
       }, erro => {
         alert("Erro ao adicionar meta");
       });
@@ -137,9 +135,11 @@ export default {
         });
     },
     excluir: function() {
+      alert(this.meta.id);
       this.$http
         .delete("https://localhost:5001/api/metas/", this.meta.id)
         .then(dados=> {
+          alert("deu certo");
           this.$router.push("metas");
           this.$emit('fecharCard');
         }, erro => {
@@ -195,23 +195,15 @@ export default {
     }
   },
   created() {
-    if (this.id) {
-      
+    if (this.id) { 
       this.$http
       .get("https://localhost:5001/api/metas/" + this.id)
       .then(dados => {
         this.meta = dados.body;
+        this.meta.dataLimite = this.meta.dataLimite.substring(0, 10);
       }, erro => {
         alert("algo deu errado meta");
       });
-
-      // this.$http
-      // .get("https://localhost:5001/api/compartilhados/cod/" + this.registro.codigo)
-      // .then(dados => {
-      //   this.registro.compartilhado = dados.body.idUsuario;
-      // }, erro => {
-      //   alert("algo deu errado");
-      // });
     }
 
     this.$http
@@ -241,7 +233,9 @@ export default {
         .get("https://localhost:5001/api/usuarios/" + idList[i])
         .then(dados => {
           this.amigos.push({
-            id: dados.body.id, apelido: dados.body.apelido});
+            id: dados.body.id, 
+            apelido: dados.body.apelido
+          });
         }, erro => {
           alert("algo deu errado");
         });
@@ -276,6 +270,10 @@ export default {
 
 <style scoped src="../../../css/modal.css"></style>
 <style scoped>
+big{
+  color: black;
+}
+
 .quantia {
   font-size: 1em;
   padding: 0 0 15px;

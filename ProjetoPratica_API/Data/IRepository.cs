@@ -17,8 +17,11 @@ namespace ProjetoPratica_API.Data
         Task<Usuarios> GetUsuarioByEmail(string email);
        
         Task<Registros[]> GetAllRegistros();
-        Task<Registros> GetRegistroById(int Id);
+        Task<Registros>   GetRegistroById(int Id);
+        Task<Registros[]> GetReceitasByUsuario(int IdUsuario);
+        Task<Registros[]> GetDespesasByUsuario(int IdUsuario);
         Task<Registros[]> GetRegistrosByUsuario(int IdUsuario);
+
 
         Task<Metas[]> GetAllMetas();
         Task<Metas> GetMetaById(int Id);
@@ -26,7 +29,6 @@ namespace ProjetoPratica_API.Data
 
         Task<Assuntos[]> GetAllAssuntos();
         Task<Assuntos> GetAssuntoById(int Id);
-
 
         Task<Tips[]> GetAllTips();
         // Task<Tips[]> GetTipsByAssunto(string Assunto);

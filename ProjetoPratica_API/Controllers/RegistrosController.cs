@@ -15,48 +15,61 @@ namespace ProjetoPratica_API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class RegistrosController : Controller
-    {
+    { //oi ta lendo?
         public IRepository Repo { get; }
         public RegistrosController(IRepository repo)
         {
             this.Repo = repo;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            try
-            {
-                var result = await this.Repo.GetAllRegistros();
-                return Ok(result);
-            }
-            catch
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
-            }
-        }
-
-
-        [HttpGet("{RegistroId}")]
-        public async Task<IActionResult> Get(int RegistroId)
-        {
-            try
-            {
-                var result = await this.Repo.GetRegistroById(RegistroId);
-                return Ok(result);
-            }
-            catch
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
-            }
-        }
-
-        [HttpGet("usu/{UsuarioId}")]
-        public async Task<IActionResult> GetByUsuario(int UsuarioId)
+        [HttpGet("todos/{UsuarioId}")]
+        public async Task<IActionResult> Get(int UsuarioId)
         {
             try
             {
                 var result = await this.Repo.GetRegistrosByUsuario(UsuarioId);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+        [HttpGet("receitas/{UsuarioId}")]
+        public async Task<IActionResult> GetReceitas(int UsuarioId)
+        {
+            try
+            {
+                var result = await this.Repo.GetReceitasByUsuario(UsuarioId);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+         
+        [HttpGet("despesas/{UsuarioId}")]
+        public async Task<IActionResult> GetDespesas(int UsuarioId)
+        {
+            try
+            {
+                var result = await this.Repo.GetDespesasByUsuario(UsuarioId);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+        [HttpGet("{RegistroId}")]
+        public async Task<IActionResult> GetRegistroById(int RegistroId)
+        {
+            try
+            {
+                var result = await this.Repo.GetRegistroById(RegistroId);
                 return Ok(result);
             }
             catch

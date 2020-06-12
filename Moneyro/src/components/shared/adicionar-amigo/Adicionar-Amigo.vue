@@ -84,53 +84,40 @@ export default {
         }, erro => {
           alert("algo deu errado");
         });
+    },
+    getUsuario(id, aceitou)
+    { 
+      this.$http
+      .get("https://localhost:5001/api/usuarios/" + id)
+      .then(dados => {
+        return {
+          id: dados.body.id,
+          nome: dados.body.nome,
+          apelido: dados.body.apelido,
+          foto: dados.body.foto,
+          aceitou: aceitou
+        };
+      }, erro => {
+        alert("algo deu errado meta");
+      });
     }
   },
    created(){
     var users = null;
-
-    this.$http
-      .get("https://localhost:5001/api/usuarios")
-      .then(response => {
-        users = response.body;
-        
-        for(var i = 0; i < users.length; i++)
-          this.usuarios.push({
-            id: users[i].id,
-            nome: users[i].nome,
-            apelido: users[i].apelido,
-            foto: users[i].foto,
-            aceitou: -1
-          })
-      }, 
-      response => {
-        alert("cu");
-      });
-
       this.$http
       .get("https://localhost:5001/api/amigos")
       .then(response => {
-        this.amigos = response.body;
+        var ids = response.body;
 
         alert("pegou");
 
-          for(var j = 0; j < this.amigos.length; j++)
-          {
-            if(this.amigos[j].idAmigoA == this.$session.get("id"))
-            {
-              for(var i = 0; i < this.usuarios.length; i++)
-                if(this.usuarios[i].id == this.amigos[i].idAmigoB)
-                  this.usuarios[i].aceitou = amigos[i].aceitou;
-            }
-             
-            if(this.amigos[j].idAmigoB == this.$session.get("id"))
-            {
-              for(var i = 0; i < this.usuarios.length; i++)
-                if(this.usuarios[i].id == this.amigos[i].idAmigoA)
-                  this.usuarios[i].aceitou = amigos[i].aceitou;
-            }
-          }
-
+        for(var i = 0; i < this.amigos.length; i++)
+        {
+          if(ids[i].idAmigoA == this.$session.get('id'))
+            this.amigos.push(this.methods.getUsuario(ids[i].idAmigoB, ids[i].situacao));
+          else
+            this.amigos.push(this.methods.getUsuario(ids[i].idAmigoA, ids[i].situacao));
+        }
           alert("terminou");
       }, 
       response => {

@@ -75,11 +75,14 @@ namespace ProjetoPratica_API.Data
             return await consultaUsuario.FirstOrDefaultAsync();
         }
 
+
+
         public async Task<Registros[]> GetAllRegistros()
         {
             IQueryable<Registros> consultaRegistros = (IQueryable<Registros>)this.Context.Registros;
             return await consultaRegistros.ToArrayAsync();
         }
+
         public async Task<Registros> GetRegistroById(int Id)
         {
             IQueryable<Registros> consultaRegistro = (IQueryable<Registros>)this.Context.Registros;
@@ -87,11 +90,28 @@ namespace ProjetoPratica_API.Data
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaRegistro.FirstOrDefaultAsync();
         }
+                
+        public async Task<Registros[]> GetDespesasByUsuario(int IdUsuario)
+        {
+            IQueryable<Registros> consultaRegistros = (IQueryable<Registros>)this.Context.Registros;
+            consultaRegistros = consultaRegistros.Where(registro => registro.IdUsuario == IdUsuario);
+            consultaRegistros = consultaRegistros.OrderByDescending(r => r.Data).Where(registro => registro.Quantia < 0);
+            return await consultaRegistros.ToArrayAsync();
+        }
+
+        public async Task<Registros[]> GetReceitasByUsuario(int IdUsuario)
+        {
+            IQueryable<Registros> consultaRegistros = (IQueryable<Registros>)this.Context.Registros;
+            consultaRegistros = consultaRegistros.Where(registro => registro.IdUsuario == IdUsuario);
+            consultaRegistros = consultaRegistros.OrderByDescending(r => r.Data).Where(registro => registro.Quantia > 0);
+            return await consultaRegistros.ToArrayAsync();
+        }
+
         public async Task<Registros[]> GetRegistrosByUsuario(int IdUsuario)
         {
             IQueryable<Registros> consultaRegistro = (IQueryable<Registros>)this.Context.Registros;
-            consultaRegistro = consultaRegistro.OrderBy(r => r.IdUsuario).Where(registro => registro.IdUsuario == IdUsuario);
-            // aqui efetivamente ocorre o SELECT no BD
+                consultaRegistro = consultaRegistro.OrderByDescending(r => r.Data).Where(registro => registro.IdUsuario == IdUsuario);
+                // aqui efetivamente ocorre o SELECT no BD
             return await consultaRegistro.ToArrayAsync();
         }
 

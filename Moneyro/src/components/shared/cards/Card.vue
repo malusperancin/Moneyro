@@ -163,12 +163,11 @@ export default {
       if(this.despesa)
         this.registro.quantia = -(this.registro.quantia);
     },
-    click( event)
+    click(event)
     {
       alert(event.target.tagName);
     },
-    excluir()
-    {
+    excluir(){
       this.$http
       .delete("https://localhost:5001/api/registros", this.registro.id)
       .then(dados => {
@@ -178,9 +177,9 @@ export default {
         alert("Erro ao exluir");
       });
     },
-    checkarAmigos: function() {
+    checkarAmigos() {
       for (var a = 0; a < this.amigos.length; a++) {
-        document.getElementById("amigo" + this.amigos[a].id).checked = false;
+      document.getElementById("amigo" + this.amigos[a].id).checked = false;
       }
       for (var i = 0; i < this.compartilhado.length; i++) {
         for (var a = 0; a < this.amigos.length; a++) {
@@ -189,6 +188,8 @@ export default {
           }
         }
       }
+
+
     },
     incluirAmg: function(id) {
       var checkObj = document.getElementById("amigo"+id);
@@ -214,36 +215,49 @@ export default {
         //alert(i);
         // nome.splice(0, i);
       }
+    },
+    getAmigo(id)
+    {
+      this.$http
+        .get("https://localhost:5001/api/usuarios/" + id)
+        .then(dados => {
+          this.amigos.push({
+            id: dados.body.id, 
+            apelido: dados.body.apelido});
+        }, erro => {
+          alert("algo deu errado");
+        });
     }
   },
   computed: {
     filtraNome() {
       if (this.filtroNome) {
         let exp = new RegExp(this.filtroNome.trim(), "i");
-        return this.amigos.filter(amigo => exp.test(amigo.nome));
+        return this.amigos.filter(amigo => exp.test(amigo.apelido));
       } else {
         return this.amigos;
       }
     }
   },
   created() {
-    if (this.id) {
-      
+     if (this.id) {
       this.$http
       .get("https://localhost:5001/api/registros/" + this.id)
       .then(dados => {
         this.registro = dados.body;
-      }, erro => {
-        alert("algo deu errado");
-      });
+        this.registro.data = new Date(this.registro.data).toJSON().substring(0,10);
 
-      // this.$http
-      // .get("https://localhost:5001/api/compartilhados/cod/" + this.registro.codigo)
-      // .then(dados => {
-      //   this.registro.compartilhado = dados.body.idUsuario;
-      // }, erro => {
-      //   alert("algo deu errado");
-      // });
+        if(this.registro.quantia > 0)
+        {
+          this.receita = true;
+          this.despesa = false
+        }
+        else
+          this.registro.quantia = -this.registro.quantia;
+
+      }, erro => {
+        alert("Erro ao recuperar registro");
+      });
     }
 
     this.$http
@@ -251,44 +265,23 @@ export default {
     .then(dados => {
       this.tags = dados.body;
     }, erro => {
-      alert("algo deu errado");
+      alert("Erro ao recuperar tags");
     });
     
     this.$http
     .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
     .then(dados => {
-      var idList = [];
-
       for(var i=0; i< dados.body.length; i++)
-      {
           if(dados.body[i].idAmigoA == this.$session.get("id"))
-              idList.push(dados.body[i].idAmigoB);
+              this.getAmigo(dados.body[i].idAmigoB);
           else
-              idList.push(dados.body[i].idAmigoA);          
-      } 
-
-      for(var i=0; i<idList.length; i++)
-      {
-        this.$http
-        .get("https://localhost:5001/api/usuarios/" + idList[i])
-        .then(dados => {
-          this.amigos.push({
-            id: dados.body.id, apelido: dados.body.apelido});
-        }, erro => {
-          alert("algo deu errado");
-        });
-      }
+              this.getAmigo(dados.body[i].idAmigoA);          
     }, erro => {
       alert("algo deu errado");
     });
-    
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = today.getFullYear();
-    today = yyyy + '-' + mm + '-' + dd;
 
-    this.registro.data = today;
+    if(!id)
+      this.registro.data = new Date().toJSON().substring(0,10);
   },
   watch: {
     expanded(){
@@ -297,10 +290,8 @@ export default {
       if (this.expanded) 
       {
         if (this.id) 
-        {
           this.checkarAmigos();
-          alert("tem id");
-        }
+
         checkboxes.style.display = "block";
       }   
       else
@@ -318,10 +309,10 @@ export default {
   font-size: 1.2em;
   background: rgba(0, 0, 0, 0.082);
   cursor: pointer;
+  width: fit-content;
 }
 
 #listaAmigos {
-  margin-top: 10px;
   padding: 10px;
   border-radius: 5px;
   z-index: 1;
@@ -330,6 +321,7 @@ export default {
   max-height: 200px;
   overflow: auto;
   display: none;
+  position: absolute;
 }
 
 #listaAmigos a {

@@ -15,6 +15,7 @@
       <div class="informacoes">
         <div class="quantidade">
           <span class="reais" v-if="porcentagem < 1">R${{atual}}</span>
+          <br>
           <span class="de">R${{objetivo}}</span>
         </div>
         <div class="data" :id="'data'+id">
@@ -49,11 +50,16 @@ export default {
 
       if (this.porcentagem < 1) {
         this.bar.setText(Math.round(this.porcentagem * 100) + "%");
-        this.bar.text.style.fontSize = "30px";
+         if((this.porcentagem*10) >= 1)
+          this.bar.text.style.fontSize = "30px";
+        else
+          this.bar.text.style.fontSize = "35px";
       } else {
         this.bar.setText("✔");
         this.cor = "#4DEA68";
-        this.bar.text.style.fontSize = "40px";
+        this.bar.text.style.fontSize = "30px";
+        //this.bar.text.style.height = "100px";
+        
         // this.bar.setColor = this.cor;
       }
       this.bar.animate(this.porcentagem);
@@ -67,7 +73,7 @@ export default {
     var line = new ProgressBar.Line("#id" + this.id);
 
     this.bar = new ProgressBar.Circle("#id" + this.id, {
-      strokeWidth: 16,
+      strokeWidth: 15,
       easing: "linear",
       duration: 0,
       color: this.cor,
@@ -83,7 +89,10 @@ export default {
     atual() {
       this.calcular();
     }
-  }
+  },
+  created() {
+    // alert(this.dataLimite);
+  },
 };
 </script>
 
@@ -96,6 +105,8 @@ export default {
   background: white;
   border-radius: 10px;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
   /* rgba(223, 114, 123, 0.836);
   border-bottom: 10px solid transparent; */
 }
@@ -106,18 +117,22 @@ export default {
 
 .grafico {
   margin-right: 5px;
+  position: relative;
+  height: 100%;
 }
 
 .cima {
   display: flex;
   padding: 0;
+  align-items: center;
+  position: relative;
 }
 
 .bolinha {
   width: 20px;
   height: 20px;
   border-radius: 87px;
-  background: rgba(255, 217, 0, 0.567);
+  background: rgba(20, 20, 20, 0.747);
   border: 1px solid black;
   margin: 8px;
 }
@@ -126,6 +141,7 @@ export default {
   display: flex;
   width: 100%;
   justify-content: flex-end;
+  position: absolute;
 }
 
 .amigos div {
@@ -134,15 +150,17 @@ export default {
 }
 
 .amigos img {
-  border: 3px solid rgb(236, 228, 228);
-  width: 35px;
+  border: 2px solid rgb(236, 228, 228);
+  width: 30px;
   border-radius: 87px;
-  margin-bottom: -5px;
+  margin-bottom: -10px;
+  margin-top:-4px
 }
 
 .conteudo {
   display: flex;
   margin: 10px;
+  position: relative;
 }
 
 .porcentagem {
@@ -194,6 +212,7 @@ export default {
 .reais {
   font-size: 1.4em;
   font-weight: 550;
+  padding:0
 }
 
 .de {
