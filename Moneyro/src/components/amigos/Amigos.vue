@@ -23,8 +23,8 @@
         />
       </div>
       <div id="lista-alunos">
-        <div id="lista-alunos-item" v-for="amigo of filtraNome" :key="amigo.nome">
-          <Painel :nome="amigo.nome" :foto="amigo.foto"></Painel>
+        <div id="lista-alunos-item" v-for="amigo of filtraNome" :key="amigo.apelido">
+          <Painel :nome="amigo.apelido" :foto="amigo.foto" v-on:deletar="removerAmigo(amigo.id)"></Painel>
         </div>
       </div>
     </div>
@@ -51,17 +51,10 @@ export default {
   data() {
     return {
       filtro: "",
-      amigos: [
-        // 💩👺💩 jovana ಥ‿ಥ✌2345678901
-        { nome: "jovana ಥ‿ಥ✌", foto: "11" }, // apelido : varchar(14)
-        { nome: "maru✌ʕ•́ᴥ•̀ʔっ", foto: "6" },
-        { nome: "venizius😘😎", foto: "7" },
-        { nome: "drigo", foto: "9" },
-        { nome: "illy", foto: "10" },
-        { nome: "zoen", foto: "5" }
-      ],
+      amigos: [],
       mensagem: false,
-      adicionar: false
+      adicionar: false,
+      dupla:[]
     };
   },
   computed: {
@@ -74,6 +67,61 @@ export default {
       }
     }
   },
+  methods:{
+    removerAmigo(idAmigo)
+    {
+      this.$http
+    .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
+    .then(dados => {
+        for(var i=0; i< dados.body.length; i++) {
+          if(dados.body[i].idAmigoA == this.$session.get("id") && idAmigo == dados.body[i].idAmigoB)
+              {
+                this.dupla[0] = parseInt(this.$session.get("id"));
+                this.dupla[1] = parseInt(idAmigo);
+              }
+          if(dados.body[i].idAmigoB == this.$session.get("id") && idAmigo == dados.body[i].idAmigoA)
+              {
+                  this.dupla[0] = parseInt(idAmigo);
+                  this.dupla[1] = parseInt(this.$session.get("id"));
+              } 
+           }
+        alert(this.dupla[0] + " e " + this.dupla[1]);
+            this.$http
+            .post("https://localhost:5001/api/amigos/amg", { Id: 0,
+                                                            IdAmigoA: this.dupla[0],
+                                                            IdAmigoB: this.dupla[1],
+                                                            Aceitou: 0})
+            .then(dados => {
+                var id = dados.body[0].id;
+                this.$http
+                .delete("https://localhost:5001/api/amigos/" + id)
+                .then(dados => {
+                  alert("deu certo");
+                },erro => {
+                alert("Erro ao deletar");
+                });
+        }, erro => {
+            alert("Erro ao getar");
+        });
+    }, erro => {
+      alert("algo deu errado");
+    });
+    },
+    getAmigo(id)
+    {
+      this.$http
+        .get("https://localhost:5001/api/usuarios/" + id)
+        .then(dados => {
+          this.amigos.push({
+            id: dados.body.id, 
+            apelido: dados.body.apelido,
+            foto: dados.body.foto,
+            });
+        }, erro => {
+          alert("algo deu errado");
+        });
+    }
+  },
   beforeCreate() {
     if (!this.$session.exists()) {
       this.$router.push('/')
@@ -81,6 +129,18 @@ export default {
   },
   created(){
     document.title = "Amigos";
+
+    this.$http
+    .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
+    .then(dados => {
+      for(var i=0; i< dados.body.length; i++)
+          if(dados.body[i].idAmigoA == this.$session.get("id"))
+              this.getAmigo(dados.body[i].idAmigoB);
+          else
+              this.getAmigo(dados.body[i].idAmigoA);          
+    }, erro => {
+      alert("algo deu errado");
+    });
   }
 };
 </script>

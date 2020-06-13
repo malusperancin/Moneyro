@@ -3,7 +3,11 @@
     <Menu v-on:atualizarMetas="getTodos"/>
     <Perfil />
     <Topo />
-    <Meta v-if="verMeta" :id="id" v-on:fecharMeta="verMeta = false" />
+    <Meta v-if="verMeta" :id="id" v-on:mostrarMsg="mostrarMensagem" v-on:fecharMeta="verMeta = false" />
+    <Mensagem
+      :msg="msg"
+      v-if="msg.visivel"
+    ></Mensagem>
     <div class="centro">
       <div id="lista-metas">
         <div class="lista-metas-item" v-for="(meta, i) in metas" :key="i" v-on:click="abrirMeta(i)">
@@ -30,6 +34,7 @@ import Perfil from "../shared/perfil/Perfil.vue";
 import Meta from "../shared/cards/Meta.vue";
 import Painel from "../shared/meta-exibicao/Meta-Exibicao.vue";
 import Topo from "../shared/voltar-topo/Voltar-Topo.vue";
+import Mensagem from "../shared/mensagem/Mensagem.vue";
 
 export default {
   components: {
@@ -37,16 +42,35 @@ export default {
     Perfil,
     Meta,
     Painel,
-    Topo
+    Topo,
+    Mensagem
   },
   data() {
     return {
       metas: [],
       verMeta: false,
-      id: null
+      id: null,
+      msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: []
+      }
     };
   },
   methods: {
+    mostrarMensagem(){
+      alert("entrou");
+            this.msg.titulo = "Opa neném";
+            this.msg.mensagem = "Funcionou";
+            this.msg.botoes = [
+             {
+               mensagem: "Ok",
+               evento: "fechar"
+             }
+            ];
+            this.msg.visivel = true;
+    },
     abrirMeta(indice) {
       this.id = this.metas[indice].id;
       this.verMeta = true;

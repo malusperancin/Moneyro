@@ -109,7 +109,7 @@ export default {
         
         // this.meta.compartilhamentos = comp;
 
-        this.meta.compartilhamentos = this.getCompartilhados;
+        this.meta.compartilhamentos = this.getCompartilhados();
           
         this.meta.objetivo= parseFloat(this.meta.objetivo);
         this.meta.atual= parseFloat(this.meta.atual);
@@ -122,9 +122,10 @@ export default {
           //   alert("ta na metas")
           // this.$router.push('metas');
           // this.$router.push("metas"); 
-          alert("foi a meta");
-          this.$emit('atualizarMetas');
-          this.$emit('fecharMeta');
+       //   alert("foi a meta");
+        this.$emit('atualizarMetas');
+        this.$emit('fecharMeta');
+        this.$emit('mostrarMsg');
         }, erro => {
           alert("Erro ao adicionar meta");
         });
@@ -135,6 +136,7 @@ export default {
       for (var i = 0; i < div.length; i++) 
         if(div.item(i).checked)
           comp+= " "+div.item(i).value;
+        
       return comp;
     },
     atualizar(){
@@ -157,7 +159,7 @@ export default {
       .then(dados=> {
         this.$emit('atualizarMetas');
         this.$emit('fecharMeta');
-        alert("Alterar FUNFO EBA");
+        this.$emit('mostrarMsg');
       }, erro => {
         alert("Alterar deu errado");
       });

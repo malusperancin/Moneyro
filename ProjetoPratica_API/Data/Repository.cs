@@ -190,6 +190,17 @@ namespace ProjetoPratica_API.Data
             return await consultaVideo.FirstOrDefaultAsync();
         }
 
+        public async Task<Amigos[]> GetAmigosByIds(Amigos amigos)
+        {
+            IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
+
+            // consultaAmigos = consultaAmigos.Where(a => a.Aceitou == true);
+            consultaAmigos = consultaAmigos.OrderBy(a => a.Id).Where(a => a.IdAmigoA == amigos.IdAmigoA && a.IdAmigoB == amigos.IdAmigoB); 
+            consultaAmigos = consultaAmigos.Where(a => a.Aceitou == 1);
+
+            return await consultaAmigos.ToArrayAsync();
+        }
+
         public async Task<Amigos> GetAmigoById(int Id)
         {
             IQueryable<Amigos> consultaAmigo = (IQueryable<Amigos>)this.Context.Amigos;

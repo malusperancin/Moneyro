@@ -8,7 +8,7 @@
       <p class="nome">{{ nome }}</p>
       <p class="comp">Compartilhados</p>
       <div class="deletar">
-        <img class="imgDeletar" src="src/images/remAmigo.png" />
+        <img class="imgDeletar" v-on:click="$emit('deletar')" src="src/images/remAmigo.png" />
       </div>
     </div>
   </div>

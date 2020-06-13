@@ -50,6 +50,8 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
+
+
         [HttpPost]
         public async Task<IActionResult> post(Amigos modelo)
         {
@@ -95,9 +97,9 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("{AmigoId}")]
-        public async Task<IActionResult> delete(int AmigoId)
-        {
+         [HttpDelete("{AmigoId}")]
+         public async Task<IActionResult> delete(int AmigoId)
+         {
             try
             {
                 //verifica se existe aluno a ser excluído
@@ -116,6 +118,21 @@ namespace ProjetoPratica_API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
             return BadRequest();
+        }
+
+        [HttpPost]
+        [Route("amg/")]
+        public async Task<IActionResult> getAmigos(Amigos amigos)
+        {
+             try
+            {
+                var result = await this.Repo.GetAmigosByIds(amigos);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
         }
     }
 }
