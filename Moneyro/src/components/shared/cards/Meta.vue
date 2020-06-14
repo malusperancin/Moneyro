@@ -5,7 +5,7 @@
         <div class="tipos">
           <label>{{ id ? "Edição" : "Metah"}}</label>
         </div>
-        <span class="fechar" v-on:click="$emit('fecharMeta')">&times;</span>
+        <span class="fechar" v-on:click="$emit('fechar')">&times;</span>
       </div>
       <div class="corpo">
         <input placeholder="Nome" type="text" id="nome" class="campos" v-model="meta.nome" />
@@ -44,8 +44,6 @@
         <!-- </div> -->
         <span class="escrito">Data limite</span>
         <input type="date" id="data" class="campos" v-model="meta.dataLimite" />
-
-      {{meta}}
         <div class="dropdown">
           <div v-on:click="expanded = !expanded" id="btnDrop" class="campos">Compartilhar com... ▾</div>
           <div id="listaAmigos">
@@ -64,7 +62,7 @@
       <div class="baixo">
         <button class="excluir" v-on:click="excluir" v-if="id">Excluir</button>
         <button class="salvar" v-if="id" v-on:click="atualizar">Salvar</button>
-        <button class="salvar" v-else v-on:click="salvar">Salvar</button>
+        <button class="salvar" v-else v-on:click="adicionar">Salvar</button>
       </div>
     </form>
   </div>
@@ -83,33 +81,25 @@ export default {
         id:0,
         idUsuario: this.$session.get("id"),
         nome: "",
-        objetivo: 0,
-        atual: 0,
+        objetivo: null,
+        atual: null,
         dataLimite: Date,
-        compartilhamentos: ""
+        compartilhamentos: []
       },
-      compartilhado: []
     };
   },
   methods: {
-    checkAmg: function(id) {
-      if (this.amigos >= 5) {
-        document.getElementById(id).checked = false;
-        alert("no");
-      }
-    },
-    salvar: function() {
-        //  var comp = "";
-      
-        // if(this.meta.compartilhamentos[0])
-        //     for(var i = 0; i < this.meta.compartilhamentos.length ; i++)
-        //       comp += (" "+this.meta.compartilhamentos[i].id);
-        // else
-        //   comp = null;
-        
-        // this.meta.compartilhamentos = comp;
+    adicionar() {
+        var ret = "";
 
-        this.meta.compartilhamentos = this.getCompartilhados();
+        if(this.meta.compartilhamentos[0])
+          this.meta.compartilhamentos.map(c => {
+            ret += " "+c;
+          })
+        else
+          ret = null;
+
+        this.meta.compartilhamentos = ret;
           
         this.meta.objetivo= parseFloat(this.meta.objetivo);
         this.meta.atual= parseFloat(this.meta.atual);
@@ -117,113 +107,83 @@ export default {
         this.$http
         .post("https://localhost:5001/api/metas", this.meta)
         .then(dados=> {
-          // no no -> exibir msg
-          // if(this.$router.get.currentRoute() != 'metas')
-          //   alert("ta na metas")
-          // this.$router.push('metas');
-          // this.$router.push("metas"); 
-       //   alert("foi a meta");
-        this.$emit('atualizarMetas');
-        this.$emit('fecharMeta');
-        this.$emit('mostrarMsg');
+          if(this.$router.currentRoute.path != "/metas")
+          this.$router.push("metas");
+
+          this.$emit('atualizar');
+          this.$emit('fechar');  
+          this.$emit('mostrarMsg');
         }, erro => {
           alert("Erro ao adicionar meta");
         });
     },
-    getCompartilhados(){
-      var div = document.getElementsByClassName("amigo");
-      var comp = "";
-      for (var i = 0; i < div.length; i++) 
-        if(div.item(i).checked)
-          comp+= " "+div.item(i).value;
-        
-      return comp;
-    },
     atualizar(){
-      //var comp = "";
-      
-      // if(this.meta.compartilhamentos[0])
-      //     for(var i = 0; i < this.meta.compartilhamentos.length ; i++)
-      //       comp += (" "+this.meta.compartilhamentos[i].id);
-      // else
-      //   comp = null;
-      
-      this.meta.compartilhamentos = this.getCompartilhados;
+      var ret = "";
+
+      if(this.meta.compartilhamentos[0])
+        this.meta.compartilhamentos.map(c => {
+          ret += " "+c;
+        })
+      else
+        ret = null;
+
+      this.meta.compartilhamentos = ret;
 
       this.meta.objetivo= parseFloat(this.meta.objetivo);
       this.meta.atual= parseFloat(this.meta.atual);
-
       
       this.$http
-      .put("https://localhost:5001/api/metas/40", this.meta)
+      .put("https://localhost:5001/api/metas/" + this.meta.id, this.meta)
       .then(dados=> {
-        this.$emit('atualizarMetas');
-        this.$emit('fecharMeta');
+        this.$emit('atualizar');
+        this.$emit('fechar');
         this.$emit('mostrarMsg');
       }, erro => {
         alert("Alterar deu errado");
       });
     },
-    excluir: function() {
-      alert(this.meta.id);
+    excluir() {
       this.$http
-        .delete("https://localhost:5001/api/metas/", this.meta.id)
+        .delete("https://localhost:5001/api/metas/" + this.meta.id)
         .then(dados=> {
           alert("deu certo do delete"); 
-          // if(this.$router.currentRoute() != 'metas')
-          //   alert("ta na metas")
-            // this.$router.push('metas');
-
-          this.$emit('atualizarMetas');
-          this.$emit('fecharMeta');
+          this.$emit('atualizar');
+          this.$emit('fechar');
         }, erro => {
           alert("Erro ao deletar meta");
         });
     },
     checkarAmigos: function() {
-      var div = document.getElementsByClassName("amigo");
-  
-      for (var i = 0; i < div.length; i++) 
-        for (var a = 0; a < this.meta.compartilhamentos.length; a++) 
-          if(div.item(i).value == this.meta.compartilhamentos[a].id)
-            div.item(i).checked = true;
+      for (var i = 0; i < this.meta.compartilhamentos.length; i++)
+        for (var a = 0; a < this.amigos.length; a++) 
+          if (this.meta.compartilhamentos[i] == this.amigos[a].id) 
+            document.getElementById("amigo" + this.amigos[a].id).checked = true;
     }, 
     incluirAmg: function(id) {
       var checkObj = document.getElementById("amigo"+id);
       
-      if(this.meta.compartilhamentos.length >= 5)
+      if (this.meta.compartilhamentos.length >= 5 && checkObj.checked)
       {
         checkObj.checked = false;
         alert("máximo 5 pessoas!");
         return;
       }
 
-      /*
-      [].filter(id(valor) =>
-        valor == id)
-      */
+      if (checkObj.checked)
+        this.meta.compartilhamentos.push(id);
+      else
+        this.meta.compartilhamentos = this.meta.compartilhamentos.filter(a => a!=id);
     },
-    setCompartilhamentos(comp){
-      var ids = comp.trim().split(/(\s+)/);
-
-      this.meta.compartilhamentos = [];
-      
-      for(var i = 0; i < ids.length; i++)
-        if(ids[i] > 0)
-          this.getUsuario(ids[i]);
-    },
-    getUsuario(id){
+    getAmigo(id){
       this.$http
-      .get("https://localhost:5001/api/usuarios/" + id)
-      .then(dados => { 
-        this.meta.compartilhamentos.push({
-          id: dados.body.id,
-          apelido: dados.body.apelido
+        .get("https://localhost:5001/api/usuarios/" + id)
+        .then(dados => {
+          this.amigos.push({
+            id: dados.body.id, 
+            apelido: dados.body.apelido});
+        }, erro => {
+          console.log("Erro ao recuperar amigo: " + erro.body);
         });
-      }, 
-      erro => {
-        alert("algo deu errado metakkk" + erro.bodyText);
-      });
     }
   },
   computed: {
@@ -238,21 +198,19 @@ export default {
   },
   created() {
     if (this.id) {
-
       this.$http
       .get("https://localhost:5001/api/metas/" + this.id)
       .then(dados => {
         this.meta = dados.body;
         this.meta.dataLimite = this.meta.dataLimite.substring(0, 10);
         
-        if(this.meta.compartilhamentos != null)
-          this.setCompartilhamentos(this.meta.compartilhamentos);  
+        if(this.meta.compartilhamentos)
+          this.meta.compartilhamentos = this.meta.compartilhamentos.trim().split(" ").map(Number);  
         else
           this.meta.compartilhamentos = [];
       }, erro => {
         alert("algo deu errado metakk");
       });
-
     }
 
     this.$http
@@ -266,29 +224,11 @@ export default {
     this.$http
     .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
     .then(dados => {
-      var idList = [];
-
-      for(var i=0; i< dados.body.length; i++)
-      {
+    for(var i=0; i< dados.body.length; i++)
         if(dados.body[i].idAmigoA == this.$session.get("id"))
-            idList.push(dados.body[i].idAmigoB);
-        else
-            idList.push(dados.body[i].idAmigoA);          
-      } 
-
-      for(var i=0; i<idList.length; i++)
-      {
-        this.$http
-        .get("https://localhost:5001/api/usuarios/" + idList[i])
-        .then(dados => {
-          this.amigos.push({
-            id: dados.body.id, 
-            apelido: dados.body.apelido
-          });
-        }, erro => {
-          alert("algo deu errado");
-        });
-      }
+              this.getAmigo(dados.body[i].idAmigoB);
+          else
+              this.getAmigo(dados.body[i].idAmigoA);  
     }, erro => {
       alert("algo deu errado");
     });
@@ -299,7 +239,8 @@ export default {
     var yyyy = today.getFullYear();
     today = yyyy + '-' + mm + '-' + dd;
 
-    this.meta.dataLimite = today;
+    if(!this.id)
+      this.meta.dataLimite = today;
   },
   watch: {
     expanded(){

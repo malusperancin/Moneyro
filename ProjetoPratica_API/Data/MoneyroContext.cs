@@ -8,6 +8,7 @@ namespace ProjetoPratica_API.Data
         public MoneyroContext(DbContextOptions<MoneyroContext> options) : base(options)
         {
         }
+
         public DbSet<Usuarios> Usuarios { get; set; }
         public DbSet<Amigos> Amigos { get; set; }
         public DbSet<Artigos> Artigos { get; set; }

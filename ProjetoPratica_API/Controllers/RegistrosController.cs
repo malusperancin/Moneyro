@@ -107,6 +107,7 @@ namespace ProjetoPratica_API.Controllers
                 var registro = await this.Repo.GetRegistroById(RegistroId);
                 if (registro == null) return NotFound();
 
+                this.Repo.Entry(registro);
                 this.Repo.Update(model);
 
                 if (await this.Repo.SaveChangesAsync())
@@ -134,13 +135,13 @@ namespace ProjetoPratica_API.Controllers
                 //verifica se existe aluno a ser excluído
                 var registro = await this.Repo.GetRegistroById(RegistroId);
                 if (registro == null) return NotFound(); //método do EF
+
                 this.Repo.Delete(registro);
                 //
                 if (await this.Repo.SaveChangesAsync())
                 {
                     return Ok();
                 }
-
             }
             catch
             {

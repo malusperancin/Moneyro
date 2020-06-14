@@ -1,12 +1,13 @@
 <template>
   <div class="pag">
-    <Menu v-on:atualizarMetas="getTodos"/>
+    <Menu v-on:atualizar="getTodos()"/>
     <Perfil />
     <Topo />
-    <Meta v-if="verMeta" :id="id" v-on:mostrarMsg="mostrarMensagem" v-on:fecharMeta="verMeta = false" />
+    <Meta v-if="verMeta" :id="id" v-on:mostrarMsg="mostrarMensagem" v-on:atualizar="getTodos()" v-on:fechar="verMeta = false" />
     <Mensagem
       :msg="msg"
       v-if="msg.visivel"
+      v-on:fechar="msg.visivel = false"
     ></Mensagem>
     <div class="centro">
       <div id="lista-metas">
@@ -84,8 +85,7 @@ export default {
       return ("0" + dia).slice(-2) + "/" + ("0" + mes).slice(-2) + "/" + ano;
       // Utilizo o .slice(-2) para garantir o formato com 2 digitos.
     },
-    getUsuario(id, i)
-    { 
+    getUsuario(id, i){
       this.$http
       .get("https://localhost:5001/api/usuarios/" + id)
       .then(dados => { 
@@ -98,35 +98,26 @@ export default {
         alert("algo deu errado metakkk" + erro.bodyText);
       });
     },
-    getTodos()
-    {
+    getTodos(){
        this.$http
-      .get("https://localhost:5001/api/metas")
+      .get("https://localhost:5001/api/metas/usu/" + this.$session.get("id"))
       .then(dados => {
         this.metas = dados.body;
-        // alert(this.metas[0].dataLimite);
 
-        for(var i = 0; i < this.metas.length; i++)
-        { 
-          //alert("comp"+this.metas[i].compartilhamentos+" i:" + i);
-          if(this.metas[i].compartilhamentos != "" && this.metas[i].compartilhamentos!=null)
-          {
-            var ids = this.metas[i].compartilhamentos.trim().split(/(\s+)/);
+        this.metas.map( m => {
+          if(m.compartilhamentos)
+            m.compartilhamentos = m.compartilhamentos.trim().split(" ").map(Number);
+        });
 
-            this.metas[i].compartilhamentos = [];
-            
-            for(var j = 0; j < ids.length; j++)
-              if(ids[j] != " ")
-                this.getUsuario(ids[j], i);
-          }
-        }
+        for (var i = 0; i < this.metas.length; i++)
+          if(this.metas[i].compartilhamentos)
+            this.metas[i].compartilhamentos.map(c => {
+                this.getUsuario(c, i)
+            }); 
       }, erro => {
         alert("algo deu errado meta");
       });
-  }
-  },
-  computed: {
-    // Get all metas order by data e concluida
+    }
   },
   mounted() {
     //
@@ -134,14 +125,12 @@ export default {
   created(){
     document.title = "Metas";
     this.getTodos();
-   
   },
   beforeCreate() {
     if (!this.$session.exists()) {
       this.$router.push('/')
     }
-  }
-    
+  }  
 };
 </script>
 

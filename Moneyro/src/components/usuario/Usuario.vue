@@ -125,15 +125,17 @@ small{
   flex-direction: column;
 }
 
-.linha{
+.linha {
   background: rgba(0, 0, 0, 0.9);
   height: 1px;
   width: 100%;
   margin: 10px 0 10px;
 }
 
-.saldo{
+.saldo {
   display: inline-flex;
+  justify-content: space-around;
+  align-items: center;
   background: transparent;
   border-radius: 5px;
   position: relative;

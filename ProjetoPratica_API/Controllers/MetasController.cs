@@ -93,6 +93,7 @@ namespace ProjetoPratica_API.Controllers
                 var meta = await this.Repo.GetMetaById(MetaId);
                 if (meta == null) return NotFound();
  
+                this.Repo.Entry(meta);
                 this.Repo.Update(model);
 
                 if (await this.Repo.SaveChangesAsync())

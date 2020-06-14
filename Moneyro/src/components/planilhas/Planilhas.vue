@@ -1,8 +1,8 @@
 <template>
   <div class="pag">
-    <Menu />
+    <Menu v-on:atualizar="getTodos()"/>
     <Perfil />
-    <Card v-if="verCard" :id="id" v-on:fecharCard="verCard = false" />
+    <Card v-if="verCard" :id="id" v-on:atualizar="getTodos()"  v-on:fechar="verCard = false" />
     <Topo />
     <div class="centro">
       <div name="mostrar" class="filtros">

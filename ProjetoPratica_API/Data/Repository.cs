@@ -40,6 +40,11 @@ namespace ProjetoPratica_API.Data
             this.Context.Update(entity);
         }
 
+        public void Entry<T>(T entity) where T : class
+        {
+            this.Context.Entry(entity).State = EntityState.Detached;
+        }
+
         public async Task<Usuarios[]> GetAllUsuarios()
         {
             //throw new System.NotImplementedException();
