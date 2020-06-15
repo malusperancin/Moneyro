@@ -67,5 +67,6 @@ iframe {
   margin: 5px;
   line-height: 25px;
   word-wrap: break-word;
+  color:whitesmoke;
 }
 </style>

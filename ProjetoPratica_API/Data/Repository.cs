@@ -50,7 +50,8 @@ namespace ProjetoPratica_API.Data
             //throw new System.NotImplementedException();
             //Retornar para uma query qualquer do tipo Aluno
             IQueryable<Usuarios> consultaUsuarios = (IQueryable<Usuarios>)this.Context.Usuarios;
-            //consultaUsuarios = consultaUsuarios.OrderBy(u => u.IdUsuario);
+            consultaUsuarios = consultaUsuarios.OrderBy(u => u.Id).Where(user => user.ModoAnonimo == false);
+
             return await consultaUsuarios.ToArrayAsync();
         }
         public async Task<Usuarios> GetUsuarioById(int Id)
@@ -92,6 +93,7 @@ namespace ProjetoPratica_API.Data
         {
             IQueryable<Registros> consultaRegistro = (IQueryable<Registros>)this.Context.Registros;
             consultaRegistro = consultaRegistro.OrderBy(r => r.Id).Where(registro => registro.Id == Id);
+
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaRegistro.FirstOrDefaultAsync();
         }
@@ -135,7 +137,7 @@ namespace ProjetoPratica_API.Data
         public async Task<Metas[]> GetMetasByUsuario(int IdUsuario)
         {
             IQueryable<Metas> consultaMeta = (IQueryable<Metas>)this.Context.Metas;
-            consultaMeta = consultaMeta.OrderBy(m => m.Id).Where(meta => meta.IdUsuario == IdUsuario);
+            consultaMeta = consultaMeta.OrderBy(m => m.DataLimite).Where(meta => meta.IdUsuario == IdUsuario);
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaMeta.ToArrayAsync();
         }
@@ -201,7 +203,7 @@ namespace ProjetoPratica_API.Data
 
             // consultaAmigos = consultaAmigos.Where(a => a.Aceitou == true);
             consultaAmigos = consultaAmigos.OrderBy(a => a.Id).Where(a => a.IdAmigoA == amigos.IdAmigoA && a.IdAmigoB == amigos.IdAmigoB); 
-            consultaAmigos = consultaAmigos.Where(a => a.Aceitou == 1);
+            //consultaAmigos = consultaAmigos.Where(a => a.Aceitou == 1);
 
             return await consultaAmigos.ToArrayAsync();
         }
@@ -219,8 +221,8 @@ namespace ProjetoPratica_API.Data
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
 
             // consultaAmigos = consultaAmigos.Where(a => a.Aceitou == true);
-            consultaAmigos = consultaAmigos.OrderBy(a => a.Id).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario); 
-            consultaAmigos = consultaAmigos.Where(a => a.Aceitou == 1);
+            consultaAmigos = consultaAmigos.OrderBy(a => a.Aceitou).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario); 
+            consultaAmigos = consultaAmigos.Where(a => a.Aceitou == 0);
 
             return await consultaAmigos.ToArrayAsync();
         }
@@ -228,7 +230,7 @@ namespace ProjetoPratica_API.Data
         public async Task<Amigos[]> GetAllAmigosByUsuario(int IdUsuario)
         {
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
-            consultaAmigos = consultaAmigos.OrderBy(a => a.Id).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario); 
+            consultaAmigos = consultaAmigos.OrderBy(a => a.Aceitou).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario); 
 
             return await consultaAmigos.ToArrayAsync();
         }

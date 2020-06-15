@@ -4,13 +4,11 @@
     <Perfil />
     <Topo />
     <Mensagem
-      v-if="mensagem"
-      v-on:ok="mensagem = false"
-      mensagem="Receita registrada com sucesso!"
-      titulo="Toma o titulo"
-      sair="oi"
+      :msg="msg"
+      v-if="msg.visivel"
+      v-on:fechar="msg.visivel = false"
     ></Mensagem>
-    <Add v-if="adicionar" v-on:fechar="adicionar= false"></Add>
+    <Add v-if="adicionar" v-on:fechar="adicionar= false" v-on:atualizar="getAmigos()"></Add>
     <div class="centro">
       <div id="busca">
         <input class="filtro" type="search" placeholder="Pesquisar" v-model="filtro" />
@@ -23,8 +21,8 @@
         />
       </div>
       <div id="lista-alunos">
-        <div id="lista-alunos-item" v-for="amigo of filtraNome" :key="amigo.apelido">
-          <Painel :nome="amigo.apelido" :foto="amigo.foto" v-on:deletar="removerAmigo(amigo.id)"></Painel>
+        <div id="lista-alunos-item" v-for="(amigo, i) of filtraNome" :key="amigo.apelido">
+          <Painel :nome="amigo.apelido" :foto="amigo.foto" v-on:deletar="removerAmigo(i)"></Painel>
         </div>
       </div>
     </div>
@@ -54,72 +52,77 @@ export default {
       amigos: [],
       mensagem: false,
       adicionar: false,
-      dupla:[]
+      dupla:[],
+       msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: []
+      }
     };
   },
   computed: {
     filtraNome() {
       if (this.filtro) {
         let exp = new RegExp(this.filtro.trim(), "i");
-        return this.amigos.filter(amigo => exp.test(amigo.nome));
+        return this.amigos.filter(amigo => exp.test(amigo.apelido));
       } else {
         return this.amigos;
       }
     }
   },
   methods:{
-    removerAmigo(idAmigo)
-    {
-      this.$http
-    .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
-    .then(dados => {
-        for(var i=0; i< dados.body.length; i++) {
-          if(dados.body[i].idAmigoA == this.$session.get("id") && idAmigo == dados.body[i].idAmigoB)
+    removerAmigo(idAmigo){
+        var amigo = this.amigos[idAmigo];
+        
+         var index = this.amigos.indexOf(amigo);
+         this.amigos.splice(index, 1);
+         
+        this.$http
+        .delete("https://localhost:5001/api/amigos/" + amigo.id)
+        .then(dados => {
+            this.amigos = [];
+            this.getAmigos();
+             this.msg.titulo = "Sucesso";
+            this.msg.mensagem =
+              "Seu amigo foi removido com sucesso!";
+            this.msg.botoes = [
               {
-                this.dupla[0] = parseInt(this.$session.get("id"));
-                this.dupla[1] = parseInt(idAmigo);
+                mensagem: "Ok",
+                evento: "fechar"
               }
-          if(dados.body[i].idAmigoB == this.$session.get("id") && idAmigo == dados.body[i].idAmigoA)
-              {
-                  this.dupla[0] = parseInt(idAmigo);
-                  this.dupla[1] = parseInt(this.$session.get("id"));
-              } 
-           }
-        alert(this.dupla[0] + " e " + this.dupla[1]);
-            this.$http
-            .post("https://localhost:5001/api/amigos/amg", { Id: 0,
-                                                            IdAmigoA: this.dupla[0],
-                                                            IdAmigoB: this.dupla[1],
-                                                            Aceitou: 0})
-            .then(dados => {
-                var id = dados.body[0].id;
-                this.$http
-                .delete("https://localhost:5001/api/amigos/" + id)
-                .then(dados => {
-                  alert("deu certo");
-                },erro => {
-                alert("Erro ao deletar");
-                });
-        }, erro => {
-            alert("Erro ao getar");
+            ]; 
+              this.msg.visivel = true;
+        },erro => {
+        alert("Erro ao deletar");
         });
-    }, erro => {
-      alert("algo deu errado");
-    });
     },
-    getAmigo(id)
-    {
+    getAmigo(id, idTabela){
       this.$http
         .get("https://localhost:5001/api/usuarios/" + id)
         .then(dados => {
           this.amigos.push({
-            id: dados.body.id, 
+            id: idTabela, 
+            idUsuario: dados.body.id,
             apelido: dados.body.apelido,
             foto: dados.body.foto,
-            });
+          });
         }, erro => {
           alert("algo deu errado");
         });
+    },
+    getAmigos(){
+      this.$http
+      .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
+      .then(dados => {
+        for(var i=0; i< dados.body.length; i++)
+            if(dados.body[i].idAmigoA == this.$session.get("id"))
+              this.getAmigo(dados.body[i].idAmigoB, dados.body[i].id);
+            else
+              this.getAmigo(dados.body[i].idAmigoA, dados.body[i].id);     
+      }, erro => {
+        alert("algo deu errado");
+      });
     }
   },
   beforeCreate() {
@@ -129,18 +132,7 @@ export default {
   },
   created(){
     document.title = "Amigos";
-
-    this.$http
-    .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
-    .then(dados => {
-      for(var i=0; i< dados.body.length; i++)
-          if(dados.body[i].idAmigoA == this.$session.get("id"))
-              this.getAmigo(dados.body[i].idAmigoB);
-          else
-              this.getAmigo(dados.body[i].idAmigoA);          
-    }, erro => {
-      alert("algo deu errado");
-    });
+    this.getAmigos();
   }
 };
 </script>

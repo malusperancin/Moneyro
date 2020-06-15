@@ -5,13 +5,15 @@
     <div class="centro">
       <div class="inicio">
         <div class="frase">
-          <small>Bem-vindah de volta,</small>
+          <small>Bem-vinda(o) de volta,</small>
           <big>{{nome}}</big> 
         </div>
         <span class="linha"></span>
         <div class="saldo">
-          <span class="msg"> 
-            Seu saldo é R$ {{saldo}}<br>
+          <span class="msg">
+          <b>Seu saldo é R$ {{saldo}}</b>
+<br><br>
+
             {{msg}}
           </span>
           <img :src="'../../src/images/status' + situacao + '.png'">          
@@ -92,17 +94,17 @@ export default {
 </script>
 
 <style scoped>
-*{
-  color: whitesmoke;
-}
-
 .msg{
+  text-align: center;
   margin:auto;
+  padding-right:3%;
+  padding-left:6%;
 }
 
 img{
   margin:4px;
   height:80%;
+  margin:3%;
 }
 
 .frase{
@@ -113,6 +115,7 @@ img{
   padding: 15px 20px;
   background: #f5f5f517;
   border-radius: 5px;
+  color: whitesmoke;
 }
 
 small{
@@ -123,10 +126,11 @@ small{
   /* background: red; */
   display: flex;
   flex-direction: column;
+  /* display: inline-flex; */
 }
 
 .linha {
-  background: rgba(0, 0, 0, 0.9);
+  background: transparent;
   height: 1px;
   width: 100%;
   margin: 10px 0 10px;
@@ -139,8 +143,9 @@ small{
   background: transparent;
   border-radius: 5px;
   position: relative;
-  font-weight: 700;
   font-size: 2em;
+  margin-top:-10px;
+  color: whitesmoke;
 }
 /* -------------------------- */
 /* .gradient-box::before{
@@ -159,7 +164,6 @@ small{
     border: 5px solid white;
     background-clip: padding-box; /* !importanté 
 } */
-</style>
  /* .gradient-box {
   
   display: flex;
@@ -190,3 +194,4 @@ small{
     background: linear-gradient(to right, red, orange);
   }
 } */
+</style>

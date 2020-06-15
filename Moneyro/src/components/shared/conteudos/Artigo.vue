@@ -70,5 +70,6 @@ a {
 
 .titulo {
   margin: 5px;
+  color:whitesmoke;
 }
 </style>

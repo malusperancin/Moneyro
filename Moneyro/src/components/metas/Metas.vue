@@ -7,7 +7,7 @@
     <Mensagem
       :msg="msg"
       v-if="msg.visivel"
-      v-on:fechar="msg.visivel = false"
+      v-on:fechar="atualizar(), msg.visivel = false"
     ></Mensagem>
     <div class="centro">
       <div id="lista-metas">
@@ -61,9 +61,8 @@ export default {
   },
   methods: {
     mostrarMensagem(){
-      alert("entrou");
-            this.msg.titulo = "Opa neném";
-            this.msg.mensagem = "Funcionou";
+            this.msg.titulo = "Alteração";
+            this.msg.mensagem = "Alteração na meta feita com sucesso!";
             this.msg.botoes = [
              {
                mensagem: "Ok",
@@ -117,6 +116,9 @@ export default {
       }, erro => {
         alert("algo deu errado meta");
       });
+    },
+    atualizar(){
+      window.location.reload(true);
     }
   },
   mounted() {

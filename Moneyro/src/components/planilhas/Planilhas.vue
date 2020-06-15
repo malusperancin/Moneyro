@@ -2,7 +2,12 @@
   <div class="pag">
     <Menu v-on:atualizar="getTodos()"/>
     <Perfil />
-    <Card v-if="verCard" :id="id" v-on:atualizar="getTodos()"  v-on:fechar="verCard = false" />
+    <Card v-if="verCard" :id="id" v-on:atualizar="getTodos()"  v-on:mostrarMsg="mostrarMensagem" v-on:fechar="verCard = false" />
+     <Mensagem
+      :msg="msg"
+      v-if="msg.visivel"
+      v-on:fechar="msg.visivel = false"
+    ></Mensagem>
     <Topo />
     <div class="centro">
       <div name="mostrar" class="filtros">
@@ -56,23 +61,42 @@ import Menu from "../shared/menu/Menu.vue";
 import Perfil from "../shared/perfil/Perfil.vue";
 import Card from "../shared/cards/Card.vue";
 import Topo from "../shared/voltar-topo/Voltar-Topo.vue";
+import Mensagem from "../shared/mensagem/Mensagem.vue";
 
 export default {
   components: {
     Menu,
     Perfil,
     Card,
-    Topo
+    Topo,
+     Mensagem
   },
   data() {
     return {
       registros: [],
       registrosData: [],
       verCard: false,
-      filtro: ""
+      filtro: "",
+        msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: []
+      }
     };
   },
   methods: {
+     mostrarMensagem(){
+            this.msg.titulo = "Alteração";
+            this.msg.mensagem = "Alteração feita com sucesso!";
+            this.msg.botoes = [
+             {
+               mensagem: "Ok",
+               evento: "fechar"
+             }
+            ];
+            this.msg.visivel = true;
+    },
     formataData(data) {
       data = data.substring(0,10);
       var ano = data.split("-")[0];
@@ -358,9 +382,9 @@ tr {
   border-radius: 5px;
   border: 0px;
   padding: 7px 14px;
-  color: rgba(255, 255, 255, 0.7);
+  color: black;
   font-size: 1.2em;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.411);
 }
 
 .moedaImg {

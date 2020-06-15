@@ -42,6 +42,7 @@ export default {
     colorir() {
       var data = document.querySelector("#data" + this.id);
       var meta = document.querySelector("#meta" + this.id);
+
       data.style.backgroundColor = this.cor;
       meta.style.borderBottom = "10px solid " + this.cor;
     },
@@ -50,7 +51,8 @@ export default {
 
       if (this.porcentagem < 1) {
         this.bar.setText(Math.round(this.porcentagem * 100) + "%");
-         if((this.porcentagem*10) >= 1)
+
+        if((this.porcentagem*10) >= 1)
           this.bar.text.style.fontSize = "30px";
         else
           this.bar.text.style.fontSize = "35px";
@@ -58,19 +60,19 @@ export default {
         this.bar.setText("✔");
         this.cor = "#4DEA68";
         this.bar.text.style.fontSize = "30px";
-        //this.bar.text.style.height = "100px";
-        
-        // this.bar.setColor = this.cor;
       }
+      
       this.bar.animate(this.porcentagem);
+      // this.colorir();
     }
   },
-  mounted() {
+  mounted(){
     if (this.compartilhado) this.cor = "#6360DB";
     if (this.objetivo == this.atual) this.cor = "#4DEA68";
 
     var ProgressBar = require("progressbar.js");
-    var line = new ProgressBar.Line("#id" + this.id);
+
+    // alert(this.id);
 
     this.bar = new ProgressBar.Circle("#id" + this.id, {
       strokeWidth: 15,
@@ -84,6 +86,16 @@ export default {
 
     this.colorir();
     this.calcular();
+  },
+  updated() {
+    if(this.compartilhado)
+      this.cor = "#6360DB";
+    else
+      this.cor = "#ECB318";
+
+    console.log(this.porcentagem);
+    this.bar.animate(this.porcentagem);
+    this.colorir();
   },
   watch: {
     atual() {

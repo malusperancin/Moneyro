@@ -125,6 +125,7 @@ export default {
         ret = null;
 
       this.registro.compartilhamentos = ret;
+      this.registro.quantia = parseFloat(this.registro.quantia);
 
       this.$http
       .post("https://localhost:5001/api/registros", this.registro)
@@ -135,7 +136,7 @@ export default {
           this.$emit('atualizar');
           this.$emit('fechar');  
       }, erro => {
-        console.log("Erro ao adicionar registro: " + erro.body);
+        console.log("Erro ao adicionar registro: " + erro.bodyText);
       });
 
       this.registro.quantia = Math.abs(this.registro.quantia);
@@ -154,12 +155,14 @@ export default {
         ret = null;
 
       this.registro.compartilhamentos = ret;
+      this.registro.quantia = parseFloat(this.registro.quantia);
 
       this.$http
       .put("https://localhost:5001/api/registros/" + this.registro.id, this.registro)
       .then(dados => {
           this.$emit('atualizar');
           this.$emit('fechar');
+          this.$emit('mostrarMsg');
       }, erro => {
         console.log("Erro ao atualizar registro: " + erro.body);
       });

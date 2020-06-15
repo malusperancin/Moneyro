@@ -41,7 +41,7 @@
         </td>
         <td class="titulos">Relatórios</td>
       </tr>
-      <tr v-on:click="$router.push('amigos')">
+      <tr v-if="!$session.get('MA')" v-on:click="$router.push('amigos')">
         <td class="icones">
           <img src="../../../images/amigos.png" alt="a" />
         </td>

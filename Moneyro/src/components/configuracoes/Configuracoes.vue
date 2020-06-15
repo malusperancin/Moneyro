@@ -272,7 +272,9 @@ export default {
       var mm = String(this.mes).padStart(2, '0');
       this.usuario.dataDeNascimento = this.ano + "-" + mm + "-" + dd;
 
-      this.$http.put("https://localhost:5001/api/usuarios/1", this.usuario)
+      this.$session.set("MA", this.usuario.modoAnonimo);
+
+      this.$http.put("https://localhost:5001/api/usuarios/" + this.usuario.id, this.usuario)
       .then(
           response => {
             this.msg.titulo = "Sucesso";
