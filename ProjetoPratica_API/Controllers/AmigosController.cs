@@ -50,6 +50,20 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
+        [HttpGet("todos/{UsuarioId}")]
+        public async Task<IActionResult> GetTodasSituacoes(int UsuarioId)
+        {
+            try
+            {
+                var result = await this.Repo.GetAllAmigosByUsuario(UsuarioId);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
 
 
         [HttpPost]
@@ -79,6 +93,9 @@ namespace ProjetoPratica_API.Controllers
             {
                 //verifica se existe aluno a ser alterado
                 var amigos = await this.Repo.GetAmigoById(AmigoId);
+                if(amigos == null) return NotFound();
+
+                this.Repo.Entry(amigos);
                 this.Repo.Update(model);
                 //
                 if (await this.Repo.SaveChangesAsync())

@@ -27,7 +27,6 @@
                 title="Enviar solicitação"
               >✉️</button>
               <button class="botao" v-else-if="usuario.aceitou == 0" title="Pedido pendente">
-                <!--pendente -->
                 🕔
               </button>
               <button
@@ -35,7 +34,6 @@
                 v-else-if="usuario.aceitou == 1"
                 :title="'Você ja é amigo de: ' + usuario.apelido"
               >👩🏻‍🤝‍🧑🏾</button>
-              <!--aceitou -->
             </td>
           </tr>
         </table>
@@ -74,56 +72,59 @@ export default {
       var amigo = this.usuarios[index];
 
       this.$http
-        .post("https://localhost:5001/api/amigos", {
-          idAmigoA: this.$session.get("id"),
-          idAmigoB: amigo.id,
-          situacao: 0
-        })
-        .then(dados => {
-          this.usuarios[index].situacao = 0;
-        }, erro => {
-          alert("algo deu errado");
-        });
-    },
-    getUsuario(id, aceitou)
-    { 
-      this.$http
-      .get("https://localhost:5001/api/usuarios/" + id)
+      .post("https://localhost:5001/api/amigos", {
+        idAmigoA: this.$session.get("id"),
+        idAmigoB: amigo.id,
+        situacao: 0
+      })
       .then(dados => {
-        return {
-          id: dados.body.id,
-          nome: dados.body.nome,
-          apelido: dados.body.apelido,
-          foto: dados.body.foto,
-          aceitou: aceitou
-        };
+        this.usuarios[index].aceitou = 0;
       }, erro => {
-        alert("algo deu errado meta");
+        alert("algo deu errado jasdkjahsd");
+      });
+    },
+    getUsuarios(){  
+      this.$http
+      .get("https://localhost:5001/api/usuarios")
+      .then(response => {
+        this.usuarios = response.body;
+        this.usuarios = this.usuarios.filter(u => u.id != this.$session.get('id'))
+                                     .map(this.setUsuario);
+      }, 
+      response => {
+        alert("cutcghb");
+      });
+    },
+    setUsuario(usuario){
+      usuario.aceitou = -1;
+
+      this.amigos.map(a => {
+        if(a.idAmigoA == usuario.id || a.idAmigoB == usuario.id)
+          usuario.aceitou = a.aceitou;
+      })
+
+      return({
+        id: usuario.id,
+        nome: usuario.nome,
+        apelido: usuario.apelido,
+        foto: usuario.foto,
+        aceitou: usuario.aceitou
       });
     }
   },
-   created(){
-    var users = null;
+  created(){
       this.$http
-      .get("https://localhost:5001/api/amigos")
+      .get("https://localhost:5001/api/amigos/todos/"+this.$session.get("id"))
       .then(response => {
-        var ids = response.body;
-
-        alert("pegou");
-
-        for(var i = 0; i < this.amigos.length; i++)
-        {
-          if(ids[i].idAmigoA == this.$session.get('id'))
-            this.amigos.push(this.methods.getUsuario(ids[i].idAmigoB, ids[i].situacao));
-          else
-            this.amigos.push(this.methods.getUsuario(ids[i].idAmigoA, ids[i].situacao));
-        }
-          alert("terminou");
+        this.amigos = response.body;
+        this.getUsuarios();
       }, 
       response => {
         alert("cutcghbfh");
       });
-  }
+  },
+  mounted() {      
+  },
 }
 
 </script>

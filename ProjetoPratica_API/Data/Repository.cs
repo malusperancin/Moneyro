@@ -225,6 +225,14 @@ namespace ProjetoPratica_API.Data
             return await consultaAmigos.ToArrayAsync();
         }
 
+        public async Task<Amigos[]> GetAllAmigosByUsuario(int IdUsuario)
+        {
+            IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
+            consultaAmigos = consultaAmigos.OrderBy(a => a.Id).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario); 
+
+            return await consultaAmigos.ToArrayAsync();
+        }
+
         public async Task<Amigos[]> GetAllAmigos()
         {
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;

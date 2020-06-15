@@ -42,6 +42,7 @@ namespace ProjetoPratica_API.Data
         Task<Amigos[]> GetAmigosByUsuario(int IdUsuario);
         Task<Amigos[]> GetAllAmigos();
         Task<Amigos[]> GetAmigosByIds(Amigos amigos);
+        Task<Amigos[]> GetAllAmigosByUsuario(int IdUsuario);
         Task<Artigos[]> GetAllArtigos();
         //Task<Artigos[]> GetArtigosByAssunto(string Assunto);
         Task<Artigos> GetArtigoById(int Id);
