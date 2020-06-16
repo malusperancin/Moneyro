@@ -24,6 +24,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 20px;
+  z-index: 999999999;
 }
 
 #logo {

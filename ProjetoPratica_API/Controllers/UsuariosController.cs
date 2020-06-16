@@ -110,6 +110,7 @@ namespace ProjetoPratica_API.Controllers
                  var usuario = await this.Repo.GetUsuarioById(UsuarioId);
                  if (usuario == null) return NotFound(); //método do EF
 
+                this.Repo.Entry(usuario);
                 this.Repo.Update(model);
                 
                 if (await this.Repo.SaveChangesAsync())

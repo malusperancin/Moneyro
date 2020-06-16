@@ -50,6 +50,22 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
+        [HttpGet("todos/{UsuarioId}")]
+        public async Task<IActionResult> GetTodasSituacoes(int UsuarioId)
+        {
+            try
+            {
+                var result = await this.Repo.GetAllAmigosByUsuario(UsuarioId);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+
+
         [HttpPost]
         public async Task<IActionResult> post(Amigos modelo)
         {
@@ -77,6 +93,9 @@ namespace ProjetoPratica_API.Controllers
             {
                 //verifica se existe aluno a ser alterado
                 var amigos = await this.Repo.GetAmigoById(AmigoId);
+                if(amigos == null) return NotFound();
+
+                this.Repo.Entry(amigos);
                 this.Repo.Update(model);
                 //
                 if (await this.Repo.SaveChangesAsync())
@@ -95,9 +114,9 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("{AmigoId}")]
-        public async Task<IActionResult> delete(int AmigoId)
-        {
+         [HttpDelete("{AmigoId}")]
+         public async Task<IActionResult> delete(int AmigoId)
+         {
             try
             {
                 //verifica se existe aluno a ser excluído
@@ -116,6 +135,21 @@ namespace ProjetoPratica_API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
             return BadRequest();
+        }
+
+        [HttpPost]
+        [Route("amg/")]
+        public async Task<IActionResult> getAmigos(Amigos amigos)
+        {
+             try
+            {
+                var result = await this.Repo.GetAmigosByIds(amigos);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
         }
     }
 }

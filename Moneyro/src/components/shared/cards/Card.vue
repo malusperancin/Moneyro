@@ -1,6 +1,6 @@
 <template>
   <div class="modal">
-    <form v-on:submit.prevent class="modal-conteudo animate width-30">
+    <form v-on:submit.prevent class="modal-conteudo animate width-25">
       <div class="cima">
         <div v-if="!this.id" class="tipos">
           <input
@@ -17,7 +17,7 @@
             id="rend"
             name="tipo"
             value="receita"
-            v-on:click="despesa = false, receita = true, registro.lugar"
+            v-on:click="despesa = false, receita = true, registro.lugar = null"
           />
           <label for="rend">Receita</label>
         </div>
@@ -25,17 +25,15 @@
           <input type="radio" />
           <label id="edit">Edição</label>
         </div>
-        <span class="fechar" v-on:click="$emit('fecharCard')">&times;</span>
+        <span class="fechar" v-on:click="$emit('fechar')">&times;</span>
       </div>
-<!-- step="10" -->
       <div class="corpo">
           <div class="quantia">
             <big>R$</big>
             <input
-              placeholder="0,00"
-              
+              placeholder="0,00" 
               type="number"
-              min="0"
+              min="1"
               max="1000000"
               step="any"
               class="campos"
@@ -62,7 +60,7 @@
             <option class="tag" v-for="tag of tags" :key="tag.id" :value="tag.id">{{ tag.nome }}</option>
           </select>
 
-          <div class="dropdown">
+          <div class="dropdown" v-if="despesa">
             <div v-on:click="expanded = !expanded" id="btnDrop" class="campos">Compartilhar com... ▾</div>
             <div id="listaAmigos">
               <input type="search" placeholder="Pesquisar" v-model="filtroNome" />
@@ -106,189 +104,189 @@ export default {
         nome: "",
         lugar: null,
         data: Date,
-        quantia: 0,
-        compartilhamentos:""
+        quantia: null,
+        compartilhamentos:[]
       },
-      compartilhado: [],
       qtdAmigos: 0
     };
   },
   methods: {
     adicionar() {
-      if(this.registro.quantia == 0)
+      if(this.registro.quantia == null)
       {
-        alert("bota quantia");
+        this.$emit('tiraZero');   
         return;
       }
-      
+
       if(this.despesa)
         this.registro.quantia = -(this.registro.quantia);
-      
-       for(var i = 0; i < this.compartilhado.length ; i++)
-        this.registro.compartilhamentos += (" "+this.compartilhado[i]);
-      
+
+      var ret = "";
+
+      if(this.registro.compartilhamentos[0])
+      {
+        this.registro.compartilhamentos.map(c => {
+          ret += " "+c;
+        })
+
+        ret+=" ";
+      }
+      else
+        ret = null;
+
+      this.registro.compartilhamentos = ret;
+      this.registro.quantia = parseFloat(this.registro.quantia);
+
       this.$http
       .post("https://localhost:5001/api/registros", this.registro)
       .then(dados=> {
-          alert("Adicionou ebinha");
-        this.$router.push("planilhas");
-        this.$emit('fecharCard');
-      }, erro => {
-        alert("Erro ao adicionar");
-      });
-
-      if(this.despesa)
-        this.registro.quantia = -(this.registro.quantia);
-    },
-    atualizar()
-    {
-      if(this.despesa)
-        this.registro.quantia = -(this.registro.quantia);
-        
-      this.registro.compartilhamentos="";
-
-       for(var i = 0; i < this.compartilhado.length ; i++)
-        this.registro.compartilhamentos += (" "+this.compartilhado[i]);
-
-      this.$http
-      .put("https://localhost:5001/api/registros/1", this.registro)
-      .then(dados => {
-           alert("Atualizou");
+        if(this.$router.currentRoute.path != "/planilhas")
           this.$router.push("planilhas");
-          this.$emit('fecharCard');
-            }, erro => {
-              alert("Erro ao atualizae");
-            });
-            
+
+          this.$emit('atualizar');
+          this.$emit('fechar');   
+      }, erro => {
+        console.log("Erro ao adicionar registro: " + erro.bodyText);
+      });
+
+      this.registro.quantia = Math.abs(this.registro.quantia);
+    },
+    atualizar(){
       if(this.despesa)
         this.registro.quantia = -(this.registro.quantia);
-    },
-    click( event)
-    {
-      alert(event.target.tagName);
-    },
-    excluir()
-    {
+      
+      var ret = "";
+
+      if(this.registro.compartilhamentos[0])
+      {
+        this.registro.compartilhamentos.map(c => {
+          ret += " "+c;
+        })
+
+        ret+=" ";
+      }
+      else
+        ret = null;
+
+      this.registro.compartilhamentos = ret;
+      this.registro.quantia = parseFloat(this.registro.quantia);
+
       this.$http
-      .delete("https://localhost:5001/api/registros", this.registro.id)
+      .put("https://localhost:5001/api/registros/" + this.registro.id, this.registro)
       .then(dados => {
-        this.$router.push("planilhas");
-        this.$emit('fecharCard');
+          this.$emit('atualizar');
+          this.$emit('fechar');
+          this.$emit('mostrarMsg');
       }, erro => {
-        alert("Erro ao exluir");
+        console.log("Erro ao atualizar registro: " + erro.body);
+      });
+
+      this.registro.quantia = Math.abs(this.registro.quantia);
+    },
+    excluir(){
+      this.$http
+      .delete("https://localhost:5001/api/registros/" + this.registro.id)
+      .then(dados => {
+        this.$emit('atualizar');
+        this.$emit('fechar');
+      }, erro => {
+        console.log("Erro ao remover registro: " + erro.body);
       });
     },
-    checkarAmigos: function() {
-      for (var a = 0; a < this.amigos.length; a++) {
-        document.getElementById("amigo" + this.amigos[a].id).checked = false;
-      }
-      for (var i = 0; i < this.compartilhado.length; i++) {
-        for (var a = 0; a < this.amigos.length; a++) {
-          if (this.compartilhado[i].id == this.amigos[a].id) {
+    checkarAmigos() {
+      for (var i = 0; i < this.registro.compartilhamentos.length; i++)
+        for (var a = 0; a < this.amigos.length; a++) 
+          if (this.registro.compartilhamentos[i] == this.amigos[a].id) 
             document.getElementById("amigo" + this.amigos[a].id).checked = true;
-          }
-        }
-      }
     },
-    incluirAmg: function(id) {
+    incluirAmg(id) {
       var checkObj = document.getElementById("amigo"+id);
       
-      if (this.compartilhado.length >= 5)
+      if (this.registro.compartilhamentos.length >= 5 && checkObj.checked)
       {
         checkObj.checked = false;
         alert("máximo 5 pessoas!");
         return;
       }
-       
+
       if (checkObj.checked)
-        this.compartilhado.push(id);
+        this.registro.compartilhamentos.push(id);
       else
-      {
-        alert("entrou no else");
-        // var i = this.compartilhado.find(id);
-        this.compartilhado.filter(a => {
-          a != id
+        this.registro.compartilhamentos = this.registro.compartilhamentos.filter(a => a!=id);
+    },
+    getAmigo(id){
+      this.$http
+        .get("https://localhost:5001/api/usuarios/" + id)
+        .then(dados => {
+          this.amigos.push({
+            id: dados.body.id, 
+            apelido: dados.body.apelido});
+        }, erro => {
+          console.log("Erro ao recuperar amigo: " + erro.body);
         });
-        let exp = new RegExp(id, "i");
-        this.compartilhado.filter(amigo => exp.test(id));
-        //alert(i);
-        // nome.splice(0, i);
-      }
     }
   },
   computed: {
     filtraNome() {
       if (this.filtroNome) {
         let exp = new RegExp(this.filtroNome.trim(), "i");
-        return this.amigos.filter(amigo => exp.test(amigo.nome));
+        return this.amigos.filter(amigo => exp.test(amigo.apelido));
       } else {
         return this.amigos;
       }
     }
   },
   created() {
-    if (this.id) {
-      
+     if (this.id) {
       this.$http
       .get("https://localhost:5001/api/registros/" + this.id)
       .then(dados => {
         this.registro = dados.body;
-      }, erro => {
-        alert("algo deu errado");
-      });
 
-      // this.$http
-      // .get("https://localhost:5001/api/compartilhados/cod/" + this.registro.codigo)
-      // .then(dados => {
-      //   this.registro.compartilhado = dados.body.idUsuario;
-      // }, erro => {
-      //   alert("algo deu errado");
-      // });
+        this.registro.data = new Date(this.registro.data).toJSON().substring(0,10);
+
+        if(this.registro.compartilhamentos)
+          this.registro.compartilhamentos = this.registro.compartilhamentos.trim().split(" ").map(Number);
+        else
+          this.registro.compartilhamentos = []
+
+        // for (var i = 0; i < this.registro.compartilhamentos.length; i++)
+        //   this.getAmigo(this.registro.compartilhamentos[i]);
+
+        if(this.registro.quantia > 0)
+        {
+          this.receita = true;
+          this.despesa = false
+        }
+        
+        this.registro.quantia = Math.abs(this.registro.quantia);
+      }, erro => {
+        console.log("Erro ao recuperar registro: " + erro.body);
+      });
     }
+
+    this.$http
+    .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
+    .then(dados => {
+      for(var i=0; i< dados.body.length; i++)
+        if(dados.body[i].idAmigoA == this.$session.get("id"))
+              this.getAmigo(dados.body[i].idAmigoB);
+          else
+              this.getAmigo(dados.body[i].idAmigoA);          
+    }, erro => {
+      console.log("Erro ao recuperar amigos: " + erro.body);
+    });
 
     this.$http
     .get("https://localhost:5001/api/tags")
     .then(dados => {
       this.tags = dados.body;
     }, erro => {
-      alert("algo deu errado");
+      console.log("Erro ao recuperar tags: " + erro.body);
     });
     
-    this.$http
-    .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
-    .then(dados => {
-      var idList = [];
-
-      for(var i=0; i< dados.body.length; i++)
-      {
-          if(dados.body[i].idAmigoA == this.$session.get("id"))
-              idList.push(dados.body[i].idAmigoB);
-          else
-              idList.push(dados.body[i].idAmigoA);          
-      } 
-
-      for(var i=0; i<idList.length; i++)
-      {
-        this.$http
-        .get("https://localhost:5001/api/usuarios/" + idList[i])
-        .then(dados => {
-          this.amigos.push({
-            id: dados.body.id, apelido: dados.body.apelido});
-        }, erro => {
-          alert("algo deu errado");
-        });
-      }
-    }, erro => {
-      alert("algo deu errado");
-    });
-    
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = today.getFullYear();
-    today = yyyy + '-' + mm + '-' + dd;
-
-    this.registro.data = today;
+    if(!this.id)
+      this.registro.data = new Date().toJSON().substring(0,10);
   },
   watch: {
     expanded(){
@@ -296,11 +294,7 @@ export default {
       
       if (this.expanded) 
       {
-        if (this.id) 
-        {
-          this.checkarAmigos();
-          alert("tem id");
-        }
+        this.checkarAmigos();
         checkboxes.style.display = "block";
       }   
       else
@@ -318,10 +312,10 @@ export default {
   font-size: 1.2em;
   background: rgba(0, 0, 0, 0.082);
   cursor: pointer;
+  width: fit-content;
 }
 
 #listaAmigos {
-  margin-top: 10px;
   padding: 10px;
   border-radius: 5px;
   z-index: 1;
@@ -330,6 +324,7 @@ export default {
   max-height: 200px;
   overflow: auto;
   display: none;
+  position: absolute;
 }
 
 #listaAmigos a {

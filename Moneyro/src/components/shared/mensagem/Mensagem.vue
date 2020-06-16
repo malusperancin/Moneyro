@@ -43,6 +43,7 @@ export default {
   background: rgb(46, 48, 46);
   border-radius: 5px;
   height: fit-content;
+  min-width: 250px;
 }
 
 .titulo {

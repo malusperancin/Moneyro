@@ -26,20 +26,25 @@
                 style="font-size: 2em;"
                 title="Enviar solicitação"
               >✉️</button>
-              <button class="botao" v-else-if="usuario.aceitou == 0" title="Pedido pendente">
-                <!--pendente -->
+              <button class="botao" v-if="usuario.aceitou == 1" title="Pedido pendente">
                 🕔
+              </button>
+              <button class="aceitar" v-on:click="aceitar(i)" v-if="usuario.aceitou == 2" title="Aceitar">
+               ✔
+              </button>
+              <button class="negar" v-on:click="negar(i)" v-if="usuario.aceitou == 2" title="Negar">
+               ❌
               </button>
               <button
                 class="botao"
-                v-else-if="usuario.aceitou == 1"
+                v-if="usuario.aceitou == 0"
                 :title="'Você ja é amigo de: ' + usuario.apelido"
               >👩🏻‍🤝‍🧑🏾</button>
-              <!--aceitou -->
             </td>
           </tr>
         </table>
       </div>
+      <span class="linha"></span>
       <div class="baixo">
         <span>Busque um amigo:</span>
         <div id="busca">
@@ -74,69 +79,127 @@ export default {
       var amigo = this.usuarios[index];
 
       this.$http
-        .post("https://localhost:5001/api/amigos", {
-          idAmigoA: this.$session.get("id"),
-          idAmigoB: amigo.id,
-          situacao: 0
-        })
-        .then(dados => {
-          this.usuarios[index].situacao = 0;
-        }, erro => {
-          alert("algo deu errado");
-        });
-    }
-  },
-   created(){
-    var users = null;
+      .post("https://localhost:5001/api/amigos", {
+        idAmigoA: this.$session.get("id"),
+        idAmigoB: amigo.id,
+        aceitou: 1
+      })
+      .then(dados => {
+        this.usuarios[index].aceitou = 1;
+      }, erro => {
+        alert("algo deu errado jasdkjahsd");
+      });
+    },
+    aceitar(index)
+    {
+      var amigo = this.usuarios[index];
 
-    this.$http
+      this.$http
+      .post("https://localhost:5001/api/amigos/amg", { 
+        Id: 0,
+        IdAmigoA: amigo.id,
+        IdAmigoB: this.$session.get("id"),
+        Aceitou: 1
+      })
+      .then(dados => {
+         alert(dados.body[0].id);
+         this.$http
+         .put("https://localhost:5001/api/amigos/" + dados.body[0].id, {
+           id: dados.body[0].id,
+           idAmigoA: amigo.id,
+           idAmigoB: this.$session.get("id"),
+           aceitou: 0
+         })
+         .then(dados => {
+           this.usuarios[index].aceitou = 0;
+           this.$emit('atualizar');
+         }, erro => {
+           alert("algo deu errado no aceit");
+         });
+       
+      },erro => {
+        console.log("Erro ao pegar id dos amigos");
+      });
+    },
+    negar(index)
+    {
+      var amigo = this.usuarios[index];
+
+      this.$http
+      .post("https://localhost:5001/api/amigos/amg", { 
+        Id: 0,
+        IdAmigoA: amigo.id,
+        IdAmigoB: this.$session.get("id"),
+        Aceitou: 1
+      })
+      .then(dados => {
+         alert(dados.body[0].id);
+        this.$http
+        .delete("https://localhost:5001/api/amigos/" + dados.body[0].id)
+        .then(dados => {
+          this.usuarios[index].aceitou = -1;
+        }, erro => {
+          alert("algo deu negar");
+        });
+      },erro => {
+        console.log("Erro ao pegar id dos amigos");
+      });
+    },
+    getUsuarios(){  
+      this.$http
       .get("https://localhost:5001/api/usuarios")
       .then(response => {
-        users = response.body;
-        
-        for(var i = 0; i < users.length; i++)
-          this.usuarios.push({
-            id: users[i].id,
-            nome: users[i].nome,
-            apelido: users[i].apelido,
-            foto: users[i].foto,
-            aceitou: -1
-          })
+        this.usuarios = response.body;
+        this.usuarios = this.usuarios.filter(u => u.id != this.$session.get('id'))
+                                     .map(this.setUsuario);
+      }, 
+      response => {
+        alert("cutcghb");
+      });
+    },
+    setUsuario(usuario){
+      usuario.aceitou = -1;
+
+      this.amigos.map(a => {
+        if(a.idAmigoA == usuario.id && a.aceitou == 1)
+          usuario.aceitou = 2;
+
+        if(a.idAmigoB == usuario.id && a.aceitou == 1)
+          usuario.aceitou = 1;
+
+        if(a.aceitou == 0 && (a.idAmigoB == usuario.id || a.idAmigoA == usuario.id))
+          usuario.aceitou = 0;
+      });
+
+      /*
+      pendente: 1
+      aceitar: 2
+      amigo: 0
+      nada: -1
+      */
+
+      return({
+        id: usuario.id,
+        nome: usuario.nome,
+        apelido: usuario.apelido,
+        foto: usuario.foto,
+        aceitou: usuario.aceitou
+      });
+    }
+  },
+  created(){
+      this.$http
+      .get("https://localhost:5001/api/amigos/todos/"+this.$session.get("id"))
+      .then(response => {
+        this.amigos = response.body;
+        this.getUsuarios();
       }, 
       response => {
         alert("cu");
       });
-
-      this.$http
-      .get("https://localhost:5001/api/amigos")
-      .then(response => {
-        this.amigos = response.body;
-
-        alert("pegou");
-
-          for(var j = 0; j < this.amigos.length; j++)
-          {
-            if(this.amigos[j].idAmigoA == this.$session.get("id"))
-            {
-              for(var i = 0; i < this.usuarios.length; i++)
-                if(this.usuarios[i].id == this.amigos[i].idAmigoB)
-                  this.usuarios[i].aceitou = amigos[i].aceitou;
-            }
-             
-            if(this.amigos[j].idAmigoB == this.$session.get("id"))
-            {
-              for(var i = 0; i < this.usuarios.length; i++)
-                if(this.usuarios[i].id == this.amigos[i].idAmigoA)
-                  this.usuarios[i].aceitou = amigos[i].aceitou;
-            }
-          }
-
-          alert("terminou");
-      }, 
-      response => {
-        alert("cutcghbfh");
-      });
-  }
+  },
+  mounted() {      
+  },
 }
 
 </script>
@@ -144,23 +207,28 @@ export default {
 <style scoped src="../../../css/modal.css"></style>
 <style scoped>
 .corpo {
-  background: rebeccapurple;
+  background: rgb(40, 39, 41);
   height: 60vh;
 }
-
-.cima {
-  background: #7233b1;
+.cima{
+  background-color:rgba(29, 29, 29, 0.9);
+  color:white;
+}
+.baixo{
+  background-color:rgb(40, 39, 41)
+}
+.aceitar {
+  background: rgba(0, 0, 0, 0.959);
   box-shadow: #00000040 0px 2px 5px;
-  color: white;
 }
 
-.baixo {
+.negar {
   box-shadow: 0px -2px 5px #00000040;
-  background: #7233b1;
+  background: rgba(0, 0, 0, 0.959);
 }
 
 .baixo span {
-  color: white;
+  color: black;
   font-size: 1.3em;
   margin-right: 15px;
 }
@@ -168,7 +236,7 @@ export default {
 .usuario-item {
   animation: zoomOut 0.5s;
   /* background-color: rgb(111, 87, 170); */
-  background: blueviolet;
+  background: rgba(116, 117, 116, 0.836);
 }
 
 .apelido {
@@ -182,7 +250,7 @@ export default {
   padding-bottom: -5px;
 }
 
-.td-btn button {
+.botao {
   font-size: 1.5em;
   border: none;
   width: 100%;
@@ -193,6 +261,18 @@ export default {
   height: 90px;
   padding: 20px;
 }
+
+.aceitar, .negar{
+  font-size: 1.5em;
+  border: none;
+  width: 100%;
+  color: white;
+  background-color: transparent;
+  cursor: pointer;
+  height: 45px;
+  padding: 0 20px;
+}
+
 
 .td-img img {
   width: 70px;
@@ -227,13 +307,13 @@ td {
 }
 
 .td-btn {
-  background: rgb(50, 24, 110);
+  background: rgb(70, 69, 67);
   padding: 0;
 }
 
 ::-webkit-scrollbar {
   width: 11px;
-  background: rgb(43, 19, 99);
+  background: rgb(0, 0, 0);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -261,6 +341,18 @@ tr td:last-child {
   font-weight: bold;
   text-align: center;
   margin: auto;
+}
+
+.linha {
+  background: rgb(238, 177, 11);
+  height: 3px;
+  width: 90%;
+  margin: 0;
+}
+
+#busca{
+    background-color: rgb(40, 39, 41);
+    color:rgb(135, 138, 135)
 }
 
 #busca input {

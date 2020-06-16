@@ -2,16 +2,18 @@
   <div class="pag">
     <cabecalho :titulo="'Moneyro'"></cabecalho>
     <div id="inicio">
-      <h2>
-        Para de usar esses aplicativozinho ruim
-        de gestao e vem pro melhor!!!!!!!
-      </h2>
-      <img id="imgCenter" src="src/images/Imagem1.png" alt />
-      <div id="botoes">
-        <button v-on:click="login = true">Login</button>
-        <button>
-          <router-link to="/Cadastro">Cadastro</router-link>
-        </button>
+      <div class="frase">
+        <h2>Bem Vinda(o) </h2> ao melhor aplicativo de finanças pessoais para jovens deste Brasil! <br>  
+        <small>
+          Tá duvidando? Só vem!  
+        </small> 
+      </div>
+      <div class="container">
+        <img id="imgCenter" src="src/images/Imagem1.png" alt />
+        <div id="botoes">
+          <button v-on:click="login = true">Login</button>
+          <button v-on:click="$router.push('cadastro')">Cadastro</button>
+        </div>
       </div>
     </div>
     <div id="porque">
@@ -81,7 +83,11 @@ export default {
   methods: {},
   created(){
     document.title = "Moneyro";
-  }
+  },
+  beforeCreate() {
+    if(this.$session.exists())
+      this.$router.push("usuario");
+  },
 };
 </script>
 
@@ -100,31 +106,52 @@ a {
 #inicio {
   width: 100%;
   background-color: rgb(255, 227, 74);
-  text-align: center;
   padding-top: 100px;
+  display: inline-flex;
+}
+
+.frase{
+  font-size: 2.8em;
+  flex: 1;
+  padding: 50px 70px;
+  text-align: left;
+  display: flex;
+  justify-content: start;
+  flex-direction: column;
+}
+
+.container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1.2;
+  padding: 100px 70px 70px;
 }
 
 #imgCenter {
-  margin-top: -30px;
-  margin-bottom: -50px;
-  margin-left: -9%;
-  width: 625px;
+  margin: -50px 0;
+  width: 38vw;
+}
+
+h2{
+  margin: 30px 0;
 }
 
 #botoes button {
-  font-size: 1.75em;
+  font-size: 1.8em;
   font-weight: bolder;
   border-radius: 2px;
-  margin: 0px 15px 40px;
   border: 0;
   padding: 15px;
+  box-sizing: border-box;
   box-shadow: 1px black;
-  width: 15%;
+  width: 150px;
   text-align: center;
   background-color: rgb(241 194 50);
   z-index: 1;
   cursor: pointer;
   color: #000;
+  margin: 0px 20px;
 }
 
 #botoes button:hover {
@@ -132,8 +159,8 @@ a {
 }
 
 #botoes {
-  width: 100%;
-  text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 #porque {

@@ -24,6 +24,7 @@ export default {
   box-shadow: 5px 10px 18px rgba(26, 0, 0, 0.2);
   max-height: 250px;
   overflow: auto;
+  color:whitesmoke;
 }
 .conteudo::-webkit-scrollbar {
   width: 10px;

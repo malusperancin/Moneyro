@@ -89,10 +89,11 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                //verifica se existe aluno a ser alterado
+                //verifica se existe meta a ser alterado
                 var meta = await this.Repo.GetMetaById(MetaId);
                 if (meta == null) return NotFound();
-
+ 
+                this.Repo.Entry(meta);
                 this.Repo.Update(model);
 
                 if (await this.Repo.SaveChangesAsync())
@@ -115,6 +116,7 @@ namespace ProjetoPratica_API.Controllers
         [HttpDelete("{MetaId}")]
         public async Task<IActionResult> delete(int MetaId)
         {
+            Console.WriteLine("entoru");
             try
             {
                 //verifica se existe aluno a ser excluído

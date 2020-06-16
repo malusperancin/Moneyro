@@ -50,6 +50,8 @@ export default {
             if (response.status === 200 && "id" in response.body) {
               this.$session.start();
               this.$session.set("id", response.body.id);
+              this.$session.set("MA", response.body.modoAnonimo);
+              this.$session.set("nome", response.body.nome);
               this.$session.set("foto", response.body.foto);
               this.$http.headers.common["Authorization"] =
                 "Bearer " + response.body.id;

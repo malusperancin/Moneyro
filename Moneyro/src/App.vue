@@ -2,7 +2,10 @@
   <div class="web">
     <router-view></router-view>
     <div id="footer">
-      <p>&copy; Copyright Moneyro. Nenhum Direito Reservado.</p>
+      <p>&copy; Copyright Moneyro. Nenhum Direito Reservado.<br> <br> 
+      Desenvolvido por: <br>Giovanna Pavani Martelli, Maria Luiza Sperancin Mancebo e Vinícius Martins Cotrim<br>
+      (com muito amor, inclusive )
+      </p>
     </div>
   </div>
 </template>

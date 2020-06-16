@@ -7,7 +7,7 @@ import { routes } from './routes';
 
 Vue.use(VueResource);
 //Vue.use(VueSession, options);
-Vue.use(VueSession);
+Vue.use(VueSession, { persist: true });
 Vue.use(VueRouter);
 
 const router = new VueRouter({

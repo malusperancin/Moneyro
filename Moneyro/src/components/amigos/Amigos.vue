@@ -4,13 +4,11 @@
     <Perfil />
     <Topo />
     <Mensagem
-      v-if="mensagem"
-      v-on:ok="mensagem = false"
-      mensagem="Receita registrada com sucesso!"
-      titulo="Toma o titulo"
-      sair="oi"
+      :msg="msg"
+      v-if="msg.visivel"
+      v-on:fechar="msg.visivel = false"
     ></Mensagem>
-    <Add v-if="adicionar" v-on:fechar="adicionar= false"></Add>
+    <Add v-if="adicionar" v-on:fechar="adicionar= false" v-on:atualizar="getAmigos()"></Add>
     <div class="centro">
       <div id="busca">
         <input class="filtro" type="search" placeholder="Pesquisar" v-model="filtro" />
@@ -23,8 +21,8 @@
         />
       </div>
       <div id="lista-alunos">
-        <div id="lista-alunos-item" v-for="amigo of filtraNome" :key="amigo.nome">
-          <Painel :nome="amigo.nome" :foto="amigo.foto"></Painel>
+        <div id="lista-alunos-item" v-for="(amigo, i) of filtraNome" :key="amigo.apelido">
+          <Painel :nome="amigo.apelido" :foto="amigo.foto" v-on:deletar="removerAmigo(i)"></Painel>
         </div>
       </div>
     </div>
@@ -51,27 +49,80 @@ export default {
   data() {
     return {
       filtro: "",
-      amigos: [
-        // 💩👺💩 jovana ಥ‿ಥ✌2345678901
-        { nome: "jovana ಥ‿ಥ✌", foto: "11" }, // apelido : varchar(14)
-        { nome: "maru✌ʕ•́ᴥ•̀ʔっ", foto: "6" },
-        { nome: "venizius😘😎", foto: "7" },
-        { nome: "drigo", foto: "9" },
-        { nome: "illy", foto: "10" },
-        { nome: "zoen", foto: "5" }
-      ],
+      amigos: [],
       mensagem: false,
-      adicionar: false
+      adicionar: false,
+      dupla:[],
+       msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: []
+      }
     };
   },
   computed: {
     filtraNome() {
       if (this.filtro) {
         let exp = new RegExp(this.filtro.trim(), "i");
-        return this.amigos.filter(amigo => exp.test(amigo.nome));
+        return this.amigos.filter(amigo => exp.test(amigo.apelido));
       } else {
         return this.amigos;
       }
+    }
+  },
+  methods:{
+    removerAmigo(idAmigo){
+        var amigo = this.amigos[idAmigo];
+        
+         var index = this.amigos.indexOf(amigo);
+         this.amigos.splice(index, 1);
+         
+        this.$http
+        .delete("https://localhost:5001/api/amigos/" + amigo.id)
+        .then(dados => {
+            this.amigos = [];
+            this.getAmigos();
+             this.msg.titulo = "Sucesso";
+            this.msg.mensagem =
+              "Seu amigo foi removido com sucesso!";
+            this.msg.botoes = [
+              {
+                mensagem: "Ok",
+                evento: "fechar"
+              }
+            ]; 
+              this.msg.visivel = true;
+        },erro => {
+        alert("Erro ao deletar");
+        });
+    },
+    getAmigo(id, idTabela){
+      this.$http
+        .get("https://localhost:5001/api/usuarios/" + id)
+        .then(dados => {
+          this.amigos.push({
+            id: idTabela, 
+            idUsuario: dados.body.id,
+            apelido: dados.body.apelido,
+            foto: dados.body.foto,
+          });
+        }, erro => {
+          alert("algo deu errado");
+        });
+    },
+    getAmigos(){
+      this.$http
+      .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
+      .then(dados => {
+        for(var i=0; i< dados.body.length; i++)
+            if(dados.body[i].idAmigoA == this.$session.get("id"))
+              this.getAmigo(dados.body[i].idAmigoB, dados.body[i].id);
+            else
+              this.getAmigo(dados.body[i].idAmigoA, dados.body[i].id);     
+      }, erro => {
+        alert("algo deu errado");
+      });
     }
   },
   beforeCreate() {
@@ -81,6 +132,7 @@ export default {
   },
   created(){
     document.title = "Amigos";
+    this.getAmigos();
   }
 };
 </script>
