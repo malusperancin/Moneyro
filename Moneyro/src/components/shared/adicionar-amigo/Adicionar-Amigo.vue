@@ -68,7 +68,7 @@ export default {
     filtraNome() {
       if (this.filtro) {
         let exp = new RegExp(this.filtro.trim(), "i");
-        return this.usuarios.filter(usuario => exp.test(usuario.apelido));
+        return this.usuarios.filter(usuario => exp.test(usuario.apelido) || exp.test(usuario.nome));
       } else {
         return this.usuarios;
       }

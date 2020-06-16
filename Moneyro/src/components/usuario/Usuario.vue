@@ -12,7 +12,7 @@
         <div class="saldo">
           <span class="msg">
           <b>Seu saldo é R$ {{saldo}}</b>
-<br><br>
+          <br><br>
 
             {{msg}}
           </span>
@@ -147,51 +147,8 @@ small{
   margin-top:-10px;
   color: whitesmoke;
 }
-/* -------------------------- */
-/* .gradient-box::before{
-  content: '';
-  position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  z-index: -1;
-  margin: border; /* !importanté 
-  border-radius: inherit; /* !importanté igualité fraternité liberté
-  background: linear-gradient(to right, red, orange);
+
+.saldo img{
+  width: 50%;
 }
-
-.gradient-box{
-    position: relative;
-    box-sizing: border-box;
-    border: 5px solid white;
-    background-clip: padding-box; /* !importanté 
-} */
- /* .gradient-box {
-  
-  display: flex;
-  align-items: center;
-  width: 50vw;
-  width: 90%;
-  margin: auto;
-  max-width: 22em;
-
-  position: relative;
-  padding: 30% 2em;
-  box-sizing: border-box;
-
-  $border: 5px;
-  color: #FFF;
-  background: #000;
-  background-clip: padding-box; /* !importanté 
-  border: solid $border transparent; /* !importanté 
-  border-radius: 1em;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
-    z-index: -1;
-    margin: -$border; /* !importanté 
-    border-radius: inherit; /* !importanté 
-    background: linear-gradient(to right, red, orange);
-  }
-} */
 </style>

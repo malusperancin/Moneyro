@@ -74,6 +74,11 @@ export default {
   color: #f44336;
 }
 
+.baixo
+{
+  justify-content: space-between;
+}
+
 input[type="text"],
 input[type="password"] {
   border-radius: 3px;

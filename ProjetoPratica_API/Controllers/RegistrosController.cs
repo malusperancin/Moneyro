@@ -22,6 +22,20 @@ namespace ProjetoPratica_API.Controllers
             this.Repo = repo;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                var result = await this.Repo.GetAllRegistros();
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
         [HttpGet("todos/{UsuarioId}")]
         public async Task<IActionResult> Get(int UsuarioId)
         {
@@ -70,6 +84,20 @@ namespace ProjetoPratica_API.Controllers
             try
             {
                 var result = await this.Repo.GetRegistroById(RegistroId);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+        [HttpGet("compartilhados/{UsuarioId}/{AmigoId}")]
+        public async Task<IActionResult> GetRegistroById(int UsuarioId, int AmigoId)
+        {
+            try
+            {
+                var result = await this.Repo.GetRegistrosCompartilhados(UsuarioId, AmigoId);
                 return Ok(result);
             }
             catch

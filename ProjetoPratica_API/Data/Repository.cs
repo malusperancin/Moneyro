@@ -122,6 +122,30 @@ namespace ProjetoPratica_API.Data
             return await consultaRegistro.ToArrayAsync();
         }
 
+        public async Task<Registros[]> GetRegistrosCompartilhados(int UsuarioId, int AmigoId)
+        {
+            IQueryable<Registros> consultaRegistro = (IQueryable<Registros>)this.Context.Registros;
+            consultaRegistro = consultaRegistro.OrderByDescending(r => r.Data)
+                                               .Where(registro => registro.IdUsuario == UsuarioId && 
+                                                                  registro.Compartilhamentos.Contains(" "+AmigoId+" ")||
+                                                                  registro.IdUsuario == AmigoId  &&
+                                                                  registro.Compartilhamentos.Contains(" "+UsuarioId+" "));
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaRegistro.ToArrayAsync();
+        }
+
+        public async Task<Metas[]> GetMetasCompartilhadas(int UsuarioId, int AmigoId)
+        {
+            IQueryable<Metas> consultaMeta = (IQueryable<Metas>)this.Context.Metas;
+            consultaMeta = consultaMeta.OrderByDescending(r => r.DataLimite)
+                                               .Where(Meta => Meta.IdUsuario == UsuarioId && 
+                                                              Meta.Compartilhamentos.Contains(" "+AmigoId+" ")||
+                                                              Meta.IdUsuario == AmigoId  &&
+                                                              Meta.Compartilhamentos.Contains(" "+UsuarioId+" "));
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaMeta.ToArrayAsync();
+        }
+
         public async Task<Metas[]> GetAllMetas()
         {
             IQueryable<Metas> consultaMetas = (IQueryable<Metas>)this.Context.Metas;

@@ -6,7 +6,7 @@
     v-on:sair="msg.visivel = false, $session.destroy(), $router.push('/')"
     v-on:fechar="msg.visivel = false"
     ></mensagem>
-    <table cellspacing="0" border="0">
+    <table cellspacing="0" border="0" id="menu">
       <tr id="btnAdd">
         <td class="icones">
           <img src="../../../images/adicionar.png" alt="a" />

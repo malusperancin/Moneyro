@@ -151,8 +151,8 @@ export default {
       .put("https://localhost:5001/api/metas/" + this.meta.id, this.meta)
       .then(dados=> {
         this.$emit('atualizar');
-        this.$emit('fechar');
         this.$emit('mostrarMsg');
+        this.$emit('fechar');
       }, erro => {
         alert("Alterar deu errado");
       });
@@ -205,7 +205,7 @@ export default {
     filtraNome() {
       if (this.filtroNome) {
         let exp = new RegExp(this.filtroNome.trim(), "i");
-        return this.amigos.filter(amigo => exp.test(amigo.nome));
+        return this.amigos.filter(amigo => exp.test(amigo.apelido));
       } else {
         return this.amigos;
       }

@@ -10,7 +10,7 @@
       <div class="relatorio">
         <div id="ano">
           <p>Ano:</p>
-          <select name="ano" id="selectAno" v-model="ano">
+          <select name="ano" id="selectAno" v-model="ano" @change="setAno">
             <option :value="ano" v-for="ano in anos" v-bind:key="ano">{{ano}}</option>
           </select>
         </div>
@@ -60,6 +60,18 @@ export default {
   },
   data() {
     return {
+    /*IDEIS PRA MOSTRAR 
+      RELAÇÃO ENTRE DESP RECEITA E GASTO
+        \* POR ANO
+         \* POR MES
+      QUAIS SÃO AS TAGS MAIS USADAS
+      LUGARES MAIS FREQUENTADOS
+      DIAS MAIS ATIVOS
+   */
+      tags:[],
+      receitas: [],
+      despesas: [],
+      registros: [],
       anos: ["2015", "2016", "2017", "2018", "2019", "2020"],
       ano: "2020",
       numMes: 1,
@@ -186,6 +198,46 @@ export default {
       new google.visualization.PieChart(
         document.getElementById("grafico_gastos")
       ).draw(this.dataPizza, this.optionsPizza);
+    },
+    getRegistros(){
+      this.$http
+      .get("https://localhost:5001/api/registros/todos/"+this.$session.get("id"))
+      .then(dados => {
+        dados.body.map(reg => {
+          if(reg.quantia > 0)
+            this.receitas.push({
+              data: new Date(reg.data),
+              nome: reg.nome,
+              idTag: this.tags[reg.id-1],
+              lugar: reg.lugar,
+              quantia: reg.quantia,
+            });
+          else
+            this.despesas.push({
+              data: new Date(reg.data),
+              nome: reg.nome,
+              idTag: this.tags[reg.id-1],
+              lugar: reg.lugar,
+              quantia: reg.quantia,
+            });
+
+           this.registros.push({
+              data: new Date(reg.data),
+              nome: reg.nome,
+              idTag: this.tags[reg.id-1],
+              lugar: reg.lugar,
+              quantia: reg.quantia,
+            });
+        });
+      }, erro => {
+        console.log("Erro ao recuperar tags: " + erro.body);
+      });
+    },
+    setAno()
+    { 
+      console.log(this.registros.filter(reg => {
+        reg.data.getFullYear() != this.ano
+      }));
     }
   },
   mounted() {
@@ -202,6 +254,21 @@ export default {
   },
  created(){
    document.title = "Relatórios";
+
+   this.$http
+    .get("https://localhost:5001/api/tags")
+    .then(dados => {
+      dados.body.map(tag => {
+        this.tags.push({
+          id: tag.id,
+          nome: tag.nome
+        })
+      });
+
+      this.getRegistros();
+    }, erro => {
+      console.log("Erro ao recuperar tags: " + erro.body);
+    });
  }
 };
 </script>

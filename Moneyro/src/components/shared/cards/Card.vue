@@ -123,7 +123,7 @@ export default {
 
       var ret = "";
 
-      if(this.registro.compartilhamentos[0])
+      if(this.registro.compartilhamentos)
       {
         this.registro.compartilhamentos.map(c => {
           ret += " "+c;
@@ -282,7 +282,7 @@ export default {
     .then(dados => {
       this.tags = dados.body;
     }, erro => {
-      console.log("Erro ao recuperar tags: " + erro.body);
+      console.log("Erro ao recuperar tags: " + erro.bodyText);
     });
     
     if(!this.id)

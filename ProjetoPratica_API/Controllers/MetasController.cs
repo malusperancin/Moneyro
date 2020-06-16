@@ -64,6 +64,20 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
+        [HttpGet("compartilhados/{UsuarioId}/{AmigoId}")]
+        public async Task<IActionResult> GetMetasComp(int UsuarioId, int AmigoId)
+        {
+            try
+            {
+                var result = await this.Repo.GetMetasCompartilhadas(UsuarioId, AmigoId);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> post(Metas modelo)
         {

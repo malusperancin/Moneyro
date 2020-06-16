@@ -9,6 +9,7 @@
       v-on:fechar="msg.visivel = false"
     ></Mensagem>
     <Add v-if="adicionar" v-on:fechar="adicionar= false" v-on:atualizar="getAmigos()"></Add>
+    <Compartilhado :idAmigo="idAmigo" v-on:fechar="compartilhados = false" v-if="compartilhados"></Compartilhado>
     <div class="centro">
       <div id="busca">
         <input class="filtro" type="search" placeholder="Pesquisar" v-model="filtro" />
@@ -20,9 +21,9 @@
           v-on:click="adicionar = true"
         />
       </div>
-      <div id="lista-alunos">
+      <div id="lista-alunos"  style="color: white">
         <div id="lista-alunos-item" v-for="(amigo, i) of filtraNome" :key="amigo.apelido">
-          <Painel :nome="amigo.apelido" :foto="amigo.foto" v-on:deletar="removerAmigo(i)"></Painel>
+          <Painel :nome="amigo.apelido" :foto="amigo.foto" v-on:deletar="removerAmigo(i)" :id="amigo.idUsuario" v-on:verComp="idAmigo = $event, compartilhados = true"></Painel>
         </div>
       </div>
     </div>
@@ -36,6 +37,7 @@ import Perfil from "../shared/perfil/Perfil.vue";
 import Topo from "../shared/voltar-topo/Voltar-Topo.vue";
 import Mensagem from "../shared/mensagem/Mensagem.vue";
 import Add from "../shared/adicionar-amigo/Adicionar-Amigo.vue";
+import Compartilhado from "../shared/compartilhados/Compartilhados.vue";
 
 export default {
   components: {
@@ -44,7 +46,8 @@ export default {
     Perfil,
     Topo,
     Mensagem,
-    Add
+    Add,
+    Compartilhado
   },
   data() {
     return {
@@ -58,7 +61,9 @@ export default {
         titulo: "",
         mensagem: "",
         botoes: []
-      }
+      },
+      idAmigo: null,
+      compartilhados: false
     };
   },
   computed: {

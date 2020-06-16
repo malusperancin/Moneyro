@@ -4,6 +4,7 @@
     <div id="inicio">
       <div class="frase">
         <h2>Bem Vinda(o) </h2> ao melhor aplicativo de finanças pessoais para jovens deste Brasil! <br>  
+        <br>
         <small>
           Tá duvidando? Só vem!  
         </small> 
@@ -107,34 +108,34 @@ a {
   width: 100%;
   background-color: rgb(255, 227, 74);
   padding-top: 100px;
-  display: inline-flex;
+  display: flex;
 }
 
 .frase{
-  font-size: 2.8em;
+  font-size: 45px;
   flex: 1;
-  padding: 50px 70px;
+  padding: 30px 70px;
   text-align: left;
   display: flex;
-  justify-content: start;
   flex-direction: column;
 }
 
 .container{
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   flex: 1.2;
-  padding: 100px 70px 70px;
+  padding: 90px 100px 60px;
 }
 
 #imgCenter {
-  margin: -50px 0;
-  width: 38vw;
+  margin: -5vh 0;
+  width: 40vw;
 }
 
 h2{
-  margin: 30px 0;
+  margin: 25px 0;
 }
 
 #botoes button {
@@ -145,13 +146,13 @@ h2{
   padding: 15px;
   box-sizing: border-box;
   box-shadow: 1px black;
-  width: 150px;
   text-align: center;
   background-color: rgb(241 194 50);
   z-index: 1;
   cursor: pointer;
   color: #000;
-  margin: 0px 20px;
+  /* margin: 0px 20px; */
+  flex: 0.4;
 }
 
 #botoes button:hover {
@@ -161,6 +162,8 @@ h2{
 #botoes {
   display: flex;
   justify-content: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 #porque {

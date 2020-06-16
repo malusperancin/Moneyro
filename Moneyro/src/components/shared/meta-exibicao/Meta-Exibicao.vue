@@ -28,7 +28,7 @@
   </div>
 </template>
 
-<script scoped>
+<script>
 export default {
   props: ["id", "nome", "objetivo", "atual", "dataLimite", "compartilhado"],
   data() {
@@ -58,12 +58,13 @@ export default {
           this.bar.text.style.fontSize = "35px";
       } else {
         this.bar.setText("✔");
-        this.cor = "#4DEA68";
         this.bar.text.style.fontSize = "30px";
       }
       
+      this.bar.path.setAttribute('stroke', this.cor);
+      this.bar.text.style.color = this.cor;
+      
       this.bar.animate(this.porcentagem);
-      // this.colorir();
     }
   },
   mounted(){
@@ -71,8 +72,6 @@ export default {
     if (this.objetivo == this.atual) this.cor = "#4DEA68";
 
     var ProgressBar = require("progressbar.js");
-
-    // alert(this.id);
 
     this.bar = new ProgressBar.Circle("#id" + this.id, {
       strokeWidth: 15,
@@ -84,6 +83,8 @@ export default {
       svgStyle: null
     });
 
+    console.log(this.bar);
+
     this.colorir();
     this.calcular();
   },
@@ -93,8 +94,13 @@ export default {
     else
       this.cor = "#ECB318";
 
-    console.log(this.porcentagem);
-    this.bar.animate(this.porcentagem);
+    if(this.atual == this.objetivo)
+    {
+      this.cor = "#4DEA68";
+      this.calcular();;
+    }
+
+    this.calcular();
     this.colorir();
   },
   watch: {

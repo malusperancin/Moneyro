@@ -23,6 +23,7 @@ export default {
 };
 </script>
 
+<style src="./css/responsivo.css"></style>
 <style >
 * {
   transition: all 0.3s;
@@ -41,7 +42,6 @@ html {
 }
 
 #footer {
-  height: 15vh;
   padding: 30px 100px;
   color: white;
   background-color: rgb(67, 67, 67);

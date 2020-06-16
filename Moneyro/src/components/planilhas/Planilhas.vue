@@ -303,6 +303,7 @@ export default {
   display: flex;
   width: 100%;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .amigos div {
@@ -316,14 +317,13 @@ export default {
   width: 30px;
   margin-left: -10px;
   border-radius: 87px;
-  margin-bottom: -5px;
 }
 
 .umDia{
   /* background: rgba(255, 255, 255, 0.1);
   border-radius: 5px; */
   margin: 5px 0;
-  padding: 5px 10px;
+  padding: 5px 0;
 }
 
 .umDia table {
@@ -341,7 +341,15 @@ export default {
 
 tr {
   text-align: start;
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
 }
+
+tr:first-child { border-top-left-radius: 10px; }
+tr:first-child { border-top-right-radius: 10px; }
+tr:last-child { border-bottom-left-radius: 10px; }
+tr:last-child { border-bottom-right-radius: 10px; }
 
 .data {
   margin: 0;
@@ -406,7 +414,6 @@ tr {
   padding: 7px 14px;
   box-sizing: border-box;
   font-size: 1.2em;
-  width: 40%;
   color: rgba(255, 255, 255, 0.7);
   background: rgba(255, 255, 255, 0.078);
 }

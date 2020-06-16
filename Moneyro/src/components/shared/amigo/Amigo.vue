@@ -6,7 +6,7 @@
         <img class="imgPerfil" :src="'../src/images/perfil' + foto + '.png'" />
       </div>
       <p class="nome">{{ nome }}</p>
-      <p class="comp">Compartilhados</p>
+      <p class="comp" v-on:click="$emit('verComp', id)">Compartilhados</p>
       <div class="deletar">
         <img class="imgDeletar" v-on:click="$emit('deletar')" src="src/images/remAmigo.png" />
       </div>

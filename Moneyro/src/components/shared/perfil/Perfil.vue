@@ -39,11 +39,32 @@ export default {
     }
   },
   created() {
+    //PEGAR TODAS ORDENAR PELA NÃO VISTA
+    // this.$http
+    // .get("https://localhost:5001/api/notificacoes/" + this.$session.get("id"))
+    // .then(dados => {
+    //   dados.body.map(tag => {
+    //     this.tags.push({
+    //       id: tag.id,
+    //       nome: tag.nome
+    //     })
+    //   });
+    // }).catch( erro => {
+    //   alert("Erro ao pegar as notif: " + erro.bodyText);
+    // });
+
     this.notificacoes = [
       { descricao: 'Maria adicionou você a meta "Presente para tia rose"' },
       { descricao: 'Jovana atribuiu você a despesa "Bloquinho da Pabllo"' },
       { descricao: "Illy te adicionou como amigo" }
     ];
+
+    // id int primary key identity,
+    // idOrigem int not null,
+    // idDestino int not null,
+    // mensagem varchar(150) not null,
+    // visualizada byte not null
+    // fk blablabla
   },
   watch: {
     notificacoes() {

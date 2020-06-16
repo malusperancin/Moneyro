@@ -1,6 +1,6 @@
 <template>
   <div class="modal">
-    <div class="modal-conteudo width-45 animate">
+    <div class="modal-conteudo width-40 animate">
       <div class="cima">
         <big>Selecione uma foto</big>
         <span class="fechar" v-on:click="$emit('fechar')">&times;</span>
