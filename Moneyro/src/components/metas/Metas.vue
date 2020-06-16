@@ -3,7 +3,7 @@
     <Menu v-on:atualizar="getTodos()"/>
     <Perfil />
     <Topo />
-    <Meta v-if="verMeta" :id="id" v-on:mostrarMsg="mostrarMensagem" v-on:atualizar="getTodos()" v-on:fechar="verMeta = false" />
+    <Meta v-if="verMeta" :id="id" v-on:mostrarMsg="mostrarMensagem" v-on:atualizar="getTodos()" v-on:fechar="verMeta = false"  v-on:msgNaoAbrir="mensagemNao" v-on:deletou="msgDeletou"/>
     <Mensagem
       :msg="msg"
       v-if="msg.visivel"
@@ -51,15 +51,38 @@ export default {
       metas: [],
       verMeta: false,
       id: null,
+      pessoas: [],
       msg: {
         visivel: false,
         titulo: "",
         mensagem: "",
         botoes: []
-      }
+      },
     };
   },
   methods: {
+    msgDeletou(){
+            this.msg.titulo = "Sucesso!";
+            this.msg.mensagem = "Meta deletada com sucesso!";
+            this.msg.botoes = [
+             {
+               mensagem: "Ok",
+               evento: "fechar"
+             }
+            ];
+            this.msg.visivel = true;
+    },
+    mensagemNao(){
+          this.msg.titulo = "Ops :P";
+            this.msg.mensagem = "Você não pode mudar os compartilhados pois não é o criador dessa meta!";
+            this.msg.botoes = [
+             {
+               mensagem: "Ok",
+               evento: "fechar"
+             }
+            ];
+            this.msg.visivel = true;
+    },
     mostrarMensagem(){
             this.msg.titulo = "Alteração";
             this.msg.mensagem = "Alteração na meta feita com sucesso!";
@@ -110,10 +133,16 @@ export default {
 
         for (var i = 0; i < this.metas.length; i++)
           if(this.metas[i].compartilhamentos)
-            this.metas[i].compartilhamentos.map(c => {
+          {
+              this.metas[i].compartilhamentos.map(c => {
                 this.getUsuario(c, i)
-            }); 
-      }, erro => {
+              }); 
+          
+              if(this.metas[i].idUsuario != this.$session.get("id"))
+               this.getUsuario(this.metas[i].idUsuario, i);       
+            }
+      },
+       erro => {
         alert("algo deu errado meta");
       });
     },

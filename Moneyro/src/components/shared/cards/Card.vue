@@ -1,6 +1,6 @@
 <template>
   <div class="modal">
-    <form v-on:submit.prevent class="modal-conteudo animate width-30">
+    <form v-on:submit.prevent class="modal-conteudo animate width-25">
       <div class="cima">
         <div v-if="!this.id" class="tipos">
           <input
@@ -112,15 +112,25 @@ export default {
   },
   methods: {
     adicionar() {
+      if(this.registro.quantia == null)
+      {
+        this.$emit('tiraZero');   
+        return;
+      }
+
       if(this.despesa)
         this.registro.quantia = -(this.registro.quantia);
 
       var ret = "";
 
       if(this.registro.compartilhamentos[0])
+      {
         this.registro.compartilhamentos.map(c => {
           ret += " "+c;
         })
+
+        ret+=" ";
+      }
       else
         ret = null;
 
@@ -134,7 +144,7 @@ export default {
           this.$router.push("planilhas");
 
           this.$emit('atualizar');
-          this.$emit('fechar');  
+          this.$emit('fechar');   
       }, erro => {
         console.log("Erro ao adicionar registro: " + erro.bodyText);
       });
@@ -148,9 +158,13 @@ export default {
       var ret = "";
 
       if(this.registro.compartilhamentos[0])
+      {
         this.registro.compartilhamentos.map(c => {
           ret += " "+c;
         })
+
+        ret+=" ";
+      }
       else
         ret = null;
 

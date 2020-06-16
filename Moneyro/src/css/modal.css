@@ -18,20 +18,32 @@
     position: relative;
 }
 
+.width-20 {
+    width: 20pc;
+}
+
+.width-25 {
+    width: 25pc;
+}
+
 .width-30 {
-    width: 30vw;
+    width: 35pc;
+}
+
+.width-30 {
+    width: 30pc;
 }
 
 .width-35 {
-    width: 35vw;
+    width: 35pc;
 }
 
 .width-40 {
-    width: 40vw;
+    width: 40pc;
 }
 
 .width-45 {
-    width: 45vw;
+    width: 45pc;
 }
 
 .cima {

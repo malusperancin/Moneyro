@@ -2,7 +2,7 @@
   <div class="pag">
     <Menu v-on:atualizar="getTodos()"/>
     <Perfil />
-    <Card v-if="verCard" :id="id" v-on:atualizar="getTodos()"  v-on:mostrarMsg="mostrarMensagem" v-on:fechar="verCard = false" />
+    <Card v-if="verCard" :id="id" v-on:atualizar="getTodos()"  v-on:mostrarMsg="mostrarMensagem"  v-on:tiraZero="mensagemZero" v-on:fechar="verCard = false" />
      <Mensagem
       :msg="msg"
       v-if="msg.visivel"
@@ -30,7 +30,7 @@
               v-for="(reg, j) in dia.registros"
               :key="j"
               :class="[{'despesa' : reg.quantia < 0}, {'receita' : reg.quantia > 0}]"
-              v-on:click="id = reg.id, verCard=true"
+              v-on:click="abrirRegistro(reg)"
             >
               <td class="tag">
                 <img src="src/images/tag.png" alt class="tagImg" />
@@ -86,6 +86,38 @@ export default {
     };
   },
   methods: {
+
+    abrirRegistro(registro)
+    {
+      if(registro.idUsuario != this.$session.get("id"))
+      {
+        this.msg.titulo = "Ops :P";
+        this.msg.mensagem = "Este registro esta sendo compartilhado com você, \n portanto não pode ser alterado!";
+        this.msg.botoes = [
+          {
+            mensagem: "Ok",
+            evento: "fechar"
+          }
+        ];
+        this.msg.visivel = true;
+
+        return;
+      }
+
+      this.id = registro.id;
+      this.verCard=true;
+    },
+    mensagemZero(){
+            this.msg.titulo = "Valor inválido!";
+            this.msg.mensagem = "Coloque um valor válido.";
+            this.msg.botoes = [
+             {
+               mensagem: "Ok",
+               evento: "fechar"
+             }
+            ];
+            this.msg.visivel = true;
+    },
      mostrarMensagem(){
             this.msg.titulo = "Alteração";
             this.msg.mensagem = "Alteração feita com sucesso!";
@@ -133,6 +165,7 @@ export default {
       for (var i = 0; i < vetor.length; i++) {
         novos.push({
           id: vetor[i].id,
+          idUsuario: vetor[i].idUsuario,
           nome: vetor[i].nome,
           tag: this.tags[vetor[i].idTag-1].nome,
           quantia: vetor[i].quantia,
@@ -193,20 +226,24 @@ export default {
           this.registros = dados.body;
 
           for(var i = 0; i < this.registros.length; i++)
+          {
             if(this.registros[i].compartilhamentos != null)
               this.setCompartilhamentos(i, this.registros[i].compartilhamentos);
               
+            if(this.registros[i].idUsuario != this.$session.get("id"))
+               this.getUsuario(this.registros[i].idUsuario, i);  
+          }
+
         }, erro => {
           alert("algo deu errado");
         });
     },
     setCompartilhamentos(indice, comp){
-      var ids = comp.trim().split(/(\s+)/);
+      var ids = comp.trim().split(" ").map(Number);
 
       this.registros[indice].compartilhamentos = [];
       
       for(var i = 0; i < ids.length; i++)
-        if(ids[i] > 0)
           this.getUsuario(ids[i], indice);
     },
     getUsuario(id, i){

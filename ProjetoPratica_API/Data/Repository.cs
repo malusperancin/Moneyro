@@ -117,7 +117,7 @@ namespace ProjetoPratica_API.Data
         public async Task<Registros[]> GetRegistrosByUsuario(int IdUsuario)
         {
             IQueryable<Registros> consultaRegistro = (IQueryable<Registros>)this.Context.Registros;
-                consultaRegistro = consultaRegistro.OrderByDescending(r => r.Data).Where(registro => registro.IdUsuario == IdUsuario);
+            consultaRegistro = consultaRegistro.OrderByDescending(r => r.Data).Where(registro => registro.IdUsuario == IdUsuario || registro.Compartilhamentos.Contains(" "+IdUsuario+" "));
                 // aqui efetivamente ocorre o SELECT no BD
             return await consultaRegistro.ToArrayAsync();
         }
@@ -137,7 +137,7 @@ namespace ProjetoPratica_API.Data
         public async Task<Metas[]> GetMetasByUsuario(int IdUsuario)
         {
             IQueryable<Metas> consultaMeta = (IQueryable<Metas>)this.Context.Metas;
-            consultaMeta = consultaMeta.OrderBy(m => m.DataLimite).Where(meta => meta.IdUsuario == IdUsuario);
+            consultaMeta = consultaMeta.OrderBy(m => m.DataLimite).Where(meta => meta.IdUsuario == IdUsuario  || meta.Compartilhamentos.Contains(" "+IdUsuario+" "));
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaMeta.ToArrayAsync();
         }

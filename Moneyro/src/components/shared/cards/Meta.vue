@@ -1,6 +1,6 @@
 <template>
   <div class="modal">
-    <form v-on:submit.prevent class="modal-conteudo animate width-30">
+    <form v-on:submit.prevent class="modal-conteudo animate width-25">
       <div class="cima">
         <div class="tipos">
           <label>{{ id ? "Edição" : "Metah"}}</label>
@@ -45,7 +45,7 @@
         <span class="escrito">Data limite</span>
         <input type="date" id="data" class="campos" v-model="meta.dataLimite" />
         <div class="dropdown">
-          <div v-on:click="expanded = !expanded" id="btnDrop" class="campos">Compartilhar com... ▾</div>
+          <div v-on:click="abrirCompartilhar()" id="btnDrop" class="campos">Compartilhar com... ▾</div>
           <div id="listaAmigos">
             <input type="search" placeholder="Pesquisar" v-model="filtroNome" />
             <div v-for="(amigo, i) of filtraNome" :key="i" class="amigos">
@@ -89,13 +89,24 @@ export default {
     };
   },
   methods: {
+    abrirCompartilhar(){
+      if(this.meta.idUsuario == this.$session.get("id"))
+      this.expanded = !this.expanded
+      else{
+       this.$emit('msgNaoAbrir');
+      }
+    },
     adicionar() {
         var ret = "";
 
         if(this.meta.compartilhamentos[0])
+        {
           this.meta.compartilhamentos.map(c => {
             ret += " "+c;
           })
+
+          ret+=" ";
+        }
         else
           ret = null;
 
@@ -121,9 +132,13 @@ export default {
       var ret = "";
 
       if(this.meta.compartilhamentos[0])
+      {
         this.meta.compartilhamentos.map(c => {
           ret += " "+c;
         })
+
+        ret+=" ";
+      }
       else
         ret = null;
 
@@ -146,7 +161,7 @@ export default {
       this.$http
         .delete("https://localhost:5001/api/metas/" + this.meta.id)
         .then(dados=> {
-          alert("deu certo do delete"); 
+          this.$emit('deletou');
           this.$emit('atualizar');
           this.$emit('fechar');
         }, erro => {
