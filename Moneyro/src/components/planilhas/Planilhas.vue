@@ -11,19 +11,24 @@
     <Topo />
     <div class="centro">
       <div name="mostrar" class="filtros">
-        <select class="filtro" @change="registro" id="registro">
-           <option value="todos">Todos</option>
-          <option value="despesa">Despesas</option>
-          <option value="receita">Receitas</option>
-        </select>
-        <select name="ordem" class="filtro" @change="ordem" id="ordem">
-          <option value="recentes" selected>Mais Recentes</option>
-          <option value="antigos">Mais Antigos</option>
-        </select> 
+        <div>
+          <select class="filtro" @change="registro" id="registro">
+            <option value="todos">Todos</option>
+            <option value="despesa">Despesas</option>
+            <option value="receita">Receitas</option>
+          </select>
+          <select name="ordem" class="filtro" @change="ordem" id="ordem">
+            <option value="recentes" selected>Mais Recentes</option>
+            <option value="antigos">Mais Antigos</option>
+          </select> 
+        </div>
         <input type="search" placeholder="Busque um registro..." id="buscaNome" v-model="filtro"/>
       </div>
       <div id="registros">
-        <div class="umDia" v-for="(dia, i) in filtraReg" :key="i">
+        <div v-if="!filtraReg[0]">
+          <h1 style="color: white">Minha nossa mas não tem nada aqui! <br> Faça alguns registros e eles ficarão paradinhos te esperando...</h1>
+        </div>
+        <div v-else class="umDia" v-for="(dia, i) in filtraReg" :key="i">
           <p class="data">Dia {{dia.data}}</p>
           <table cellspacin="0">
             <tr
@@ -395,7 +400,7 @@ tr:last-child { border-bottom-right-radius: 10px; }
   width: 20%;
 }
 
-.filtros{
+.filtros {
   display: flex;
   justify-content: space-between;
 }
@@ -423,6 +428,7 @@ tr:last-child { border-bottom-right-radius: 10px; }
 }*/
 
 .filtro {
+  margin: 0 5px 0 0;
   border-radius: 5px;
   border: 0px;
   padding: 7px 14px;

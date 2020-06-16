@@ -50,7 +50,7 @@ namespace ProjetoPratica_API.Data
             //throw new System.NotImplementedException();
             //Retornar para uma query qualquer do tipo Aluno
             IQueryable<Usuarios> consultaUsuarios = (IQueryable<Usuarios>)this.Context.Usuarios;
-            consultaUsuarios = consultaUsuarios.OrderBy(u => u.Id).Where(user => user.ModoAnonimo == false);
+            consultaUsuarios = consultaUsuarios.OrderByDescending(u => u.Id).Where(user => user.ModoAnonimo == false);
 
             return await consultaUsuarios.ToArrayAsync();
         }
@@ -245,7 +245,7 @@ namespace ProjetoPratica_API.Data
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
 
             // consultaAmigos = consultaAmigos.Where(a => a.Aceitou == true);
-            consultaAmigos = consultaAmigos.OrderBy(a => a.Aceitou).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario); 
+            consultaAmigos = consultaAmigos.OrderByDescending(a => a.Aceitou).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario); 
             consultaAmigos = consultaAmigos.Where(a => a.Aceitou == 0);
 
             return await consultaAmigos.ToArrayAsync();
@@ -254,7 +254,7 @@ namespace ProjetoPratica_API.Data
         public async Task<Amigos[]> GetAllAmigosByUsuario(int IdUsuario)
         {
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
-            consultaAmigos = consultaAmigos.OrderBy(a => a.Aceitou).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario); 
+            consultaAmigos = consultaAmigos.OrderByDescending(a => a.Aceitou).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario); 
 
             return await consultaAmigos.ToArrayAsync();
         }
@@ -316,6 +316,35 @@ namespace ProjetoPratica_API.Data
         {
             IQueryable<Situacoes> consultaSituacoes = (IQueryable<Situacoes>)this.Context.Situacoes;
             return await consultaSituacoes.ToArrayAsync();
+        }
+
+         public async Task<Notificacoes[]> GetAllNotificacoes()
+        {
+            IQueryable<Notificacoes> consultaNotificacoes = (IQueryable<Notificacoes>)this.Context.Notificacoes;
+            return await consultaNotificacoes.ToArrayAsync();
+        }
+        public async Task<Notificacoes> GetNotificacaoById(int Id)
+        {
+            IQueryable<Notificacoes> consultaNotificacao = (IQueryable<Notificacoes>)this.Context.Notificacoes;
+            consultaNotificacao = consultaNotificacao.OrderBy(t => t.Id).Where(not => not.Id == Id);
+
+            return await consultaNotificacao.FirstOrDefaultAsync();
+        }
+
+        public async Task<Notificacoes[]> GetNotificacoesByUsuario(int IdDestino)
+        {
+        IQueryable<Notificacoes> consultaNotificacao = (IQueryable<Notificacoes>)this.Context.Notificacoes;
+        consultaNotificacao = consultaNotificacao.OrderBy(t => t.Visualizada).Where(not => not.IdDestino == IdDestino);
+
+        return await consultaNotificacao.ToArrayAsync();
+        }
+
+        public async Task<Notificacoes[]> GetNotificacoesByUsuarioVisu(int IdDestino)
+        {
+        IQueryable<Notificacoes> consultaNotificacao = (IQueryable<Notificacoes>)this.Context.Notificacoes;
+        consultaNotificacao = consultaNotificacao.OrderBy(t => t.Visualizada).Where(not => not.IdDestino == IdDestino && not.Visualizada == 0);
+
+        return await consultaNotificacao.ToArrayAsync();
         }
     }
 }

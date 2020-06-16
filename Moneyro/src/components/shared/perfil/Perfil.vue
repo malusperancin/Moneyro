@@ -1,6 +1,6 @@
 <template>
   <div id="perfil">
-    <div id="imagem" @mouseenter="notificacoes.push({ descricao: 'oinc' })">
+    <div id="imagem">
       <div id="conteudo">
         <div id="notificacaoIcone" v-on:click="abrirNotificacoes"></div>
         <img
@@ -14,9 +14,14 @@
     <div id="notificacoes" @mouseleave="fecharNotificacoes">
       <div
         class="notificacao animate"
-        v-for="(notif, i) in notificacoes"
-        v-bind:key="i"
-      >{{notif.descricao}}</div>
+        v-for="notif in notificacoes"
+        v-bind:key="notif.id"
+      >
+      {{notif.mensagem}}&nbsp; 
+      <router-link v-if="getResposta(notif.mensagem) == 'solicitação'" to="/amigos">Responder</router-link>
+      <router-link v-if="getResposta(notif.mensagem) == 'despesa:'" to="/planilhas">Ver</router-link>
+      <router-link v-if="getResposta(notif.mensagem) == 'meta:'" to="/metas">Ver</router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -26,57 +31,84 @@ export default {
   data() {
     return {
       novas: false,
-      notificacoes: []
+      recentes: [],
+      notificacoes: [],
+      agora: new Date(),
     };
   },
   methods: {
-    abrirNotificacoes() {
+    abrirNotificacoes() { 
+      for(var i = 0; i < this.notificacoes.length; i++)
+      {
+        this.$http
+            .put("https://localhost:5001/api/notificacoes/" + this.notificacoes[i].id, 
+              {
+                id:this.notificacoes[i].id,
+                idOrigem: this.notificacoes[i].idOrigem,
+                idDestino: this.notificacoes[i].idDestino,
+                mensagem: this.notificacoes[i].mensagem,
+                visualizada: 1,
+                data: this.notificacoes[i].data
+              }
+            )
+            .then().catch( erro => {
+              alert("Erro ao atualizar as notif: " + erro.bodyText);
+            });
+      }
       this.novas = false;
       document.getElementById("notificacoes").style.display = "block";
     },
     fecharNotificacoes() {
       document.getElementById("notificacoes").style.display = "none";
+    },
+    getNotificacoes()
+    {
+      console.log("pegou");
+      this.$http
+      .get("https://localhost:5001/api/notificacoes/todas/" + this.$session.get("id"))
+      .then(dados => {
+          this.notificacoes = dados.body;
+          this.recentes = this.notificacoes.filter(n => n.visualizada == 0);
+      }).catch( erro => {
+        console.log("Erro ao pegar as notif: " + erro.bodyText);
+      });
+    },
+    getResposta(string)
+    {
+      return string.split(" ")[7];
     }
   },
-  created() {
-    //PEGAR TODAS ORDENAR PELA NÃO VISTA
-    // this.$http
-    // .get("https://localhost:5001/api/notificacoes/" + this.$session.get("id"))
-    // .then(dados => {
-    //   dados.body.map(tag => {
-    //     this.tags.push({
-    //       id: tag.id,
-    //       nome: tag.nome
-    //     })
-    //   });
-    // }).catch( erro => {
-    //   alert("Erro ao pegar as notif: " + erro.bodyText);
-    // });
+  created(){
+      this.$http
+      .get("https://localhost:5001/api/notificacoes/todas/" + this.$session.get("id"))
+      .then(dados => {
+        for(var i; i < dados.body.length; i++)
+          if((this.agora.value() - dados.body[i].data.value()) >= 2592000000) // 1 mes em milissegundos
+            this.$http
+                .delete("https://localhost:5001/api/notificacoes/" +  dados.body[i].id)
+                .catch( erro => {
+                  console.log("Erro ao deletar as notificações: " + erro.bodyText);
+                });
+      }).catch( erro => {
+        console.log("Erro ao pegar as notif: " + erro.bodyText);
+      });
 
-    this.notificacoes = [
-      { descricao: 'Maria adicionou você a meta "Presente para tia rose"' },
-      { descricao: 'Jovana atribuiu você a despesa "Bloquinho da Pabllo"' },
-      { descricao: "Illy te adicionou como amigo" }
-    ];
-
-    // id int primary key identity,
-    // idOrigem int not null,
-    // idDestino int not null,
-    // mensagem varchar(150) not null,
-    // visualizada byte not null
-    // fk blablabla
+    setInterval(this.getNotificacoes, 5000); 
   },
   watch: {
-    notificacoes() {
-      if (document.getElementById("notificacoes").style.display == "none")
-        this.novas = true;
-
-      document.getElementById("notificacaoIcone").classList.add("pulsar");
-    },
     novas() {
       if (!this.novas)
         document.getElementById("notificacaoIcone").classList.remove("pulsar");
-    }
+      else
+         document.getElementById("notificacaoIcone").classList.add("pulsar");
+    },
+    recentes()
+    {
+      if(this.recentes[0])
+        this.novas = true;
+      else
+        this.novas = false;
+    },
   }
 };
 </script>
@@ -154,8 +186,9 @@ export default {
   padding: 2px 8px;
   margin: 5px;
   text-align: start;
-  background: rgb(172, 178, 238);
+  background: rgb(128, 128, 128);
   overflow: auto;
+  color:whitesmoke;
 }
 
 #notificacoes {

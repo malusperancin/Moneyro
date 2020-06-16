@@ -7,11 +7,14 @@
     <Mensagem
       :msg="msg"
       v-if="msg.visivel"
-      v-on:fechar="atualizar(), msg.visivel = false"
+      v-on:fechar="msg.visivel = false"
     ></Mensagem>
     <div class="centro">
       <div id="lista-metas">
-        <div class="lista-metas-item" v-for="(meta, i) in metas" :key="i" v-on:click="abrirMeta(i)">
+        <div v-if="!metas[0]">
+          <h1 style="color: white">Você ainda não adicionou nenhuma meta! Mas... nada te impede de iniciar uma agora!</h1>
+        </div>
+        <div v-else class="lista-metas-item" v-for="(meta, i) in metas" :key="i" v-on:click="abrirMeta(i)">
           <Painel
             :id="meta.id"
             :nome="meta.nome"

@@ -118,24 +118,31 @@ export default {
         return;
       }
 
-      if(this.despesa)
-        this.registro.quantia = -(this.registro.quantia);
-
       var ret = "";
 
-      if(this.registro.compartilhamentos)
+      if(this.despesa)
       {
-        this.registro.compartilhamentos.map(c => {
-          ret += " "+c;
-        })
+        this.envarNotificacoes(this.registro.compartilhamentos);
+        this.registro.quantia = -(this.registro.quantia);
 
-        ret+=" ";
+        if(this.registro.compartilhamentos[0])
+        {
+          this.registro.compartilhamentos.map(c => {
+            ret += " "+c;
+          });
+
+          ret+=" ";
+        }
+        else
+          ret = null;
       }
       else
         ret = null;
 
       this.registro.compartilhamentos = ret;
       this.registro.quantia = parseFloat(this.registro.quantia);
+
+      console.log(this.registro);
 
       this.$http
       .post("https://localhost:5001/api/registros", this.registro)
@@ -152,24 +159,31 @@ export default {
       this.registro.quantia = Math.abs(this.registro.quantia);
     },
     atualizar(){
-      if(this.despesa)
-        this.registro.quantia = -(this.registro.quantia);
-      
       var ret = "";
 
-      if(this.registro.compartilhamentos[0])
+      if(this.despesa)
       {
-        this.registro.compartilhamentos.map(c => {
-          ret += " "+c;
-        })
+        this.envarNotificacoes(this.registro.compartilhamentos);
+        this.registro.quantia = -(this.registro.quantia);
 
-        ret+=" ";
+        if(this.registro.compartilhamentos[0])
+        {
+          this.registro.compartilhamentos.map(c => {
+            ret += " "+c;
+          });
+
+          ret+=" ";
+        }
+        else
+          ret = null;
       }
       else
         ret = null;
 
       this.registro.compartilhamentos = ret;
       this.registro.quantia = parseFloat(this.registro.quantia);
+
+      console.log(this.registro);
 
       this.$http
       .put("https://localhost:5001/api/registros/" + this.registro.id, this.registro)
@@ -224,6 +238,21 @@ export default {
         }, erro => {
           console.log("Erro ao recuperar amigo: " + erro.body);
         });
+    },
+    envarNotificacoes(amigos){
+      for(var i = 0; i < amigos.length; i++)
+        this.$http
+        .post("https://localhost:5001/api/notificacoes", {
+          idOrigem: this.$session.get("id"),
+          idDestino: amigos[i],
+          mensagem: this.$session.get("nome") + " adicionou voce à despesa: " + this.registro.nome + ". ",
+          visualizada: 0,
+          data: new Date(),
+        })
+        .then(dados => {
+        }).catch( erro => {
+          alert("Erro ao enviar as notificações: " + erro.bodyText);
+        });
     }
   },
   computed: {
@@ -249,9 +278,6 @@ export default {
           this.registro.compartilhamentos = this.registro.compartilhamentos.trim().split(" ").map(Number);
         else
           this.registro.compartilhamentos = []
-
-        // for (var i = 0; i < this.registro.compartilhamentos.length; i++)
-        //   this.getAmigo(this.registro.compartilhamentos[i]);
 
         if(this.registro.quantia > 0)
         {

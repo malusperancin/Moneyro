@@ -14,10 +14,10 @@ namespace ProjetoPratica_API.Controllers
     [EnableCors("*")]
     [Route("api/[controller]")]
     [ApiController]
-    public class RegistrosController : Controller
-    { //oi ta lendo?
+    public class NotificacoesController : Controller
+    {
         public IRepository Repo { get; }
-        public RegistrosController(IRepository repo)
+        public NotificacoesController(IRepository repo)
         {
             this.Repo = repo;
         }
@@ -27,7 +27,7 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                var result = await this.Repo.GetAllRegistros();
+                var result = await this.Repo.GetAllNotificacoes();
                 return Ok(result);
             }
             catch
@@ -36,12 +36,12 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
-        [HttpGet("todos/{UsuarioId}")]
+        [HttpGet("todas/{UsuarioId}")]
         public async Task<IActionResult> Get(int UsuarioId)
         {
             try
             {
-                var result = await this.Repo.GetRegistrosByUsuario(UsuarioId);
+                var result = await this.Repo.GetNotificacoesByUsuario(UsuarioId);
                 return Ok(result);
             }
             catch
@@ -50,26 +50,12 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
-        [HttpGet("receitas/{UsuarioId}")]
-        public async Task<IActionResult> GetReceitas(int UsuarioId)
+        [HttpGet("{NotificaoId}")]
+        public async Task<IActionResult> GetById(int NotificaoId)
         {
             try
             {
-                var result = await this.Repo.GetReceitasByUsuario(UsuarioId);
-                return Ok(result);
-            }
-            catch
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
-            }
-        }
-         
-        [HttpGet("despesas/{UsuarioId}")]
-        public async Task<IActionResult> GetDespesas(int UsuarioId)
-        {
-            try
-            {
-                var result = await this.Repo.GetDespesasByUsuario(UsuarioId);
+                var result = await this.Repo.GetNotificacaoById(NotificaoId);
                 return Ok(result);
             }
             catch
@@ -78,26 +64,12 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
-        [HttpGet("{RegistroId}")]
-        public async Task<IActionResult> GetRegistroById(int RegistroId)
+        [HttpGet("visu/{UsuarioId}")]
+        public async Task<IActionResult> GetVisu(int NotificaoId)
         {
             try
             {
-                var result = await this.Repo.GetRegistroById(RegistroId);
-                return Ok(result);
-            }
-            catch
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
-            }
-        }
-
-        [HttpGet("compartilhados/{UsuarioId}/{AmigoId}")]
-        public async Task<IActionResult> GetRegistroById(int UsuarioId, int AmigoId)
-        {
-            try
-            {
-                var result = await this.Repo.GetRegistrosCompartilhados(UsuarioId, AmigoId);
+                var result = await this.Repo.GetNotificacoesByUsuarioVisu(NotificaoId);
                 return Ok(result);
             }
             catch
@@ -107,15 +79,16 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> post(Registros modelo)
+        public async Task<IActionResult> post(Notificacoes modelo)
         {
             try
             {
                 this.Repo.Add(modelo);
+
                 if (await this.Repo.SaveChangesAsync())
                 {
                     return Ok();
-                    // return Created($"/api/{modelo.Id}", modelo);
+                    //return Created($"/api/{modelo.Id}", modelo);
                 }
             }
             catch
@@ -125,24 +98,24 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpPut("{RegistroId}")]
-        public async Task<IActionResult> put(int RegistroId, Registros model)
+        [HttpPut("{NotificacaoId}")]
+        public async Task<IActionResult> put(int NotificacaoId, Notificacoes model)
         {
             try
             {
                 //verifica se existe aluno a ser alterado
-                var registro = await this.Repo.GetRegistroById(RegistroId);
-                if (registro == null) return NotFound();
+                var notif = await this.Repo.GetNotificacaoById(NotificacaoId);
+                if (notif == null) return NotFound();
 
-                this.Repo.Entry(registro);
+                this.Repo.Entry(notif);
                 this.Repo.Update(model);
 
                 if (await this.Repo.SaveChangesAsync())
                 {
 
                     //pegar o aluno novamente, agora alterado para devolver pela rota abaixo
-                    //despesa = await this.Repo.GetDespesaByID(DespesaId);
-                    //return Created($"/api/despesas/{model.Id}", model);
+                    //video = await this.Repo.GetVideoByID(VideoId);
+                    //return Created($"/api/videos/{model.Id}", model);
                     return Ok();
                 }
             }
@@ -154,21 +127,21 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("{RegistroId}")]
-        public async Task<IActionResult> delete(int RegistroId)
+        [HttpDelete("{NotificacoesId}")]
+        public async Task<IActionResult> delete(int NotificacaoId)
         {
             try
             {
                 //verifica se existe aluno a ser excluído
-                var registro = await this.Repo.GetRegistroById(RegistroId);
-                if (registro == null) return NotFound(); //método do EF
-
-                this.Repo.Delete(registro);
+                var notif = await this.Repo.GetNotificacaoById(NotificacaoId);
+                if (notif == null) return NotFound(); //método do EF
+                this.Repo.Delete(notif);
                 //
                 if (await this.Repo.SaveChangesAsync())
                 {
                     return Ok();
                 }
+
             }
             catch
             {

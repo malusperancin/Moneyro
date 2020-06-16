@@ -22,5 +22,6 @@ namespace ProjetoPratica_API.Data
         public DbSet<Avaliacoes> Avaliacoes { get; set; }
         public DbSet<Tips> Tips { get; set; }
         public DbSet<Situacoes> Situacoes { get; set; }
+        public DbSet<Notificacoes> Notificacoes { get; set; }
     }
 }

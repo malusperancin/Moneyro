@@ -1,3 +1,4 @@
+
 using System.Threading.Tasks;
 using ProjetoPratica_API.Models;
 
@@ -45,6 +46,7 @@ namespace ProjetoPratica_API.Data
         Task<Amigos[]> GetAllAmigos();
         Task<Amigos[]> GetAmigosByIds(Amigos amigos);
         Task<Amigos[]> GetAllAmigosByUsuario(int IdUsuario);
+
         Task<Artigos[]> GetAllArtigos();
         //Task<Artigos[]> GetArtigosByAssunto(string Assunto);
         Task<Artigos> GetArtigoById(int Id);
@@ -56,5 +58,9 @@ namespace ProjetoPratica_API.Data
         Task<Tags> GetTagById(int Id);
 
         Task<Situacoes[]> GetAllSituacoes();
+        Task<Notificacoes[]> GetNotificacoesByUsuarioVisu(int IdDestino);
+       Task<Notificacoes> GetNotificacaoById(int Id);
+       Task<Notificacoes[]> GetAllNotificacoes();
+       Task<Notificacoes[]> GetNotificacoesByUsuario(int IdDestino);
     }
 }

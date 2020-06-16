@@ -273,7 +273,8 @@ export default {
       this.usuario.dataDeNascimento = this.ano + "-" + mm + "-" + dd;
 
       this.$session.set("MA", this.usuario.modoAnonimo);
-
+      this.$session.set("foto", this.usuario.foto);
+      this.$session.set("nome", this.usuario.nome);
       this.$http.put("https://localhost:5001/api/usuarios/" + this.usuario.id, this.usuario)
       .then(
           response => {

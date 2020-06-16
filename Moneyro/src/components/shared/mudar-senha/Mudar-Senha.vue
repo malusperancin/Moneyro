@@ -82,7 +82,7 @@ export default {
 }
 </script>
 
-<style src="../../../css/modal.css"></style>
+<style scoped src="../../../css/modal.css"></style>
 <style scoped>
 .campos {
   border-radius: 5px;

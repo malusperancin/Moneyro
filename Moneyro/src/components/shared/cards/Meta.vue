@@ -101,6 +101,8 @@ export default {
 
         if(this.meta.compartilhamentos[0])
         {
+          this.envarNotificacoes(this.meta.compartilhamentos);
+
           this.meta.compartilhamentos.map(c => {
             ret += " "+c;
           })
@@ -133,6 +135,8 @@ export default {
 
       if(this.meta.compartilhamentos[0])
       {
+        this.envarNotificacoes(this.meta.compartilhamentos);
+
         this.meta.compartilhamentos.map(c => {
           ret += " "+c;
         })
@@ -198,6 +202,22 @@ export default {
             apelido: dados.body.apelido});
         }, erro => {
           console.log("Erro ao recuperar amigo: " + erro.body);
+        });
+    },
+    envarNotificacoes(amigos){
+      for(var i = 0; i < amigos.length; i++)
+        this.$http
+        .post("https://localhost:5001/api/notificacoes", {
+          idOrigem: this.$session.get("id"),
+          idDestino: amigos[i],
+          mensagem: this.$session.get("nome") + " adicionou voce à meta: " + this.meta.nome + ". ",
+          visualizada: 0,
+          data: new Date(),
+        })
+        .then(dados => {
+            alert("enviou no registro");
+        }).catch( erro => {
+          alert("Erro ao enviar as notificações: " + erro.bodyText);
         });
     }
   },

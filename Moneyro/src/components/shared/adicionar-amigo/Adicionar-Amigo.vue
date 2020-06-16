@@ -78,6 +78,8 @@ export default {
     enviarSolicitacao(index) {
       var amigo = this.usuarios[index];
 
+      this.envarNotificacoes(amigo);
+
       this.$http
       .post("https://localhost:5001/api/amigos", {
         idAmigoA: this.$session.get("id"),
@@ -102,7 +104,6 @@ export default {
         Aceitou: 1
       })
       .then(dados => {
-         alert(dados.body[0].id);
          this.$http
          .put("https://localhost:5001/api/amigos/" + dados.body[0].id, {
            id: dados.body[0].id,
@@ -171,13 +172,6 @@ export default {
           usuario.aceitou = 0;
       });
 
-      /*
-      pendente: 1
-      aceitar: 2
-      amigo: 0
-      nada: -1
-      */
-
       return({
         id: usuario.id,
         nome: usuario.nome,
@@ -185,6 +179,20 @@ export default {
         foto: usuario.foto,
         aceitou: usuario.aceitou
       });
+    },
+    envarNotificacoes(amigo){
+        this.$http
+        .post("https://localhost:5001/api/notificacoes", {
+          idOrigem: this.$session.get("id"),
+          idDestino: amigo.id,
+          mensagem: this.$session.get("nome") + " te enviou um solicitação de amizade. ",
+          visualizada: 0,
+          data: new Date(),
+        })
+        .then(dados => {
+        }).catch( erro => {
+          alert("Erro ao enviar as notificações: " + erro.bodyText);
+        });
     }
   },
   created(){

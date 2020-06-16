@@ -9,7 +9,7 @@
       v-on:fechar="msg.visivel = false"
     ></Mensagem>
     <Add v-if="adicionar" v-on:fechar="adicionar= false" v-on:atualizar="getAmigos()"></Add>
-    <Compartilhado :idAmigo="idAmigo" v-on:fechar="compartilhados = false" v-if="compartilhados"></Compartilhado>
+    <Compartilhado :id="idAmigo" v-on:fechar="compartilhados = false" v-if="compartilhados"></Compartilhado>
     <div class="centro">
       <div id="busca">
         <input class="filtro" type="search" placeholder="Pesquisar" v-model="filtro" />
@@ -22,7 +22,10 @@
         />
       </div>
       <div id="lista-alunos"  style="color: white">
-        <div id="lista-alunos-item" v-for="(amigo, i) of filtraNome" :key="amigo.apelido">
+        <div v-if="!filtraNome[0]">
+          <h1 style="color: white">Hummn que pena você ainda não fez nenhum amigo ;-; <br> Clique no porquinho e procure alguém lá!</h1>
+        </div>
+        <div v-else id="lista-alunos-item" v-for="(amigo, i) of filtraNome" :key="amigo.apelido">
           <Painel :nome="amigo.apelido" :foto="amigo.foto" v-on:deletar="removerAmigo(i)" :id="amigo.idUsuario" v-on:verComp="idAmigo = $event, compartilhados = true"></Painel>
         </div>
       </div>
@@ -62,7 +65,7 @@ export default {
         mensagem: "",
         botoes: []
       },
-      idAmigo: null,
+      idAmigo: "",
       compartilhados: false
     };
   },
