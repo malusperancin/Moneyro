@@ -122,12 +122,6 @@ create table Avaliacoes(
  CONSTRAINT FK_idUsuarioA FOREIGN KEY (idUsuario)
  REFERENCES Usuarios(id)
 )
-create table Compartilhamentos(
-id int primary key identity,
-idUsuario int not null,
-constraint FK_idUsuario FOREIGN KEY (idUsuario)
-REFERENCES Usuarios(id),
-)
 
 create table Registros
 (
@@ -139,17 +133,22 @@ create table Registros
     lugar varchar(25),
     data date not null,
     quantia money not null, 
+    compartilhamentos varchar(50),
     CONSTRAINT FK_idUsuarioReg FOREIGN KEY (idUsuario)
     REFERENCES Usuarios(id),
     CONSTRAINT FK_idTagReg FOREIGN KEY (idTag)
     REFERENCES Tags(id),
 )
-create table Ligacoes(
+
+create table notificacoes
+(
 id int primary key identity,
-idRegistro int,
-idCompartilhamento int,
-CONSTRAINT FK_idRegistro FOREIGN KEY (idRegistro)
-REFERENCES Registros(id),
-CONSTRAINT FK_idCompartilhamento FOREIGN KEY (idCompartilhamento)
-REFERENCES Compartilhamentos(id)
+idOrigem int,
+idDestino int not null,
+mensagem varchar(150) not null,
+visualizada TINYINT not null,
+CONSTRAINT FK_idOrigem FOREIGN KEY (idOrigem)
+REFERENCES Usuarios(id),
+CONSTRAINT FK_idDestino FOREIGN KEY (idDestino)
+REFERENCES Usuarios(id)
 )

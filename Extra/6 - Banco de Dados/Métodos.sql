@@ -81,8 +81,8 @@ select * from amigos
 --a.idAmigo1 = @thisUsuario and a.idAmigo2 = @outroUsuario or
 --a.idAmigo1 = @outroUsuario and a.idAmigo2 = @thisUsuario and
 
-
-create trigger Receita_tg on Receitas
+-- ERRADA
+/*create trigger Registro_tg on Registros
 for update, insert
 as
 Begin
@@ -91,77 +91,173 @@ declare @valorAtual money = null
 declare @idUsuario int = null
 declare @saldo money = null
 declare @dif money = null
+declare @compAtual varchar(50) = null
+declare @compAnterior varchar(50) = null
 -- update
-If Exists (Select idReceita From Deleted)
- If Exists (Select idReceita From Inserted)
+If Exists (Select id From Deleted)
+ If Exists (Select id From Inserted)
  Begin
   select @valorAnterior = quantia from Deleted
   select @valorAtual = quantia from Inserted
+  select @compAnterior = compartilhamentos from Deleted
+  select @compAtual = compartilhamentos from Inserted
+
   if(@valorAtual != @valorAnterior)
   Begin
-   select @idUsuario = idUsuario from Deleted
    set @dif = @valorAtual - @valorAnterior
-   select @saldo = saldo from Usuarios where idUsuario = @idUsuario
-   set @saldo = @saldo + @dif
-   update Usuarios set saldo = @saldo where idUsuario = @idUsuario
+   if(@compAtual == @compAnterior && @compAtual == null) -- apenas 1 usuario
+   Begin 
+     select @idUsuario = idUsuario from Deleted
+     select @saldo = saldo from Usuarios where idUsuario = @idUsuario
+     set @saldo = @saldo + @dif
+   End
+   else if(@compAnterior != @compAtual)
+   Begin 
+   declare anterCursor scroll cursor for
+   SELECT value FROM STRING_SPLIT(@compAnterior, ' ')
+   declare atualCursor scroll cursor for
+   SELECT value FROM STRING_SPLIT(@compAtual, ' ')  
+   open anterCursor  
+   open antualCursor
+   fetch next from anterCursor into @idAmigoAnt
+   fetch next from atualCursor into @idAmigoAtu
+   while @@FETCH_STATUS = 0
+   begin
+   if(@idAmigoAnt == @idAmigoAtu)
+   Begin
+    select @saldo = saldo from Usuarios where idUsuario = @idAmigoAnt
+    set @saldo = @saldo + @dif
+    fetch next from anterCursor into @idAmigoAnt
+    fetch next from atualCursor into @idAmigoAtu
+   End
+   else
+   Begin
+    if(@idAmigoAnt < idAmigoAtu)
+    Begin  
+     select @saldo = saldo from Usuarios where idUsuario = @idAmigoAnt
+     set @saldo = @saldo + @dif
+     fetch next from anterCursor into @idAmigoAnt
+    End
+    else
+    Begin
+     select @saldo = saldo from Usuarios where idUsuario = @idAmigoAtu
+     set @saldo = @saldo + @dif
+     fetch next from anterCursor into @idAmigoAtu
+    End
+   End
+   close anterCursor
+   deallocate anterCursor
+   close atualCursor
+   deallocate atualCursor
   End
  End
  else -- deleted
  Begin
   select @idUsuario = idUsuario from Deleted
-  select @saldo = saldo from Usuarios where idUsuario = @idUsuario
+  select @compAnterior = compartilhamentos from Deleted
   select @dif = quantia from Deleted
+  
+  select @saldo = saldo from Usuarios where idUsuario = @idUsuario
   set @saldo = @saldo - @dif
   update Usuarios set saldo = @saldo where idUsuario = @idUsuario
- End
--- inserted
-select @idUsuario = idUsuario from Inserted
-select @saldo = saldo from Usuarios where idUsuario = @idUsuario
-select @dif = quantia from Inserted
-set @saldo = @saldo + @dif
-update Usuarios set saldo = @saldo where idUsuario = @idUsuario
-End
-
-
-create trigger Despesa_tg on Despesas
-for update, insert
-as
-Begin
-declare @valorAnterior money = null
-declare @valorAtual money = null
-declare @idUsuario int = null
-declare @saldo money = null
-declare @dif money = null
--- update
-If Exists (Select idDespesa From Deleted)
- If Exists (Select idDespesa From Inserted)
- Begin
-  select @valorAnterior = quantia from Deleted
-  select @valorAtual = quantia from Inserted
-  if(@valorAtual != @valorAnterior)
-  Begin
-   select @idUsuario = idUsuario from Deleted
-   set @dif = @valorAnterior - @valorAtual
-   select @saldo = saldo from Usuarios where idUsuario = @idUsuario
-   set @saldo = @saldo + @dif
-   update Usuarios set saldo = @saldo where idUsuario = @idUsuario
+  
+  if(@compAnterior != null)
+  Begin 
+   declare amgCursor scroll cursor for
+   SELECT value FROM STRING_SPLIT(@compAnterior, ' ')
+   open amgCursor 
+   fetch next from amgCursor into @idAmigo
+   Begin 
+    select @saldo = saldo from Usuarios where idUsuario = @idAmigo
+    set @saldo = @saldo - @dif
+    fetch next from anterCursor into @idAmigoAnt
+   End 
   End
  End
- else -- deleted
- Begin
-  select @idUsuario = idUsuario from Deleted
-  select @saldo = saldo from Usuarios where idUsuario = @idUsuario
-  select @dif = quantia from Deleted
-  set @saldo = @saldo + @dif
-  update Usuarios set saldo = @saldo where idUsuario = @idUsuario
- End
+else
+Begin
 -- inserted
 select @idUsuario = idUsuario from Inserted
-select @saldo = saldo from MUsuarios where idUsuario = @idUsuario
 select @dif = quantia from Inserted
-set @saldo = @saldo - @dif
+select @compAtual = compartilhamentos from Inserted
+
+select @saldo = saldo from Usuarios where idUsuario = @idUsuario
+set @saldo = @saldo + @dif
 update Usuarios set saldo = @saldo where idUsuario = @idUsuario
-End
+
+if(@compAtual != null)
+  Begin 
+   declare amgCursor scroll cursor for
+   SELECT value FROM STRING_SPLIT(@compAnterior, ' ')
+   open amgCursor 
+   fetch next from amgCursor into @idAmigo
+   Begin 
+    select @saldo = saldo from Usuarios where idUsuario = @idAmigo
+    set @saldo = @saldo + @dif
+    fetch next from anterCursor into @idAmigoAnt
+   End 
+  End
+End*/
+
+//-------------------------
+//   TRIGGER LINDISSIMA
+//------------------------
+create trigger RegistroAdd_tg on Registros
+for insert
+as
+declare @idUsuario int = null
+declare @saldo money = null
+declare @comp varchar(50) = null
+declare @idAmigo int = null
+declare @valor money = null
+Begin
+ select @valor = quantia from inserted
+ select @comp = compartilhamentos from inserted
+ if(@comp is null)
+  Begin
+   select @idUsuario = idUsuario from inserted
+   select @saldo = saldo from Usuarios where id = @idUsuario
+   set @saldo = @saldo + @valor
+   update Usuarios set saldo = @saldo where id = @idUsuario
+  end
+ else
+  Begin
+   declare @qtdComp int = 0
+   declare qtdCursor scroll cursor for
+   SELECT * FROM dbo.splitstring(' 1 ')
+   open qtdCursor
+   fetch next from qtdCursor
+   while @@FETCH_STATUS = 0
+    Begin
+     set @qtdComp =  @qtdComp + 1
+     fetch next from qtdCursor
+    End
+   close qtdCursor
+   deallocate qtdCursor
+
+   set @valor = @valor/(@qtdComp +1)
+
+   select @idUsuario = idUsuario from inserted
+   select @saldo = saldo from Usuarios where id = @idUsuario
+   set @saldo = @saldo + @valor
+   update Usuarios set saldo = @saldo where id = @idUsuario
+
+   declare amgCursor scroll cursor for
+   SELECT * FROM dbo.splitstring(@comp)
+   open amgCursor 
+   fetch next from amgCursor
+   fetch next from amgCursor into @idAmigo
+   while @@FETCH_STATUS = 0
+   Begin 
+    select @saldo = saldo from Usuarios where id = @idAmigo
+    update usuarios set saldo = @saldo + @valor  where id = @idAmigo
+    --print cast(@idAmigo as varchar) + ' ' + cast(@saldo as varchar)
+    fetch next from amgCursor into @idAmigo
+   End
+   close amgCursor
+   deallocate amgCursor
+  End
+end
 
 select * from despesas
 select * from receitas
