@@ -154,7 +154,7 @@ big{
     padding: 15px;
     display: flex;
     flex-flow: row wrap;
-    max-height: 80vh;
+    max-height: 70vh;
 }
 
 .corpo div{

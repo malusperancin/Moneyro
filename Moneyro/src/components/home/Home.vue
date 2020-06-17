@@ -3,10 +3,10 @@
     <cabecalho :titulo="'Moneyro'"></cabecalho>
     <div id="inicio">
       <div class="frase">
-        <h2>Bem Vinda(o) </h2> ao melhor aplicativo de finanças pessoais para jovens deste Brasil! <br>  
+        <h2>Bem Vinda(o), </h2> ao melhor aplicativo de finanças pessoais para jovens deste Brasil! <br>  
         <br>
         <small>
-          Tá duvidando? Só vem!  
+          Tá duvidando? <b>Só vem!</b>  
         </small> 
       </div>
       <div class="container">

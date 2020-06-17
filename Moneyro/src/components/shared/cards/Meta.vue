@@ -101,7 +101,7 @@ export default {
 
         if(this.meta.compartilhamentos[0])
         {
-          this.envarNotificacoes(this.meta.compartilhamentos);
+          this.enviarNotificacoes(this.meta.compartilhamentos);
 
           this.meta.compartilhamentos.map(c => {
             ret += " "+c;
@@ -202,7 +202,7 @@ export default {
           console.log("Erro ao recuperar amigo: " + erro.body);
         });
     },
-    envarNotificacoes(amigos){
+    enviarNotificacoes(amigos){
       for(var i = 0; i < amigos.length; i++)
         this.$http
         .post("https://localhost:5001/api/notificacoes", {

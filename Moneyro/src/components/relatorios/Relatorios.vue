@@ -46,7 +46,7 @@
         <div class="geral">
           <div id="grafico_gastos"></div>
         </div>
-        <div style="color: green">
+        <!-- <div style="color: green">
         {{tags}}
         </div>
          <div style="color: purple">
@@ -58,7 +58,7 @@
         <div style="color: blue">
       {{teste}}
         </div>
-      {{registros}}
+      {{registros}} -->
       </div>
     </div>
   </div>
@@ -283,7 +283,6 @@ export default {
       }
 
       this.teste = ret;
-        
 
         // [1, 37.8, 80.8, 41.8],
         // [2, 30.9, 69.5, 32.4],
@@ -333,8 +332,8 @@ export default {
 </script>
 
 <style scoped>
-*{
-  color: whitesmoke;
+.centro{
+  color: white;
 }
 
 .relatorio {
@@ -371,7 +370,7 @@ export default {
 }
 
 select {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.267);
   border-radius: 5px;
   padding: 4px 8px;
   font-size: 1.5em;

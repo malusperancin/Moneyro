@@ -45,7 +45,7 @@ export default {
   width: 13em;
   height: 18em;
   border-radius: 5px;
-  background-image: linear-gradient(#b88b10, #ecb318);
+  background-image: linear-gradient(#e6b531, #ecb318);
   box-shadow: 5px 5px 5px #00000040;
   margin: 5px;
   box-sizing: border-box;

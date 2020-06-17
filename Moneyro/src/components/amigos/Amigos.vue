@@ -12,7 +12,7 @@
     <Compartilhado :id="idAmigo" v-on:fechar="compartilhados = false" v-if="compartilhados"></Compartilhado>
     <div class="centro">
       <div id="busca">
-        <input class="filtro" type="search" placeholder="Pesquisar" v-model="filtro" />
+        <input class="filtro" placeholder="Pesquisar" type="search" v-model="filtro" />
         <img
           title="Adicionar um amigo"
           id="imgAdd"
@@ -23,6 +23,9 @@
       </div>
       <div id="lista-alunos"  style="color: white">
         <div v-if="!filtraNome[0]">
+          <h1 style="color: white">Você não tem nenhum amigo com esse apelido :(</h1>
+        </div>
+        <div v-if="!amigos">
           <h1 style="color: white">Hummn que pena você ainda não fez nenhum amigo ;-; <br> Clique no porquinho e procure alguém lá!</h1>
         </div>
         <div v-else id="lista-alunos-item" v-for="(amigo, i) of filtraNome" :key="amigo.apelido">
@@ -89,7 +92,6 @@ export default {
         this.$http
         .delete("https://localhost:5001/api/amigos/" + amigo.id)
         .then(dados => {
-            this.amigos = [];
             this.getAmigos();
              this.msg.titulo = "Sucesso";
             this.msg.mensagem =
@@ -120,6 +122,7 @@ export default {
         });
     },
     getAmigos(){
+      this.amigos = [];
       this.$http
       .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
       .then(dados => {
@@ -146,6 +149,10 @@ export default {
 </script>
 
 <style scoped>
+:placeholder{
+  color: white;
+}
+
 .centro {
   margin-left: 7%;
 }
@@ -176,7 +183,7 @@ export default {
   box-sizing: border-box;
   font-size: 1.2em;
   width: 80%;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgb(255, 255, 255);
   background: rgba(255, 255, 255, 0.078);
 }
 
@@ -195,17 +202,22 @@ export default {
   color: white;
   min-width: 50px;
   text-align: center;
-  background-color: rgba(36, 107, 170, 0.719);
+  background-color: #ecb318;
   border-radius: 87px;
   box-sizing: border-box;
 }
 
 .icone:hover {
-  background-color: rgb(26, 81, 129);
+  background-color: #ecb318bb;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: red;
+  opacity: 1; /* Firefox */
 }
 
 ::-webkit-input-placeholder {
-  color: rgb(47, 49, 51);
+  color: rgba(0, 0, 0, 0.534);
   padding-left: 1%;
 }
 </style>

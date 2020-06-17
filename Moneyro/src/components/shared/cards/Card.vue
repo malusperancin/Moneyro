@@ -17,6 +17,7 @@
             id="rend"
             name="tipo"
             value="receita"
+            maxlength="40"
             v-on:click="despesa = false, receita = true, registro.lugar = null"
           />
           <label for="rend">Receita</label>
@@ -42,7 +43,7 @@
             />
           </div>
 
-          <input required placeholder="Nome" type="text" id="nome" class="campos" v-model="registro.nome" />
+          <input required placeholder="Nome" type="text" id="nome" class="campos" maxlength="40" v-model="registro.nome" />
 
           <input required type="date" id="data" class="campos" v-model="registro.data" />
 
@@ -106,8 +107,7 @@ export default {
         data: Date,
         quantia: null,
         compartilhamentos:[]
-      },
-      qtdAmigos: 0
+      }
     };
   },
   methods: {
@@ -122,7 +122,7 @@ export default {
 
       if(this.despesa)
       {
-        this.envarNotificacoes(this.registro.compartilhamentos);
+        this.enviarNotificacoes(this.registro.compartilhamentos);
         this.registro.quantia = -(this.registro.quantia);
 
         if(this.registro.compartilhamentos[0])
@@ -141,8 +141,6 @@ export default {
 
       this.registro.compartilhamentos = ret;
       this.registro.quantia = parseFloat(this.registro.quantia);
-
-      console.log(this.registro);
 
       this.$http
       .post("https://localhost:5001/api/registros", this.registro)
@@ -163,7 +161,7 @@ export default {
 
       if(this.despesa)
       {
-        this.envarNotificacoes(this.registro.compartilhamentos);
+        this.enviarNotificacoes(this.registro.compartilhamentos);
         this.registro.quantia = -(this.registro.quantia);
 
         if(this.registro.compartilhamentos[0])
@@ -182,8 +180,6 @@ export default {
 
       this.registro.compartilhamentos = ret;
       this.registro.quantia = parseFloat(this.registro.quantia);
-
-      console.log(this.registro);
 
       this.$http
       .put("https://localhost:5001/api/registros/" + this.registro.id, this.registro)
@@ -239,12 +235,12 @@ export default {
           console.log("Erro ao recuperar amigo: " + erro.body);
         });
     },
-    envarNotificacoes(amigos){
+    enviarNotificacoes(amigos){
       for(var i = 0; i < amigos.length; i++)
         this.$http
         .post("https://localhost:5001/api/notificacoes", {
-          idOrigem: this.$session.get("id"),
-          idDestino: amigos[i],
+          idOrigem: parseInt(this.$session.get("id")),
+          idDestino: parseInt(amigos[i]),
           mensagem: this.$session.get("nome") + " adicionou voce à despesa: " + this.registro.nome + ". ",
           visualizada: 0,
           data: new Date(),
@@ -284,7 +280,7 @@ export default {
           this.receita = true;
           this.despesa = false
         }
-        
+
         this.registro.quantia = Math.abs(this.registro.quantia);
       }, erro => {
         console.log("Erro ao recuperar registro: " + erro.body);

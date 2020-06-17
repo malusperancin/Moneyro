@@ -422,6 +422,7 @@ export default {
 
 #informacoes {
   display: flex;
+  align-items: stretch;
 }
 
 .informacoes {
@@ -452,7 +453,7 @@ export default {
   border-radius: 10px;
   padding: 8px 16px;
   height: max-content;
-  background: #ecb318a6; 
+  background: #ecb318; 
   display: flex;
   flex-direction: column;
 }
@@ -508,7 +509,7 @@ export default {
 
 .enunciado {
   font-size: 1.5em;
-  color: rgb(11, 83, 148);
+  color: rgb(11, 92, 163);
   font-weight: bold;
 }
 

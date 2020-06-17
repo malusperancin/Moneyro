@@ -80,7 +80,7 @@ export default {
           dados = dados.body;
           
           this.nome = dados.nome;
-          this.saldo = dados.saldo;
+          this.saldo = Math.floor(dados.saldo*100)/100;
           
           this.mudarSituacao();
         });

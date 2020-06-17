@@ -93,7 +93,7 @@ export default {
         console.log("Erro ao pegar as notif: " + erro.bodyText);
       });
 
-  
+    this.getNotificacoes();
     setInterval(this.getNotificacoes,30000); 
   },
   watch: {

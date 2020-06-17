@@ -78,7 +78,7 @@ export default {
     enviarSolicitacao(index) {
       var amigo = this.usuarios[index];
 
-      this.envarNotificacoes(amigo);
+      this.enviarNotificacoes(amigo);
 
       this.$http
       .post("https://localhost:5001/api/amigos", {
@@ -89,7 +89,7 @@ export default {
       .then(dados => {
         this.usuarios[index].aceitou = 1;
       }, erro => {
-        alert("algo deu errado jasdkjahsd");
+        console.log("Erro ao adicionar amigo");
       });
     },
     aceitar(index)
@@ -115,7 +115,7 @@ export default {
            this.usuarios[index].aceitou = 0;
            this.$emit('atualizar');
          }, erro => {
-           alert("algo deu errado no aceit");
+           console.log("Erro ao aceitar solicitação");
          });
        
       },erro => {
@@ -134,7 +134,6 @@ export default {
         Aceitou: 1
       })
       .then(dados => {
-         alert(dados.body[0].id);
         this.$http
         .delete("https://localhost:5001/api/amigos/" + dados.body[0].id)
         .then(dados => {
@@ -155,7 +154,7 @@ export default {
                                      .map(this.setUsuario);
       }, 
       response => {
-        alert("cutcghb");
+        console.log("Erro ao pergar usuarios");
       });
     },
     setUsuario(usuario){
@@ -180,7 +179,7 @@ export default {
         aceitou: usuario.aceitou
       });
     },
-    envarNotificacoes(amigo){
+    enviarNotificacoes(amigo){
         this.$http
         .post("https://localhost:5001/api/notificacoes", {
           idOrigem: this.$session.get("id"),

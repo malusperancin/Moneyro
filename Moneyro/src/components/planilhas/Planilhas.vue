@@ -166,6 +166,8 @@ export default {
     organizar(vetor){
       var novos = [];
       var ret = [];
+
+      
         
       for (var i = 0; i < vetor.length; i++) {
         novos.push({
@@ -173,7 +175,7 @@ export default {
           idUsuario: vetor[i].idUsuario,
           nome: vetor[i].nome,
           tag: this.tags[vetor[i].idTag-1].nome,
-          quantia: vetor[i].quantia,
+          quantia: Math.round(vetor[i].quantia * 100) / 100,
           compartilhamentos: vetor[i].compartilhamentos
         });
 
@@ -203,9 +205,11 @@ export default {
         this.registros = dados.body;
 
         for(var i = 0; i < this.registros.length; i++)
-            if(this.registros[i].compartilhamentos != null)
+        {
+          if(this.registros[i].compartilhamentos != null)
               this.setCompartilhamentos(i, this.registros[i].compartilhamentos);
-              
+          this.registros[i].quantia = Math.floor(this.registros[i].quantia*100)/100;
+        }   
       }, erro => {
         alert("algo deu errado");
       });
@@ -217,9 +221,11 @@ export default {
         this.registros = dados.body;
 
         for(var i = 0; i < this.registros.length; i++)
+        {
           if(this.registros[i].compartilhamentos != null)
             this.setCompartilhamentos(i, this.registros[i].compartilhamentos);
-              
+          this.registros[i].quantia = Math.floor(this.registros[i].quantia*100)/100;
+        }       
       }, erro => {
         alert("algo deu errado");
       });
@@ -237,6 +243,8 @@ export default {
               
             if(this.registros[i].idUsuario != this.$session.get("id"))
                this.getUsuario(this.registros[i].idUsuario, i);  
+
+            this.registros[i].quantia = Math.floor(this.registros[i].quantia*100)/100;
           }
 
         }, erro => {
@@ -435,7 +443,7 @@ tr:last-child { border-bottom-right-radius: 10px; }
   padding: 7px 14px;
   color: black;
   font-size: 1.2em;
-  background: rgba(255, 255, 255, 0.411);
+  background: rgba(255, 255, 255, 0.267);
 }
 
 .moedaImg {
