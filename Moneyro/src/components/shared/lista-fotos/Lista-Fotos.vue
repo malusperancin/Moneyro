@@ -48,13 +48,13 @@ export default {
 <style scoped src="../../../css/modal.css"></style>
 <style scoped>
 .corpo {
-  background: rebeccapurple;
+  background: rgba(0, 0, 0, 0.815);
   border-radius: 0 0 5px 5px;
   height: 60vh;
 }
 
 .cima {
-  background: rgb(114, 51, 177);
+  background: rgba(44, 44, 44, 0.705);
   box-shadow: #00000040 0px 2px 5px;
 }
 
