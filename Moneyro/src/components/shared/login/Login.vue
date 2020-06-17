@@ -1,6 +1,6 @@
 <template>
   <div class="modal">
-    <form class="modal-conteudo animate width-30" v-on:submit.prevent="logar">
+    <form class="modal-conteudo animate width-25" v-on:submit.prevent="logar">
       <div class="cima">
         <span v-on:click="$emit('fechar')" class="fechar" title="Fechar login">&times;</span>
       </div>
@@ -70,13 +70,17 @@ export default {
 <style scoped src="../../../css/modal.css"></style>
 <style scoped>
 #erro {
+  margin: 5px 0;
   font-weight: 1000;
   color: #f44336;
 }
 
-.baixo
-{
+.baixo {
   justify-content: space-between;
+}
+
+.baixo span, .baixo button{
+  margin: 0;
 }
 
 input[type="text"],

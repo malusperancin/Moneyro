@@ -64,7 +64,7 @@ export default {
         dados.body.map(reg => {
             this.metas.push({
                 nome: reg.nome,
-                porcentagem: (reg.atual/reg.objetivo)*100 + "%"
+                porcentagem: Math.round((reg.atual/reg.objetivo)*100) + "%"
             });
         });
       }, erro => {

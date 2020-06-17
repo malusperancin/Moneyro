@@ -326,7 +326,7 @@ td {
 
 ::-webkit-scrollbar-thumb {
   background: rgb(255, 255, 255);
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
 }
 
 .usuario-item {

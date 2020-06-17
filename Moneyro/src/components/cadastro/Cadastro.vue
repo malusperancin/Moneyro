@@ -334,12 +334,13 @@ export default {
 #dataNasc {
   width: 100%;
   border: 0;
-  padding: 0px 5px;
+  padding: 5px 0px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  box-sizing: border-box;
 }
 
-#dataNasc input {
+#dataNasc input{
   width: 30%;
 }
 
@@ -354,6 +355,7 @@ select {
   margin: 5px 0 5px 0;
   padding: 8px 15px;
   float: right;
+  font-size: 1em;
 }
 
 .campos {
@@ -388,24 +390,17 @@ select {
 
 #formCad {
   font-size: 1.1em;
-  margin: auto;
   text-align: start;
   background: rgb(0, 0, 0, 0.2);
-  border-radius: 15px;
-  width: 40vw;
+  border-radius: 10px;
+  width: 35vw;
   padding: 3em;
 }
 
-/* @media only screen and (max-width: 600px) {
-  #formCad {
-    width: 80%;
-    padding: 1em;
-  }
-} */
-
 #formCadastro {
-  /* width: 100%; */
-  padding: 10% 0px 5%;
-  margin: auto;
+  padding: 12% 0px 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

@@ -7,29 +7,31 @@
         Relatórios:
         <small>Aqui você encontra relatórios de acordo com seus gastos e receitas.</small>
       </h1>
-      <div class="relatorio">
-        <div id="ano">
-          <p>Ano:</p>
-          <select name="ano" id="selectAno" v-model="ano" @change="setAno">
-            <option :value="ano" v-for="ano in anos" v-bind:key="ano">{{ano}}</option>
-          </select>
+      <div class="linhas">
+        <div class="relatorio">
+          <div id="ano">
+            <p>Ano:</p>
+            <select name="ano" id="selectAno" v-model="ano">
+              <option :value="ano" v-for="ano in anos" v-bind:key="ano">{{ano}}</option>
+            </select>
+          </div>
+          <div class="geral">
+            <div id="grafico_ano"></div>
+          </div>
         </div>
-        <div class="geral">
-          <div id="grafico_ano"></div>
-        </div>
-      </div>
 
-      <div class="relatorio">
-        <div id="mes">
-          <p>Mês:</p>
-          <select name="mes" id="selectMes" v-model="mes">
-            <option :value="i+1" v-for="(mes, i) in meses" v-bind:key="i">{{mes}}</option>
-          </select>
-          <p id="pano">/{{ano}}</p>
-        </div>
-        <div class="geral">
-          <div>
-            <div id="grafico_mes"></div>
+        <div class="relatorio">
+          <div id="mes">
+            <p>Mês:</p>
+            <select name="mes" id="selectMes" v-model="mes">
+              <option :value="i+1" v-for="(mes, i) in meses" v-bind:key="i">{{mes}}</option>
+            </select>
+            <p id="pano">/{{ano}}</p>
+          </div>
+          <div class="geral">
+            <div>
+              <div id="grafico_mes"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -44,6 +46,19 @@
         <div class="geral">
           <div id="grafico_gastos"></div>
         </div>
+        <div style="color: green">
+        {{tags}}
+        </div>
+         <div style="color: purple">
+      {{receitas}}
+        </div>
+          <div style="color: yellow">
+      {{despesas}}
+        </div>
+        <div style="color: blue">
+      {{teste}}
+        </div>
+      {{registros}}
       </div>
     </div>
   </div>
@@ -64,7 +79,7 @@ export default {
       RELAÇÃO ENTRE DESP RECEITA E GASTO
         \* POR ANO
          \* POR MES
-      QUAIS SÃO AS TAGS MAIS USADAS
+      QUAIS SÃO AS TAGS MAIS USADAS // OKOK
       LUGARES MAIS FREQUENTADOS
       DIAS MAIS ATIVOS
    */
@@ -72,6 +87,7 @@ export default {
       receitas: [],
       despesas: [],
       registros: [],
+      teste: [],
       anos: ["2015", "2016", "2017", "2018", "2019", "2020"],
       ano: "2020",
       numMes: 1,
@@ -186,14 +202,7 @@ export default {
       );
     },
     drawPizza() {
-      this.dataPizza = google.visualization.arrayToDataTable([
-        ["Gastos", "Quantidade"],
-        ["Alimentação", 11],
-        ["Vestuario", 2],
-        ["Lazer", 2],
-        ["Higiene", 2],
-        ["Transporte", 6]
-      ]);
+      this.dataPizza = google.visualization.arrayToDataTable(this.getMaisGastos());
 
       new google.visualization.PieChart(
         document.getElementById("grafico_gastos")
@@ -204,43 +213,93 @@ export default {
       .get("https://localhost:5001/api/registros/todos/"+this.$session.get("id"))
       .then(dados => {
         dados.body.map(reg => {
-          if(reg.quantia > 0)
-            this.receitas.push({
-              data: new Date(reg.data),
-              nome: reg.nome,
-              idTag: this.tags[reg.id-1],
-              lugar: reg.lugar,
-              quantia: reg.quantia,
-            });
-          else
-            this.despesas.push({
-              data: new Date(reg.data),
-              nome: reg.nome,
-              idTag: this.tags[reg.id-1],
-              lugar: reg.lugar,
-              quantia: reg.quantia,
-            });
-
            this.registros.push({
               data: new Date(reg.data),
               nome: reg.nome,
-              idTag: this.tags[reg.id-1],
+              idTag: reg.idTag,
               lugar: reg.lugar,
               quantia: reg.quantia,
             });
         });
+
+        this.getRegistrosByAno();
       }, erro => {
         console.log("Erro ao recuperar tags: " + erro.body);
       });
     },
-    setAno()
-    { 
-      console.log(this.registros.filter(reg => {
-        reg.data.getFullYear() != this.ano
-      }));
+    getMaisGastos()
+    {
+      var somas = [];
+
+      somas.push([
+          "Gastos",
+          "Quantidade"
+      ]);
+
+      for(var i = 0; i < this.tags.length; i++)
+        somas.push([
+          this.tags[i].nome,
+          0
+        ]);
+
+      for(var i = 0; i < this.registros.length; i++)
+        somas[this.registros[i].idTag][1] += 1;
+
+      return somas;
+    },
+    getSomaReceita(mes)
+    {
+      var soma = 0;
+
+      var filtrado = this.registros.map(reg => {
+        if(reg.quantia > 0 && (reg.data.getMonth()+1) == mes)
+          soma = soma + reg.quantia;
+      });
+
+      return soma;
+    },
+    getSomaDespesa(mes)
+    {
+      var soma = 0;
+
+      var filtrado = this.registros.map(reg => {
+        if(reg.quantia < 0 && (reg.data.getMonth()+1) == mes)
+          soma = soma + reg.quantia;
+      });
+      
+      return soma;
+    },
+    getRegistrosByAno()
+    {
+      //RECEITA -- DESPESA -- SALDO
+      var ret = [];
+      
+      for(var i = 1; i < 13; i++)
+      {
+        var somaR = this.getSomaReceita(i);
+        var somaD = this.getSomaDespesa(i);
+
+        ret.push([i, somaR, somaD, 0]);
+      }
+
+      this.teste = ret;
+        
+
+        // [1, 37.8, 80.8, 41.8],
+        // [2, 30.9, 69.5, 32.4],
+        // [3, 25.4, 57, 25.7],
+        // [4, 11.7, 18.8, 10.5],
+        // [5, 11.9, 17.6, 10.4],
+        // [6, 8.8, 13.6, 7.7],
+        // [7, 7.6, 12.3, 9.6],
+        // [8, 12.3, 29.2, 10.6],
+        // [9, 16.9, 42.9, 14.8],
+        // [10, 12.8, 30.9, 11.6],
+        // [11, 5.3, 7.9, 4.7],
+        // [12, 6.6, 8.4, 5.2]
     }
   },
-  mounted() {
+  updated() {
     google.charts.load("current", { packages: ["line", "corechart"] });
     google.charts.setOnLoadCallback(this.drawAno);
     google.charts.setOnLoadCallback(this.drawMes);
@@ -274,10 +333,22 @@ export default {
 </script>
 
 <style scoped>
+*{
+  color: whitesmoke;
+}
+
 .relatorio {
   padding: 10px;
   margin-bottom: 15px;
 }
+
+/* .linhas {
+  background: wheat;
+  display: flex;
+  flex-flow: nowrap;
+  justify-content: space-between;
+  box-sizing: border-box;
+} */
 
 .geral {
   /* background: rgb(11, 83, 148); */
@@ -290,14 +361,6 @@ export default {
 .relatorio {
   padding: 10px;
   margin-bottom: 15px;
-}
-
-.geral {
-  /* background: rgb(11, 83, 148); */
-  background: white;
-  border-radius: 10px;
-  margin: 5px;
-  padding: 50px;
 }
 
 #mes,
@@ -308,10 +371,9 @@ export default {
 }
 
 select {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.5);
   border-radius: 5px;
   padding: 4px 8px;
-  color: black;
   font-size: 1.5em;
   border: none;
 }

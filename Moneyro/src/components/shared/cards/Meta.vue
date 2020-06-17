@@ -8,7 +8,7 @@
         <span class="fechar" v-on:click="$emit('fechar')">&times;</span>
       </div>
       <div class="corpo">
-        <input placeholder="Nome" type="text" id="nome" class="campos" v-model="meta.nome" />
+        <input placeholder="Nome" type="text" id="nome" maxlength="20" class="campos" v-model="meta.nome" />
 
         <div class="quantia">
           <div class="dinheiro">
@@ -121,7 +121,7 @@ export default {
         .post("https://localhost:5001/api/metas", this.meta)
         .then(dados=> {
           if(this.$router.currentRoute.path != "/metas")
-          this.$router.push("metas");
+            this.$router.push("metas");
 
           this.$emit('atualizar');
           this.$emit('fechar');  
@@ -135,8 +135,6 @@ export default {
 
       if(this.meta.compartilhamentos[0])
       {
-        this.envarNotificacoes(this.meta.compartilhamentos);
-
         this.meta.compartilhamentos.map(c => {
           ret += " "+c;
         })

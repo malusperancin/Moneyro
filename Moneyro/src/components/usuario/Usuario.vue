@@ -16,7 +16,7 @@
 
             {{msg}}
           </span>
-          <img :src="'../../src/images/status' + situacao + '.png'">          
+          <img v-if="situacao > -1" :src="'../../src/images/status' + situacao + '.png'">          
         </div>
       </div>
     </div>

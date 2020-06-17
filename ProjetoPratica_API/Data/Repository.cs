@@ -93,7 +93,6 @@ namespace ProjetoPratica_API.Data
         {
             IQueryable<Registros> consultaRegistro = (IQueryable<Registros>)this.Context.Registros;
             consultaRegistro = consultaRegistro.OrderBy(r => r.Id).Where(registro => registro.Id == Id);
-
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaRegistro.FirstOrDefaultAsync();
         }

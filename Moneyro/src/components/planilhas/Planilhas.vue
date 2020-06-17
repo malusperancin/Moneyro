@@ -49,7 +49,7 @@
               </td>
               <td class="quantia">
                 <img src="src/images/moeda.png" alt class="moedaImg" />
-                {{reg.quantia}}
+                &nbsp; {{reg.quantia}}
               </td>
             </tr>
           </table>
@@ -349,6 +349,7 @@ tr {
   display: flex;
   align-items: center;
   margin: 10px 0;
+  position: relative;
 }
 
 tr:first-child { border-top-left-radius: 10px; }
@@ -389,15 +390,15 @@ tr:last-child { border-bottom-right-radius: 10px; }
 }
 
 .nome {
-  width: 30%;
+  width: 40%;
 }
 
 .comp {
-  width: 25%;
+  width: 20%;
 }
 
 .quantia {
-  width: 20%;
+  width: 15%;
 }
 
 .filtros {

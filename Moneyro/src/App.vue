@@ -53,7 +53,7 @@ html {
 
 .pag {
   /* background-color: rgb(255, 227, 74); */
-   background-color: #0a0a0aeb;
+  background-color: #0a0a0aeb;
   min-height: 100%;
 }
 

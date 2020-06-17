@@ -568,6 +568,7 @@ label{
 
 #estado {
   width: fit-content;
+  background-color: rgba(116, 116, 116, 0.45) !important;
 }
 
 .botoes {

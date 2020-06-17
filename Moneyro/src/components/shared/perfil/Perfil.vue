@@ -63,15 +63,15 @@ export default {
     },
     getNotificacoes()
     {
-      console.log("pegou");
-      this.$http
-      .get("https://localhost:5001/api/notificacoes/todas/" + this.$session.get("id"))
-      .then(dados => {
-          this.notificacoes = dados.body;
-          this.recentes = this.notificacoes.filter(n => n.visualizada == 0);
-      }).catch( erro => {
-        console.log("Erro ao pegar as notif: " + erro.bodyText);
-      });
+      if(this.$session.exists())
+        this.$http
+        .get("https://localhost:5001/api/notificacoes/todas/" + this.$session.get("id"))
+        .then(dados => {
+            this.notificacoes = dados.body;
+            this.recentes = this.notificacoes.filter(n => n.visualizada == 0);
+        }).catch( erro => {
+          console.log("Erro ao pegar as notif: " + erro.bodyText);
+        });
     },
     getResposta(string)
     {
@@ -93,7 +93,8 @@ export default {
         console.log("Erro ao pegar as notif: " + erro.bodyText);
       });
 
-    setInterval(this.getNotificacoes, 5000); 
+  
+    setInterval(this.getNotificacoes,30000); 
   },
   watch: {
     novas() {

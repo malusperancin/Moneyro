@@ -1,7 +1,16 @@
 @media only screen and (max-width: 700px) {
+    /*-------- APP ---------------*/
+    #footer {
+        padding: 5px 15px!important;
+    }
     /* ------- CADASTRO ---------------*/
     #formCadastro {
-        width: 98vw;
+        width: 97vw !important;
+        padding: 100px 5px 20px !important;
+    }
+    #formCad {
+        width: 90vw !important;
+        padding: 2em 1.4em !important;
     }
     /* ---------- HOME ----------------*/
     .frase {
@@ -15,7 +24,7 @@
     .saldo img {
         width: 80%;
     }
-    /* ---------- CADASTRO ----------------*/
+    /* ---------- PLANILHAS ----------------*/
     .filtros {
         flex-wrap: wrap;
     }

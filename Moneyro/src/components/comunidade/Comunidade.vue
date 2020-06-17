@@ -198,7 +198,7 @@ input:focus {
 }
 
 .conteudos::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
   background: transparent;
 }
 
@@ -222,77 +222,6 @@ input:focus {
   color: white;
   background: yellowgreen;
 }
-
-/* .pure-js-carousel {
-  overflow: hidden;
-}
-
-.pure-js-carousel-list:before,
-.pure-js-carousel-list:after {
-  content: "";
-  display: table;
-}
-
-.pure-js-carousel-list:after {
-  clear: both;
-}
-
-.pure-js-carousel-slide {
-  float: left;
-}
-
-.pure-js-carousel-btn {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  cursor: pointer;
-  height: 20px;
-  margin-top: -35px;
-  position: absolute;
-  top: 50%;
-  width: 20px;
-}
-
-.pure-js-carousel-btn-next {
-  border-bottom: 3px solid #f00;
-  border-right: 3px solid #f00;
-  right: 5px;
-  -moz-transform: rotate(315deg);
-  -webkit-transform: rotate(315deg);
-  transform: rotate(315deg);
-}
-
-.pure-js-carousel-btn-prev {
-  border-bottom: 3px solid #f00;
-  border-left: 3px solid #f00;
-  left: 5px;
-  -moz-transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
-  transform: rotate(45deg);
-}
-
-.pure-js-carousel-dots {
-  float: left;
-  margin-top: 15px;
-  text-align: center;
-  width: 100%;
-}
-
-.pure-js-carousel-dot {
-  display: inline-block;
-  margin: 0 5px;
-}
-
-.pure-js-carousel-dot-btn {
-  background: green;
-  border-radius: 50%;
-  height: 20px;
-  width: 20px;
-}
-
-.active .pure-js-carousel-dot-btn {
-  background: blue;
-} */
 </style>
 
 
