@@ -15,7 +15,7 @@
               <option :value="ano" v-for="ano in anos" v-bind:key="ano">{{ano}}</option>
             </select>
           </div>
-          <div class="geral">
+          <div class="geral-r">
             <div id="grafico_ano"></div>
           </div>
         </div>
@@ -24,11 +24,11 @@
           <div id="mes">
             <p>Mês:</p>
             <select name="mes" id="selectMes" v-model="mes">
-              <option :value="i+1" v-for="(mes, i) in meses" v-bind:key="i">{{mes}}</option>
+              <option :value="i+1" v-for="(mes, i) in meses" v-bind:key="i">{{mes.nome}}</option>
             </select>
             <p id="pano">/{{ano}}</p>
           </div>
-          <div class="geral">
+          <div class="geral-r">
             <div>
               <div id="grafico_mes"></div>
             </div>
@@ -43,7 +43,7 @@
             <option :value="ano" v-for="ano in anos" v-bind:key="ano">{{ano}}</option>
           </select>
         </div>
-        <div class="geral">
+        <div class="geral-r">
           <div id="grafico_gastos"></div>
         </div>
         <!-- <div style="color: green">
@@ -80,8 +80,7 @@ export default {
         \* POR ANO
          \* POR MES
       QUAIS SÃO AS TAGS MAIS USADAS // OKOK
-      LUGARES MAIS FREQUENTADOS
-      DIAS MAIS ATIVOS
+      LUGARES MAIS FREQUENTADOS // OKOK
    */
       tags:[],
       receitas: [],
@@ -90,21 +89,20 @@ export default {
       teste: [],
       anos: ["2015", "2016", "2017", "2018", "2019", "2020"],
       ano: "2020",
-      numMes: 1,
-      mes: "janeiro",
+      mes: 1,
       meses: [
-        "janeiro",
-        "fevereiro",
-        "março",
-        "abril",
-        "maio",
-        "junho",
-        "julho",
-        "agosto",
-        "setembro",
-        "outubro",
-        "novembro",
-        "dezembro"
+        {numero: 0, nome: "janeiro"},
+        {numero: 1, nome: "fevereiro"},
+        {numero: 2, nome: "março"},
+        {numero: 3, nome: "abril"},
+        {numero: 4, nome: "maio"},
+        {numero: 5, nome: "junho"},
+        {numero: 6, nome: "julho"},
+        {numero: 7, nome: "agosto"},
+        {numero: 8, nome: "setembro"},
+        {numero: 9, nome: "outubro"},
+        {numero: 10, nome: "novembro"},
+        {numero: 11, nome: "dezembro"}
       ],
       options: {
         color: "rgba(255, 255, 255, 1)",
@@ -229,12 +227,10 @@ export default {
     },
     getMaisGastos()
     {
-      var somas = [];
-
-      somas.push([
+      var somas = [[
           "Gastos",
           "Quantidade"
-      ]);
+      ]];
 
       for(var i = 0; i < this.tags.length; i++)
         somas.push([
@@ -246,6 +242,39 @@ export default {
         somas[this.registros[i].idTag][1] += 1;
 
       return somas;
+    },
+    getMaisFrequentados()
+    {
+      var lugares = [[
+        "Lugares", 
+        "Frequencia"
+      ]];
+
+      for(var i = 0; i < this.registros.length; i++)
+        if(!tem(this.registros[i].lugar))
+          lugares.push([0, this.registros[i].lugar]);
+        else
+
+         somas[this.registros[i].idTag][1] += 1;
+
+      function tem(lugar)
+      {
+        for(var i = 1; i < lugares.length; i++)
+          if(lugares[i][0].toLowerCase().equals(lugar.toLowerCase()))
+            return true;
+
+        return false;
+      }
+
+      function inserir(lugar)
+      {
+        for(var i = 1; i < lugares.length; i++)
+          if(lugares[i][0].toLowerCase().equals(lugar.toLowerCase()))
+          {
+            lugares[i][0] += 1;
+            return;
+          }
+      }
     },
     getSomaReceita(mes)
     {
@@ -304,7 +333,12 @@ export default {
     google.charts.setOnLoadCallback(this.drawMes);
     google.charts.setOnLoadCallback(this.drawPizza);
   },
-  watch: {},
+  watch: {
+    mes()
+    {
+
+    }
+  },
   beforeCreate() {
     if (!this.$session.exists()) {
       this.$router.push('/')
@@ -349,17 +383,12 @@ export default {
   box-sizing: border-box;
 } */
 
-.geral {
+.geral-r {
   /* background: rgb(11, 83, 148); */
   background: white;
   border-radius: 10px;
   margin: 5px;
   padding: 50px;
-}
-
-.relatorio {
-  padding: 10px;
-  margin-bottom: 15px;
 }
 
 #mes,

@@ -3,7 +3,7 @@
     <Menu />
     <Perfil />
     <div class="centro">
-      <div class="geral carousel" id="demo">
+      <div class="geral-c carousel" id="demo">
         <div class="titulo">
           Vídeos
           <div class="busca">
@@ -19,7 +19,7 @@
           </div>
         </div>
       </div>
-      <div class="geral">
+      <div class="geral-c">
         <div class="titulo">
           Artigos
           <div class="busca">
@@ -40,7 +40,7 @@
           </div>
         </div>
       </div>
-      <div class="geral">
+      <div class="geral-c">
         <div class="titulo">Citações</div>
         <div class="conteudos">
           <div class="lista-citacoes-item" v-for="citacao in citacoes" :key="citacao.texto">
@@ -141,12 +141,12 @@ export default {
 </script>
 
 <style scoped>
-.geral {
+.geral-c {
   padding: 20px;
 }
 
 .titulo {
-  border-radius: 15px;
+  border-radius: 5px;
   padding: 0px 20px;
   font-size: 2em;
   margin: 5;

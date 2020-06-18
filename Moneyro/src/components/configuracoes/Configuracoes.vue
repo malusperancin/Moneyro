@@ -448,6 +448,26 @@ export default {
   display: flex;
 }
 
+@media only screen and (max-width: 1100px) {
+  #principal {
+    display: inline;
+  }
+
+  #foto {
+    margin: auto;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  #principal {
+    display: inline !important;
+  }
+
+  #foto {
+    margin: auto !important;
+  }
+}
+
 #avaliacao {
   margin-top: 5.9%;
   border-radius: 10px;

@@ -59,6 +59,6 @@ html {
 
 .centro {
   height: 100%;
-  padding: 3% 15%;
+  padding: 3% 10%;
 }
 </style>

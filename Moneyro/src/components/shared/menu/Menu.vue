@@ -7,7 +7,11 @@
     v-on:fechar="msg.visivel = false"
     ></mensagem>
     <table cellspacing="0" border="0" id="menu">
-      <tr id="btnAdd">
+      <tr id="btnAdd" @click="tiposM = !tiposM">
+        <div id="tipos" v-if="tiposM">
+          <div v-on:click="tiposM = false, verCard = true" class="tipo">Despesa ou Receita</div>
+          <div v-on:click="tiposM = false, verMeta = true" class="tipo">Meta</div>
+        </div>
         <td class="icones">
           <img src="../../../images/adicionar.png" alt="a" />
         </td>
@@ -94,6 +98,7 @@ export default {
       tipos: false,
       verCard: false,
       verMeta: false,
+      tiposM: false,
       msg: {
         visivel: false,
         titulo: "",
@@ -136,6 +141,12 @@ export default {
       var tipos = document.getElementById("opcoesCard");
       if (this.tipos) tipos.style = "display: block";
       else tipos.style = "display: none";
+    },
+    tiposM() {
+      // var tipos = document.getElementById("tipos");
+      // alert(this.tiposM);
+      // if (this.tiposM) tipos.style = "display: block";
+      // else tipos.style = "display: none";
     }
   }
 };
@@ -200,6 +211,7 @@ table {
 #btnAdd td {
   background-color: rgb(8, 45, 77);
   color: white;
+  position: relative;
 }
 
 #btnAdd td:nth-child(2) {
@@ -213,7 +225,6 @@ table {
   border-collapse: collapse;
   background: transparent;
   width: 150%;
-  display: none;
 }
 
 #opcoesCard td {
@@ -223,5 +234,12 @@ table {
   font-size: 1.2em;
   height: 100%;
   cursor: pointer;
+}
+
+#tipos .tipo{
+  background: rgb(11, 83, 148);
+  padding: 8px 16px;
+  box-sizing: border-box;
+  font-size: 1.2em;
 }
 </style>

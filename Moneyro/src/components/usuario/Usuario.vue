@@ -146,6 +146,7 @@ small{
   font-size: 2em;
   margin-top:-10px;
   color: whitesmoke;
+  padding: 30px 5px;
 }
 
 .saldo img{

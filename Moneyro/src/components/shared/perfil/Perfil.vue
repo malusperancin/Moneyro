@@ -11,7 +11,7 @@
         />
       </div>
     </div>
-    <div id="notificacoes" @mouseleave="fecharNotificacoes">
+    <div id="notificacoes" class="" @mouseleave="fecharNotificacoes">
       <div
         class="notificacao animate"
         v-for="notif in notificacoes"
@@ -37,7 +37,7 @@ export default {
     };
   },
   methods: {
-    abrirNotificacoes() { 
+    abrirNotificacoes() {
       for(var i = 0; i < this.notificacoes.length; i++)
       {
         this.$http
@@ -56,10 +56,10 @@ export default {
             });
       }
       this.novas = false;
-      document.getElementById("notificacoes").style.display = "block";
+      document.getElementById("notificacoes").classList.toggle("mostrar");
     },
     fecharNotificacoes() {
-      document.getElementById("notificacoes").style.display = "none";
+      document.getElementById("notificacoes").classList.toggle("mostrar");
     },
     getNotificacoes()
     {
@@ -121,7 +121,7 @@ export default {
   top: 3%;
   right: 3%;
   text-align: end;
-  width: 15%;
+  width: 12pc;
 }
 
 #imagem {
@@ -145,6 +145,7 @@ export default {
   height: 30px;
   width: 30px;
   background: white;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
 }
 
 .pulsar {
@@ -181,6 +182,10 @@ export default {
   }
 }
 
+.mostrar{
+  display: block !important;
+}
+
 .notificacao {
   padding: 2px 4px;
   border-radius: 5px;
@@ -194,7 +199,7 @@ export default {
 
 #notificacoes {
   display: none;
-  border-radius: 3px;
+  border-radius: 1px;
   overflow: auto;
   background: rgba(0, 0, 0, 0.4);
   border-radius: 10px;
@@ -204,7 +209,7 @@ export default {
 }
 
 #imgPerfil {
-  width: 8vw;
+  width: 7pc;
   border-radius: 100px;
   cursor: pointer;
 }

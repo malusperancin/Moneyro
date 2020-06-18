@@ -42,7 +42,7 @@
                 {{reg.tag}}
               </td>
               <td class="nome">{{reg.nome}}</td>
-              <td class="comp">
+              <td class="compart">
                 <div class="amigos">
                   <img v-for="(amigo, i) in reg.compartilhamentos" :title="amigo.nome" v-bind:key="i" :src="'src/images/perfil'+ amigo.foto + '.png'" alt />
                 </div>
@@ -395,13 +395,14 @@ tr:last-child { border-bottom-right-radius: 10px; }
 
 .tag {
   width: 25%;
+  display: flex;
 }
 
 .nome {
   width: 40%;
 }
 
-.comp {
+.compart {
   width: 20%;
 }
 
@@ -410,6 +411,11 @@ tr:last-child { border-bottom-right-radius: 10px; }
 }
 
 .filtros {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filtros div{
   display: flex;
   justify-content: space-between;
 }

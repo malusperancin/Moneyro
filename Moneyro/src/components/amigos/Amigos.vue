@@ -169,7 +169,7 @@ export default {
 }
 
 #busca {
-  display: -ms-flexbox;
+  display: flex;
   display: inline-flex;
   width: 100%;
   margin-bottom: 15px;

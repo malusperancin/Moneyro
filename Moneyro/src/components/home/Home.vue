@@ -21,7 +21,7 @@
       <h3 id="titulo">
         <b>Por que eu devo usar o Moneyro?</b>
       </h3>
-      <table>
+      <table id="tablepq">
         <tr>
           <td class="pqs">
             <img src="src/images/1.png" />
@@ -93,6 +93,60 @@ export default {
 </script>
 
 <style scoped>
+@media only screen and (max-width: 1000px) {
+  #inicio {
+    padding-top: 70px !important;
+  }
+
+  .container{
+    padding: 30px 80px 40px !important;
+  }
+
+  .frase{
+    font-size: 35px !important;
+    padding: 20px 40px !important;
+  }
+
+  #botoes button {
+    font-size: 1.8em !important;
+    padding: 8px 18px !important;
+  }
+
+  #imgCenter {
+    width: 400px !important;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  #inicio {
+    padding-top: 70px !important;
+    flex-direction: column !important;
+  }
+
+  .container{
+    font-size: 20px !important;
+    padding: 30px 80px 40px !important;
+  }
+
+  #imgCenter {
+    width: 310px !important;
+  }
+
+  .frase{
+    font-size: 30px !important;
+    padding: 10px 20px !important;
+  }
+
+  #botoes button {
+    font-size: 1.2em !important;
+    padding: 8px 18px !important;
+  }
+
+  #botoes {
+    width: 80vw !important;
+  }
+}
+
 #titulo {
   text-align: center;
   padding-top: -15px;

@@ -47,7 +47,7 @@ export default {
   border-radius: 5px;
   background-image: linear-gradient(#e6b531, #ecb318);
   box-shadow: 5px 5px 5px #00000040;
-  margin: 5px;
+  margin: 0 8px 8px 0;
   box-sizing: border-box;
   overflow: hidden;
   display: flex;

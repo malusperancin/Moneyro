@@ -211,6 +211,7 @@ export default {
   /* background: rgb(223, 135, 143); */
   font-size: 1.1em;
   border-radius: 10px;
+  width: fit-content;
 }
 
 .data p {

@@ -1,9 +1,12 @@
 @media only screen and (max-width: 700px) {
     /*-------- APP ---------------*/
     #footer {
-        padding: 5px 15px!important;
+        padding: 5px 15px 80px !important;
     }
-    /* ------- CADASTRO ---------------*/
+    .centro {
+        padding: 15px !important;
+    }
+    /* ------- CADASTRO --------------- OKOK */
     #formCadastro {
         width: 97vw !important;
         padding: 100px 5px 20px !important;
@@ -24,20 +27,175 @@
     .saldo img {
         width: 80%;
     }
-    /* ---------- PLANILHAS ----------------*/
+    /* ---------- PLANILHAS ---------------- OKOK */
     .filtros {
-        flex-wrap: wrap;
+        flex-wrap: wrap !important;
+    }
+    .filtros div {
+        width: 100%;
     }
     .filtros select {
-        width: 48%;
+        width: 50% !important;
     }
     #buscaNome {
-        width: 100%;
-        margin-top: 10px;
+        width: 100% !important;
+        margin-top: 10px !important;
     }
+    .despesa,
+    .receita {
+        padding: 35px 0 10px 0;
+        width: 100% !important;
+        flex-direction: column;
+    }
+    .despesa td,
+    .receita td {
+        width: 90% !important;
+    }
+    .compart {
+        position: absolute;
+        top: 5px;
+        right: -5px;
+    }
+    .tag {
+        position: absolute;
+        top: 0px;
+        left: -10px;
+    }
+    .quantia {
+        padding: 0 !important;
+        margin: 0;
+    }
+    .despesa .nome {
+        font-weight: 800;
+        font-size: 1.6em !important;
+    }
+    .despesa .quantia {}
+    .receita .quantia {}
     /* ---------------- MENU --------------*/
     #menu {
-        width: 100vw;
-        background: red;
+        width: 100% !important;
+        display: flex;
+        max-width: 100vw !important;
+        overflow: auto !important;
+        height: 70px !important;
+        bottom: 0 !important;
+        width: 80px;
+        background-color: #0c406f !important;
+        justify-content: space-between;
+    }
+    #menu tr {
+        display: flex;
+        flex-direction: column;
+    }
+    #btnAdd {
+        position: relative !important;
+    }
+    #btnAdd #tipos {
+        position: fixed;
+        left: 0;
+        bottom: 70px;
+    }
+    .titulos {
+        display: none !important;
+    }
+    #divisor {
+        display: none !important;
+    }
+    /* ------------- PERFIL --------------*/
+    #perfil {
+        width: 15pc !important;
+        /* left: 0 !important; */
+        right: 10px !important;
+        top: 0.5pc !important;
+        position: fixed !important;
+    }
+    #imgPerfil {
+        width: 80px !important;
+    }
+    #notificacaoIcone {
+        width: 18px !important;
+        height: 18px !important;
+        background: rgb(230, 230, 230) !important;
+    }
+    /* ----------- TOPO ------------------*/
+    #botao {
+        bottom: 80px !important;
+        right: 15px !important;
+    }
+    /* ------------ CONFIGURAÇÕES --------- OKOK */
+    #informacoes {
+        flex-direction: column;
+    }
+    .informacoes {
+        width: 100% !important;
+    }
+    #principal {
+        display: flex !important;
+    }
+    /* ---------- META ------------------ OKOK */
+    .meta {
+        padding: 5px 5px 0 5px !important;
+        width: 290px !important;
+    }
+    .meta span {
+        font-size: 1.4em !important;
+    }
+    #lista-metas .lista-metas-item {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    #lista-metas {
+        padding: 0px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        margin: 0 !important;
+    }
+    /* ------------ AMIGOS -----------*/
+    #lista-alunos {
+        margin: 0 !important;
+    }
+    #lista-alunos #lista-alunos-item {
+        margin: 0 !important;
+    }
+    .centro {
+        margin: 0 !important;
+    }
+    .painel {
+        width: fit-content !important;
+        height: 17.5em !important;
+        padding: 10px !important;
+        margin: 0 8px 8px 0 !important;
+    }
+    .comp {
+        background: rgba(99, 88, 160) !important;
+        border-bottom: 5px solid rgba(77, 63, 158) !important;
+        padding: 6px 8px !important;
+    }
+    .deletar {
+        margin-left: 2.8em !important;
+    }
+    /* ---------- USUARIO ------------ OKOK */
+    .saldo {
+        padding: 30px 15px;
+    }
+    /* ---------- COMUNIDADE ------------ OKOK*/
+    .geral-c {
+        padding: 0 0 15px 0 !important;
+    }
+    /* ---------- RELATORIO ------------ OKOK */
+    .geral-r {
+        padding: 10px !important;
+        border-radius: 3px !important;
+    }
+    /* --------- CARDS ---------------*/
+    .corpo {
+        padding: 10px !important;
+        display: flex !important;
+        flex-flow: row wrap !important;
+        max-height: 90vh !important;
+    }
+    .modal {
+        z-index: 999999999999;
     }
 }
