@@ -6,76 +6,63 @@
     v-on:sair="msg.visivel = false, $session.destroy(), $router.push('/')"
     v-on:fechar="msg.visivel = false"
     ></mensagem>
-    <table cellspacing="0" border="0" id="menu">
-      <tr id="btnAdd" @click="tiposM = !tiposM">
-        <div id="tipos" v-if="tiposM">
-          <div v-on:click="tiposM = false, verCard = true" class="tipo">Despesa ou Receita</div>
-          <div v-on:click="tiposM = false, verMeta = true" class="tipo">Meta</div>
-        </div>
-        <td class="icones">
-          <img src="../../../images/adicionar.png" alt="a" />
-        </td>
-        <td class="titulos adicionar" @mouseenter="tipos = true" @mouseleave="tipos = false">
-          <p>Adicionar</p>
-          <table id="opcoesCard">
-            <tr v-on:click="verCard = true, ativo = false">
-              <td>Despesa ou Receita</td>
-            </tr>
-            <tr v-on:click="verMeta = true,  ativo = false">
-              <td>Meta</td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr v-on:click="$router.push('planilhas')">
-        <td class="icones">
+    <nav id="menu">
+      <div id="btnAdd" @click="tiposM = !tiposM"></div>
+      <div class="item" v-on:click="$router.push('planilhas')">
+         <div class="icones">
           <img src="../../../images/planilha.png" alt="a" />
-        </td>
-        <td class="titulos">Planilhas</td>
-      </tr>
-      <tr v-on:click="$router.push('comunidade')">
-        <td class="icones">
-          <img src="../../../images/comunidade.png" alt="a" />
-        </td>
-        <td class="titulos">Comunidade</td>
-      </tr>
-      <tr v-on:click="$router.push('relatorios')">
-        <td class="icones">
+        </div>
+        <div class="titulos">Planilhas</div>
+      </div>
+      <div class="item" v-on:click="$router.push('relatorios')">
+         <div class="icones">
           <img src="../../../images/relatorios.png" alt="a" />
-        </td>
-        <td class="titulos">Relatórios</td>
-      </tr>
-      <tr v-if="!$session.get('MA')" v-on:click="$router.push('amigos')">
-        <td class="icones">
+        </div>
+        <div class="titulos">Relatórios</div>
+      </div>
+      <div class="item" v-on:click="$router.push('amigos')">
+         <div class="icones">
           <img src="../../../images/amigos.png" alt="a" />
-        </td>
-        <td class="titulos">Amigos</td>
-      </tr>
-      <tr v-on:click="$router.push('metas')">
-        <td class="icones">
+        </div>
+        <div class="titulos">Amigos</div>
+      </div>
+      <div class="item" v-on:click="$router.push('metas')">
+         <div class="icones">
           <img src="../../../images/metas.png" alt="a" />
-        </td>
-        <td class="titulos">Metas</td>
-      </tr>
-      <tr id="divisor">
-        <td class="icones"></td>
-        <td></td>
-      </tr>
-      <tr v-on:click="$router.push('configuracoes')">
-        <td class="icones">
+        </div>
+        <div class="titulos">Metas</div>
+      </div>
+      <div class="item" v-on:click="$router.push('pontos')">
+         <div class="icones">
+          <img src="../../../images/pontos.png" alt="a" />
+        </div>
+        <div class="titulos">Pontos</div>
+      </div>
+      <div class="item" v-on:click="$router.push('salaDeAula')">
+         <div class="icones">
+          <img src="../../../images/aula.png" alt="a" />
+        </div>
+        <div class="titulos">Sala de Aula</div>
+      </div>
+      <div class="item" v-on:click="$router.push('compras')">
+         <div class="icones">
+          <img src="../../../images/compras.png" alt="a" />
+        </div>
+        <div class="titulos">Compras</div>
+      </div>
+      <div class="item" v-on:click="$router.push('configurações')">
+         <div class="icones">
           <img src="../../../images/configuracao.png" alt="a" />
-        </td>
-        <td class="titulos">Configurações</td>
-      </tr>
-      <tr v-on:click="sair()">
-        <td class="icones">
+        </div>
+        <div class="titulos">Configuracões</div>
+      </div>
+      <div class="item" v-on:click="$router.push('configurações')">
+         <div class="icones">
           <img src="../../../images/sair.png" alt="a" />
-        </td>
-        <td class="titulos">
-          Sair
-        </td>
-      </tr>
-    </table>
+        </div>
+        <div class="titulos">Sair</div>
+      </div>
+    </nav>
     <registro v-on:fechar="verCard = false" v-on:atualizar="$emit('atualizar')" v-if="verCard"></registro>
     <meta-registro v-on:fechar="verMeta = false" v-on:atualizar="$emit('atualizar')" v-if="verMeta"></meta-registro>
   </div>
@@ -126,120 +113,58 @@ export default {
       ];
       this.msg.visivel = true;     
     }
-  },
-  watch: {
-    ativo() {
-      var div = document.getElementsByClassName("titulos");
-      if (this.ativo)
-        for (var i = 0; i < div.length; i++)
-          div.item(i).style = "display: flex";
-      else
-        for (var i = 0; i < div.length; i++)
-          div.item(i).style = "display: none";
-    },
-    tipos() {
-      var tipos = document.getElementById("opcoesCard");
-      if (this.tipos) tipos.style = "display: block";
-      else tipos.style = "display: none";
-    },
-    tiposM() {
-      // var tipos = document.getElementById("tipos");
-      // alert(this.tiposM);
-      // if (this.tiposM) tipos.style = "display: block";
-      // else tipos.style = "display: none";
-    }
   }
 };
 </script>
 
 <style scoped>
-#menu {
+nav {
+  height: 100%;
+  background-color: rgb(11, 83, 148);
+  box-sizing: border-box;
   width: fit-content;
   height: 100%;
   z-index: 5;
   position: fixed;
   box-shadow: 5px 0px 5px #00000040;
-  overflow: visible;
 }
 
-table {
-  background-color: rgb(11, 83, 148);
-  height: 100%;
-  box-sizing: border-box;
-  transition: all 0.5s;
+.item {
+  display: flex;
+  background: rgba(0, 0, 0, 0.200);
+  margin: 5px;
+  padding: 4px;
+  justify-content: space-between;
+  border-radius: 8px;
+  color: white;
+}
+
+.item:hover {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 /* tr td:nth-child(2) {
 } */
 
 .icones {
-  text-align: start;
-  background-color: #0c406f;
-  padding: 20px;
-  cursor: pointer;
+  padding: 3px;
+  display: flex;
 }
 
 .icones img {
-  width: 30px;
-  display: table-column;
+  width: 35px;
+}
+
+.titulos {
+  width: 100%;
 }
 
 /* tr td:nth-child(2) {
 } */
-
-.titulos {
-  box-sizing: border-box;
-  padding-left: 15px;
-  padding-right: 30px;
-  background: rgb(11, 83, 148);
-  font-size: 1.2em;
-  height: 100%;
-  display: none;
-  cursor: pointer;
-  align-items: center;
-}
 
 .titulos:hover,
 #opcoesCard td:hover {
   background-color: #0c406f;
 }
 
-#divisor {
-  height: 100%;
-}
-
-#btnAdd td {
-  background-color: rgb(8, 45, 77);
-  color: white;
-  position: relative;
-}
-
-#btnAdd td:nth-child(2) {
-  position: relative;
-}
-
-#opcoesCard {
-  position: absolute;
-  top: 0;
-  left: 100%;
-  border-collapse: collapse;
-  background: transparent;
-  width: 150%;
-}
-
-#opcoesCard td {
-  background: rgb(11, 83, 148);
-  padding: 10px 30px 10px 15px;
-  box-sizing: border-box;
-  font-size: 1.2em;
-  height: 100%;
-  cursor: pointer;
-}
-
-#tipos .tipo{
-  background: rgb(11, 83, 148);
-  padding: 8px 16px;
-  box-sizing: border-box;
-  font-size: 1.2em;
-}
 </style>
