@@ -8,6 +8,7 @@ import Planilha from './components/planilhas/Planilhas.vue';
 import Relatorios from './components/relatorios/Relatorios.vue';
 import Amigos from './components/amigos/Amigos.vue';
 import Compras from './components/compras/Compras.vue';
+import Boleto from './components/boleto/Boleto.vue';
 
 export const routes = [
     { path: '', component: Home, title: 'Home' },
@@ -19,5 +20,7 @@ export const routes = [
     { path: '/metas', component: Metas, title: 'Metas' },
     { path: '/configuracoes', component: Configuracoes, title: 'Cofigurações' },
     { path: '/usuario', component: Usuario, title: 'Usuario' },
-    { path: '/compras', component: Compras, title: 'Compras' }
+    { path: '/compras', component: Compras, title: 'Compras' },
+    { path: '/boleto', component: Boleto, title: 'Boleto' }
+
 ]

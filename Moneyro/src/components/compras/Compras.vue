@@ -2,6 +2,7 @@
   <div class="pag">
     <Menu />
     <Perfil />
+    <Compra :produto="produto" v-if="carrinho= true" v-on:fechar="carrinho = false" />
     <div class="centro">
 
       <div class="cofre">
@@ -18,7 +19,7 @@
                 <li>Ligacao com o app</li>
                 <li>Nao sei mais</li>
             </ul>
-            <button class="botao" v-on:click="comprar('aluno')">Comprar</button>
+            <button class="botao" v-on:click="comprar('cofre')">Comprar</button>
         </div>
       </div>
 
@@ -40,7 +41,54 @@
     </div>
 
 </template>
-    <style scoped>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+import Menu from "../shared/menu/Menu.vue";
+import Compra from '../shared/compra/Compra.vue';
+
+export default {
+  components: {
+    Menu,
+    Compra
+  },
+  data() {
+    return {
+      carrinho: false,
+      produto: {
+        nome: "",
+        preco: 0
+      }
+    };
+  },
+  methods: {
+    comprar(produto){
+     this.carrinho = true;
+     if(produto == 'professor')
+     {
+       this.produto.nome = 'professor';
+       this.produto.preco = 25
+     }
+     else
+     {
+      this.produto.nome = 'cofre';
+      this.produto.preco = 5;
+     }
+    } 
+  },
+  created() {
+    document.title = "Compra";
+    
+  },
+   beforeCreate() {
+    if (!this.$session.exists()) {
+      this.$router.push('/')
+    }
+  }
+};
+</script>
+
+<style scoped>
 
     .quadrado{
       font-size: 3em;
@@ -82,11 +130,10 @@
     }
 
     .centro {
-      /*background: red; */
       display: flex;
       flex-direction:inherit;
       margin: auto;
-      /* display: inline-flex; */
+      justify-content: center;
     }
     
     img {
@@ -96,76 +143,6 @@
     }
 
     li {
-      font-size: 50%;
+       font-size: 50%; 
     }
     </style>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script>
-import Menu from "../shared/menu/Menu.vue";
-import Perfil from "../shared/perfil/Perfil.vue";
-
-export default {
-  components: {
-    Menu,
-    Perfil
-  },
-  data() {
-    return {
-      mensagem: false,
-      nome: "",
-      saldo: 0.0,
-      situacao: -1,
-      msg:"",
-      cor:""
-    };
-  },
-  methods: {
-    comprar(){
-      if(this.saldo <= -20)
-           this.situacao = 2;
-
-        if(this.saldo <= -200)
-          this.situacao = 1;
-
-        if(this.saldo >= 100)
-          this.situacao = 4;
-
-        if(this.saldo >= 500)
-           this.situacao = 5;
-           
-        if(this.saldo > -20 && this.saldo <100 )
-           this.situacao = 3;
-
-        this.$http
-          .get("https://localhost:5001/api/situacoes")
-          .then(dados => {
-            this.msg = dados.body[(this.situacao-1)].mensagem;
-            this.cor = dados.body[(this.situacao-1)].cor;
-            
-            document.getElementsByClassName("saldo")[0].style.backgroundColor = this.cor;
-            //document.getElementsByClassName("gradient-box")[0].background = "linear-gradient(to right, "+this.cor+", "+this.cor+")";
-          });
-    }
-  },
-  created() {
-    document.title = "Bem-Vindah";
-    
-    this.$http
-        .get("https://localhost:5001/api/usuarios/" + this.$session.get("id"))
-        .then(dados => {
-          dados = dados.body;
-          
-          this.nome = dados.nome;
-          this.saldo = Math.floor(dados.saldo*100)/100;
-          
-          this.mudarSituacao();
-        });
-  },
-   beforeCreate() {
-    if (!this.$session.exists()) {
-      this.$router.push('/')
-    }
-  }
-};
-</script>
