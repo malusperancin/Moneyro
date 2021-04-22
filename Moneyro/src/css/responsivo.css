@@ -71,36 +71,6 @@
     }
     .despesa .quantia {}
     .receita .quantia {}
-    /* ---------------- MENU --------------*/
-    #menu {
-        width: 100% !important;
-        display: flex;
-        max-width: 100vw !important;
-        overflow: auto !important;
-        height: 70px !important;
-        bottom: 0 !important;
-        width: 80px;
-        background-color: #0c406f !important;
-        justify-content: space-between;
-    }
-    #menu tr {
-        display: flex;
-        flex-direction: column;
-    }
-    #btnAdd {
-        position: relative !important;
-    }
-    #btnAdd #tipos {
-        position: fixed;
-        left: 0;
-        bottom: 70px;
-    }
-    .titulos {
-        display: none !important;
-    }
-    #divisor {
-        display: none !important;
-    }
     /* ------------- PERFIL --------------*/
     #perfil {
         width: 15pc !important;
@@ -198,4 +168,5 @@
     .modal {
         z-index: 999999999999;
     }
+    /* ---------------- MENU --------------*/
 }
