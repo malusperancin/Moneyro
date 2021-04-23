@@ -26,6 +26,7 @@
                 max="9"
                 step="1"
                 class="campos"
+                v-model="qtd"
                 required
               />
             </div>
@@ -35,12 +36,20 @@
         <div class="baixo">
           <div id="cep-div" >
                 <p>CEP</p>
-                <input type="text" id="cep" v-model="cep" placeholder="_____-___" pattern="[0-9]{5}-[0-9]{3}" />
+                <input 
+                  type="text" 
+                  id="cep" 
+                  v-model="cep" 
+                  placeholder="_____-___" 
+                  pattern="[0-9]{5}-[0-9]{3}" 
+                  required
+                />
             </div>
           <div class="total">
             <!-- <div class="risco"></div> -->
             <p>Total</p>
-            <p id="valorTotal">R$ 35,00</p>
+            <p id="valorTotal" v-if="produto.nome == 'cofre'">R$ {{qtd * 35}},00</p>
+            <p id="valorTotal" v-if="produto.nome == 'professor'">R$ 85,00</p>
           </div>
           <button class="botao" v-on:click="$router.push({ path: 'boleto', query: { parametro: cep } })">Comprar</button>
         </div>
@@ -55,7 +64,8 @@ export default {
   data() {
     return {
       visivel: false,
-      cep: ""
+      cep: null,
+      qtd: 1
     };
   },
   methods: {

@@ -25,6 +25,7 @@
           class="campos"
           id="cep"
           placeholder="CEP"
+          pattern="[0-9]{5}-[0-9]{3}"
           maxlength="70"
           v-model="this.$route.query.parametro"
           required
@@ -70,7 +71,7 @@
           type="text"
           class="campos"
           id="numero"
-          placeholder="Numero"
+          placeholder="Número"
           maxlength="20"
           required
         />

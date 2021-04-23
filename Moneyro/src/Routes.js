@@ -9,6 +9,8 @@ import Relatorios from './components/relatorios/Relatorios.vue';
 import Amigos from './components/amigos/Amigos.vue';
 import Compras from './components/compras/Compras.vue';
 import Boleto from './components/boleto/Boleto.vue';
+import SalaAluno from './components/sala-aluno/SalaAluno.vue';
+import SalaProfessor from './components/sala-professor/SalaProf.vue';
 
 export const routes = [
     { path: '', component: Home, title: 'Home' },
@@ -21,6 +23,8 @@ export const routes = [
     { path: '/configuracoes', component: Configuracoes, title: 'Cofigurações' },
     { path: '/usuario', component: Usuario, title: 'Usuario' },
     { path: '/compras', component: Compras, title: 'Compras' },
-    { path: '/boleto', component: Boleto, title: 'Boleto' }
+    { path: '/boleto', component: Boleto, title: 'Boleto' },
+    { path: '/salaaluno', component: SalaAluno, title: 'Sala de Aula' },
+    { path: '/salaprofessor', component: SalaProfessor, title: 'Sala de Aula' }
 
 ]

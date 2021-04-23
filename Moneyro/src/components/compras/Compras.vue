@@ -1,12 +1,10 @@
-<template>
+=<template>
   <div class="pag">
     <Menu />
     <Perfil />
-    <Compra :produto="produto" v-if="carrinho= true" v-on:fechar="carrinho = false" />
+    <Compra :produto="this.produto" v-if="carrinho" v-on:fechar="carrinho = false" />
     <div class="centro">
-
       <div class="cofre">
-          
         <div class="quadrado">
           <div class="titulo">
             <p> Cofre inteligente </p>
@@ -63,7 +61,6 @@ export default {
   },
   methods: {
     comprar(produto){
-     this.carrinho = true;
      if(produto == 'professor')
      {
        this.produto.nome = 'professor';
@@ -74,10 +71,11 @@ export default {
       this.produto.nome = 'cofre';
       this.produto.preco = 5;
      }
+     this.carrinho = true;
     } 
   },
   created() {
-    document.title = "Compra";
+    document.title = "Loja";
     
   },
    beforeCreate() {
