@@ -46,7 +46,7 @@
 import Perfil from "../shared/perfil/Perfil.vue";
 import Menu from "../shared/menu/Menu.vue";
 import Comunicado from "../shared/comunicado/Comunicado.vue";
-import Atividade from "../shared/atividade-aluno/Atividade.vue";
+import Atividade from "../shared/atividade/Atividade.vue";
 
 export default {
   components: {

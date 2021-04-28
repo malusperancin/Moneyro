@@ -8,13 +8,13 @@
             <a class="nav__logo">Turmas</a>
           </div>
           <div class="nav__list">
-            <a title="Sala 7º ano" v-bind:class="{active: this.$route.path == '/salaprofessor/'+this.codigosala}" 
-            class="nav__link" v-on:click="$router.push('planilhas')">
+            <a title="Sala 7º ano" v-bind:class="{active: $route.path == '/salaprofessor/'+codigosala}" 
+            class="nav__link" v-on:click="$emit('abrirSala')">
               <img src="../../../images/aula.png" alt="a" class="nav__icon" />
               <span class="nav__name">Sala 7º ano</span>
             </a>
-            <a title="Sala 8º ano" v-bind:class="{active: this.$route.path == '/salaprofessor/'+this.codigosala}" 
-            class="nav__link" v-on:click="$router.push({ path: 'salaprofessor', query: { parametro: cep } })">  <!-- PARAMOS FAZENDO ISSO -->
+            <a title="Sala 8º ano" v-bind:class="{active: $route.path == '/salaprofessor/'+codigosala}" 
+            class="nav__link" v-on:click="$emit('abrirSala')">  <!-- PARAMOS FAZENDO ISSO -->
               <img src="../../../images/aula.png" alt="a" class="nav__icon" />
               <span class="nav__name">Sala 8º ano</span>
             </a>
