@@ -57,7 +57,7 @@ export default {
   },
   data(){
     return {
-      turma: false,
+      turma: true,
       sala:{
         nome: "Sala da Maria Luzia",
         codigo: "x5f7h6"

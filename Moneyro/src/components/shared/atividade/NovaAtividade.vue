@@ -1,4 +1,5 @@
 <template>
+<div class="geral">
   <div class="nova-atividade">
     <div class="conteudo">
       <div class="cabecalho">
@@ -51,10 +52,12 @@
         </div>
       </div>
 
-      <div id="btn">
+      <div class="btns">
+             <button class="botao" id="cancelar" v-on:click="$emit('fechar')">Cancelar</button>
              <button class="botao">Enviar</button>
       </div>
 
+    </div>
     </div>
   </div>
 </template>
@@ -105,6 +108,12 @@ export default {
 </script>
 
 <style scoped>
+
+.btns{
+  justify-content: space-between;
+   display:flex;
+}
+
 .imagens{
   border-radius:10px;
   border: 3px solid transparent;
@@ -123,13 +132,21 @@ export default {
     cursor: pointer;
     font-weight: 800;
     padding: 5px;
-    float: right;
 }
 
 .botao:hover {
   background-color: rgba(241, 174, 30, 1);
 }
 
+#cancelar{
+   background: rgb(46, 48, 46);
+   border: solid gray 2px;
+}
+
+#cancelar:hover{
+   background: DimGray;
+   border: solid gray 2px;
+}
 .titulo {
   display: flex;
   margin-bottom: 5px;
@@ -227,8 +244,10 @@ p {
 }
 
 .nova-atividade{
-  height: 100%;
-  width: 80%;
+  height: 80%;
+  width: 60%;
+  justify-content: center;
+  display: flex;
   align-items: center;
 }
 
@@ -236,6 +255,19 @@ p {
     display: flex;
     flex-direction: column;
     width: 100%;
+}
+
+.geral{
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 9999999999;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .conteudo {

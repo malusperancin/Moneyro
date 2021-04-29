@@ -1,5 +1,10 @@
 <template>
   <div id="menu">
+    <Mensagem
+      :msg="msg"
+      v-if="msg.visivel" 
+      v-on:sair="msg.visivel = false, $router.push('usuario')"
+      v-on:cancelar="msg.visivel = false"/>
     <div class="l-navbar" id="navbar" v-bind:class="{expander: ativo}">
       <nav class="nav">
         <div>
@@ -26,11 +31,6 @@
         </a>
       </nav>
     </div>
-    <Mensagem
-      :msg="msg"
-      v-if="msg.visivel" 
-      v-on:sair="msg.visivel = false, $router.push('usuario')"
-      v-on:cancelar="msg.visivel = false"/>
   </div>
 </template>
 

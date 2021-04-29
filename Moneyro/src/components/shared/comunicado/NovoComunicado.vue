@@ -1,4 +1,5 @@
 <template>
+<div class="geral">
     <div class="comunicado">
         <div class="conteudo">
             <div class="titulo">
@@ -11,11 +12,13 @@
             <div class="texto">
                 <textarea class="input" type="text" rows="3" placeholder="Adicionar comentário..."/>  
             </div>
-            <div id="btn">
-             <button class="botao">Enviar</button>
+            <div class="btns">
+                <button class="botao" id="cancelar" v-on:click="$emit('fechar')">Cancelar</button>
+                <button class="botao">Enviar</button>
              </div>
         </div>
     </div>
+  </div>
 </template>
 
 
@@ -66,6 +69,25 @@ export default {
 </script>
 
 <style scoped>
+
+.geral{
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 9999999999;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.btns{
+   justify-content: space-between;
+   display:flex;
+
+}
 .data{
     padding:0;
 }
@@ -112,6 +134,8 @@ p {
     height: 100%;
     width: 80%;
     align-items: center;
+    justify-content: center;
+    display: flex;
 }
 
 .conteudo {
@@ -124,6 +148,7 @@ p {
     flex-direction: column;
     box-sizing: border-box;
     padding: 15px;
+    width:55%;
 }
 
 .titulo div {
@@ -151,12 +176,26 @@ p {
     cursor: pointer;
     font-weight: 800;
     padding: 5px;
-    float: right;
+    
 }
 
 .botao:hover {
-      background-color: rgba(241, 174, 30, 1);
+    /*background-color: rgba(241, 174, 30, 1);*/
+    background-color:rgb(228,180,78);
 }
+
+#cancelar{
+   background: rgb(46, 48, 46);
+   border: solid gray 2px;
+}
+
+#cancelar:hover{
+   background: DimGray;
+   border: solid gray 2px;
+}
+
+
+
 
 textarea::-webkit-scrollbar {
   width: 10px;

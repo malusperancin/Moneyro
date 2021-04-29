@@ -1,5 +1,8 @@
 <template>
   <div class="pag">
+  <div class="centro">
+    <NovoComunicado v-if="novoComunicado" v-on:fechar="novoComunicado = false"/> 
+    <NovaAtividade v-if="novaAtividade" v-on:fechar="novaAtividade = false"/>
     <MenuProfessor />
     <Perfil />
     <div class="corpo">
@@ -20,9 +23,8 @@
         <div id="botao" v-on:click="clicou = !clicou" title="Adicionar">➕</div>
       </div>
     </div>
-    <NovoComunicado v-if="novoComunicado"/> 
-    <NovaAtividade v-if="novaAtividade"/>
   </div>
+    </div>
 </template>
 
 
@@ -116,7 +118,7 @@ export default {
   height: 30px;
 }
 #botao:hover {
-  background-color:  rgba(241, 174, 30,1);
+  background-color:  rgb(228,180,78);
 }
 #botao {
   display: block;
@@ -143,7 +145,7 @@ p {
   padding: 3px;
 }
 
-.pag{
+.centro{
   padding: 25px 18vw;
 }
 
