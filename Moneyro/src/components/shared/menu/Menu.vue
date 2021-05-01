@@ -52,6 +52,10 @@
               <img src="../../../images/aula.png" alt="a" class="nav__icon" />
               <span class="nav__name">Sala de Aula</span>
             </a>
+            <a title="Atividades" v-bind:class="{active: this.$route.path == '/atividades'}" class="nav__link" v-on:click="$router.push('atividades')">
+              <img src="../../../images/aula.png" alt="a" class="nav__icon" />
+              <span class="nav__name">Atividades</span>
+            </a>
             <a title="Configurações" v-bind:class="{active: this.$route.path == '/configuracoes'}" class="nav__link" v-on:click="$router.push('configuracoes')">
               <img src="../../../images/configuracao.png" class="nav__icon" />
               <span class="nav__name">Configurações</span>
@@ -60,7 +64,7 @@
         </div>
         <a title="Sair" class="nav__link" v-on:click="sair()">
           <img src="../../../images/sair.png" alt="a" class="nav__icon" />
-          <span v-bind:class="" class="nav__name">Sair</span>
+          <span class="nav__name">Sair</span>
         </a>
       </nav>
     </div>

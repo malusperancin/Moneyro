@@ -5102,19 +5102,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\maria\\.nuget\\packages\\": {}
+    "C:\\Users\\Giovanna\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\maria\\Documents\\GitHub\\Moneyro\\ProjetoPratica_API\\ProjetoPratica_API.csproj",
+      "projectUniqueName": "C:\\Users\\Giovanna\\OneDrive\\Documentos\\GitHub\\Moneyro\\ProjetoPratica_API\\ProjetoPratica_API.csproj",
       "projectName": "ProjetoPratica_API",
-      "projectPath": "C:\\Users\\maria\\Documents\\GitHub\\Moneyro\\ProjetoPratica_API\\ProjetoPratica_API.csproj",
-      "packagesPath": "C:\\Users\\maria\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\maria\\Documents\\GitHub\\Moneyro\\ProjetoPratica_API\\obj\\",
+      "projectPath": "C:\\Users\\Giovanna\\OneDrive\\Documentos\\GitHub\\Moneyro\\ProjetoPratica_API\\ProjetoPratica_API.csproj",
+      "packagesPath": "C:\\Users\\Giovanna\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Giovanna\\OneDrive\\Documentos\\GitHub\\Moneyro\\ProjetoPratica_API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\maria\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Giovanna\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5126,6 +5126,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "projectReferences": {}
         }
       },
@@ -5137,6 +5138,7 @@
     },
     "frameworks": {
       "netcoreapp3.1": {
+        "targetAlias": "netcoreapp3.1",
         "dependencies": {
           "Microsoft.AspNetCore.Cors": {
             "target": "Package",
@@ -5165,7 +5167,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
       }
     }
   }

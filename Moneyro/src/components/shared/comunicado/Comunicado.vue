@@ -19,7 +19,7 @@
                     type="text"
                     placeholder="Adicionar comentário..."
                     />
-                    <ion-icon name="send-outline" class="enviar" v-on:click=""></ion-icon>
+                    <ion-icon name="send-outline" class="enviar"></ion-icon>
                 </div>
             </div>
         </div>
@@ -94,6 +94,7 @@ export default {
 }
 
 .input {
+    margin-left:2%;
     box-sizing: border-box;
     border-radius: 25px 0 0 25px;
     width: 100%;
