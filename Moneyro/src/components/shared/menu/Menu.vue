@@ -11,7 +11,7 @@
         <div>
           <div class="nav__brand">
             <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle" v-on:click="ativo = !ativo, tipos = false"></ion-icon>
-            <a class="nav__logo">Moneyro</a>
+            <a class="nav__logo" v-on:click="$router.push('usuario')">Moneyro</a>
           </div>
           <div class="nav__list">
             <div class="nav__link collapse">
@@ -53,7 +53,7 @@
               <span class="nav__name">Sala de Aula</span>
             </a>
             <a title="Atividades" v-bind:class="{active: this.$route.path == '/atividades'}" class="nav__link" v-on:click="$router.push('atividades')">
-              <img src="../../../images/aula.png" alt="a" class="nav__icon" />
+              <img src="../../../images/atividade.png" alt="a" class="nav__icon" />
               <span class="nav__name">Atividades</span>
             </a>
             <a title="Configurações" v-bind:class="{active: this.$route.path == '/configuracoes'}" class="nav__link" v-on:click="$router.push('configuracoes')">

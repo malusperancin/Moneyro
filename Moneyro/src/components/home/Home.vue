@@ -1,84 +1,182 @@
 <template>
   <div class="pag">
-    <cabecalho :titulo="'Moneyro'"></cabecalho>
-    <div id="inicio">
-      <div class="frase">
-        <h2>Bem Vinda(o), </h2> ao melhor aplicativo de finanças pessoais para jovens deste Brasil! <br>  
-        <br>
-        <small>
-          Tá duvidando? <b>Só vem!</b>  
-        </small> 
+    <Menu />
+    <Cabecalho/>
+    <div class="centro"> 
+      <div class="feed">
+        <div class="postagem" v-for="postagem in conteudos">
+          <div v-if="postagem.tipo == 'noticia'">
+            <p class="titulo">{{postagem.titulo}}</p>
+            <p class="texto">{{postagem.texto}}</p>
+            <img class="imagem" :src="postagem.imagem">
+            <div class="rodape">
+              <span>
+                <div class="assunto">{{postagem.assunto}}</div>
+                <div class="data">{{postagem.data}}</div>
+              </span>
+              <div class="curtidas">{{postagem.curtidas}} <img src="../../images/fav.svg"> </div>
+            </div>
+          </div>
+          <div v-if="postagem.tipo == 'artigo'">
+            <p class="titulo">{{postagem.titulo}}</p>
+            <p class="texto">{{postagem.texto}}</p>
+            <img :src="postagem.imagem">
+            <div class="rodape">
+              <div>
+                <div class="assunto">{{postagem.assunto}}</div>
+                <div class="curtidas">{{postagem.curtidas}}</div>
+              </div>
+              <div class="data">{{postagem.data}}</div>
+            </div>
+          </div>
+          <div v-if="postagem.tipo == 'video'">
+            <p class="titulo">{{postagem.titulo}}</p>
+            <p class="texto">{{postagem.texto}}</p>
+            <img :src="postagem.imagem">
+            <div class="rodape">
+              <div class="assunto">{{postagem.assunto}}</div>
+              <div class="curtidas">{{postagem.curtidas}}</div>
+              <div class="data">{{postagem.data}}</div>
+            </div>
+          </div>
+          <div v-if="postagem.tipo == 'dica'">
+            <p class="titulo">{{postagem.titulo}}</p>
+            <p class="texto">{{postagem.texto}}</p>
+            <img :src="postagem.imagem">
+            <div class="rodape">
+              <div class="assunto">{{postagem.assunto}}</div>
+              <div class="curtidas">{{postagem.curtidas}}</div>
+              <div class="data">{{postagem.data}}</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="container">
-        <img id="imgCenter" src="src/images/Imagem1.png" alt />
-        <div id="botoes">
-          <button v-on:click="login = true">Login</button>
-          <button v-on:click="$router.push('cadastro')">Cadastro</button>
+      <div>
+      <div class="filtros">
+        <label class="container">Notícias
+          <input type="radio" checked="checked" name="radio">
+          <span class="checkmark"></span>
+        </label>
+        <label class="container">Vídeos
+          <input type="radio" name="radio">
+          <span class="checkmark"></span>
+        </label>
+        <label class="container">Artigos
+          <input type="radio" name="radio">
+          <span class="checkmark"></span>
+        </label>
+        <label class="container">Dicas
+          <input type="radio" name="radio">
+          <span class="checkmark"></span>
+        </label>
+        </div>
+        <div class="alta">
+          <p class="titulo">Em alta</p> 
+          <div class="enumeracao" v-for="(alta, i) in altas">
+            <span class="numeros">{{i+1}}</span>
+            <p class="tit">{{alta.titulo}}</p>
+
+
+          </div>
         </div>
       </div>
     </div>
-    <div id="porque">
-      <h3 id="titulo">
-        <b>Por que eu devo usar o Moneyro?</b>
-      </h3>
-      <table id="tablepq">
-        <tr>
-          <td class="pqs">
-            <img src="src/images/1.png" />
-            <p class="titulo">Controlar seu dinheiro direitin</p>
-          </td>
-          <td class="pqs">
-            <img src="src/images/2.png" />
-            <p class="titulo">Não gastar com besteira</p>
-          </td>
-          <td class="pqs">
-            <img src="src/images/3.png" />
-            <p class="titulo">Se informar sobre economia</p>
-          </td>
-          <td class="pqs">
-            <img src="src/images/4.png" />
-            <p class="titulo">Layout simples, belo e fácil</p>
-          </td>
-        </tr>
-        <tr>
-          <td class="pqs">
-            <img src="src/images/5.png" />
-            <p class="titulo">Analisar seus gastos</p>
-          </td>
-          <td class="pqs">
-            <img src="src/images/6.png" />
-            <p>Receber diquinhas</p>
-          </td>
-          <td class="pqs">
-            <img src="src/images/7.png" />
-            <p>
-              Feito especialmente para você,
-              <br />jovem gafanhoto
-            </p>
-          </td>
-          <td class="pqs">
-            <img src="src/images/8.png" />
-            <p class="titulo">O jeito mais moneyro de economizar!</p>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <login v-if="login" v-on:fechar="login = false"></login>
   </div>
 </template>
 
 <script>
-import Login from "../shared/login/Login.vue";
-import Header from "../shared/cabecalho/Cabecalho.vue";
+import Menu from "../shared/menu-inicial/MenuInicial.vue";
+import Cabecalho from "../shared/cabecalho-feed/CabecalhoFeed.vue";
+
 
 export default {
   components: {
-    login: Login,
-    cabecalho: Header
+    Menu,
+    Cabecalho
   },
   data() {
     return {
-      login: false
+      login: false,
+      altas: [
+        {
+          titulo: "Homem invade escola e mata crianças e funcionárias em Santa Catarina"
+        },
+        {
+          titulo: "Paulo Gustavo"
+        },
+        {
+          titulo: "Cloroquina"
+        },
+        {
+          titulo: "São Paulo: as últimas notícias sobre a pandemia"
+        },
+        {
+          titulo: "Colômbia vive semana de protestos; ao menos 19 manifestantes foram mortos e centenas ficaram feridos"
+        },
+        {
+          titulo: "Bolsonaro queria que Anvisa mudasse bula da cloroquina, diz Mandetta em CPI da Covid-19"
+        },
+      ],
+      conteudos: [
+        {
+          titulo: "Rafael Portugal diz que irá colocar Gil novamente no 'BBB' 21 e Boninho se pronuncia",
+          link:"https://kogut.oglobo.globo.com/noticias-da-tv/noticia/2021/05/rafael-portugal-diz-que-ira-colocar-gil-novamente-na-casa-e-boninho-se-pronuncia.html",
+          texto: "Portugal postou uma foto com a frase: “Vou colocar o Gil na casa de novo. Não quero nem saber!”. Na legenda, ele escreveu: “Tá resolvido”. Nos comentários, o diretor do programa escreveu: 'Bora, concordo'.",
+          imagem: "https://s2.glbimg.com/Ixaj3VTK0so1XmtEdOM0lqZpE0w=/640x424/top/i.glbimg.com/og/ig/infoglobo/f/original/2021/05/04/image-1_3.jpg",
+          assunto: "BBB",
+          data: "04/05/2021",
+          curtidas: 5,
+          tipo: "noticia"
+        },
+        {
+          titulo: "Guedes: país teve desempenho 'bastante razoável' na pandemia",
+          link:"https://noticias.uol.com.br/ultimas-noticias/ansa/2021/05/04/papa-cobra-regulamentacao-do-mercado-financeiro.htm",
+          texto: "O ministro da Economia, Paulo Guedes, argumentou nesta terça-feira (4) que o Brasil",
+          imagem: "https://img.r7.com/images/paulo-guedes-audiencia-publica-comissoes-camara-04052021122850483?dimensions=771x420",
+          assunto: "Economy",
+          data: "04/05/2021",
+          curtidas: 5,
+          tipo: "noticia"
+        },
+        {
+          titulo: "Papa cobra regulamentação do mercado financeiro",
+          link: "https://kogut.oglobo.globo.com/noticias-da-tv/noticia/2021/05/rafael-portugal-diz-que-ira-colocar-gil-novamente-na-casa-e-boninho-se-pronuncia.html",
+          texto: "VATICANO, 4 MAI (ANSA) - O Vaticano divulgou nesta terça-feira (4) uma mensagem em que o papa Francisco defende a regulamentação da especulação financeira no mundo e pede a construção de uma 'economia inclusiva e sustentável'",
+          imagem: "https://ibcdn.canaltech.com.br/tSVFGtIt8j4M5Kx3Ay8PLS_5b0U=/512x288/smart/i11063.jpeg",
+          assunto: "Economy Religion",
+          data: "04/05/2021",
+          curtidas: 5,
+          tipo: "noticia"
+        },
+        {
+          titulo: "PAULO GUEDES QUER TAXAR OS LIVROS! TE CONTAMOS TUDO AQUI!",
+          link: "https://www.youtube.com/watch?v=t5eapLCabOU",
+          texto: "Na semana passada, Receita Federal, disse em um documento que os livros podem perder a isenção tributária porque no Brasil, quem lê é a população mais rica, que recebe mais de 10 salários mínimos.",
+          assunto: "Economy Bolsonaro Burrices",
+          data: "03/05/2021",
+          curtidas: 100000,
+          tipo: "video"
+        },
+        {
+          titulo: "",
+          link: "",
+          texto: "Dependendo da situação, não dá para fazer tudo ao mesmo tempo. Poupar não significa poupar muito. Você consegue poupar R$ 10, R$ 20 ou R$ 30. Vá juntando os centavos quando pagar uma compra no débito em vez de em dinheiro, assim você economiza.",
+          assunto: "economizar",
+          data: "04/01/2021",
+          curtidas:578 ,
+          tipo: "dica"
+        },
+        {
+          titulo: "Golpe financeiro: como identificar e fugir de todos eles!",
+          link: "https://conteudos.mepoupenaweb.com.br/mepoupedegolpes/",
+          texto: "O golpe tá aí…'Cai quem quer??' NADA DISSO! Quem cai num golpe financeiro é vítima e pode buscar ajuda! Porém, mais fácil do que remediar é prevenir, certo? Por isso, nesta página você vai encontrar TUDO sobre golpes financeiros: quais os mais comuns hoje, como fugir deles e o que fazer caso você ou alguém que você conhece caia em uma dessas armadilhas.",
+          imagem: "https://d9hhrg4mnvzow.cloudfront.net/conteudos.mepoupenaweb.com.br/mepoupedegolpes/6aad5399-nath-frase_1000000000000000000028.png",
+          assunto: "Golpe",
+          data: "29/04/2021",
+          curtidas:18000 ,
+          tipo: "blog"
+        }
+      ]
     };
   },
   methods: {},
@@ -93,158 +191,165 @@ export default {
 </script>
 
 <style scoped>
-@media only screen and (max-width: 1000px) {
-  #inicio {
-    padding-top: 70px !important;
-  }
-
-  .container{
-    padding: 30px 80px 40px !important;
-  }
-
-  .frase{
-    font-size: 35px !important;
-    padding: 20px 40px !important;
-  }
-
-  #botoes button {
-    font-size: 1.8em !important;
-    padding: 8px 18px !important;
-  }
-
-  #imgCenter {
-    width: 400px !important;
-  }
+.centro{
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  padding-top: 10%;
+  color: white;
+  grid-gap: 100px;
 }
 
-@media only screen and (max-width: 900px) {
-  #inicio {
-    padding-top: 70px !important;
-    flex-direction: column !important;
-  }
+/* ---------- FEED ----------- */
 
-  .container{
-    font-size: 20px !important;
-    padding: 30px 80px 40px !important;
-  }
-
-  #imgCenter {
-    width: 310px !important;
-  }
-
-  .frase{
-    font-size: 30px !important;
-    padding: 10px 20px !important;
-  }
-
-  #botoes button {
-    font-size: 1.2em !important;
-    padding: 8px 18px !important;
-  }
-
-  #botoes {
-    width: 80vw !important;
-  }
+p {
+  padding: 0;
+  margin: 0;
 }
 
-#titulo {
-  text-align: center;
-  padding-top: -15px;
-  padding-bottom: 15px;
+.feed {
 }
 
-a {
-  text-decoration: none;
-  color: black;
-}
-
-#inicio {
-  width: 100%;
-  background-color: rgb(255, 227, 74);
-  padding-top: 100px;
+.postagem {
+  background: #303030;
+  padding: 50px 40px;
+  margin-bottom: 35px;
+  border-radius: 10px;
+  font-size: 1.2em;
+  font-weight: 400;
+  line-height: 32px;
   display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
-.frase{
-  font-size: 45px;
+.texto {
+  margin-bottom: 15px;
+}
+
+.imagem {
   flex: 1;
-  padding: 30px 70px;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-}
-
-.container{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  flex: 1.2;
-  padding: 90px 100px 60px;
-}
-
-#imgCenter {
-  margin: -5vh 0;
-  width: 40vw;
-}
-
-h2{
-  margin: 25px 0;
-}
-
-#botoes button {
-  font-size: 1.8em;
-  font-weight: bolder;
-  border-radius: 2px;
-  border: 0;
-  padding: 15px;
-  box-sizing: border-box;
-  box-shadow: 1px black;
-  text-align: center;
-  background-color: rgb(241 194 50);
-  z-index: 1;
-  cursor: pointer;
-  color: #000;
-  /* margin: 0px 20px; */
-  flex: 0.4;
-}
-
-#botoes button:hover {
-  box-shadow: 5px -5px rgba(245, 147, 35);
-}
-
-#botoes {
-  display: flex;
-  justify-content: center;
-  justify-content: space-between;
   width: 100%;
 }
 
-#porque {
-  background-color: rgb(241, 194, 50);
+.rodape {
+  display: flex;
+  margin-top: 10px;
+  font-size: 1.25em;
+  justify-content: space-between;
+}
+
+.rodape span {
+  display: flex;
+}
+
+.rodape span div {
+  margin: 0 10px 0 0;
+}
+
+.assunto {
+}
+
+.curtidas {
+  display: flex;
+  margin: 0 10px;
+  font-size: 1.8em;
+  background: gray;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.datas {
+  
+}
+
+.titulo{
   font-size: 1.5em;
-  padding: 10px;
+  line-height: 32px;
+  margin-bottom: 1%;
 }
 
-table {
-  margin: auto;
+
+/*------- FILTRO DE RADIO BUTTONS ------*/
+.filtros{
+  background-color: #303030;
+  border-radius: 10px;
+  padding: 5% 0 5% 5%;
+  margin: 0 0 5% 10px;
 }
 
-td {
-  margin: auto;
-  width: 130px;
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-.pqs {
-  font-size: 15px;
-  text-align: center;
-  float: left;
-  font-weight: bold;
-  margin: 10px;
+/* Hide the browser's default radio button */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
 }
 
-.pqs img {
-  width: 50px;
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: hsl(208, 80%, 24%);
+}
+
+
+/*-------- EM ALTA--------*/
+.alta{
+  background-color: #303030;
+  border-radius: 10px;
+  padding: 5% 5% 5% 8%;
+  margin: 0 0 0 10px;
+}
+
+.enumeracao{
+  display:flex;
+  position:relative;
+  margin:0 0 4% -5%;
+  background-color:rgba(255, 255, 255, 0.078);
+  border-radius: 10px;
+  min-height: 35px;
+  padding: 4px 6px 4px 0;
+}
+.tit{
+  margin: 0 0 0 15%;
+}
+.numeros{
+  background-color:hsl(208, 80%, 24%);
+  margin:3px 0 0 10px;
+  border-radius:50%;
+  width:9%;
+  position:absolute;
+  text-align:center;
+  font-size:1.2em;
 }
 </style>
 

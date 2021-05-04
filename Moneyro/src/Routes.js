@@ -12,6 +12,7 @@ import Boleto from './components/boleto/Boleto.vue';
 import SalaAluno from './components/sala-aluno/SalaAluno.vue';
 import SalaProfessor from './components/sala-professor/SalaProf.vue';
 import Atividades from './components/atividades/Atividades.vue';
+import Pontos from './components/pontos/Pontos.vue';
 
 export const routes = [
     { path: '', component: Home, title: 'Home' },
@@ -27,5 +28,6 @@ export const routes = [
     { path: '/boleto', component: Boleto, title: 'Boleto' },
     { path: '/salaaluno', component: SalaAluno, title: 'Sala de Aula' },
     { path: '/salaprofessor', component: SalaProfessor, title: 'Sala de Aula' },
-    { path: '/atividades', component: Atividades, title: 'Atividades' }
+    { path: '/atividades', component: Atividades, title: 'Atividades' },
+    { path: '/pontos', component: Pontos, title: 'Pontos' }
 ]
