@@ -1,11 +1,11 @@
 <template>
     <div class="comunicado">
         <div class="conteudo">
-            <div class="titulo">
-                <img src="../../../images/perfil2.png" style="width: 50px">
-                <div>
+            <div class="infos">
+                <img src="../../../images/perfil2.png">
+                <div class="textos">
                     <strong><b>{{professor.nome}}</b></strong>
-                    <strong><b>{{comunicado.data}}</b></strong>
+                    <small>{{comunicado.data}}</small>
                 </div>
             </div>
             <div class="texto">
@@ -13,7 +13,7 @@
             </div>
             <div class="divi"></div>
             <div class="enviar_comentario">
-                <img src="../../../images/perfil2.png" style="width: 50px">  
+                <img src="../../../images/perfil2.png">  
                 <div class="comentario">
                     <input class="input" 
                     type="text"
@@ -63,26 +63,15 @@ export default {
 </script>
 
 <style scoped>
- .enviar_comentario {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-.enviar {
-    font-size: 1.75rem;
-    color: gray;
-    background: white;
-    padding: 5px 10px;
-    border-radius: 0 25px 25px 0;
+.enviar_comentario {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.enviar:hover {
-    color: black;
-    cursor: pointer;
+.enviar_comentario img{
+    width:50px;
+    height:50px;
 }
 
 .comentario {
@@ -90,17 +79,51 @@ export default {
     height: 90%;
     justify-content: space-between;
     border-radius: 15px;
-    width: 92%;
+    width: 95%;
+    position: relative;
+}
+
+.enviar {
+    font-size: 1.75rem;
+    color: gray;
+    position: absolute;
+    top: 7px;
+    right: 10px;
+}
+
+.enviar:hover {
+    color: black;
+    cursor: pointer;
 }
 
 .input {
-    margin-left:2%;
+    margin-left:5px;
     box-sizing: border-box;
-    border-radius: 25px 0 0 25px;
+    border-radius: 25px;
     width: 100%;
-    padding: 6px 6px 6px 25px;
+    padding: 9px 50px 9px 25px;
     outline: none;
     border: transparent;
+    font-size:1em;
+}
+
+.infos{
+  display:flex;
+  flex-direction:row;
+  width: 50%;
+  font-size:1.5em;
+}
+
+.textos {
+  display: flex;
+  flex-direction: column;
+  margin-left: 4%;
+}
+
+img {
+    border-radius: 8px;
+    width: 75px;
+    height: 75px;
 }
 
 p {
@@ -118,14 +141,13 @@ p {
 .conteudo {
     color: rgb(255, 255, 255);
     background: rgb(46, 48, 46);
-    padding: 5px;
     border-radius: 5px;
     height: fit-content;
     min-width: 250px;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    padding: 15px;
+    padding: 30px;
 }
 
 .titulo div {
@@ -136,16 +158,18 @@ p {
 
 .titulo {
     display: flex;
+    font-size: 1.5em;
 }
 
 .texto {
-    padding: 1% 0;
+    padding: 1%;
+    font-size:1.5em;
 }
 
 .divi {
-    width: 91.5%;
+    width: 100%;
     height: 1px;
     background: rgba(0, 0, 0, 0.5);
-    margin: 1% auto 1.5%;
+    margin: 1% 0 1.5%;
 }
 </style>

@@ -1,20 +1,19 @@
- <template>
- <div class="atividade">
-      <div class="conteudo">
-        <div class="cabecalho">
-            <img src="../../../images/perfil2.png" style="width: 50px">
-            <div class="escrita">
-                <div class="infos">
-                  <strong><b>{{professor.nome}}</b></strong>
-                  <strong><b> Atividade numero 1 - Quiz</b></strong>
-                </div>
-                <strong><b>{{comunicado.data}}</b></strong>
-            </div>  
+<template>
+  <div class="atividade">
+    <div class="conteudo">
+      <div class="cabecalho">
+        <div class="infos">
+          <img src="../../../images/perfil2.png">
+          <div class="textos">
+            <strong><b>{{professor.nome}}</b></strong>
+            <small>{{comunicado.data}}</small>
+          </div>
         </div>
+        <strong class="nome_atividade"><b> Atividade numero 1 - Quiz</b></strong>
       </div>
     </div>
+  </div>
 </template>
-
 
 <script>
   
@@ -54,66 +53,56 @@ export default {
 
 <style scoped>
 
-p {
-  margin: 0;
-  color:white;
-  padding: 3px;
-}
-
 .atividade{
-  height: 100%;
   width: 80%;
   align-items: center;
-}
-
-.escrita{
-    display: flex;
-    flex-direction: column;
-    margin-left: 2%;
-    width:100%;
-}
-
-.conteudo {
-  color: rgb(255, 255, 255);
-  background: rgb(46, 48, 46);
-  padding: 5px;
-  border-radius: 5px;
-  height: fit-content;
-  min-width: 250px;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  padding: 15px;
 }
 
 .atividade :hover {
   background: rgb(60, 62, 60);
 }
 
-.infos {
+.conteudo {
+  color: rgb(255, 255, 255);
+  background: rgb(46, 48, 46);
+  border-radius: 5px;
+  height: fit-content;
+  min-width: 250px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 .cabecalho{
     display: flex;
+    flex-direction:row;
+    justify-content: space-between;
+    align-items: center;
+    padding:30px;
+    font-size:1.5em;
 }
 
-.texto {
-  background: green;
-  margin-left: 2.3%;
-  margin-bottom: 1%;
-  margin-top:1%;
+p {
+  margin: 0;
+  color:white;
+  padding: 3px;
 }
 
+.infos{
+  display:flex;
+  flex-direction:row;
+  width: 50%;
+}
 
-/* .topo-atividade {
-  background: rgb(37, 33, 33);
-  padding: 10px;
+.textos {
   display: flex;
-  justify-content: space-between;
-  border-top-left-radius: inherit;
-  border-top-right-radius: inherit;
-} */
+  flex-direction: column;
+  margin-left: 4%;
+}
 
+img{
+  width:75px;
+  height:75px;
+  border-radius: 8px;
+}
 </style>

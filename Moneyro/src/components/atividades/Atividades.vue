@@ -3,17 +3,28 @@
     <Menu />
     <div class="centro">
       <div class="retangulo"> 
-        <img src="../../images/turma.png">
+        <span title="Este conteúdo é pago!" class="coroa">👑</span>
+        <img src="../../images/jogojogar.png">
       </div>
       <div class="conteudo">
         <div class="quadrado">
-          <img src="../../images/turma.png">
+          <img src="../../images/quiz1.png">
+        </div>
+        <div class="quadrado">
+          <img src="../../images/quiz2.png">
+        </div>
+        <div class="quadrado">
+          <img src="../../images/jogo.png">
+        </div>
+        <div class="quadrado">
+          <span title="Este conteúdo é pago!" class="coroa">👑</span>
+          <img src="../../images/jogo.png">
         </div>
         <div class="quadrado">
           <img src="../../images/turma.png">
         </div>
         <div class="quadrado">
-          <img src="../../images/turma.png">
+          <img src="../../images/cofre.png">
         </div>
       </div>
     </div>
@@ -52,47 +63,61 @@ export default {
 </script>
 
 <style scoped>
-.conteudo {
-  display: flex;
-  flex-wrap: wrap;
+.pag{
+  padding: 15px 10vw;
 }
 
-.retangulo {
-  margin:auto;
-  display: flex;
-  flex-direction: row;
-  width:100%;
-  background: #f5f5f517;
-  padding: 15px 20px;
-  border-radius: 20px;
-  color: whitesmoke;
+.coroa::selection {
+  user-select: none;
+}
+
+.coroa {
+  transform: rotate(45deg);
+  font-size: 45px;
+  position: absolute;
+  top: -35px;
+  right: -35px;
 }
 
 .centro {
   display: flex;
   flex-direction: column;
-  margin: auto;
-  justify-content: center;
-  align-items: stretch;
-}
-    
-img {
-  width: 270px;
-  border-radius: 20px;
-  margin: auto;
+  justify-content: stretch;
 }
 
-.pag{
-  padding: 15px 10vw;
+.conteudo {
+  display: flex;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  justify-content: space-between;
+}
+
+.retangulo {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  margin-bottom:3%;
+  position: relative;
+}
+    
+.retangulo img{
+  width: 100%;
+   border-radius: 20px;
+}
+
+.quadrado img {
+  width: 270px;
+  border-radius: 20px;
+  margin:2%;
+  border-right: 12px solid #00000050;
+  border-bottom: 12px solid #00000050;
 }
 
 .quadrado{
-  font-size: 3em;
-  box-sizing: border-box;
-  padding: 15px 20px; 
-  background: #f5f5f517;
-  border-radius: 20px;
-  flex: 1;
+  cursor: pointer;
+  position: relative;
+  width:fit-content;
+  margin-bottom:1%;
 }
 
 </style>

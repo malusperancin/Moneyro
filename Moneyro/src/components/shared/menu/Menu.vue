@@ -163,7 +163,7 @@ export default {
         color: hsl(0, 0%, 100%);
         padding: 0.8rem 1.5rem 2rem;
         transition: .5s;
-        z-index: 100;
+        z-index: 2;
     }
     /*===== NAV =====*/
     

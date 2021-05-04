@@ -1,30 +1,30 @@
 <template>
   <div class="pag">
-  <div class="centro">
-    <NovoComunicado v-if="novoComunicado" v-on:fechar="novoComunicado = false"/> 
-    <NovaAtividade v-if="novaAtividade" v-on:fechar="novaAtividade = false"/>
     <MenuProfessor />
-    <Perfil />
-    <div class="corpo">
-      <div class="cima">
-        <div class="infoSala">
-          <p class="nomeSala"><b>Sala:</b> {{sala.nome}} </p>
-          <p><b>Código da sala:</b> {{sala.codigo}}</p>
+    <div class="centro">
+      <NovoComunicado v-if="novoComunicado" v-on:fechar="novoComunicado = false"/> 
+      <NovaAtividade v-if="novaAtividade" v-on:fechar="novaAtividade = false"/>
+      <Perfil />
+      <div class="corpo">
+        <div class="cima">
+          <div class="infoSala">
+            <p class="nomeSala"><b>Sala:</b> {{sala.nome}} </p>
+            <p><b>Código da sala:</b> {{sala.codigo}}</p>
+          </div>
         </div>
-      </div>
-      <Comunicado /> 
-      <br>
-      <Atividade />
-      <div class="adicionar">
-        <div class="opcoes" v-bind:class="{aberto: clicou}">
-          <span v-on:click="novoComunicado = true" class="opcao" title="Adicionar Comunicado"> <img src="../../images/comunicado.png" alt="a"/></span>
-          <span v-on:click="novaAtividade = true" class="opcao" title="Adicionar Atividade"> <img src="../../images/atividade.png" alt="a"/></span>
-        </div>  
-        <div id="botao" v-on:click="clicou = !clicou" title="Adicionar">➕</div>
+        <Comunicado /> 
+        <br>
+        <Atividade />
+        <div class="adicionar">
+          <div class="opcoes" v-bind:class="{aberto: clicou}">
+            <span v-on:click="novoComunicado = true" class="opcao" title="Adicionar Comunicado"> <img src="../../images/comunicado.png" alt="a"/></span>
+            <span v-on:click="novaAtividade = true" class="opcao" title="Adicionar Atividade"> <img src="../../images/atividade.png" alt="a"/></span>
+          </div>  
+          <div id="botao" v-on:click="clicou = !clicou" title="Adicionar">➕</div>
+        </div>
       </div>
     </div>
   </div>
-    </div>
 </template>
 
 
@@ -146,7 +146,7 @@ p {
 }
 
 .centro{
-  padding: 25px 18vw;
+  padding: 25px 16vw;
 }
 
 .cima{
