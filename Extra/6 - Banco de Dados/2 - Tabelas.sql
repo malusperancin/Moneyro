@@ -59,8 +59,15 @@ create table Usuarios
     estado varchar(25) not null,
     notificacoes bit not null,
     modoAnonimo bit not null,
-    saldo money
+	professor bit,
+	pontos int,
+	idSala int,
+	saldo money,
+	CONSTRAINT FK_idSala FOREIGN KEY (idSala)
+	REFERENCES Salas(id)
 )
+
+
 
 create table Registros
 (
@@ -127,3 +134,115 @@ create table Notificacoes
 	CONSTRAINT FK_idDestino FOREIGN KEY (idDestino)
 	REFERENCES Usuarios(id)
 )
+
+
+/************************************************************************/
+
+create table Salas
+(
+id int primary key identity,
+idProfessor int not null,
+nome varchar(100) not null,
+codigo varchar(10) not null,
+CONSTRAINT FK_idProfessor FOREIGN KEY (idProfessor)
+REFERENCES Usuarios(id)
+)
+
+create table Comunicados
+(
+id int primary key identity,
+idSala int not null,
+data date,
+descricao varchar(600) not null,
+CONSTRAINT FK_idSala1 FOREIGN KEY (idSala)
+REFERENCES Salas(id)
+)
+
+create table Atividades
+(
+id int primary key identity,
+tipo varchar(100) not null,
+foto varchar(200),
+exclusivo bit not null,
+nome varchar(100)
+)
+
+create table Tarefas
+(
+id int primary key identity,
+idSala int not null,
+data date,
+dataEntrega date,
+titulo varchar(100),
+idAtividade int not null,
+CONSTRAINT FK_idAtividade FOREIGN KEY (idAtividade)
+REFERENCES Atividades(id),
+CONSTRAINT FK_idSala2 FOREIGN KEY (idSala)
+REFERENCES Salas(id)
+)
+
+
+create table ProfessoresSalas
+(
+id int primary key identity,
+idUsuario int not null,
+idSala int not null,
+CONSTRAINT FK_idUsuario3 FOREIGN KEY (idUsuario)
+REFERENCES Usuarios(id),
+CONSTRAINT FK_idSala3 FOREIGN KEY (idSala)
+REFERENCES Salas(id)
+)
+
+create table TarefasAlunos
+(
+id int primary key identity,
+idUsuario int not null,
+idTarefa int not null,
+concluido bit not null,
+nota float,
+CONSTRAINT FK_idUsuario2 FOREIGN KEY (idUsuario)
+REFERENCES Usuarios(id),
+CONSTRAINT FK_idTarefa FOREIGN KEY (idTarefa)
+REFERENCES Tarefas(id)
+)
+
+create table Conquistas
+(
+id int primary key identity,
+nome varchar(100) not null,
+descricao varchar(100) not null,
+foto varchar(100) not null,
+pontos int not null,
+objetivo int not null
+)
+
+create table UsuarioConquistas
+(
+id int primary key identity,
+idUsuario int not null,
+idConquista int not null,
+CONSTRAINT FK_idUsuario1 FOREIGN KEY (idUsuario)
+REFERENCES Usuarios(id),
+CONSTRAINT FK_idConquista FOREIGN KEY (idConquista)
+REFERENCES Conquistas(id)
+)
+
+create table Produtos
+(
+id int primary key identity,
+nome varchar(100) not null,
+foto varchar(100) not null,
+preco float not null
+)
+
+create table ProdutoUsuario
+(
+id int primary key identity,
+idUsuario int not null,
+idProduto int not null,
+CONSTRAINT FK_idUsuario4 FOREIGN KEY (idUsuario)
+REFERENCES Usuarios(id),
+CONSTRAINT FK_idProduto FOREIGN KEY (idProduto)
+REFERENCES Produtos(id)
+)
+

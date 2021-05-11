@@ -1,11 +1,11 @@
 -- INSERTS TESTES
 
 insert into Usuarios
-values('Giovanna Pavani Martelli', 'gigis', 'giovanna@gmail.com', '(19)99999-9999', '09/08/2004', 1, 'senha123', 'Campinas', 'São Paulo', 0, 1, 0)
+values('Giovanna Pavani Martelli', 'gigis', 'giovanna@gmail.com', '(19)99999-9999', '09/08/2004', 1, 'senha123', 'Campinas', 'SP', 0, 0, -10,0,0,null)
 insert into Usuarios
-values('Maria Luiza Sperancin Mancebo', 'malulis', 'malu@gmail.com', '(19)99999-9999', '02/06/2004', 2, 'senha123', 'Valinhos', 'São Paulo',  0, 0, 1000000)
+values('Maria Luiza Sperancin Mancebo', 'malulis', 'malu@gmail.com', '(19)99999-9999', '02/06/2004', 2, 'senha123', 'Valinhos', 'SP',  0, 0, 1000000,0,300,1)
 insert into Usuarios
-values('Vinicius Martins Cotrim', 'venizius', 'vini@gmail.com', '(19)99999-9999', '12/02/2004', 3, 'senha123', 'Sumaré', 'São Paulo', 0, 0, 10)
+values('Vinicius Martins Cotrim', 'venizius', 'vini@gmail.com', '(19)99999-9999', '12/02/2004', 3, 'senha123', 'Sumaré', 'SP', 0, 0, 10,1,100,null)
 
 insert into Amigos
 values(2, 3)
@@ -91,3 +91,40 @@ insert into Ligacoes values(1,1)
 select r.nome,r.quantia from Ligacoes l, Compartilhamentos c, Registros r where
 c.idUsuario = 1 and
 r.id = l.idRegistro
+
+/*//tenho: usuario  ///quero:todas as suas tarefas e comunicados TESTE*/
+select t.titulo,c.descricao from TarefasAlunos ta,Tarefas t, Comunicados c
+where
+ta.idUsuario = 2 and
+ta.idTarefa = t.id and
+t.idSala = c.idSala 
+
+
+insert into Salas values(1,'Mateca','ndh93j2')
+
+insert into Atividades values('quiz','quiz1.png',0,'Quiz 1')
+insert into Atividades values('quiz','quiz2.png',0,'Quiz 2')
+insert into Atividades values('jogo','jogo.png',1,'The Game')
+
+insert into Tarefas values(1,GETDATE(),GETDATE()+30,'Facam quiz 1',1)
+insert into ProfessoresSalas values(1,1)
+
+insert into Atividades values (1,GETDATE(),'Oi amigos olha q sala legal essa novo né bjs')
+
+insert into Produtos values('Perfil Apaixonado ','perfil4.png', 20)
+insert into Produtos values('Perfil Chiq','perfil5.png', 20)
+insert into Produtos values('Perfil Caipira','perfil6.png', 20)
+insert into Produtos values('Perfil Guei','perfil7.png', 20)
+insert into Produtos values('Perfil Brabo','perfil8.png', 20)
+insert into Produtos values('Perfil Garota','perfil9.png', 20)
+insert into Produtos values('Perfil Pepinha','perfil10.png', 20)
+insert into Produtos values('Perfil Estrela','perfil11.png', 20)
+insert into Produtos values('Perfil Brasil','perfil12.png', 20)
+
+
+insert into ProdutoUsuario values(1,4)
+insert into ProdutoUsuario values(2,3)
+insert into ProdutoUsuario values(3,1)
+
+
+insert into Conquistas values('')
