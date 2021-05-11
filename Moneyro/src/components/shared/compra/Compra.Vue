@@ -112,13 +112,14 @@ export default {
   }
     
   form {
+      border-radius:10px 0 0 10px;
       background-color: #fefefe;
       padding: 5px 20px 0 20px;
       /* padding: 20px; */
-      border: 1px solid #888;
+      border: 1px solid rgb(78, 78, 78);
       width: 100%;
       height: 100%;
-      background-color: gray;
+      background-color: rgb(88, 88, 88);
       display: flex;
       flex-direction: column;
       justify-content: space-between;

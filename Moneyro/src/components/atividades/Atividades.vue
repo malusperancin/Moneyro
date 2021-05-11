@@ -3,11 +3,11 @@
     <Menu />
     <div class="centro">
       <div class="retangulo"> 
-        <span title="Este conteúdo é pago!" class="coroa">👑</span>
+        <span title="Este conteúdo é pago!" class="capelo">🎓</span>
         <img src="../../images/jogojogar.png">
       </div>
       <div class="conteudo">
-        <div class="quadrado">
+        <div class="quadrado" v-on:click="router.push({ path: `/quiz/${1}` })">
           <img src="../../images/quiz1.png">
         </div>
         <div class="quadrado">
@@ -17,7 +17,7 @@
           <img src="../../images/jogo.png">
         </div>
         <div class="quadrado">
-          <span title="Este conteúdo é pago!" class="coroa">👑</span>
+          <span title="Este conteúdo é pago!" class="capelo">🎓</span>
           <img src="../../images/jogo.png">
         </div>
         <div class="quadrado">
@@ -64,22 +64,23 @@ export default {
 
 <style scoped>
 .pag{
-  padding: 15px 10vw;
+  
 }
 
-.coroa::selection {
+.capelo::selection {
   user-select: none;
 }
 
-.coroa {
+.capelo {
   transform: rotate(45deg);
-  font-size: 45px;
+  font-size: 60px;
   position: absolute;
   top: -35px;
   right: -35px;
 }
 
 .centro {
+  padding: 30px 15vw;
   display: flex;
   flex-direction: column;
   justify-content: stretch;

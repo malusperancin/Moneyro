@@ -1,8 +1,8 @@
 <template>
   <div class="pag">
+    <Menu />
+    <Perfil />
     <div class="centro">
-      <Menu />
-      <Perfil />
       <div v-if="turma">
         <div class="cima">
           <div class="infoSala">
@@ -88,7 +88,7 @@ export default {
 
 <style scoped>
 .centro{
-  padding: 25px 16vw;
+  padding: 25px 15vw;
 }
 
 .inicio {

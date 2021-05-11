@@ -90,19 +90,18 @@ export default {
 .produtos {
   display: flex;
   padding-top: 2%;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .produtos div {
-  margin: 0 1% 1% 0;
-  width:475px;
-  padding:50px;
-  padding-top:30px;
+  margin: 0 5% 1% 0;
+  width: 450px;
   box-sizing: border-box;
 }
 
 .quadrado{
-  font-size: 3em;
+  font-size: 2.5em;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
