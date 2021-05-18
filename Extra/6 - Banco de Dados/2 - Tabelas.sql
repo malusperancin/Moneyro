@@ -70,7 +70,8 @@ create table Usuarios
 create table Perguntas
 (
 	id int identity primary key, 
-	descricao varchar(300)
+	descricao varchar(300),
+	idQuiz int not null
 )
 
 create table Respostas

@@ -405,3 +405,50 @@ BEGIN
 
  RETURN
 END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////////////////////-/////////////////////////////
+create proc sp_quiz 
+@idQuiz int = null
+as
+select p.descricao as 'pergunta', r.descricao as 'alternativa', r.correta
+from
+perguntas p, respostas r
+where
+p.idQuiz = @idQuiz and
+r.idPergunta = p.id
