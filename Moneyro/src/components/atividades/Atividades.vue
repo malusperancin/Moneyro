@@ -7,10 +7,10 @@
         <img src="../../images/jogojogar.png">
       </div>
       <div class="conteudo">
-        <div class="quadrado" v-on:click="router.push({ path: `/quiz/${1}` })">
+        <div class="quadrado" v-on:click="$router.push({ path: 'quiz', query: { codigo: 1} })">
           <img src="../../images/quiz1.png">
         </div>
-        <div class="quadrado">
+        <div class="quadrado" v-on:click="$router.push({ path: 'quiz', query: { codigo: 2} })">
           <img src="../../images/quiz2.png">
         </div>
         <div class="quadrado">

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using ProjetoPratica_API.Data;
 using Microsoft.EntityFrameworkCore;
 using ProjetoPratica_API.Models;
+using Microsoft.Data.SqlClient;
+using System.Data;
 using System;
 
 namespace ProjetoPratica_API.Data
@@ -80,8 +82,6 @@ namespace ProjetoPratica_API.Data
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaUsuario.FirstOrDefaultAsync();
         }
-
-
 
         public async Task<Registros[]> GetAllRegistros()
         {
@@ -344,6 +344,129 @@ namespace ProjetoPratica_API.Data
         consultaNotificacao = consultaNotificacao.OrderBy(t => t.Visualizada).Where(not => not.IdDestino == IdDestino && not.Visualizada == 0);
 
         return await consultaNotificacao.ToArrayAsync();
+        }
+
+        public async Task<Tarefas> GetTarefaById(int Id)
+        {
+            IQueryable<Tarefas> consultaTarefas = (IQueryable<Tarefas>)this.Context.Tarefas;
+            consultaTarefas = consultaTarefas.OrderBy(t => t.Id).Where(tarefa => tarefa.Id == Id);
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaTarefas.FirstOrDefaultAsync();
+        }
+
+        public async Task<Tarefas[]> GetAllTarefas()
+        {
+            IQueryable<Tarefas> consultaTarefas = (IQueryable<Tarefas>)this.Context.Tarefas;
+            return await consultaTarefas.ToArrayAsync();
+        }
+
+        public async Task<Salas[]> GetAllSalas()
+        {
+            IQueryable<Salas> consultaSalas = (IQueryable<Salas>)this.Context.Salas;
+            return await consultaSalas.ToArrayAsync();
+        }
+
+        public async Task<Salas> GetSalaById(int Id)    
+        {
+            IQueryable<Salas> consultaSalas = (IQueryable<Salas>)this.Context.Salas;
+            consultaSalas = consultaSalas.OrderBy(s => s.Id).Where(sala => sala.Id == Id);
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaSalas.FirstOrDefaultAsync();
+        }
+
+        public async Task<Comunicados[]> GetAllComunicados()
+         {
+           IQueryable<Comunicados> consultaComunicados = (IQueryable<Comunicados>)this.Context.Comunicados;
+           return await consultaComunicados.ToArrayAsync();
+        }
+
+        public async Task<Comunicados> GetComunicadoById(int Id)    
+        {
+            IQueryable<Comunicados> consultaComunicados = (IQueryable<Comunicados>)this.Context.Comunicados;
+            consultaComunicados = consultaComunicados.OrderBy(c => c.Id).Where(com => com.Id == Id);
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaComunicados.FirstOrDefaultAsync();
+        }
+
+         public async Task<Atividades[]> GetAllAtividades()
+         {
+           IQueryable<Atividades> consultaAtividades = (IQueryable<Atividades>)this.Context.Atividades;
+           return await consultaAtividades.ToArrayAsync();
+        }
+
+        public async Task<Atividades> GetAtividadeById(int Id)    
+        {
+            IQueryable<Atividades> consultaAtividades = (IQueryable<Atividades>)this.Context.Atividades;
+            consultaAtividades = consultaAtividades.OrderBy(a => a.Id).Where(ativ => ativ.Id == Id);
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaAtividades.FirstOrDefaultAsync();
+        }
+
+        public async Task<Produtos[]> GetAllProdutos()
+         {
+           IQueryable<Produtos> consultaProdutos = (IQueryable<Produtos>)this.Context.Produtos;
+           return await consultaProdutos.ToArrayAsync();
+        }
+
+        public async Task<Produtos> GetProdutoById(int Id)    
+        {
+            IQueryable<Produtos> consultaProdutos = (IQueryable<Produtos>)this.Context.Produtos;
+            consultaProdutos = consultaProdutos.OrderBy(p => p.Id).Where(produto => produto.Id == Id);
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaProdutos.FirstOrDefaultAsync();
+        }
+
+        public List<Quiz> SpQuiz(int QuizId)
+        {
+            var a = this.Context.Database.GetDbConnection().ConnectionString;
+            
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+            
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_quiz "+ QuizId;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            //cmd.Connection = con;
+            //cmd.CommandType = CommandType.StoredProcedure;
+
+            var aux = new List<Quiz>();
+
+            while (leitor.Read())
+            {
+                Quiz dados = new Quiz(
+                    (string)leitor["pergunta"],
+                    (string)leitor["alternativa"],
+                    (bool)leitor["correta"]);
+
+                aux.Add(dados);
+            }
+
+            string pergunta = "";
+            string[] alternativas;
+            
+            var result = new List<Quiz>();
+            
+            for(int i = 0; i < aux.Count; i+=4)
+            {
+                alternativas = new string[4];
+                int correta = -1;
+                
+                for(int j = 0; j<4; j++)
+                {
+                    alternativas[j] = aux[i+j].Alternativa;
+                    pergunta = aux[i].Descricao;
+
+                    if(aux[i+j].Correta)
+                        correta = j;
+                }
+                
+                result.Add(new Quiz(aux[i].Descricao, alternativas, correta));
+            }
+
+            con.Close();
+            return result;
         }
     }
 }

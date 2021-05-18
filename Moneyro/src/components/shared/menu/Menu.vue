@@ -48,7 +48,11 @@
               <img src="../../../images/pontos.png" alt="a" class="nav__icon" />
               <span class="nav__name">Pontos</span>
             </a>
-            <a title="Sala de Aula" v-bind:class="{active: this.$route.path == '/salaaluno'}" class="nav__link" v-on:click="$router.push('salaaluno')">
+            <a title="Sala de Aula" v-if="this.$session.get('professor')" v-bind:class="{active: this.$route.path == '/salaprofessor'}" class="nav__link" v-on:click="$router.push('salaprofessor')">
+              <img src="../../../images/aula.png" alt="a" class="nav__icon" />
+              <span class="nav__name">Sala de Aula</span>
+            </a>
+             <a title="Sala de Aula" v-else v-bind:class="{active: this.$route.path == '/salaaluno'}" class="nav__link" v-on:click="$router.push('salaaluno')">
               <img src="../../../images/aula.png" alt="a" class="nav__icon" />
               <span class="nav__name">Sala de Aula</span>
             </a>

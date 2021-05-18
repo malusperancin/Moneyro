@@ -3,7 +3,7 @@
     <Menu />
     <Perfil />
     <div class="centro">
-      <div v-if="turma">
+      <div v-if="this.$session.get('idSala') > 1">
         <div class="cima">
           <div class="infoSala">
             <p class="nomeSala"><b>Sala:</b> {{sala.nome}} </p>
@@ -15,7 +15,6 @@
         <br>
         <Atividade />
       </div>
-
       <div v-else class="inicio">
         <div class="quadrado">
           <p class="p-else">Ingresse em uma sala!</p>
@@ -59,7 +58,6 @@ export default {
   },
   data(){
     return {
-      turma:true,
       sala:{
         nome: "Sala da Maria Luzia",
         codigo: "x5f7h6"
@@ -82,6 +80,13 @@ export default {
   },
   created() {
     document.title = "Sala de Aula";
+  },
+  beforeCreate() {
+    //PEGAR A SALA E EXIBIR
+    //this.$session.get("idSala") > 1"
+    if (!this.$session.exists()) {
+      this.$router.push('/')
+    }
   }
 };
 </script>
@@ -95,7 +100,6 @@ export default {
   display: flex;
   flex-direction:inherit;
   justify-content: center;
-  background: rgb(224, 154, 142);
   align-items:center;
 }
 

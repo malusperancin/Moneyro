@@ -3,9 +3,8 @@
     <Menu />
     <div class="centro">
       <div>
-      <h3 class="pts"> Seus pontos: 10 </h3>
+        <h3 class="pts"> Seus pontos: 10 </h3>
       </div>
-
       <h1 id="titulo"> Conquistas </h1>
       <div class="conquistas">
         <div class="conquista" v-for="conquista in conquistas"> 
@@ -15,7 +14,7 @@
             <p>{{conquista.descricao}}</p>
             <div class="progresso">
               <div class="porcentagem">
-                <div>
+                <div class="numero">
                   {{conquista.feito}}/{{conquista.total}}
                 </div>
               </div>
@@ -267,6 +266,15 @@ export default {
   display: flex;
   z-index:9;
   color: #ffffff96
+}
+
+.numero {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: red;
 }
 
 .coroa::selection {

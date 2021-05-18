@@ -67,7 +67,21 @@ create table Usuarios
 	REFERENCES Salas(id)
 )
 
+create table Perguntas
+(
+	id int identity primary key, 
+	descricao varchar(300)
+)
 
+create table Respostas
+(
+	id int identity primary key, 
+	descricao varchar(300), 
+	idPergunta int,
+	correta bit,
+	CONSTRAINT FK_idPergunta FOREIGN KEY (idPergunta)
+	REFERENCES Perguntas(id)
+)
 
 create table Registros
 (

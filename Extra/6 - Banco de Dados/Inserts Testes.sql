@@ -128,3 +128,19 @@ insert into ProdutoUsuario values(3,1)
 
 
 insert into Conquistas values('')
+
+
+insert into Perguntas values('Quem descobriu o Brasil?')
+insert into Perguntas values('Qual é a mais gay?')
+
+insert into Respostas values('Rodrigo',1,0)
+insert into Respostas values('Pablo Vittar',1,1)
+insert into Respostas values('Pablo Victor',1,0)
+insert into Respostas values('Pedro Alvares Cabral',1,0)
+
+insert into Respostas values('Rodrigo',2,0)
+insert into Respostas values('Vinicius',2,0)
+insert into Respostas values('As duas',2,1)
+insert into Respostas values('Nenhuma',2,0)
+
+

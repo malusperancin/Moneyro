@@ -207,7 +207,10 @@ export default {
         estado: "",
         modoAnonimo: false,
         notificacoes: false,
-        saldo: 0.0
+        saldo: 0.0,
+        professor: 0,
+        pontos: 0,
+        idSala: null
       },
       dia: 1,
       mes: 1,

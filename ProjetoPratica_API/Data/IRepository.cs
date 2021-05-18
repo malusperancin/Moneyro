@@ -1,4 +1,4 @@
-
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ProjetoPratica_API.Models;
 
@@ -37,7 +37,6 @@ namespace ProjetoPratica_API.Data
         Task<Tips[]> GetAllTips();
         // Task<Tips[]> GetTipsByAssunto(string Assunto);
         Task<Tips> GetTipById(int Id);
-
         Task<Videos[]> GetAllVideos();
         Task<Videos> GetVideoById(int Id);
 
@@ -62,5 +61,22 @@ namespace ProjetoPratica_API.Data
        Task<Notificacoes> GetNotificacaoById(int Id);
        Task<Notificacoes[]> GetAllNotificacoes();
        Task<Notificacoes[]> GetNotificacoesByUsuario(int IdDestino);
+
+       Task<Tarefas> GetTarefaById(int Id);
+       Task<Tarefas[]> GetAllTarefas();
+
+        Task<Salas[]> GetAllSalas();
+        Task<Salas> GetSalaById(int Id);
+    
+        Task<Comunicados[]> GetAllComunicados();
+        Task<Comunicados> GetComunicadoById(int Id);
+
+        Task<Atividades> GetAtividadeById(int Id);
+        Task<Atividades[]> GetAllAtividades();
+
+        Task<Produtos[]> GetAllProdutos();
+        Task<Produtos> GetProdutoById(int Id);
+
+        List<Quiz> SpQuiz(int QuizId);
     }
 }

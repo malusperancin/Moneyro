@@ -2,6 +2,11 @@
   <div class="pag">
     <Cabecalho :titulo="'Quiz'"/>
     <Menu />
+    <Mensagem
+      :msg="msg"
+      v-if="msg.visivel"
+      v-on:fechar="msg.visivel = false"
+    ></Mensagem>
     <div class="centro">
       <div class="titulo">
         <p>Quiz do Moneyro</p>
@@ -15,20 +20,20 @@
           <div class="alternativa" v-for="(alternativa,j) in perguntas[indice].alternativas">   
             <label class="container">
               {{perguntas[indice].alternativas[j]}}
-              <input type="radio" v-model="j" :id="j" :name="'pergunta'+indice" :value="j">
+              <input type="radio" class="rb" v-model="respostas[indice]" :id="j" :name="'pergunta'+indice" :value="j">
               <span class="checkmark"></span>
             </label>
           </div>
         </div>
       </div>
       <div class="resultado" v-else>
-        <h1> Você acertou 1 de {{perguntas.length}} questões</h1>
+        <h1 style="text-align:center"> Você acertou {{acertos}} de {{perguntas.length}} questões</h1>
       </div>
       <div class="controles">
           <button class="botao" id="ant" v-on:click="anterior()">Anterior</button>
           <div class="progresso">
             <div class="porcentagem">
-            {{Math.round(((indice)/perguntas.length)*100)}}%
+              {{Math.round(((indice)/perguntas.length)*100)}}%
             </div>
             <div :style="'width:'+((indice)/perguntas.length)*100+'%'" class="progresso-barra"></div>
           </div>
@@ -45,55 +50,52 @@
 <script>
 import Cabecalho from '../shared/cabecalho/Cabecalho.vue';
 import Menu from '../shared/menu/Menu.vue';
+import Mensagem from "../shared/mensagem/Mensagem.vue";
+
 export default {
   components: {
     Cabecalho,
+    Mensagem,
     Menu
   },
   data() {
     return {
+      acertos: 0,
+      j: 0,
       indice: 0,
       respostas: [],
-      perguntas: [
-        {
-          descricao: "Qual é o nome da filha da Xuxa?",
-          resposta: 1,
-          alternativas: [
-              "Shaxa",
-              "Sasha",
-              "Chacha",
-              "Xaxa"
-          ]
-        },
-        {
-          descricao: "Quanto é (345 * 23 / 42 + 23.534 ^ 231 + 231) * 34 ^ 3",
-          resposta: 3,
-          alternativas: [
-              "3",
-             "234532",
-             "6",
-             "Xaxa"
-          ]
-        },
-        {
-          descricao: "Ca, Ce, Ci, Co?",
-          resposta: 3,
-          alternativas: [
-            "Cu",
-            "Ku",
-            "Crú",
-            "Sapo Cururú"
-          ]
-        }
-      ]
+      perguntas: [],
+      msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: []
+      },
     };
   },
   methods: {
-    proxima() {
-      if(this.indice+1 < this.perguntas.length)
+    pontuar(){
+      if(this.respostas[this.indice] == this.perguntas[this.indice].resposta)
       {
-        this.indice = this.indice+1;
+        this.acertos++;
       }
+    },
+    proxima() {
+      if(this.respostas[this.indice] == null) //se não respondeu
+      {
+          this.msg.titulo = "Tem certeza que deseja ir para proxima?";
+          this.msg.mensagem = "Você esqueceu de marcar a ultima questão,\n pode voltar quando quiser para arrumar";
+          this.msg.botoes = [
+            {
+            mensagem: "Ok",
+            evento: "fechar"
+            }
+          ];
+          this.msg.visivel = true;
+        }
+      
+      this.pontuar();
+      this.indice = this.indice+1;
     },
     anterior() {
       if(this.indice > 0)
@@ -102,22 +104,37 @@ export default {
       }
     },
     enviar(){
-      var btnAnterior = document.getElementById("ant");
-      btnAnterior.style.background = "#696969"
-      btnAnterior.style.color = "darkgray";
-      btnAnterior.disabled= true;
-      this.indice = this.perguntas.length;
+      if(this.respostas[this.indice])
+      {
+        this.pontuar();
+        var btnAnterior = document.getElementById("ant");
+        btnAnterior.style.background = "#696969"
+        btnAnterior.style.color = "darkgray";
+        btnAnterior.disabled= true;
+        this.indice = this.perguntas.length;
+        alert(this.acertos);
+      }
     }
   },
   mounted(){
-
+    var rb = document.getElementsByClassName("rb");
+    for(var i=0;i<rb.length;i++)
+      rb[i].checked = false;
 
   },
-  created() {
-    
-document.title = "Moneyro - Quiz";
+  created() {  
+    document.title = "Moneyro - Quiz";
+    alert(this.$route.query.codigo);
+    this.$http
+        .get("https://localhost:5001/api/quiz/" + this.$route.query.codigo)
+        .then(dados => {
+          this.perguntas = dados.body;
+        });
   },
    beforeCreate() {
+     if (!this.$session.exists()) {
+      this.$router.push('/')
+    }
   },
   watch: {
   }
@@ -137,10 +154,8 @@ h1{
 }
 
 .alternativas {
-  padding: 0px 525x;
-
+  padding: 0px 10px;
   box-sizing: border-box;
-  background: red;
 }
 
 .centro {
@@ -163,12 +178,12 @@ h1{
   display: flex;
 } 
 
-
 #sair {
   background-color: tomato;
 }
 
 .pergunta {
+  padding-top: 15px;
   display: flex;
 }
 
@@ -184,7 +199,6 @@ h1{
   border: 1px gray solid;
   padding: 1.5% 3%;
   margin: 2% 0;
-
   min-height: 250px;
 }
 
@@ -268,9 +282,11 @@ p {
 
 .porcentagem {
   position: absolute;
-  top: -15%;
-  left: 45%; 
-  display: flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  line-height: 35px;
   z-index:9;
   color: #ffffff96;
   font-size:1.7em;

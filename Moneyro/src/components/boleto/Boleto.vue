@@ -7,9 +7,8 @@
       v-on:home="msg.visivel = false, $router.push('/')"
       v-on:fechar="msg.visivel = false"
     ></Mensagem>
-
     <div id="formBoleto">
-      <form v-on:submit.prevent="Gerar" id="formBol">
+      <form v-on:submit.prevent="gerar()" id="formBol">
         <input
           type="email"
           class="campos"
@@ -27,7 +26,7 @@
           placeholder="CEP"
           pattern="[0-9]{5}-[0-9]{3}"
           maxlength="70"
-          v-model="this.$route.query.parametro"
+          v-model="this.$route.query.cep"
           required
         />
 
@@ -117,7 +116,7 @@ export default {
         mensagem: "",
         botoes: []
       },
-       usuario: {
+     usuario: {
         id: 0,
         nome: "",
         apelido: "",
@@ -130,28 +129,52 @@ export default {
         estado: "",
         modoAnonimo: false,
         notificacoes: false,
-        saldo: 0.0
-      }
-
+        saldo: 0.0,
+        professor: false,
+        pontos: 0,
+        idSala:1 
+      },
     };
   },
   methods: {
-    Gerar: function() {
-            this.msg.titulo = "COMPRA REALIZADA COM SUCESSO!";
-            this.msg.mensagem =
-              "Enviamos o boleto ao seu email!";
+    gerar(){
+      var produto = this.$route.query.produto;
 
-            this.msg.botoes = [
-              {
-                mensagem: "OK",
-                evento: "home"
-              }
-            ];
+      if(produto == 'professor') {
+        this.usuario.professor = true;
+        this.usuario.idSala = 1;
+      }
 
-            this.msg.visivel = true;
-          },
-
-          getUsuario(){
+      this.$http.put("https://localhost:5001/api/usuarios/" + this.usuario.id, this.usuario)
+      .then(
+        response => {
+        this.$session.set("professor", true);
+          this.msg = {
+            visivel: true,
+            titulo: "COMPRA REALIZADA COM SUCESSO!",
+            mensagem: "Enviamos o boleto ao seu email!",
+            botoes: [{
+              mensagem: "OK",
+              evento: "home"
+            }]
+          };
+        },
+        erro => {
+          this.msg = {
+            visivel: true,
+            titulo: "Opa neném",
+            mensagem: erro,
+            botoes: [{
+              mensagem: "Tentar Novamente",
+              evento: "fechar"
+            }]
+          };
+          
+          this.getUsuario();
+        }
+      );
+    },
+    getUsuario(){
       this.$http
             .get("https://localhost:5001/api/usuarios/" + this.$session.get("id"))
             .then(response => {
@@ -164,11 +187,9 @@ export default {
               this.ano = data.getFullYear();
             });
     },
-      
-    },
+  },
   created() {
     this.getUsuario();
-
 
     this.$http
       .get("https://servicodados.ibge.gov.br/api/v1/localidades/estados")

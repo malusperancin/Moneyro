@@ -19,5 +19,8 @@ namespace ProjetoPratica_API.Models
         public bool ModoAnonimo { get; set; }
         public bool Notificacoes { get; set; }
         public decimal Saldo { get; set; }
+        public bool Professor { get; set; }
+        public int IdSala { get; set; }
+        public int Pontos { get; set; }
     }
 }

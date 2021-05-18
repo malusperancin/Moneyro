@@ -51,7 +51,7 @@
             <p id="valorTotal" v-if="produto.nome == 'cofre'">R$ {{qtd * 35}},00</p>
             <p id="valorTotal" v-if="produto.nome == 'professor'">R$ 85,00</p>
           </div>
-          <button class="botao" v-on:click="$router.push({ path: 'boleto', query: { parametro: cep } })">Comprar</button>
+          <button class="botao" v-on:click="$router.push({ path: 'boleto', query: { cep: cep, produto: produto.nome} })">Comprar</button>
         </div>
     </form> 
   </div>

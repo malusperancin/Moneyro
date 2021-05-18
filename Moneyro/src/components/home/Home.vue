@@ -20,7 +20,6 @@
               </div>
             </div>
           </div>  
-          <!---------->
           <!-- VIDEO -->
           <div v-if="postagem.tipo == 'video'">
             <p class="titulo">{{ postagem.titulo }}</p>
@@ -36,7 +35,6 @@
               </div>
             </div>
           </div>
-          <!---------->
           <!-- DICA -->
           <div v-if="postagem.tipo == 'dica'">
             <p class="titulo">{{postagem.autor}} once said: </p>
@@ -51,7 +49,6 @@
               </div>
             </div>
           </div>
-          <!---------->
         </div>
       </div>
       <div id="direita">

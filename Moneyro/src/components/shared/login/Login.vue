@@ -53,6 +53,9 @@ export default {
               this.$session.set("MA", response.body.modoAnonimo);
               this.$session.set("nome", response.body.nome);
               this.$session.set("foto", response.body.foto);
+              this.$session.set("professor", response.body.professor);
+              this.$session.set("idSala", response.body.idSala);
+              this.$session.set("pontos", response.body.pontos);
               this.$http.headers.common["Authorization"] =
                 "Bearer " + response.body.id;
               this.$router.push("/usuario");
