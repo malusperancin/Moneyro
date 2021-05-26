@@ -12,18 +12,15 @@
             <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle" v-on:click="ativo = !ativo, tipos = false"></ion-icon>
             <a class="nav__logo">Turmas</a>
           </div>
-          <div class="nav__list">
-            <a title="Sala 7º ano" v-bind:class="{active: $route.path == '/salaprofessor/'+codigosala}" 
-            class="nav__link" v-on:click="$emit('abrirSala')">
+
+          <div class="nav__list" v-for="(sala, i) in salas">
+            <a v-for="" title="sala" v-bind:class="{active: $route.path == '/salaprofessor/'+sala.codigo}" 
+            class="nav__link" v-on:click="$router.push('professor/'+sala.codigo), $emit('abrirSala')">
               <img src="../../../images/aula.png" alt="a" class="nav__icon" />
-              <span class="nav__name">Sala 7º ano</span>
-            </a>
-            <a title="Sala 8º ano" v-bind:class="{active: $route.path == '/salaprofessor/'+codigosala}" 
-            class="nav__link" v-on:click="$emit('abrirSala')">  <!-- PARAMOS FAZENDO ISSO -->
-              <img src="../../../images/aula.png" alt="a" class="nav__icon" />
-              <span class="nav__name">Sala 8º ano</span>
+              <span class="nav__name">{{sala.nome}}</span>
             </a>
           </div>
+
         </div>
         <a title="Sair" class="nav__link" v-on:click="sair()">
           <img src="../../../images/sairapp.png" alt="a" class="nav__icon" />
@@ -38,15 +35,15 @@
 import Mensagem from "../mensagem/Mensagem.vue";
 
 export default {
+  props: ["sa"],
   components: {
       Mensagem,
   },
   data() {
     return {
-      codigosala: '76sdf3',
+      salas: [],
       ativo: false,
       tipos: false,
-      tiposM: false,
       msg: {
         visivel: false,
         titulo: "",
@@ -76,6 +73,16 @@ export default {
     {
     }
   },
+  created() {
+    this.$http
+      .get("https://localhost:5001/api/salas/professor/"+this.$session.get('id'))
+      .then(response => {
+        this.salas = response.body;
+        }, erro =>{
+          alert("deu ruim");
+          console.log(erro);
+      });
+  }
 };
 </script>
 

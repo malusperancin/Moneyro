@@ -26,5 +26,6 @@ namespace ProjetoPratica_API.Data
         public DbSet<Atividades> Atividades { get; set; }
         public DbSet<Comunicados> Comunicados { get; set; }
         public DbSet<Tarefas> Tarefas { get; set; }
+        public DbSet<Postagens> Postagens { get; set; }
     }
 }

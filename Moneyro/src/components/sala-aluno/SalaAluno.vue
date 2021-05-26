@@ -2,6 +2,10 @@
   <div class="pag">
     <Menu />
     <Perfil />
+    <Mensagem
+      :msg="msg"
+      v-if="msg.visivel" 
+      v-on:ok="msg.visivel = false"/>
     <div class="centro">
       <div v-if="this.$session.get('idSala') > 1">
         <div class="cima">
@@ -9,11 +13,14 @@
             <p class="nomeSala"><b>Sala:</b> {{sala.nome}} </p>
             <p><b>Código da sala:</b> {{sala.codigo}}</p>
           </div>
-          <p class="nomeProf"> <b>Professor:</b> {{professor.nome}}</p>
+          <p class="nomeProf"> <b>Professor:</b> {{sala.professor}}</p>
         </div>
-        <Comunicado /> 
+        <span v-for="(post, i) in postagens">
+          <Comunicado v-if="post.tipo == 'comunicado'" :infos="post" :nome="sala.professor"/> 
+          <br>
+          <Atividade v-if="post.tipo == 'atividade'" :infos="post" :nome="sala.professor"/>
+        </span>
         <br>
-        <Atividade />
       </div>
       <div v-else class="inicio">
         <div class="quadrado">
@@ -24,11 +31,11 @@
               type="text"
               id="email"
               placeholder="Código da sala"
-              v-model="codigo"
+              v-model="sala.codigo"
               maxlength=""
               required
             >
-            <button class="botao-entrar" v-on:click="entrar(codigo)">Entrar</button>
+            <button class="botao-entrar" v-on:click="entrar(sala.codigo)">Entrar</button>
           </div>
         </div>
 
@@ -48,6 +55,7 @@ import Perfil from "../shared/perfil/Perfil.vue";
 import Menu from "../shared/menu/Menu.vue";
 import Comunicado from "../shared/comunicado/Comunicado.vue";
 import Atividade from "../shared/atividade/Atividade.vue";
+import Mensagem from "../shared/mensagem/Mensagem.vue";
 
 export default {
   components: {
@@ -59,33 +67,81 @@ export default {
   data(){
     return {
       sala:{
-        nome: "Sala da Maria Luzia",
-        codigo: "x5f7h6"
+        nome: '',
+        codigo: '',
+        professor: ''
       },
-      professor: {
-        nome: "Maria Luzia", 
+      postagens: [],
+      msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: [],
       },
-      comunicado: {
-        texto: "Informamos: Fuleco faleceu!",
-        data: "12/02/2004"
-      },
-      codigo: ''
    };
   },
   methods: {
-    entrar(cod)
-    {
+    entrar(cod) {
       alert(cod);
+      this.$http
+        .post("https://localhost:5001/api/usuario/sala" + cod)
+        .then(
+          dados => {
+            this.getSala(cod);
+          },
+          erro => {
+            this.msg = {
+              visivel: true,
+              titulo: "Erro",
+              mensagem: erro,
+              botoes: [
+                {
+                  mensagem: "Ok",
+                  evento: "ok",
+                }]
+            }
+          }
+        );
+    },
+    getSalaByCod(codSala) {
+      alert("getSala");
+      this.$http
+        .get("https://localhost:5001/api/sala/"+codSala) 
+        .then(
+          dados => {
+            this.sala.nome = dados.body.nome;
+            this.sala.codigo = dados.body.codigo;
+            this.sala.professor = dados.body.nome;
+          }
+        );     
+    },
+    getPostagens(idSala) {
+      this.$http
+        .get("https://localhost:5001/api/postagens/"+idSala) 
+        .then(
+          dados => {
+            this.postagens = dados.body;
+          }
+        ); 
     }
   },
   created() {
     document.title = "Sala de Aula";
   },
   beforeCreate() {
-    //PEGAR A SALA E EXIBIR
-    //this.$session.get("idSala") > 1"
     if (!this.$session.exists()) {
       this.$router.push('/')
+    }
+
+    if(this.$session.get("idSala") > 1) {
+      this.$http
+        .get("https://localhost:5001/api/salas/id/"+this.$session.get("idSala")) 
+        .then(
+          dados => {
+            this.sala = dados.body[0];
+            this.getPostagens(this.sala.id);
+          }
+        );  
     }
   }
 };

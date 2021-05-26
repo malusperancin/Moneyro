@@ -366,14 +366,6 @@ namespace ProjetoPratica_API.Data
             return await consultaSalas.ToArrayAsync();
         }
 
-        public async Task<Salas> GetSalaById(int Id)    
-        {
-            IQueryable<Salas> consultaSalas = (IQueryable<Salas>)this.Context.Salas;
-            consultaSalas = consultaSalas.OrderBy(s => s.Id).Where(sala => sala.Id == Id);
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaSalas.FirstOrDefaultAsync();
-        }
-
         public async Task<Comunicados[]> GetAllComunicados()
          {
            IQueryable<Comunicados> consultaComunicados = (IQueryable<Comunicados>)this.Context.Comunicados;
@@ -416,10 +408,36 @@ namespace ProjetoPratica_API.Data
             return await consultaProdutos.FirstOrDefaultAsync();
         }
 
+        /* =========================== SPs ================================*/
+
+        public List<Salas> SpGetSalaByCodigo(string codigo)    
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+            
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_addAlunoSala "+ codigo;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            var result = new List<Salas>();
+
+            while (leitor.Read())
+            {
+                Salas dados = new Salas(
+                    (string)leitor["nome"],
+                    (string)leitor["professor"],
+                    (string)leitor["codigo"]);
+
+                result.Add(dados);
+            }
+
+            con.Close();
+            return result;
+        }
+
         public List<Quiz> SpQuiz(int QuizId)
         {
-            var a = this.Context.Database.GetDbConnection().ConnectionString;
-            
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
             
@@ -427,9 +445,6 @@ namespace ProjetoPratica_API.Data
             cmd.CommandText = "sp_quiz "+ QuizId;
 
             SqlDataReader leitor = cmd.ExecuteReader();
-
-            //cmd.Connection = con;
-            //cmd.CommandType = CommandType.StoredProcedure;
 
             var aux = new List<Quiz>();
 
@@ -467,6 +482,70 @@ namespace ProjetoPratica_API.Data
 
             con.Close();
             return result;
+        }
+   
+        public List<Salas> SpGetSalaById(int Id)    
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+            
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_getSalaById "+ Id;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            var result = new List<Salas>();
+
+            while (leitor.Read())
+            {
+                Salas dados = new Salas(
+                    (int)leitor["id"],
+                    (string)leitor["nome"],
+                    (string)leitor["professor"],
+                    (string)leitor["codigo"]);
+
+                result.Add(dados);
+            }
+
+            con.Close();
+            return result;
+        }
+
+        public void SpCriarSala(Salas sala)    
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+            
+            SqlCommand cmd = new SqlCommand("comando", con);
+            
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+            Enumerable.Repeat(chars, 6)
+                .Select(s => s[random.Next(s.Length)])
+                .ToArray());
+            
+            sala.Codigo = result;
+            
+            cmd.CommandText = "sp_CriarSala " + sala.IdProfessor + ", " + sala.Nome + ", " + sala.Codigo;
+
+            con.Close();
+        }
+
+        public async Task<Salas[]> GetSalasByIdProfessor(int IdProfessor)    
+        {
+            IQueryable<Salas> consultaSalas = (IQueryable<Salas>)this.Context.Salas;
+            consultaSalas = consultaSalas.OrderBy(p => p.Id).Where(sala => sala.IdProfessor == IdProfessor);
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaSalas.ToArrayAsync();
+        }
+
+        public async Task<Postagens[]> GetPostagemBySalaId(int Id)    
+        {
+            IQueryable<Postagens> consultaPostagens = (IQueryable<Postagens>)this.Context.Postagens;
+            consultaPostagens = consultaPostagens.OrderBy(p => p.IdSala).Where(post => post.IdSala == Id);
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaPostagens.ToArrayAsync();
         }
     }
 }

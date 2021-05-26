@@ -74,6 +74,29 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpPost]
+        [Route("sala/{CodSala}")]
+        public async Task<IActionResult> postSala(Usuarios usu, string CodSala)
+        {
+            try
+            {
+                var result = this.Repo.SpGetSalaByCodigo(CodSala);
+
+                if (result == null)
+                    return this.StatusCode(StatusCodes.Status409Conflict, "Essa sala não existe!");
+                else
+                    usu.IdSala = result[0].Id;
+
+                this.Repo.Update(usu);
+
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> post(Usuarios modelo)
         {
             try

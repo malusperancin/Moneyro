@@ -4,12 +4,12 @@
             <div class="infos">
                 <img src="../../../images/perfil2.png">
                 <div class="textos">
-                    <strong><b>{{professor.nome}}</b></strong>
-                    <small>{{comunicado.data}}</small>
+                    <strong><b>{{nome}}</b></strong>
+                    <small>{{data}}</small>
                 </div>
             </div>
             <div class="texto">
-                {{comunicado.texto}}
+                {{infos.descricao}}
             </div>
             <div class="divi"></div>
             <div class="enviar_comentario">
@@ -29,19 +29,10 @@
 
 <script>
 export default {
+props: ["infos", "nome"],
   data() {
     return {
-      sala:{
-        nome: "Sala da Maria Luzia",
-        codigo: "x5f7h6"
-      },
-      professor: {
-        nome: "Maria Luzia", 
-      },
-      comunicado: {
-        texto: "Pessoal, boa noite.Amanhã não conseguirei dar aulas, pois tenho vacina agendada para o horário das aulas. Então, nossa aula será assíncrona, através da leitura do material que estou adicionando a esta mensagem.",
-        data: "12/02/2004"
-      },
+        data: ""
    };
   },
   methods: {
@@ -51,7 +42,12 @@ export default {
     
   },
   created() {
-   
+      var a = new Date(this.infos.data);
+      var dd = String(a.getDate()).padStart(2, '0');
+      var mm = String(a.getMonth() + 1).padStart(2, '0'); //January is 0!
+      var yyyy = a.getFullYear();
+     
+      this.data = dd + '/' + mm + '/' + yyyy;
   },
   watch: {
     expanded(){

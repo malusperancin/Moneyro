@@ -2,23 +2,20 @@ using System;
 
 namespace ProjetoPratica_API.Models
 {
-    public class Tarefas
+    public class Comunicados
     {
-        public Tarefas (int id, int idSala, DateTime data, DateTime dataEntrega, string titulo, string tipo)
+        public Comunicados (int id, int idSala, DateTime data, string descricao, string tipo)
         {
             Id = id;
             IdSala = idSala;
             Data = data;
-            DataEntrega = dataEntrega;
-            Titulo = titulo;
+            Descricao = descricao;
             Tipo = tipo;
         }
         public int Id { get; set; }
         public int IdSala { get; set; }
         public DateTime Data { get; set; }
-        public DateTime DataEntrega { get; set; }
-        public string Titulo { get; set; }
-        public int IdAtividade { get; set; }
+        public string Descricao { get; set; }
         public string Tipo { get; set; }
     }
 }

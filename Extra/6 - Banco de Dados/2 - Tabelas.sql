@@ -169,6 +169,7 @@ id int primary key identity,
 idSala int not null,
 data date,
 descricao varchar(600) not null,
+tipo varchar(20),
 CONSTRAINT FK_idSala1 FOREIGN KEY (idSala)
 REFERENCES Salas(id)
 )
@@ -190,6 +191,7 @@ data date,
 dataEntrega date,
 titulo varchar(100),
 idAtividade int not null,
+tipo varchar(20),
 CONSTRAINT FK_idAtividade FOREIGN KEY (idAtividade)
 REFERENCES Atividades(id),
 CONSTRAINT FK_idSala2 FOREIGN KEY (idSala)
@@ -261,3 +263,16 @@ CONSTRAINT FK_idProduto FOREIGN KEY (idProduto)
 REFERENCES Produtos(id)
 )
 
+create table Postagens(
+id int identity primary key,
+idSala int not null,
+descricao varchar(600) not null,
+data date not null,
+tipo varchar(10) not null,
+dataEntrega date,
+idAtividade int,
+CONSTRAINT FK_idSalaP FOREIGN KEY (idSala)
+REFERENCES Salas(id),
+CONSTRAINT FK_idAtividadeP FOREIGN KEY (idAtividade)
+REFERENCES Atividades(id)
+)

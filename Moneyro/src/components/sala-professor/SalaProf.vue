@@ -1,6 +1,6 @@
 <template>
   <div class="pag">
-    <MenuProfessor />
+    <MenuProfessor :abrirSala="getSala()"/>
     <div class="centro">
       <NovoComunicado v-if="novoComunicado" v-on:fechar="novoComunicado = false"/> 
       <NovaAtividade v-if="novaAtividade" v-on:fechar="novaAtividade = false"/>
@@ -51,6 +51,7 @@ export default {
       novoComunicado: false,
       novaAtividade: false,
       clicou: false,
+      codigoSala: "",
       sala:{
         nome: 'alo',
         codigo: 0
@@ -60,8 +61,11 @@ export default {
       }
     }
    },
-   
   methods: {
+    getSala()
+    {
+      alert(codigo);
+    }
   },
   created() {
     document.title = "Sala de Aula";

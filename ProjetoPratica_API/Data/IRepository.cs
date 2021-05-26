@@ -66,7 +66,8 @@ namespace ProjetoPratica_API.Data
        Task<Tarefas[]> GetAllTarefas();
 
         Task<Salas[]> GetAllSalas();
-        Task<Salas> GetSalaById(int Id);
+        List<Salas> SpGetSalaByCodigo(string codigo);
+        List<Salas> SpGetSalaById(int Id);
     
         Task<Comunicados[]> GetAllComunicados();
         Task<Comunicados> GetComunicadoById(int Id);
@@ -78,5 +79,9 @@ namespace ProjetoPratica_API.Data
         Task<Produtos> GetProdutoById(int Id);
 
         List<Quiz> SpQuiz(int QuizId);
+
+        void SpCriarSala(Salas sala);
+        Task<Salas[]> GetSalasByIdProfessor(int IdProfessor);
+        Task<Postagens[]> GetPostagemBySalaId(int Id);
     }
 }

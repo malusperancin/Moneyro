@@ -36,12 +36,42 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
-        [HttpGet("{IdSala}")]
-        public async Task<IActionResult> Get(int IdSala)
+
+        [HttpGet("{CodSala}")]
+        public async Task<IActionResult> Get(string CodSala)
         {
             try
             {
-                var result = await this.Repo.GetSalaById(IdSala);
+                var result = this.Repo.SpGetSalaByCodigo(CodSala);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+
+        [HttpGet("id/{IdSala}")]
+        public async Task<IActionResult> GetById(int IdSala)
+        {
+            try
+            {
+                var result = this.Repo.SpGetSalaById(IdSala);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+        [HttpGet("professor/{IdProfessor}")]
+        public async Task<IActionResult> GetByIdProfessor(int IdProfessor)
+        {
+            try
+            {
+                var result = await this.Repo.GetSalasByIdProfessor(IdProfessor);
                 return Ok(result);
             }
             catch
@@ -55,7 +85,16 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                this.Repo.Add(modelo);
+                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                var random = new Random();
+                var result = new string(
+                    Enumerable.Repeat(chars, 6)
+                            .Select(s => s[random.Next(s.Length)])
+                            .ToArray());
+                
+                modelo.Codigo = result;
+
+                this.Repo.SpCriarSala(modelo);
 
                 if (await this.Repo.SaveChangesAsync())
                 {
@@ -70,14 +109,15 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        [HttpPut("{IdSala}")]
-        public async Task<IActionResult> put(int IdSala, Salas model)
+
+        [HttpPut("{CodSala}")]
+        public async Task<IActionResult> put(string CodSala, int IdUsuario, Salas model)
         {
             try
             {
                 //verifica se existe aluno a ser alterado
-                 var sala = await this.Repo.GetSalaById(IdSala);
-                 if (sala == null) return NotFound(); //método do EF
+                var sala = this.Repo.SpGetSalaByCodigo(CodSala);
+                if (sala == null) return NotFound(); //método do EF
 
                 this.Repo.Entry(sala);
                 this.Repo.Update(model);

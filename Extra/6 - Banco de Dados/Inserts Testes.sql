@@ -99,12 +99,19 @@ ta.idUsuario = 2 and
 ta.idTarefa = t.id and
 t.idSala = c.idSala 
 
+select * from Usuarios
+insert into Salas values(1,'Testes','testes')
+insert into Salas values(1,'Sala da Mala','aabc123')
+insert into Salas values(2,'Sala de Danca','aabc123')
 
-insert into Salas values(1,'Mateca','ndh93j2')
+insert into ProfessoresSalas values (2,3)
+insert into ProfessoresSalas values (1,1)
 
+insert into Atividades values(' ',' ',0,' ')
 insert into Atividades values('quiz','quiz1.png',0,'Quiz 1')
 insert into Atividades values('quiz','quiz2.png',0,'Quiz 2')
 insert into Atividades values('jogo','jogo.png',1,'The Game')
+
 
 insert into Tarefas values(1,GETDATE(),GETDATE()+30,'Facam quiz 1',1)
 insert into ProfessoresSalas values(1,1)
@@ -144,3 +151,6 @@ insert into Respostas values('As duas',2,1)
 insert into Respostas values('Nenhuma',2,0)
 
 
+select * from postagens
+insert into postagens values(2, 'aloalo', GETDATE(), 'comunicado', GETDATE(),1)
+insert into postagens values(3, 'atividade da malu', GETDATE(), 'atividade', GETDATE(),3)
