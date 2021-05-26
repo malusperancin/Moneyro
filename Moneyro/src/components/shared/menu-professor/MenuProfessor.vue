@@ -13,9 +13,9 @@
             <a class="nav__logo">Turmas</a>
           </div>
 
-          <div class="nav__list" v-for="(sala, i) in salas">
-            <a v-for="" title="sala" v-bind:class="{active: $route.path == '/salaprofessor/'+sala.codigo}" 
-            class="nav__link" v-on:click="$router.push('professor/'+sala.codigo), $emit('abrirSala')">
+          <div class="nav__list" v-bind:key="i" v-for="(sala, i) in salas">
+            <a title="sala" v-bind:key="i" v-bind:class="{active: $route.path == '/salaprofessor/'+sala.codigo}" 
+            class="nav__link" v-on:click="$router.push({ path: `/salaprofessor/${sala.codigo}` }), $emit('getPostagens', sala)">
               <img src="../../../images/aula.png" alt="a" class="nav__icon" />
               <span class="nav__name">{{sala.nome}}</span>
             </a>
@@ -24,7 +24,7 @@
         </div>
         <a title="Sair" class="nav__link" v-on:click="sair()">
           <img src="../../../images/sairapp.png" alt="a" class="nav__icon" />
-          <span v-bind:class="" class="nav__name">Sair da Sala de Aula</span>
+          <span class="nav__name">Sair da Sala de Aula</span>
         </a>
       </nav>
     </div>
@@ -35,13 +35,12 @@
 import Mensagem from "../mensagem/Mensagem.vue";
 
 export default {
-  props: ["sa"],
+  props: ["salas"],
   components: {
       Mensagem,
   },
   data() {
     return {
-      salas: [],
       ativo: false,
       tipos: false,
       msg: {
@@ -69,9 +68,6 @@ export default {
           }]
       };
     },
-    salaDeAula()
-    {
-    }
   },
   created() {
     this.$http

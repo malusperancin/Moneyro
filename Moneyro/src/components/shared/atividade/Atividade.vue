@@ -5,11 +5,11 @@
         <div class="infos">
           <img src="../../../images/perfil2.png">
           <div class="textos">
-            <strong><b>{{nome}}</b></strong>
+            <strong><b>{{professor}}</b></strong>
             <small>{{data}}</small>
           </div>
         </div>
-        <strong class="nome_atividade"><b>{{infos.descricao}}</b></strong>
+        <strong class="nome_atividade"><b>{{atividade.descricao}}</b></strong>
       </div>
     </div>
   </div>
@@ -18,7 +18,7 @@
 <script>
   
 export default {
-  props: ["infos", "nome"],
+  props: ["atividade", "professor"],
   data() {
     return {
       data: ""
@@ -31,12 +31,12 @@ export default {
     
   },
   created() {
-    var a = new Date(this.infos.data);
-      var dd = String(a.getDate()).padStart(2, '0');
-      var mm = String(a.getMonth() + 1).padStart(2, '0'); //January is 0!
-      var yyyy = a.getFullYear();
-     
-      this.data = dd + '/' + mm + '/' + yyyy;
+    var a = new Date(this.atividade.data);
+    var dd = String(a.getDate()).padStart(2, '0');
+    var mm = String(a.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = a.getFullYear();
+    
+    this.data = dd + '/' + mm + '/' + yyyy;
    
   },
   watch: {

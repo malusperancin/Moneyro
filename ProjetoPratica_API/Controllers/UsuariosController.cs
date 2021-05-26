@@ -83,8 +83,8 @@ namespace ProjetoPratica_API.Controllers
 
                 if (result == null)
                     return this.StatusCode(StatusCodes.Status409Conflict, "Essa sala não existe!");
-                else
-                    usu.IdSala = result[0].Id;
+                //else
+                    //usu.IdSala = result.Id;
 
                 this.Repo.Update(usu);
 

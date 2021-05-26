@@ -29,7 +29,7 @@ export const routes = [
     { path: '/compras', component: Compras, title: 'Compras' },
     { path: '/boleto', component: Boleto, title: 'Boleto' },
     { path: '/salaaluno', component: SalaAluno, title: 'Sala de Aula' },
-    { path: '/salaprofessor', component: SalaProfessor, title: 'Sala de Aula' },
+    { path: '/salaprofessor/:codigoSala?', component: SalaProfessor, title: 'Sala de Aula' },
     { path: '/atividades', component: Atividades, title: 'Atividades' },
     { path: '/pontos', component: Pontos, title: 'Pontos' },
     { path: '/quiz', component: Quiz, title: 'Quiz' },

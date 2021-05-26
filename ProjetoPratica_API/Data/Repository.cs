@@ -410,21 +410,22 @@ namespace ProjetoPratica_API.Data
 
         /* =========================== SPs ================================*/
 
-        public List<Salas> SpGetSalaByCodigo(string codigo)    
+        public Object SpGetSalaByCodigo(string codigo)    
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
             
             SqlCommand cmd = new SqlCommand("comando", con);
-            cmd.CommandText = "sp_addAlunoSala "+ codigo;
+            cmd.CommandText = "sp_getSalaByCod "+ codigo;
 
             SqlDataReader leitor = cmd.ExecuteReader();
 
-            var result = new List<Salas>();
+            var result = new List<Object>();
 
             while (leitor.Read())
             {
                 Salas dados = new Salas(
+                    (int)leitor["id"],
                     (string)leitor["nome"],
                     (string)leitor["professor"],
                     (string)leitor["codigo"]);
@@ -433,7 +434,7 @@ namespace ProjetoPratica_API.Data
             }
 
             con.Close();
-            return result;
+            return result[0];
         }
 
         public List<Quiz> SpQuiz(int QuizId)
@@ -540,7 +541,7 @@ namespace ProjetoPratica_API.Data
             return await consultaSalas.ToArrayAsync();
         }
 
-        public async Task<Postagens[]> GetPostagemBySalaId(int Id)    
+        public async Task<Postagens[]> GetPostagensBySalaId(int Id)    
         {
             IQueryable<Postagens> consultaPostagens = (IQueryable<Postagens>)this.Context.Postagens;
             consultaPostagens = consultaPostagens.OrderBy(p => p.IdSala).Where(post => post.IdSala == Id);

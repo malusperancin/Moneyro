@@ -27,7 +27,7 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                var result =  await this.Repo.GetPostagemBySalaId(SalaId);
+                var result =  await this.Repo.GetPostagensBySalaId(SalaId);
                 return Ok(result);
             }
             catch

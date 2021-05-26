@@ -1,26 +1,30 @@
 <template>
   <div class="pag">
-    <MenuProfessor :abrirSala="getSala()"/>
+    <MenuProfessor v-on:getPostagens="getPostagens($event)" :salas="salas"/>
     <div class="centro">
       <NovoComunicado v-if="novoComunicado" v-on:fechar="novoComunicado = false"/> 
       <NovaAtividade v-if="novaAtividade" v-on:fechar="novaAtividade = false"/>
       <Perfil />
       <div class="corpo">
-        <div class="cima">
-          <div class="infoSala">
-            <p class="nomeSala"><b>Sala:</b> {{sala.nome}} </p>
-            <p><b>Código da sala:</b> {{sala.codigo}}</p>
+        <div v-if="sala">
+          <div class="cima">
+            <div class="infoSala">
+              <p class="nomeSala"><b>Sala:</b> {{sala.nome}} </p>
+              <p><b>Código da sala:</b> {{sala.codigo}}</p>
+            </div>
           </div>
-        </div>
-        <Comunicado /> 
-        <br>
-        <Atividade />
-        <div class="adicionar">
-          <div class="opcoes" v-bind:class="{aberto: clicou}">
-            <span v-on:click="novoComunicado = true" class="opcao" title="Adicionar Comunicado"> <img src="../../images/comunicado.png" alt="a"/></span>
-            <span v-on:click="novaAtividade = true" class="opcao" title="Adicionar Atividade"> <img src="../../images/atividade.png" alt="a"/></span>
-          </div>  
-          <div id="botao" v-on:click="clicou = !clicou" title="Adicionar">➕</div>
+          <span v-bind:key="i" v-for="(post, i) in postagens">
+            <Comunicado v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="$session.get('nome')"/> 
+            <br>
+            <Atividade v-if="post.tipo == 'atividade'" :atividade="post" :professor="$session.get('nome')"/>
+          </span>
+          <div class="adicionar">
+            <div class="opcoes" v-bind:class="{aberto: clicou}">
+              <span v-on:click="novoComunicado = true" class="opcao" title="Adicionar Comunicado"> <img src="../../images/comunicado.png" alt="a"/></span>
+              <span v-on:click="novaAtividade = true" class="opcao" title="Adicionar Atividade"> <img src="../../images/atividade.png" alt="a"/></span>
+            </div>  
+            <div id="botao" v-on:click="clicou = !clicou" title="Adicionar">➕</div>
+          </div>
         </div>
       </div>
     </div>
@@ -51,25 +55,40 @@ export default {
       novoComunicado: false,
       novaAtividade: false,
       clicou: false,
-      codigoSala: "",
-      sala:{
-        nome: 'alo',
-        codigo: 0
-      },
-      professor:{
-        nome:'josé'
-      }
+      salas: [],
+      sala: null,
+      postagens:[] 
     }
    },
   methods: {
-    getSala()
+    getPostagens(sala)
     {
-      alert(codigo);
+      this.sala = sala;
+      
+      this.$http
+      .get("https://localhost:5001/api/postagens/"+sala.id)
+      .then(response => {
+        this.postagens = response.body;
+        }, erro =>{
+          console.log(erro);
+      });
     }
   },
   created() {
     document.title = "Sala de Aula";
+
+    var codigo = this.$route.params.codigoSala;
+
+    if (codigo)
+    this.sala,codigo 
     
+    this.$http
+      .get("https://localhost:5001/api/salas/professor/"+this.$session.get('id'))
+      .then(response => {
+        this.salas = response.body;
+      }, erro =>{
+          console.log(erro);
+      });
   },
    beforeCreate() {
     

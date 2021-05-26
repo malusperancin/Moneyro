@@ -15,7 +15,7 @@
           </div>
           <p class="nomeProf"> <b>Professor:</b> {{sala.professor}}</p>
         </div>
-        <span v-for="(post, i) in postagens">
+        <span v-for="(post, i) in postagens" v-bind:key="i">
           <Comunicado v-if="post.tipo == 'comunicado'" :infos="post" :nome="sala.professor"/> 
           <br>
           <Atividade v-if="post.tipo == 'atividade'" :infos="post" :nome="sala.professor"/>

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ProjetoPratica_API.Models;
+using System.Data;
+using System;
 
 namespace ProjetoPratica_API.Data
 {
@@ -66,7 +68,7 @@ namespace ProjetoPratica_API.Data
        Task<Tarefas[]> GetAllTarefas();
 
         Task<Salas[]> GetAllSalas();
-        List<Salas> SpGetSalaByCodigo(string codigo);
+        Object SpGetSalaByCodigo(string codigo);
         List<Salas> SpGetSalaById(int Id);
     
         Task<Comunicados[]> GetAllComunicados();
@@ -82,6 +84,6 @@ namespace ProjetoPratica_API.Data
 
         void SpCriarSala(Salas sala);
         Task<Salas[]> GetSalasByIdProfessor(int IdProfessor);
-        Task<Postagens[]> GetPostagemBySalaId(int Id);
+        Task<Postagens[]> GetPostagensBySalaId(int Id);
     }
 }
