@@ -6,7 +6,7 @@
       <NovaAtividade v-if="novaAtividade" v-on:fechar="novaAtividade = false"/>
       <Perfil />
       <div class="corpo">
-        <div v-if="sala">
+        <div v-if="sala.id">
           <div class="cima">
             <div class="infoSala">
               <p class="nomeSala"><b>Sala:</b> {{sala.nome}} </p>
@@ -56,7 +56,7 @@ export default {
       novaAtividade: false,
       clicou: false,
       salas: [],
-      sala: null,
+      sala: {},
       postagens:[] 
     }
    },
@@ -78,9 +78,6 @@ export default {
     document.title = "Sala de Aula";
 
     var codigo = this.$route.params.codigoSala;
-
-    if (codigo)
-    this.sala,codigo 
     
     this.$http
       .get("https://localhost:5001/api/salas/professor/"+this.$session.get('id'))

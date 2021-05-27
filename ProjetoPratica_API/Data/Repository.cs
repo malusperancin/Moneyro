@@ -410,23 +410,53 @@ namespace ProjetoPratica_API.Data
 
         /* =========================== SPs ================================*/
 
-        public Object SpGetSalaByCodigo(string codigo)    
+        public Salas SpGetSalaByCodigo(string codigo)    
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
             
             SqlCommand cmd = new SqlCommand("comando", con);
-            cmd.CommandText = "sp_getSalaByCod "+ codigo;
+            cmd.CommandText = "sp_getSalaByCod '"+codigo+"'";
 
             SqlDataReader leitor = cmd.ExecuteReader();
 
-            var result = new List<Object>();
+            var result = new List<Salas>();
 
             while (leitor.Read())
             {
                 Salas dados = new Salas(
                     (int)leitor["id"],
                     (string)leitor["nome"],
+                    (int)leitor["idProfessor"],
+                    (string)leitor["professor"],
+                    (string)leitor["codigo"]
+                );
+                    
+                result.Add(dados);
+            }
+
+            con.Close();
+            return result[0];
+        }
+
+        public Salas SpGetSalaById(int Id)    
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+            
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_getSalaById "+ Id;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            var result = new List<Salas>();
+
+            while (leitor.Read())
+            {
+                Salas dados = new Salas(
+                    (int)leitor["id"],
+                    (string)leitor["nome"],
+                    (int)leitor["idProfessor"],
                     (string)leitor["professor"],
                     (string)leitor["codigo"]);
 
@@ -485,32 +515,6 @@ namespace ProjetoPratica_API.Data
             return result;
         }
    
-        public List<Salas> SpGetSalaById(int Id)    
-        {
-            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
-            con.Open();
-            
-            SqlCommand cmd = new SqlCommand("comando", con);
-            cmd.CommandText = "sp_getSalaById "+ Id;
-
-            SqlDataReader leitor = cmd.ExecuteReader();
-
-            var result = new List<Salas>();
-
-            while (leitor.Read())
-            {
-                Salas dados = new Salas(
-                    (int)leitor["id"],
-                    (string)leitor["nome"],
-                    (string)leitor["professor"],
-                    (string)leitor["codigo"]);
-
-                result.Add(dados);
-            }
-
-            con.Close();
-            return result;
-        }
 
         public void SpCriarSala(Salas sala)    
         {
@@ -533,12 +537,32 @@ namespace ProjetoPratica_API.Data
             con.Close();
         }
 
-        public async Task<Salas[]> GetSalasByIdProfessor(int IdProfessor)    
+        public List<Salas> GetSalasByIdProfessor(int IdProfessor)    
         {
-            IQueryable<Salas> consultaSalas = (IQueryable<Salas>)this.Context.Salas;
-            consultaSalas = consultaSalas.OrderBy(p => p.Id).Where(sala => sala.IdProfessor == IdProfessor);
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaSalas.ToArrayAsync();
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+            
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_getSalasProfessor "+IdProfessor;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            var result = new List<Salas>();
+
+            while (leitor.Read())
+            {
+                Salas dados = new Salas(
+                    (int)leitor["id"],
+                    (string)leitor["nome"],
+                    (int)leitor["idProfessor"],
+                    (string)leitor["professor"],
+                    (string)leitor["codigo"]);
+
+                result.Add(dados);
+            }
+
+            con.Close();
+            return result;
         }
 
         public async Task<Postagens[]> GetPostagensBySalaId(int Id)    

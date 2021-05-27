@@ -71,7 +71,7 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                var result = await this.Repo.GetSalasByIdProfessor(IdProfessor);
+                var result =  this.Repo.GetSalasByIdProfessor(IdProfessor);
                 return Ok(result);
             }
             catch

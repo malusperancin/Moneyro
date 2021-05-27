@@ -70,14 +70,6 @@ export default {
     },
   },
   created() {
-    this.$http
-      .get("https://localhost:5001/api/salas/professor/"+this.$session.get('id'))
-      .then(response => {
-        this.salas = response.body;
-        }, erro =>{
-          alert("deu ruim");
-          console.log(erro);
-      });
   }
 };
 </script>

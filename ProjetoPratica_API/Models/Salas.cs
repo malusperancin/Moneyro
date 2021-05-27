@@ -3,18 +3,11 @@ namespace ProjetoPratica_API.Models
     public class Salas
     {
 
-        public Salas (int id, string nome, string professor, string codigo) 
+        public Salas (int id, string nome, int idProfessor, string professor, string codigo) 
         {
             Id = id;
             Nome = nome;
-            this.setProfessor(professor);
-            Codigo = codigo;
-        }
-
-        public Salas (int id, string nome, int idProfessor, string codigo, int nada) 
-        {   
-            Id = id;
-            Nome = nome;
+            Professor = professor;
             IdProfessor = idProfessor;
             Codigo = codigo;
         }
@@ -23,15 +16,6 @@ namespace ProjetoPratica_API.Models
         public int IdProfessor { get; set; }
         public string Nome { get; set; }
         public string Codigo { get; set; }
-        //public string Professor { get; set; }
-
-        private string professor;
-        public string getProfessor(){
-            return this.professor;
-        }
-        public void setProfessor(string prof)
-        {
-            this.professor = prof;
-        }
+        public string Professor { get; set; }
     }
 }

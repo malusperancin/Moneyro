@@ -49,6 +49,7 @@ export default {
           function(response) {
             if (response.status === 200 && "id" in response.body) {
               this.$session.start();
+              this.$session.set("usuario", response.body);
               this.$session.set("id", response.body.id);
               this.$session.set("MA", response.body.modoAnonimo);
               this.$session.set("nome", response.body.nome);

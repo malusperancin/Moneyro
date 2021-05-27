@@ -7,7 +7,7 @@
       v-if="msg.visivel" 
       v-on:ok="msg.visivel = false"/>
     <div class="centro">
-      <div v-if="this.$session.get('idSala') > 1">
+      <div v-if="sala.id">
         <div class="cima">
           <div class="infoSala">
             <p class="nomeSala"><b>Sala:</b> {{sala.nome}} </p>
@@ -16,11 +16,10 @@
           <p class="nomeProf"> <b>Professor:</b> {{sala.professor}}</p>
         </div>
         <span v-for="(post, i) in postagens" v-bind:key="i">
-          <Comunicado v-if="post.tipo == 'comunicado'" :infos="post" :nome="sala.professor"/> 
+          <Comunicado v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="sala.professor"/> 
           <br>
-          <Atividade v-if="post.tipo == 'atividade'" :infos="post" :nome="sala.professor"/>
+          <Atividade v-if="post.tipo == 'atividade'" :atividade="post" :professor="sala.professor"/>
         </span>
-        <br>
       </div>
       <div v-else class="inicio">
         <div class="quadrado">
@@ -35,10 +34,9 @@
               maxlength=""
               required
             >
-            <button class="botao-entrar" v-on:click="entrar(sala.codigo)">Entrar</button>
+            <button class="botao-entrar" v-on:click="entrarSala(sala.codigo)">Entrar</button>
           </div>
         </div>
-
         <div class="quadrado">
           <p class="p-else">Se torne professor!</p>
           <img src="../../images/tornarprof.png">
@@ -62,15 +60,12 @@ export default {
     Perfil,
     Menu,
     Comunicado,
-    Atividade
+    Atividade,
+    Mensagem
   },
   data(){
     return {
-      sala:{
-        nome: '',
-        codigo: '',
-        professor: ''
-      },
+      sala: {},
       postagens: [],
       msg: {
         visivel: false,
@@ -81,39 +76,38 @@ export default {
    };
   },
   methods: {
-    entrar(cod) {
-      alert(cod);
+    entrarSala(cod) {
       this.$http
-        .post("https://localhost:5001/api/usuario/sala" + cod)
-        .then(
-          dados => {
-            this.getSala(cod);
+          .post("https://localhost:5001/api/usuarios/sala/" + cod, this.$session.get("usuario"))
+          .then(
+            dados => {
+              this.sala = dados.body;
+              this.getPostagens(this.sala.id);
+              this.$session.set("idSala", this.sala.id);
+              this.msg = {
+                visivel: true,
+                titulo: "Sucesso!",
+                mensagem: "Você ingressou na sala: "+this.sala.nome,
+                botoes: [
+                  {
+                    mensagem: "Legal",
+                    evento: "ok",
+                  }]
+              }
           },
-          erro => {
-            this.msg = {
-              visivel: true,
-              titulo: "Erro",
-              mensagem: erro,
-              botoes: [
-                {
-                  mensagem: "Ok",
-                  evento: "ok",
-                }]
+            erro => {
+              this.msg = {
+                visivel: true,
+                titulo: "Erro",
+                mensagem: erro,
+                botoes: [
+                  {
+                    mensagem: "Voltar",
+                    evento: "ok",
+                  }]
             }
           }
         );
-    },
-    getSalaByCod(codSala) {
-      alert("getSala");
-      this.$http
-        .get("https://localhost:5001/api/sala/"+codSala) 
-        .then(
-          dados => {
-            this.sala.nome = dados.body.nome;
-            this.sala.codigo = dados.body.codigo;
-            this.sala.professor = dados.body.nome;
-          }
-        );     
     },
     getPostagens(idSala) {
       this.$http
@@ -125,9 +119,6 @@ export default {
         ); 
     }
   },
-  created() {
-    document.title = "Sala de Aula";
-  },
   beforeCreate() {
     if (!this.$session.exists()) {
       this.$router.push('/')
@@ -138,12 +129,15 @@ export default {
         .get("https://localhost:5001/api/salas/id/"+this.$session.get("idSala")) 
         .then(
           dados => {
-            this.sala = dados.body[0];
+            this.sala = dados.body;
             this.getPostagens(this.sala.id);
           }
         );  
     }
-  }
+  },
+  created() {
+    document.title = "Sala de Aula";
+  },
 };
 </script>
 
