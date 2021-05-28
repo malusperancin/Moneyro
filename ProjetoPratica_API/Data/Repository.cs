@@ -516,14 +516,14 @@ namespace ProjetoPratica_API.Data
         }
    
 
-        public void SpCriarSala(Salas sala)    
+        public void SpCriarSala(ref Salas sala)    
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
             
             SqlCommand cmd = new SqlCommand("comando", con);
             
-            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var random = new Random();
             var result = new string(
             Enumerable.Repeat(chars, 6)
@@ -532,10 +532,25 @@ namespace ProjetoPratica_API.Data
             
             sala.Codigo = result;
             
-            cmd.CommandText = "sp_CriarSala " + sala.IdProfessor + ", " + sala.Nome + ", " + sala.Codigo;
+            cmd.CommandText = "sp_CriarSala " + sala.IdProfessor + ", '" + sala.Nome + "' , '" + sala.Codigo + "'";
+            cmd.ExecuteNonQuery();
 
             con.Close();
         }
+
+        public void SpExcluirSala(int id)    
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+            
+            SqlCommand cmd = new SqlCommand("comando", con);
+            
+            cmd.CommandText = "sp_DeletarSala " + id;
+            cmd.ExecuteNonQuery();
+
+            con.Close();
+        }
+
 
         public List<Salas> GetSalasByIdProfessor(int IdProfessor)    
         {
@@ -571,6 +586,38 @@ namespace ProjetoPratica_API.Data
             consultaPostagens = consultaPostagens.OrderBy(p => p.IdSala).Where(post => post.IdSala == Id);
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaPostagens.ToArrayAsync();
+        }
+
+        public List<Postagens> SpGetPostagensBySalaCod(string codigo)    
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+            
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_GetPostagensCod '"+codigo+"'";
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            var result = new List<Postagens>();
+
+            while (leitor.Read())
+            {
+                Postagens dados = new Postagens(
+                    (int)leitor["id"],
+                    (int)leitor["idSala"],
+                    (string)leitor["descricao"],
+                    (DateTime)leitor["data"],
+                    (string)leitor["tipo"],
+                    (DateTime)leitor["dataEntrega"],
+                    (int)leitor["idAtividade"]);
+
+                result.Add(dados);
+            }
+
+            result.Reverse();
+
+            con.Close();
+            return result;
         }
     }
 }

@@ -85,22 +85,9 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-                var random = new Random();
-                var result = new string(
-                    Enumerable.Repeat(chars, 6)
-                            .Select(s => s[random.Next(s.Length)])
-                            .ToArray());
-                
-                modelo.Codigo = result;
-
-                this.Repo.SpCriarSala(modelo);
-
-                if (await this.Repo.SaveChangesAsync())
-                {
-                    return Ok();
-                    //return Created($"/api/usuarios/{modelo.Id}", modelo);
-                }
+                this.Repo.SpCriarSala(ref modelo);
+                var sala = this.Repo.SpGetSalaByCodigo(modelo.Codigo);
+                return Ok(sala);
             }
             catch
             {
@@ -144,15 +131,8 @@ namespace ProjetoPratica_API.Controllers
             try
             {
                 //verifica se existe aluno a ser excluído
-                var sala = await this.Repo.GetUsuarioById(IdSala);
-                if (sala == null) return NotFound(); //método do EF
-                this.Repo.Delete(sala);
-                //
-                if (await this.Repo.SaveChangesAsync())
-                {
-                    return Ok();
-                }
-
+                this.Repo.SpExcluirSala(IdSala);
+                return Ok();
             }
             catch
             {
@@ -160,5 +140,6 @@ namespace ProjetoPratica_API.Controllers
             }
             return BadRequest();
         }
+
     }
 }

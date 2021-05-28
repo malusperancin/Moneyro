@@ -3,14 +3,22 @@
     <Mensagem
       :msg="msg"
       v-if="msg.visivel" 
-      v-on:sair="msg.visivel = false, $router.push('usuario')"
+      v-on:sair="msg.visivel = false, $router.push({ path: `/usuario` })"
       v-on:cancelar="msg.visivel = false"/>
+    <CriarSala :sala="sala" v-if="novo.visivel" v-on:fechar="novo.visivel = false" v-on:salvar="criarSala(), novo.visivel = false"/>
     <div class="l-navbar" id="navbar" v-bind:class="{expander: ativo}">
       <nav class="nav">
         <div>
           <div class="nav__brand">
             <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle" v-on:click="ativo = !ativo, tipos = false"></ion-icon>
             <a class="nav__logo">Turmas</a>
+          </div>
+
+          <div class="nav__list">
+            <a title="sala" class="nav__link" v-on:click="novo.visivel = true">
+              <img src="../../../images/adicionar.png" alt="a" class="nav__icon" />
+              <span class="nav__name">Crie uma sala nova</span>
+            </a>
           </div>
 
           <div class="nav__list" v-bind:key="i" v-for="(sala, i) in salas">
@@ -33,16 +41,27 @@
 
 <script>
 import Mensagem from "../mensagem/Mensagem.vue";
+import CriarSala from "../criar-sala/CriarSala.vue";
 
 export default {
   props: ["salas"],
   components: {
       Mensagem,
+      CriarSala
   },
   data() {
     return {
       ativo: false,
       tipos: false,
+      novo: {
+        visivel: false,
+      },
+      sala: {
+        nome: " ",
+        idProfessor: this.$session.get("id"),
+        professor: " ",
+        codigo: " ",
+      },
       msg: {
         visivel: false,
         titulo: "",
@@ -68,6 +87,29 @@ export default {
           }]
       };
     },
+    criarSala() {
+      this.sala.nome = this.sala.nome.trim();
+      this.$http
+        .post("https://localhost:5001/api/salas", this.sala)
+        .then(
+          response => {
+            this.salas.push(response.body);
+            this.$router.push({ path: `/salaprofessor/${response.body.codigo}` });
+            window.location.reload(true);
+          },
+          response => {
+            this.msg = {
+              titulo: "Deu tudo errado...",
+              mensagem: response.bodyText,
+              botoes: [{
+                mensagem: "Ok",
+                evento: "cancelar"
+              }],
+              visivel: true
+            }
+          }
+        );
+    }
   },
   created() {
   }

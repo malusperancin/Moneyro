@@ -36,13 +36,47 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
+        [HttpGet("codigo/{codigoSala}")]
+        public async Task<IActionResult> GetPostagensBySalaCod(string codigoSala)
+        {
+            try
+            {
+                var result = this.Repo.SpGetPostagensBySalaCod(codigoSala);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> post(Postagens modelo)
+        {
+            try
+            {
+                this.Repo.Add(modelo);
+
+                if (await this.Repo.SaveChangesAsync())
+                {
+                    return Ok();
+                    // return Created($"/api/{modelo.Id}", modelo);
+                }
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+            return BadRequest();
+        }
+
         /*[HttpDelete("{PostagemId}")]
         public async Task<IActionResult> delete(int PostagemId)
         {
             try
             {
-                //verifica se existe aluno a ser excluído
-                var postagem = await this.Repo.GetComunicadoById(PostagemId);
+                //verifica se existe postagem a ser excluído
+                var postagem = await this.Repo.GetPostagemById(PostagemId);
                 if (postagem == null) return NotFound(); //método do EF
                     this.Repo.Delete(postagem);
                

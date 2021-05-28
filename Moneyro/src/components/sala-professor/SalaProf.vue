@@ -1,22 +1,38 @@
 <template>
   <div class="pag">
-    <MenuProfessor v-on:getPostagens="getPostagens($event)" :salas="salas"/>
+    <Mensagem
+      :msg="msg"
+      v-if="msg.visivel" 
+      v-on:sair="msg.visivel = false, $router.push({ path: `/usuario` })"
+      v-on:cancelar="msg.visivel = false"
+      v-on:excluir="excluir(sala.id)"/>
+    <MenuProfessor v-on:getPostagens="getPostagensById($event)" :salas="salas"/>
     <div class="centro">
-      <NovoComunicado v-if="novoComunicado" v-on:fechar="novoComunicado = false"/> 
+      <NovoComunicado :sala="sala" :postagens="postagens" v-if="novoComunicado" v-on:fechar="novoComunicado = false"/> 
       <NovaAtividade v-if="novaAtividade" v-on:fechar="novaAtividade = false"/>
-      <Perfil />
+      <Perfil/>
       <div class="corpo">
         <div v-if="sala.id">
           <div class="cima">
             <div class="infoSala">
               <p class="nomeSala"><b>Sala:</b> {{sala.nome}} </p>
-              <p><b>Código da sala:</b> {{sala.codigo}}</p>
+              <p><strong>Código da sala:</strong> {{sala.codigo}}</p>
+              <div class="remover">
+                <img v-on:click="msgExluir()" class="imgRemover" src="../../images/remAmigo.png">
+              </div>
             </div>
           </div>
-          <span v-bind:key="i" v-for="(post, i) in postagens">
-            <Comunicado v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="$session.get('nome')"/> 
-            <br>
-            <Atividade v-if="post.tipo == 'atividade'" :atividade="post" :professor="$session.get('nome')"/>
+          <span class="postagens" v-if="postagens[0]" v-bind:key="i" v-for="(post, i) in postagens">
+            <div>
+              <Comunicado v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="$session.get('nome')"/> 
+            </div>
+            <div>
+              <Atividade v-if="post.tipo == 'atividade'" :atividade="post" :professor="$session.get('nome')"/>
+            </div>
+          </span>
+          <span class="aviso" v-else> 
+            <p class="texto"> Sala vazia.</p>
+            <img class="transparente" src="../../images/salavazia.png">
           </span>
           <div class="adicionar">
             <div class="opcoes" v-bind:class="{aberto: clicou}">
@@ -25,6 +41,10 @@
             </div>  
             <div id="botao" v-on:click="clicou = !clicou" title="Adicionar">➕</div>
           </div>
+        </div>
+        <div v-else class="centro">
+          <p class="texto"> Clique em uma sala no menu!</p>
+          <img class="transparente" src="../../images/cliquenasala.png">
         </div>
       </div>
     </div>
@@ -41,6 +61,8 @@ import Comunicado from "../shared/comunicado/Comunicado.vue";
 import Atividade from "../shared/atividade/Atividade.vue";
 import NovoComunicado from "../shared/comunicado/NovoComunicado.vue";
 import NovaAtividade from "../shared/atividade/NovaAtividade.vue";
+import Mensagem from "../shared/mensagem/Mensagem.vue";
+
 export default {
   components: {
     Perfil,
@@ -48,7 +70,8 @@ export default {
     Comunicado,
     Atividade,
     NovoComunicado,
-    NovaAtividade
+    NovaAtividade,
+    Mensagem
   },
   data() {
     return {
@@ -57,11 +80,17 @@ export default {
       clicou: false,
       salas: [],
       sala: {},
-      postagens:[] 
+      postagens:[],
+      msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: [],
+      },
     }
    },
   methods: {
-    getPostagens(sala)
+    getPostagensById(sala)
     {
       this.sala = sala;
       
@@ -72,22 +101,71 @@ export default {
         }, erro =>{
           console.log(erro);
       });
+    },
+    getPostagensByCodigo(codigo)
+    {
+      this.$http
+      .get("https://localhost:5001/api/postagens/codigo/"+codigo)
+      .then(response => {
+        this.postagens = response.body;
+        console.log(this.postagens);
+        }, erro =>{
+          console.log(erro);
+      });
+    },
+    excluir(id){
+      this.$http
+      .delete("https://localhost:5001/api/salas/"+id)
+      .then(
+        response => {
+          this.$router.push({ path: `/salaprofessor` });
+          window.location.reload(true);
+        }, 
+        erro =>{
+          console.log(erro);
+      });
+    },
+    msgExluir(){
+      this.msg = {
+        visivel: true,
+        titulo: "Excluir sala",
+        mensagem: "Deseja mesmo excluir essa sala de forma definitiva?",
+        botoes: [
+          {
+            mensagem: "Cancelar",
+            evento: "cancelar",
+          },
+          {
+            mensagem: "Sim",
+            evento: "excluir",
+          }
+        ],
+      }
     }
   },
   created() {
     document.title = "Sala de Aula";
-
     var codigo = this.$route.params.codigoSala;
     
     this.$http
       .get("https://localhost:5001/api/salas/professor/"+this.$session.get('id'))
       .then(response => {
         this.salas = response.body;
+
+        if (codigo)
+        {
+          for(var i = 0; i < this.salas.length; i++)
+            if(this.salas[i].codigo == codigo)
+              this.sala = this.salas[i];
+      
+          this.getPostagensByCodigo(codigo);
+        }
       }, erro =>{
           console.log(erro);
       });
+
   },
-   beforeCreate() {
+  beforeCreate() {
     
     }
   };
@@ -95,6 +173,39 @@ export default {
 </script>
 
 <style scoped>
+.postagens div {
+  margin-bottom: 15px;
+}
+
+.transparente{
+ opacity:0.7
+}
+
+.remover {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.imgRemover{
+  width:10%;
+  background: hsl(208, 86%, 31%);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.imgRemover:hover{
+  background: hsl(208, 86%, 25%);
+}
+
+.texto{
+  font-size: 1.5em;
+}
+
+.aviso{
+  text-align: center;
+  font-size: 1em;
+}
+
 .corpo {
   display: flex;
   flex-direction: column;
@@ -175,8 +286,8 @@ p {
 }
 
 .infoSala {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   font-size: 1.5em;
-  justify-content: space-between;
 }
 </style>

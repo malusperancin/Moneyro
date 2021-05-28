@@ -7,15 +7,18 @@ namespace ProjetoPratica_API.Models
         {
             Id = id;
             Nome = nome;
-            Professor = professor;
             IdProfessor = idProfessor;
+            Professor = professor;
             Codigo = codigo;
         }
 
+        public Salas () 
+        {
+        }
         public int Id { get; set; }
-        public int IdProfessor { get; set; }
         public string Nome { get; set; }
-        public string Codigo { get; set; }
+        public int IdProfessor { get; set; }
         public string Professor { get; set; }
+        public string Codigo { get; set; }
     }
 }

@@ -269,7 +269,7 @@ export default {
             this.msg.visivel = true;
           }
         );
-    }
+      }
   },
   created() {
     this.$http

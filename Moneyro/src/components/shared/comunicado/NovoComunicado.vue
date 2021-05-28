@@ -5,16 +5,16 @@
             <div class="titulo">
                 <img src="../../../images/perfil2.png" style="width: 50px">
                 <div>
-                    <strong><b>{{professor.nome}}</b></strong>
+                    <strong><b>{{sala.professor}}</b></strong>
                     <p class="data">{{datahoje}} </p>
                 </div>
             </div>
             <div class="texto">
-                <textarea class="input" type="text" rows="3" placeholder="Adicionar comentário..."/>  
+                <textarea class="input" v-model="comunicado.descricao" type="text" rows="3" placeholder="Adicionar comentário..."/>  
             </div>
             <div class="btns">
                 <button class="botao" id="cancelar" v-on:click="$emit('fechar')">Cancelar</button>
-                <button class="botao">Enviar</button>
+                <button class="botao" v-on:click="publicar()">Enviar</button>
              </div>
         </div>
     </div>
@@ -24,19 +24,16 @@
 
 <script>
 export default {
+  props: ["sala", "postagens"],
   data() {
     return {
-      datahoje: '',
-      sala:{
-        nome: "Sala da Maria Luzia",
-        codigo: "x5f7h6"
-      },
-      professor: {
-        nome: "Maria Luzia", 
-      },
       comunicado: {
-        texto: "Pessoal, boa noite.Amanhã não conseguirei dar aulas, pois tenho vacina agendada para o horário das aulas. Então, nossa aula será assíncrona, através da leitura do material que estou adicionando a esta mensagem.",
-        data: "12/02/2004"
+        idSala: 0,
+        descricao: "",
+        data: new Date(),
+        tipo: "comunicado",
+        dataEntrega: new Date(),
+        idAtividade: 1
       },
    };
   },
@@ -49,7 +46,18 @@ export default {
         mesF = (mes.length == 1) ? '0'+mes : mes,
         anoF = data.getFullYear();
         this.datahoje = diaF+"/"+mesF+"/"+anoF;
-}
+    },
+    publicar(){
+      this.comunicado.idSala = this.sala.id;
+      this.$http
+          .post("https://localhost:5001/api/postagens", this.comunicado)
+          .then(response => {
+            this.postagens.push(response.body);
+            this.$emit('fechar');
+          }, erro =>{
+            console.log(erro);
+          });
+    }
   },
   computed: {
   },
@@ -69,7 +77,6 @@ export default {
 </script>
 
 <style scoped>
-
 .geral{
     top: 0;
     left: 0;
@@ -169,13 +176,13 @@ p {
 .botao {
     font-size: 1em;
     border: none;
-    width: 15%;
+    width: fit-content;
     color: white;
     background-color: rgba(241, 174, 30, 0.863);
     border-radius: 9px;
     cursor: pointer;
     font-weight: 800;
-    padding: 5px;
+    padding: 5px 10px;
     
 }
 

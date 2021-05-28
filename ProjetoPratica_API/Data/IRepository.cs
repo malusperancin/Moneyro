@@ -78,12 +78,15 @@ namespace ProjetoPratica_API.Data
 
         List<Quiz> SpQuiz(int QuizId);
 
-        void SpCriarSala(Salas sala);
+        void SpCriarSala(ref Salas sala);
+        void SpExcluirSala(int id) ;   
         List<Salas> GetSalasByIdProfessor(int IdProfessor);
         Task<Postagens[]> GetPostagensBySalaId(int Id);
-        
+        List<Postagens> SpGetPostagensBySalaCod(string codigo);
         Task<Salas[]> GetAllSalas();
         Salas SpGetSalaByCodigo(string codigo);
         Salas SpGetSalaById(int Id);
+
+
     }
 }
