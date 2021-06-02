@@ -51,7 +51,6 @@ export default {
 <style scoped>
 
 .atividade{
-  width: 80%;
   align-items: center;
 }
 
@@ -76,7 +75,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding:30px;
-    font-size:1.5em;
+    font-size: 1.4em;
 }
 
 p {
@@ -98,8 +97,8 @@ p {
 }
 
 img{
-  width:75px;
-  height:75px;
+  width: 55px;
+  height: 55px;
   border-radius: 8px;
 }
 </style>

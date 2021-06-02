@@ -6,45 +6,47 @@
       v-on:sair="msg.visivel = false, $router.push({ path: `/usuario` })"
       v-on:cancelar="msg.visivel = false"
       v-on:excluir="excluir(sala.id)"/>
-    <MenuProfessor v-on:getPostagens="getPostagensById($event)" :salas="salas"/>
+    <MenuProfessor v-on:getPostagens="getPostagensByCodigo($event)" :sala="sala"/>
     <div class="centro">
       <NovoComunicado :sala="sala" :postagens="postagens" v-if="novoComunicado" v-on:fechar="novoComunicado = false"/> 
-      <NovaAtividade v-if="novaAtividade" v-on:fechar="novaAtividade = false"/>
+      <NovaAtividade :sala="sala" :postagens="postagens" v-if="novaAtividade" v-on:fechar="novaAtividade = false"/>
       <Perfil/>
       <div class="corpo">
-        <div v-if="sala.id">
+        <div class="sala" v-if="sala.id">
           <div class="cima">
             <div class="infoSala">
               <p class="nomeSala"><b>Sala:</b> {{sala.nome}} </p>
               <p><strong>Código da sala:</strong> {{sala.codigo}}</p>
-              <div class="remover">
-                <img v-on:click="msgExluir()" class="imgRemover" src="../../images/remAmigo.png">
+            </div>
+            <div class="remover">
+              <img alt="" v-on:click="msgExluir()" class="imgRemover" src="../../images/remAmigo.png">
+            </div>
+          </div>
+          <div v-if="postagens[0] != null">
+            <div class="postagens" v-bind:key="i" v-for="(post, i) in postagens">
+              <div>
+                <Comunicado v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="$session.get('nome')"/> 
+              </div>
+              <div>
+                <Atividade v-if="post.tipo == 'atividade'" :atividade="post" :professor="$session.get('nome')"/>
               </div>
             </div>
           </div>
-          <span class="postagens" v-if="postagens[0]" v-bind:key="i" v-for="(post, i) in postagens">
-            <div>
-              <Comunicado v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="$session.get('nome')"/> 
-            </div>
-            <div>
-              <Atividade v-if="post.tipo == 'atividade'" :atividade="post" :professor="$session.get('nome')"/>
-            </div>
-          </span>
-          <span class="aviso" v-else> 
+          <div class="sala_vazia" v-else> 
             <p class="texto"> Sala vazia.</p>
-            <img class="transparente" src="../../images/salavazia.png">
-          </span>
+            <img alt="" class="transparente" src="../../images/salavazia.png">
+          </div>
           <div class="adicionar">
             <div class="opcoes" v-bind:class="{aberto: clicou}">
-              <span v-on:click="novoComunicado = true" class="opcao" title="Adicionar Comunicado"> <img src="../../images/comunicado.png" alt="a"/></span>
-              <span v-on:click="novaAtividade = true" class="opcao" title="Adicionar Atividade"> <img src="../../images/atividade.png" alt="a"/></span>
+              <span v-on:click="novoComunicado = true" class="opcao" title="Adicionar Comunicado"> <ion-icon name="chatbubble"></ion-icon></span>
+              <span v-on:click="novaAtividade = true" class="opcao" title="Adicionar Atividade"> <ion-icon name="checkmark-circle"></ion-icon></span>
             </div>  
-            <div id="botao" v-on:click="clicou = !clicou" title="Adicionar">➕</div>
+            <div id="botao" v-on:click="clicou = !clicou" title="Adicionar"><ion-icon name="add"></ion-icon></div>
           </div>
         </div>
-        <div v-else class="centro">
+        <div v-else class="nao_sala" >
           <p class="texto"> Clique em uma sala no menu!</p>
-          <img class="transparente" src="../../images/cliquenasala.png">
+          <img alt="" class="transparente" src="../../images/cliquenasala.png">
         </div>
       </div>
     </div>
@@ -78,7 +80,6 @@ export default {
       novoComunicado: false,
       novaAtividade: false,
       clicou: false,
-      salas: [],
       sala: {},
       postagens:[],
       msg: {
@@ -90,25 +91,14 @@ export default {
     }
    },
   methods: {
-    getPostagensById(sala)
+    getPostagensByCodigo(sala)
     {
       this.sala = sala;
-      
+      var cod = sala.codigo;
       this.$http
-      .get("https://localhost:5001/api/postagens/"+sala.id)
+      .get("https://localhost:5001/api/postagens/codigo/"+cod)
       .then(response => {
         this.postagens = response.body;
-        }, erro =>{
-          console.log(erro);
-      });
-    },
-    getPostagensByCodigo(codigo)
-    {
-      this.$http
-      .get("https://localhost:5001/api/postagens/codigo/"+codigo)
-      .then(response => {
-        this.postagens = response.body;
-        console.log(this.postagens);
         }, erro =>{
           console.log(erro);
       });
@@ -145,57 +135,42 @@ export default {
   },
   created() {
     document.title = "Sala de Aula";
-    var codigo = this.$route.params.codigoSala;
-    
-    this.$http
-      .get("https://localhost:5001/api/salas/professor/"+this.$session.get('id'))
-      .then(response => {
-        this.salas = response.body;
-
-        if (codigo)
-        {
-          for(var i = 0; i < this.salas.length; i++)
-            if(this.salas[i].codigo == codigo)
-              this.sala = this.salas[i];
-      
-          this.getPostagensByCodigo(codigo);
-        }
-      }, erro =>{
-          console.log(erro);
-      });
-
-  },
-  beforeCreate() {
-    
-    }
-  };
+    this.getPostagensByCodigo(this.sala);
+  }
+};
 
 </script>
 
 <style scoped>
+.sala {
+  display: flex;
+  flex-direction: column;
+}
+
+.sala_vazia {
+  display: flex;
+  flex-direction: column-reverse;
+  color: rgba(255, 255, 255, 0.604);
+  justify-content: center;
+  align-items: center;
+  padding-top: 100px;
+}
+
+.nao_sala {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 100px 50px;
+}
+
 .postagens div {
   margin-bottom: 15px;
 }
 
 .transparente{
  opacity:0.7
-}
-
-.remover {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.imgRemover{
-  width:10%;
-  background: hsl(208, 86%, 31%);
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.imgRemover:hover{
-  background: hsl(208, 86%, 25%);
-}
+} 
 
 .texto{
   font-size: 1.5em;
@@ -212,7 +187,7 @@ export default {
 }
 
 .aberto {
-  padding-bottom: 10px;
+  padding-bottom: 3px;
   display: flex !important;
 }
 
@@ -234,29 +209,31 @@ export default {
   display: flex;
   width: 50px;
   height: 50px;
-  margin-bottom: 8px;
   justify-content: center;
   align-items: center;
   margin: 0 auto 8px auto;
+  color: white;
+  font-size: 1.5em;
 }
 
 .opcao:hover {
   background:rgb(8, 70, 153);
+  cursor: pointer;
+  width: 55px;
+  height: 55px;
 }
 
-.opcao img{
-  width: 30px;
-  height: 30px;
-}
 #botao:hover {
   background-color:  rgb(228,180,78);
 }
+
 #botao {
   display: block;
   bottom: 20px;
   right: 30px;
   z-index: 50;
-  font-size: 1.15em;
+  font-size: 3em;
+  color: white;
   background-color:  rgba(241, 174, 30, 0.863);
   cursor: pointer;
   padding: 12px;
@@ -277,17 +254,36 @@ p {
 }
 
 .centro{
-  padding: 25px 16vw;
+  padding: 25px 24vw;
 }
 
 .cima{
   padding: 0 0px 15px 0;
-  width: 80%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .infoSala {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
   font-size: 1.5em;
 }
+
+.remover {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.imgRemover{
+  width: 35px;
+  height: 35px;
+  background: hsl(208, 86%, 31%);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.imgRemover:hover{
+  background: hsl(208, 86%, 25%);
+}
+
 </style>

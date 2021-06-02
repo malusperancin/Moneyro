@@ -107,7 +107,7 @@ props: ["comunicado", "professor"],
   display:flex;
   flex-direction:row;
   width: 50%;
-  font-size:1.5em;
+  font-size: 1.2em;
 }
 
 .textos {
@@ -118,8 +118,8 @@ props: ["comunicado", "professor"],
 
 img {
     border-radius: 8px;
-    width: 75px;
-    height: 75px;
+    width: 55px;
+    height: 55px;
 }
 
 p {
@@ -130,7 +130,6 @@ p {
 
 .comunicado {
     height: 100%;
-    width: 80%;
     align-items: center;
 }
 
@@ -154,12 +153,12 @@ p {
 
 .titulo {
     display: flex;
-    font-size: 1.5em;
+    font-size: 1.4em;
 }
 
 .texto {
     padding: 1%;
-    font-size:1.5em;
+    font-size:1.2em;
 }
 
 .divi {

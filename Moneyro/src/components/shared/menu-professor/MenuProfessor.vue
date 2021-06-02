@@ -5,7 +5,7 @@
       v-if="msg.visivel" 
       v-on:sair="msg.visivel = false, $router.push({ path: `/usuario` })"
       v-on:cancelar="msg.visivel = false"/>
-    <CriarSala :sala="sala" v-if="novo.visivel" v-on:fechar="novo.visivel = false" v-on:salvar="criarSala(), novo.visivel = false"/>
+    <CriarSala :sala="novaSala" v-if="novo.visivel" v-on:fechar="novo.visivel = false" v-on:salvar="criarSala(), novo.visivel = false"/>
     <div class="l-navbar" id="navbar" v-bind:class="{expander: ativo}">
       <nav class="nav">
         <div>
@@ -44,7 +44,7 @@ import Mensagem from "../mensagem/Mensagem.vue";
 import CriarSala from "../criar-sala/CriarSala.vue";
 
 export default {
-  props: ["salas"],
+  props: ["sala"],
   components: {
       Mensagem,
       CriarSala
@@ -56,11 +56,13 @@ export default {
       novo: {
         visivel: false,
       },
-      sala: {
-        nome: " ",
+      salas: [],
+      novaSala: {
+        codigo: "",
+        id: 0,
         idProfessor: this.$session.get("id"),
-        professor: " ",
-        codigo: " ",
+        nome: "",
+        professor: ""
       },
       msg: {
         visivel: false,
@@ -88,9 +90,9 @@ export default {
       };
     },
     criarSala() {
-      this.sala.nome = this.sala.nome.trim();
+      this.novaSala.nome = this.novaSala.nome.trim();
       this.$http
-        .post("https://localhost:5001/api/salas", this.sala)
+        .post("https://localhost:5001/api/salas", this.novaSala)
         .then(
           response => {
             this.salas.push(response.body);
@@ -112,6 +114,25 @@ export default {
     }
   },
   created() {
+    var codigo = this.$route.params.codigoSala;
+    
+    this.$http
+      .get("https://localhost:5001/api/salas/professor/"+this.$session.get('id'))
+      .then(response => {
+        this.salas = response.body;
+
+        if (codigo)
+          this.sala = this.salas.filter(s => s.codigo == codigo)[0];
+
+      }, erro =>{
+          console.log(erro);
+      });
+
+  },
+  watch: {
+    sala() {
+      this.$emit('getPostagens', this.sala);
+    }
   }
 };
 </script>

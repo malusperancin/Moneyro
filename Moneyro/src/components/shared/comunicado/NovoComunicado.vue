@@ -1,22 +1,22 @@
 <template>
-<div class="geral">
+  <div class="geral">
     <div class="comunicado">
-        <div class="conteudo">
-            <div class="titulo">
-                <img src="../../../images/perfil2.png" style="width: 50px">
-                <div>
-                    <strong><b>{{sala.professor}}</b></strong>
-                    <p class="data">{{datahoje}} </p>
-                </div>
-            </div>
-            <div class="texto">
-                <textarea class="input" v-model="comunicado.descricao" type="text" rows="3" placeholder="Adicionar comentário..."/>  
-            </div>
-            <div class="btns">
-                <button class="botao" id="cancelar" v-on:click="$emit('fechar')">Cancelar</button>
-                <button class="botao" v-on:click="publicar()">Enviar</button>
-             </div>
+      <div class="conteudo">
+        <div class="titulo">
+          <img src="../../../images/perfil2.png" style="width: 50px">
+          <div>
+              <strong><b>{{sala.professor}}</b></strong>
+              <p class="data">{{datahoje}} </p>
+          </div>
         </div>
+        <div class="texto">
+          <textarea class="input" v-model="comunicado.descricao" type="text" rows="3" placeholder="Adicionar comentário..."/>  
+        </div>
+        <div class="btns">
+          <button class="botao" id="cancelar" v-on:click="$emit('fechar')">Cancelar</button>
+          <button class="botao" v-on:click="publicar()">Enviar</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -59,19 +59,9 @@ export default {
           });
     }
   },
-  computed: {
-  },
   created() {
    this.dataAtual();
-  },
-  beforeCreate(){
-
-  },
-  watch: {
-    expanded(){
-      
-    }
-  },
+  }
 };
 
 </script>

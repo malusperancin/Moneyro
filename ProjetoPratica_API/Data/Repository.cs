@@ -383,6 +383,7 @@ namespace ProjetoPratica_API.Data
          public async Task<Atividades[]> GetAllAtividades()
          {
            IQueryable<Atividades> consultaAtividades = (IQueryable<Atividades>)this.Context.Atividades;
+           consultaAtividades = consultaAtividades.OrderBy(a => a.Id).Where(ativ => ativ.Id > 1);
            return await consultaAtividades.ToArrayAsync();
         }
 
@@ -550,7 +551,6 @@ namespace ProjetoPratica_API.Data
 
             con.Close();
         }
-
 
         public List<Salas> GetSalasByIdProfessor(int IdProfessor)    
         {

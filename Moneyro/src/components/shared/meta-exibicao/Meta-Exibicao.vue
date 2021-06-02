@@ -83,8 +83,6 @@ export default {
       svgStyle: null
     });
 
-    console.log(this.bar);
-
     this.colorir();
     this.calcular();
   },
