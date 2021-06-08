@@ -26,7 +26,7 @@
           <div v-if="postagens[0] != null">
             <div class="postagens" v-bind:key="i" v-for="(post, i) in postagens">
               <div>
-                <Comunicado v-on:deletada="excluirPostagem(i)" v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="$session.get('nome')"/> 
+                <Comunicado v-on:deletada="excluirPostagem(i)" v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="prof"/> 
               </div>
               <div>
                 <Atividade v-on:deletada="excluirPostagem(i)" v-if="post.tipo == 'atividade'" :atividade="post" :professor="$session.get('nome')"/>
@@ -34,7 +34,7 @@
             </div>
           </div>
           <div class="sala_vazia" v-else> 
-            <p class="texto"> Sala vazia.</p>
+            <p class="texto"> Sala vazia</p>
             <img alt="" class="transparente" src="../../images/salavazia.png">
           </div>
           <div class="adicionar">
@@ -53,8 +53,6 @@
     </div>
   </div>
 </template>
-
-
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
@@ -90,6 +88,10 @@ export default {
         mensagem: "",
         botoes: [],
       },
+      prof:{
+        nome: this.$session.get('nome'), 
+        foto: this.$session.get('foto')
+      }
     }
    },
   methods: {
@@ -120,8 +122,8 @@ export default {
     msgExluir(tipo){
       this.msg = {
         visivel: true,
-        titulo: "Excluir "+tipo,
-        mensagem: "Deseja mesmo excluir essa "+tipo+" de forma definitiva?",
+        titulo: "Excluir",
+        mensagem: "Deseja mesmo excluir essa sala de forma definitiva?",
         botoes: [
           {
             mensagem: "Cancelar",
@@ -129,7 +131,7 @@ export default {
           },
           {
             mensagem: "Sim",
-            evento: "excluirPostagem",
+            evento: "excluir",
           }
         ],
       }

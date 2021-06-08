@@ -73,9 +73,9 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("sala/{CodSala}")]
-        public async Task<IActionResult> postSala(Usuarios usu, string CodSala)
+        public async Task<IActionResult> postSala(string CodSala, Usuarios usu)
         {
             try
             {
@@ -83,11 +83,8 @@ namespace ProjetoPratica_API.Controllers
 
                 if (result == null)
                     return this.StatusCode(StatusCodes.Status409Conflict, "Essa sala não existe!");
-                else
-                    usu.IdSala = result.Id;
 
-                //NAO TA DANDO UPDATE AAAAAAAAAAAAAA
-                this.Repo.Update(usu);
+                this.Repo.SpAtualizarUsuarioSala(usu.Id, result.Id);
 
                 return Ok(result);
             }
@@ -131,12 +128,12 @@ namespace ProjetoPratica_API.Controllers
             try
             {
                 //verifica se existe aluno a ser alterado
-                 var usuario = await this.Repo.GetUsuarioById(UsuarioId);
-                 if (usuario == null) return NotFound(); //método do EF
+                var usuario = await this.Repo.GetUsuarioById(UsuarioId);
+                if (usuario == null) return NotFound(); //método do EF
 
                 this.Repo.Entry(usuario);
                 this.Repo.Update(model);
-                
+
                 if (await this.Repo.SaveChangesAsync())
                 {
                     return Ok();

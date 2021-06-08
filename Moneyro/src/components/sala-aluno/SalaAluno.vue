@@ -15,11 +15,17 @@
           </div>
           <p class="nomeProf"> <b>Professor:</b> {{sala.professor}}</p>
         </div>
-        <span v-for="(post, i) in postagens" v-bind:key="i">
-          <Comunicado v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="sala.professor"/> 
-          <br>
-          <Atividade v-if="post.tipo == 'atividade'" :atividade="post" :professor="sala.professor"/>
-        </span>
+        <div v-if="postagens[0] != null">
+          <div v-for="(post, i) in postagens" v-bind:key="i">
+            <Comunicado v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="prof"/> 
+            <br>
+            <Atividade v-if="post.tipo == 'atividade'" :atividade="post" :professor="prof"/>
+          </div>
+        </div>
+        <div class="sala_vazia" v-else> 
+            <p class="texto"> Sala vazia</p>
+            <img alt="" class="transparente" src="../../images/salavazia.png">
+        </div>
       </div>
       <div v-else class="inicio">
         <div class="quadrado">
@@ -73,12 +79,17 @@ export default {
         mensagem: "",
         botoes: [],
       },
+      prof:{
+        nome:'',
+        foto:''
+      },
+      session: "",
    };
   },
   methods: {
     entrarSala(cod) {
       this.$http
-          .post("https://localhost:5001/api/usuarios/sala/" + cod, this.$session.get("usuario"))
+          .put("https://localhost:5001/api/usuarios/sala/" + cod, this.$session.get("usuario"))
           .then(
             dados => {
               this.sala = dados.body;
@@ -123,13 +134,22 @@ export default {
     if (!this.$session.exists()) {
       this.$router.push('/')
     }
-
     if(this.$session.get("idSala") > 1) {
       this.$http
         .get("https://localhost:5001/api/salas/id/"+this.$session.get("idSala")) 
         .then(
           dados => {
+            alert("a");
             this.sala = dados.body;
+            this.prof.nome = this.sala.professor;
+            this.$http
+            .get("https://localhost:5001/api/usuarios" + this.prof.nome)
+            .then(response => {
+              this.prof.foto = dados.body[0].foto;
+            }, 
+            response => {
+              console.log("Erro ao pergar foto prof");
+            });
             this.getPostagens(this.sala.id);
           }
         );  
@@ -142,6 +162,15 @@ export default {
 </script>
 
 <style scoped>
+.sala_vazia {
+  display: flex;
+  flex-direction: column-reverse;
+  color: rgba(255, 255, 255, 0.604);
+  justify-content: center;
+  align-items: center;
+  padding-top: 100px;
+}
+
 .centro{
   padding: 25px 15vw;
 }

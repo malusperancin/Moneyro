@@ -67,6 +67,14 @@ namespace ProjetoPratica_API.Data
             return await consultaUsuario.FirstOrDefaultAsync();
         }
 
+        public async Task<Usuarios> GetUsuarioByNome(string nome)
+        {
+            IQueryable<Usuarios> consultaUsuario = (IQueryable<Usuarios>)this.Context.Usuarios;
+            consultaUsuario = consultaUsuario.Where(usuario => usuario.Nome.Equals(nome));
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaUsuario.FirstOrDefaultAsync();
+        }
+
         public async Task<Usuarios> GetUsuarioByApelido(string apelido)
         {
             IQueryable<Usuarios> consultaUsuario = (IQueryable<Usuarios>)this.Context.Usuarios;
@@ -643,6 +651,18 @@ namespace ProjetoPratica_API.Data
 
             con.Close();
             return result;
+        }
+
+        public void SpAtualizarUsuarioSala(int idUsu, int idSala)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_updateSalaUsuario " + idSala + ", " + idUsu;
+
+            cmd.ExecuteNonQuery();
+            con.Close();
         }
     }
 }

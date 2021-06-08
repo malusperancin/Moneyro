@@ -17,7 +17,7 @@
             type="text"
             placeholder="Atividade 1 - Jogo"
             v-model="tarefa.descricao"/>
-            <input type="date" class="data input" v-model="tarefa.dataEntrega">
+            <input type="date" :min="hoje" class="data input" v-model="tarefa.dataEntrega">
           </div>
         </div>
 
@@ -39,7 +39,6 @@
   </div>
 </template>
 
-
 <script>
   
 export default {
@@ -57,6 +56,7 @@ export default {
         tipo: "atividade",
         idAtividade: 2
       },
+      hoje: new Date().toISOString().split('T')[0],
       atividades: []
    };
   },

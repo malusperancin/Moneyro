@@ -1,11 +1,11 @@
 <template>
     <div class="comunicado">
         <div class="conteudo">
-            <div class="infos">
-                <div class="flex">
-                    <img src="../../../images/perfil2.png">
+            <div class="cabecalho">
+                <div class="infos">
+                    <img :src="'../../src/images/perfil'+professor.foto+'.png'">
                     <div class="textos">
-                        <strong><b>{{professor}}</b></strong>
+                        <strong><b>{{professor.nome}}</b></strong>
                         <small>{{data}}</small>
                     </div>
                 </div>
@@ -25,6 +25,7 @@
                     placeholder="Adicionar comentário..."
                     />
                     <ion-icon name="send-outline" class="enviar"></ion-icon>
+                
                 </div>
             </div>
         </div>
@@ -74,15 +75,57 @@ props: ["comunicado", "professor"],
 </script>
 
 <style scoped>
+.conteudo {
+    color: rgb(255, 255, 255);
+    background: rgb(46, 48, 46);
+    border-radius: 5px;
+    height: fit-content;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 30px;
+}
+
+.cabecalho{
+  display:flex;
+  flex-direction:row;
+  justify-content: space-between;
+  font-size: 1.2em;
+}
+
+.infos {
+    display: flex;
+    width: 100%;
+}
+
+.deletar_icone {
+    border: 1px solid grey;
+    height: fit-content;
+    padding: 5px;
+    line-height: 0;
+    border-radius: 87px;
+    color: grey;
+    transition: all 0.1s easy-in !important;
+    cursor: pointer;
+}
+
+.deletar_icone:hover {
+    color: white;
+    background: rgb(211, 49, 49);
+}
+
 .enviar_comentario {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 15px 0 0 0;
 }
 
 .enviar_comentario img{
     width:50px;
     height:50px;
+    border-radius: 100px;
 }
 
 .comentario {
@@ -90,7 +133,7 @@ props: ["comunicado", "professor"],
     height: 90%;
     justify-content: space-between;
     border-radius: 15px;
-    width: 95%;
+    flex: 1;
     position: relative;
 }
 
@@ -98,7 +141,7 @@ props: ["comunicado", "professor"],
     font-size: 1.75rem;
     color: gray;
     position: absolute;
-    top: 7px;
+    top: 10px;
     right: 10px;
 }
 
@@ -112,43 +155,20 @@ props: ["comunicado", "professor"],
     box-sizing: border-box;
     border-radius: 25px;
     width: 100%;
-    padding: 9px 50px 9px 25px;
+    padding: 9px 50px 9px 15px;
     outline: none;
-    border: transparent;
+    border: 3px solid rgba(0, 0, 0, 0);
     font-size:1em;
 }
 
-.infos{
-  display:flex;
-  flex-direction:row;
-  justify-content: space-between;
-  font-size: 1.2em;
-}
-
-.flex {
-    display: flex;
-    width: 100%;
-}
-
-.deletar_icone {
-    border: 1px solid grey;
-    height: fit-content;
-    padding: 5px;
-    line-height: 0;
-    border-radius: 87px;
-    color: grey;
-    transition: all 0.1s easy-in !important;
-}
-
-.deletar_icone:hover {
-    color: white;
-    background: rgb(211, 49, 49);
+.input:focus {
+    border: 3px solid rgb(70, 67, 233);
 }
 
 .textos {
   display: flex;
   flex-direction: column;
-  margin-left: 4%;
+  margin-left: 20px;
 }
 
 img {
@@ -163,43 +183,15 @@ p {
     padding: 3px;
 }
 
-.comunicado {
-    height: 100%;
-    align-items: center;
-}
-
-.conteudo {
-    color: rgb(255, 255, 255);
-    background: rgb(46, 48, 46);
-    border-radius: 5px;
-    height: fit-content;
-    min-width: 250px;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    padding: 30px;
-}
-
-.titulo div {
-    display: flex;
-    flex-direction: column;
-    margin-left: 2%;
-}
-
-.titulo {
-    display: flex;
-    font-size: 1.4em;
-}
-
 .texto {
-    padding: 1%;
-    font-size:1.2em;
+    padding: 15px 0 5px 0;
+    font-size:1.1em;
 }
 
 .divi {
     width: 100%;
     height: 1px;
     background: rgba(0, 0, 0, 0.5);
-    margin: 1% 0 1.5%;
+    margin: 10px 0;
 }
 </style>

@@ -71,7 +71,7 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                var result =  this.Repo.GetSalasByIdProfessor(IdProfessor);
+                var result = this.Repo.GetSalasByIdProfessor(IdProfessor);
                 return Ok(result);
             }
             catch
@@ -108,7 +108,7 @@ namespace ProjetoPratica_API.Controllers
 
                 this.Repo.Entry(sala);
                 this.Repo.Update(model);
-                
+
                 if (await this.Repo.SaveChangesAsync())
                 {
                     return Ok();
@@ -138,7 +138,6 @@ namespace ProjetoPratica_API.Controllers
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
-            return BadRequest();
         }
 
     }

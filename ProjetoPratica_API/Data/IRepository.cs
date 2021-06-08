@@ -17,6 +17,7 @@ namespace ProjetoPratica_API.Data
 
         Task<Usuarios[]> GetAllUsuarios();
         Task<Usuarios> GetUsuarioById(int Id);
+        Task<Usuarios> GetUsuarioByNome(string nome);
         Task<Usuarios> GetUsuarioByApelido(string apelido);
         Task<Usuarios> GetUsuarioByEmail(string email);
 
@@ -88,6 +89,7 @@ namespace ProjetoPratica_API.Data
         Task<Salas[]> GetAllSalas();
         Salas SpGetSalaByCodigo(string codigo);
         Salas SpGetSalaById(int Id);
+        void SpAtualizarUsuarioSala(int idUsu, int idSala);
 
 
     }
