@@ -17,19 +17,22 @@
             type="text"
             placeholder="Atividade 1 - Jogo"
             v-model="tarefa.descricao"/>
-            <input type="datetime-local" class="data input" v-model="tarefa.dataEntrega">
+            <input type="date" class="data input" v-model="tarefa.dataEntrega">
           </div>
         </div>
 
         <div class="atividades">
           <div class="quadrado" :key="i" v-for="(ativ, i) in atividades">
-            <img alt="" class="imagens" :src="'../src/images/' + ativ.foto + '.png'" >
+            <label>
+              <input v-model="tarefa.idAtividade" type="radio" :value="ativ.id">
+              <img alt="" class="imagens" :src="'../src/images/' + ativ.foto + '.png'" >
+            </label>
           </div>
         </div>
 
         <div class="btns">
           <button class="botao" id="cancelar" v-on:click="$emit('fechar')">Cancelar</button>
-          <button class="botao">Enviar</button>
+          <button class="botao" v-on:click="publicar()">Enviar</button>
         </div>
       </div>
     </div>
@@ -52,7 +55,7 @@ export default {
         data: "",
         dataEntrega: "",
         tipo: "atividade",
-        idAtividade: 1
+        idAtividade: 2
       },
       atividades: []
    };
@@ -68,7 +71,7 @@ export default {
         this.datahojebarra = diaF+"/"+mesF+"/"+anoF;
         this.datahojetraco = anoF+"-"+mesF+"-"+diaF;
     },
-     publicar(){
+    publicar(){
       this.$http
           .post("https://localhost:5001/api/postagens", this.tarefa)
           .then(response => {
@@ -98,6 +101,25 @@ export default {
 </script>
 
 <style scoped>
+/* HIDE RADIO */
+[type=radio] { 
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* IMAGE STYLES */
+[type=radio] + img {
+  cursor: pointer;
+  border: 3px solid transparent;
+}
+
+/* CHECKED STYLES */
+[type=radio]:checked + img {
+  border: 3px solid rgb(8, 90, 180) ;
+}
+
 .geral{
   top: 0;
   left: 0;
@@ -207,12 +229,7 @@ export default {
 
 .imagens{
   border-radius:10px;
-  border: 3px solid transparent;
   width: 100%;
-}
-
-.imagens:hover{
-  border:solid rgb(8, 90, 180) 3px;
 }
 
 #cancelar{

@@ -5,11 +5,18 @@
         <div class="infos">
           <img src="../../../images/perfil2.png">
           <div class="textos">
-            <strong><b>{{professor}}</b></strong>
-            <small>{{data}}</small>
+            <strong>{{professor}}</strong>
+            <small>{{atividade.data}}</small>
           </div>
         </div>
-        <strong class="nome_atividade"><b>{{atividade.descricao}}</b></strong>
+      </div>
+      <div class="infos_atividadee">
+        <div class="nome_atividade">
+          {{atividade.descricao}}
+        </div>
+        <div class="data_atividade">
+          Data entrega: <strong>{{atividade.dataEntrega}}</strong>
+        </div>
       </div>
     </div>
   </div>
@@ -21,7 +28,6 @@ export default {
   props: ["atividade", "professor"],
   data() {
     return {
-      data: ""
    };
   },
   methods: {
@@ -32,11 +38,19 @@ export default {
   },
   created() {
     var a = new Date(this.atividade.data);
+
     var dd = String(a.getDate()).padStart(2, '0');
     var mm = String(a.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = a.getFullYear();
     
-    this.data = dd + '/' + mm + '/' + yyyy;
+    this.atividade.data = dd + '/' + mm + '/' + yyyy;
+
+    var b = new Date(this.atividade.dataEntrega);
+    dd = String(b.getDate()).padStart(2, '0');
+    mm = String(b.getMonth() + 1).padStart(2, '0'); //January is 0!
+    yyyy = b.getFullYear();
+
+    this.atividade.dataEntrega = dd + '/' + mm + '/' + yyyy;
    
   },
   watch: {
@@ -49,11 +63,6 @@ export default {
 </script>
 
 <style scoped>
-
-.atividade{
-  align-items: center;
-}
-
 .atividade :hover {
   background: rgb(60, 62, 60);
 }
@@ -67,6 +76,7 @@ export default {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  padding:30px;
 }
 
 .cabecalho{
@@ -74,7 +84,6 @@ export default {
     flex-direction:row;
     justify-content: space-between;
     align-items: center;
-    padding:30px;
     font-size: 1.4em;
 }
 
@@ -90,6 +99,10 @@ p {
   width: 50%;
 }
 
+.nome_atividade {
+  padding: 0 25px;
+}
+
 .textos {
   display: flex;
   flex-direction: column;
@@ -101,4 +114,10 @@ img{
   height: 55px;
   border-radius: 8px;
 }
+
+.infos_atividade{
+  display: flex;
+  flex-direction: column;
+}
+
 </style>

@@ -5,7 +5,8 @@
       v-if="msg.visivel" 
       v-on:sair="msg.visivel = false, $router.push({ path: `/usuario` })"
       v-on:cancelar="msg.visivel = false"
-      v-on:excluir="excluir(sala.id)"/>
+      v-on:excluir="excluir(sala.id)"
+      v-on:excluirPostagem="postagens.splice(i,1), msg.visivel = false"/>
     <MenuProfessor v-on:getPostagens="getPostagensByCodigo($event)" :sala="sala"/>
     <div class="centro">
       <NovoComunicado :sala="sala" :postagens="postagens" v-if="novoComunicado" v-on:fechar="novoComunicado = false"/> 
@@ -25,10 +26,10 @@
           <div v-if="postagens[0] != null">
             <div class="postagens" v-bind:key="i" v-for="(post, i) in postagens">
               <div>
-                <Comunicado v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="$session.get('nome')"/> 
+                <Comunicado v-on:deletada="excluirPostagem(i)" v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="$session.get('nome')"/> 
               </div>
               <div>
-                <Atividade v-if="post.tipo == 'atividade'" :atividade="post" :professor="$session.get('nome')"/>
+                <Atividade v-on:deletada="excluirPostagem(i)" v-if="post.tipo == 'atividade'" :atividade="post" :professor="$session.get('nome')"/>
               </div>
             </div>
           </div>
@@ -80,6 +81,7 @@ export default {
       novoComunicado: false,
       novaAtividade: false,
       clicou: false,
+      i:0,
       sala: {},
       postagens:[],
       msg: {
@@ -115,11 +117,11 @@ export default {
           console.log(erro);
       });
     },
-    msgExluir(){
+    msgExluir(tipo){
       this.msg = {
         visivel: true,
-        titulo: "Excluir sala",
-        mensagem: "Deseja mesmo excluir essa sala de forma definitiva?",
+        titulo: "Excluir "+tipo,
+        mensagem: "Deseja mesmo excluir essa "+tipo+" de forma definitiva?",
         botoes: [
           {
             mensagem: "Cancelar",
@@ -127,11 +129,29 @@ export default {
           },
           {
             mensagem: "Sim",
-            evento: "excluir",
+            evento: "excluirPostagem",
           }
         ],
       }
-    }
+    },
+    excluirPostagem(i) {
+      this.i = i;
+      this.msg = {
+        visivel: true,
+        titulo: "Excluir Postagem",
+        mensagem: "Deseja mesmo excluir essa postagem de forma definitiva?",
+        botoes: [
+          {
+            mensagem: "Cancelar",
+            evento: "cancelar",
+          },
+          {
+            mensagem: "Sim",
+            evento: "excluirPostagem",
+          }
+        ],
+      }
+    },
   },
   created() {
     document.title = "Sala de Aula";
@@ -214,6 +234,7 @@ export default {
   margin: 0 auto 8px auto;
   color: white;
   font-size: 1.5em;
+  transition: all 0.2s !important;
 }
 
 .opcao:hover {

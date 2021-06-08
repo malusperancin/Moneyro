@@ -19,10 +19,10 @@ namespace ProjetoPratica_API.Data
         Task<Usuarios> GetUsuarioById(int Id);
         Task<Usuarios> GetUsuarioByApelido(string apelido);
         Task<Usuarios> GetUsuarioByEmail(string email);
-       
+
         Task<Registros[]> GetAllRegistros();
         Task<Registros[]> GetRegistrosCompartilhados(int UsuarioId, int AmigoId);
-        Task<Registros>   GetRegistroById(int Id);
+        Task<Registros> GetRegistroById(int Id);
         Task<Registros[]> GetReceitasByUsuario(int IdUsuario);
         Task<Registros[]> GetDespesasByUsuario(int IdUsuario);
         Task<Registros[]> GetRegistrosByUsuario(int IdUsuario);
@@ -60,13 +60,14 @@ namespace ProjetoPratica_API.Data
 
         Task<Situacoes[]> GetAllSituacoes();
         Task<Notificacoes[]> GetNotificacoesByUsuarioVisu(int IdDestino);
-       Task<Notificacoes> GetNotificacaoById(int Id);
-       Task<Notificacoes[]> GetAllNotificacoes();
-       Task<Notificacoes[]> GetNotificacoesByUsuario(int IdDestino);
+        Task<Notificacoes> GetNotificacaoById(int Id);
+        Task<Notificacoes[]> GetAllNotificacoes();
+        Task<Notificacoes[]> GetNotificacoesByUsuario(int IdDestino);
 
-       Task<Tarefas> GetTarefaById(int Id);
-       Task<Tarefas[]> GetAllTarefas();
-    
+        Task<Tarefas> GetTarefaById(int Id);
+        Task<Tarefas[]> GetAllTarefas();
+        void SpDeletarTarefaById(int Id);
+
         Task<Comunicados[]> GetAllComunicados();
         Task<Comunicados> GetComunicadoById(int Id);
 
@@ -79,8 +80,9 @@ namespace ProjetoPratica_API.Data
         List<Quiz> SpQuiz(int QuizId);
 
         void SpCriarSala(ref Salas sala);
-        void SpExcluirSala(int id) ;   
+        void SpExcluirSala(int Id);
         List<Salas> GetSalasByIdProfessor(int IdProfessor);
+        Task<Postagens> GetPostagemById(int Id);
         Task<Postagens[]> GetPostagensBySalaId(int Id);
         List<Postagens> SpGetPostagensBySalaCod(string codigo);
         Task<Salas[]> GetAllSalas();

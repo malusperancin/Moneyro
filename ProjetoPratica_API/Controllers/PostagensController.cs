@@ -27,7 +27,7 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                var result =  await this.Repo.GetPostagensBySalaId(SalaId);
+                var result = await this.Repo.GetPostagensBySalaId(SalaId);
                 return Ok(result);
             }
             catch
@@ -59,7 +59,7 @@ namespace ProjetoPratica_API.Controllers
 
                 if (await this.Repo.SaveChangesAsync())
                 {
-                    return Ok();
+                    return Ok(modelo);
                     // return Created($"/api/{modelo.Id}", modelo);
                 }
             }
@@ -70,16 +70,21 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
-        /*[HttpDelete("{PostagemId}")]
+        [HttpDelete("{PostagemId}")]
         public async Task<IActionResult> delete(int PostagemId)
         {
             try
             {
                 //verifica se existe postagem a ser excluído
-                var postagem = await this.Repo.GetPostagemById(PostagemId);
-                if (postagem == null) return NotFound(); //método do EF
-                    this.Repo.Delete(postagem);
-               
+                Postagens postagem = await this.Repo.GetPostagemById(PostagemId);
+
+                if (postagem == null) return NotFound();
+
+                if (postagem.Tipo == "tarefa")
+                    this.Repo.SpDeletarTarefaById(PostagemId);
+
+                this.Repo.Delete<Postagens>(postagem);
+
                 if (await this.Repo.SaveChangesAsync())
                 {
                     return Ok();
@@ -90,6 +95,6 @@ namespace ProjetoPratica_API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
             return BadRequest();
-        }*/
+        }
     }
 }

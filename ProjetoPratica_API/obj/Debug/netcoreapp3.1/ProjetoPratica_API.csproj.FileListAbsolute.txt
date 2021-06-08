@@ -240,7 +240,6 @@ C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debu
 C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.0\System.Runtime.Caching.dll
 C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Runtime.Caching.dll
 C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
-C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\obj\Debug\netcoreapp3.1\ProjetoPratica_API.csprojAssemblyReference.cache
 C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\obj\Debug\netcoreapp3.1\ProjetoPratica_API.AssemblyInfoInputs.cache
 C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\obj\Debug\netcoreapp3.1\ProjetoPratica_API.AssemblyInfo.cs
 C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\obj\Debug\netcoreapp3.1\ProjetoPratica_API.csproj.CoreCompileInputs.cache
@@ -279,3 +278,17 @@ C:\Users\vinic\OneDrive\Documentos\GitHub\Projeto-PraticaII\ProjetoPratica_API\b
 C:\Users\vinic\OneDrive\Documentos\GitHub\Projeto-PraticaII\ProjetoPratica_API\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Security.Principal.Windows.dll
 C:\Users\vinic\OneDrive\Documentos\GitHub\Projeto-PraticaII\ProjetoPratica_API\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Security.Principal.Windows.dll
 C:\Users\vinic\OneDrive\Documentos\GitHub\Projeto-PraticaII\ProjetoPratica_API\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\Microsoft.Win32.SystemEvents.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\System.Drawing.Common.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\System.Security.AccessControl.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\System.Security.Permissions.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\System.Security.Principal.Windows.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\System.Windows.Extensions.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Security.AccessControl.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Security.Principal.Windows.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Security.Principal.Windows.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
+C:\Users\Giovanna\OneDrive\Documentos\GitHub\Moneyro\ProjetoPratica_API\obj\Debug\netcoreapp3.1\ProjetoPratica_API.csproj.AssemblyReference.cache

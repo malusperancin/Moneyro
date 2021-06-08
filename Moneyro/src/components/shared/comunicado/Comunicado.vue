@@ -2,10 +2,15 @@
     <div class="comunicado">
         <div class="conteudo">
             <div class="infos">
-                <img src="../../../images/perfil2.png">
-                <div class="textos">
-                    <strong><b>{{professor}}</b></strong>
-                    <small>{{data}}</small>
+                <div class="flex">
+                    <img src="../../../images/perfil2.png">
+                    <div class="textos">
+                        <strong><b>{{professor}}</b></strong>
+                        <small>{{data}}</small>
+                    </div>
+                </div>
+                <div v-on:click="excluir(comunicado.id)" class="deletar_icone">
+                    <ion-icon name="trash"></ion-icon>
                 </div>
             </div>
             <div class="texto">
@@ -36,7 +41,17 @@ props: ["comunicado", "professor"],
    };
   },
   methods: {
-    
+    excluir(id) {
+        this.$http
+            .delete("https://localhost:5001/api/postagens/"+id)
+            .then(
+                response => {
+                    this.$emit('deletada', id);
+                }, 
+                erro =>{
+                    console.log(erro);
+            });
+    }
   },
   computed: {
     
@@ -106,8 +121,28 @@ props: ["comunicado", "professor"],
 .infos{
   display:flex;
   flex-direction:row;
-  width: 50%;
+  justify-content: space-between;
   font-size: 1.2em;
+}
+
+.flex {
+    display: flex;
+    width: 100%;
+}
+
+.deletar_icone {
+    border: 1px solid grey;
+    height: fit-content;
+    padding: 5px;
+    line-height: 0;
+    border-radius: 87px;
+    color: grey;
+    transition: all 0.1s easy-in !important;
+}
+
+.deletar_icone:hover {
+    color: white;
+    background: rgb(211, 49, 49);
 }
 
 .textos {

@@ -96,7 +96,7 @@ namespace ProjetoPratica_API.Data
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaRegistro.FirstOrDefaultAsync();
         }
-                
+
         public async Task<Registros[]> GetDespesasByUsuario(int IdUsuario)
         {
             IQueryable<Registros> consultaRegistros = (IQueryable<Registros>)this.Context.Registros;
@@ -116,8 +116,8 @@ namespace ProjetoPratica_API.Data
         public async Task<Registros[]> GetRegistrosByUsuario(int IdUsuario)
         {
             IQueryable<Registros> consultaRegistro = (IQueryable<Registros>)this.Context.Registros;
-            consultaRegistro = consultaRegistro.OrderByDescending(r => r.Data).Where(registro => registro.IdUsuario == IdUsuario || registro.Compartilhamentos.Contains(" "+IdUsuario+" "));
-                // aqui efetivamente ocorre o SELECT no BD
+            consultaRegistro = consultaRegistro.OrderByDescending(r => r.Data).Where(registro => registro.IdUsuario == IdUsuario || registro.Compartilhamentos.Contains(" " + IdUsuario + " "));
+            // aqui efetivamente ocorre o SELECT no BD
             return await consultaRegistro.ToArrayAsync();
         }
 
@@ -125,10 +125,10 @@ namespace ProjetoPratica_API.Data
         {
             IQueryable<Registros> consultaRegistro = (IQueryable<Registros>)this.Context.Registros;
             consultaRegistro = consultaRegistro.OrderByDescending(r => r.Data)
-                                               .Where(registro => registro.IdUsuario == UsuarioId && 
-                                                                  registro.Compartilhamentos.Contains(" "+AmigoId+" ")||
-                                                                  registro.IdUsuario == AmigoId  &&
-                                                                  registro.Compartilhamentos.Contains(" "+UsuarioId+" "));
+                                               .Where(registro => registro.IdUsuario == UsuarioId &&
+                                                                  registro.Compartilhamentos.Contains(" " + AmigoId + " ") ||
+                                                                  registro.IdUsuario == AmigoId &&
+                                                                  registro.Compartilhamentos.Contains(" " + UsuarioId + " "));
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaRegistro.ToArrayAsync();
         }
@@ -137,10 +137,10 @@ namespace ProjetoPratica_API.Data
         {
             IQueryable<Metas> consultaMeta = (IQueryable<Metas>)this.Context.Metas;
             consultaMeta = consultaMeta.OrderByDescending(r => r.DataLimite)
-                                               .Where(Meta => Meta.IdUsuario == UsuarioId && 
-                                                              Meta.Compartilhamentos.Contains(" "+AmigoId+" ")||
-                                                              Meta.IdUsuario == AmigoId  &&
-                                                              Meta.Compartilhamentos.Contains(" "+UsuarioId+" "));
+                                               .Where(Meta => Meta.IdUsuario == UsuarioId &&
+                                                              Meta.Compartilhamentos.Contains(" " + AmigoId + " ") ||
+                                                              Meta.IdUsuario == AmigoId &&
+                                                              Meta.Compartilhamentos.Contains(" " + UsuarioId + " "));
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaMeta.ToArrayAsync();
         }
@@ -160,7 +160,7 @@ namespace ProjetoPratica_API.Data
         public async Task<Metas[]> GetMetasByUsuario(int IdUsuario)
         {
             IQueryable<Metas> consultaMeta = (IQueryable<Metas>)this.Context.Metas;
-            consultaMeta = consultaMeta.OrderBy(m => m.DataLimite).Where(meta => meta.IdUsuario == IdUsuario  || meta.Compartilhamentos.Contains(" "+IdUsuario+" "));
+            consultaMeta = consultaMeta.OrderBy(m => m.DataLimite).Where(meta => meta.IdUsuario == IdUsuario || meta.Compartilhamentos.Contains(" " + IdUsuario + " "));
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaMeta.ToArrayAsync();
         }
@@ -225,7 +225,7 @@ namespace ProjetoPratica_API.Data
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
 
             // consultaAmigos = consultaAmigos.Where(a => a.Aceitou == true);
-            consultaAmigos = consultaAmigos.OrderBy(a => a.Id).Where(a => a.IdAmigoA == amigos.IdAmigoA && a.IdAmigoB == amigos.IdAmigoB); 
+            consultaAmigos = consultaAmigos.OrderBy(a => a.Id).Where(a => a.IdAmigoA == amigos.IdAmigoA && a.IdAmigoB == amigos.IdAmigoB);
             //consultaAmigos = consultaAmigos.Where(a => a.Aceitou == 1);
 
             return await consultaAmigos.ToArrayAsync();
@@ -244,7 +244,7 @@ namespace ProjetoPratica_API.Data
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
 
             // consultaAmigos = consultaAmigos.Where(a => a.Aceitou == true);
-            consultaAmigos = consultaAmigos.OrderByDescending(a => a.Aceitou).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario); 
+            consultaAmigos = consultaAmigos.OrderByDescending(a => a.Aceitou).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario);
             consultaAmigos = consultaAmigos.Where(a => a.Aceitou == 0);
 
             return await consultaAmigos.ToArrayAsync();
@@ -253,7 +253,7 @@ namespace ProjetoPratica_API.Data
         public async Task<Amigos[]> GetAllAmigosByUsuario(int IdUsuario)
         {
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
-            consultaAmigos = consultaAmigos.OrderByDescending(a => a.Aceitou).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario); 
+            consultaAmigos = consultaAmigos.OrderByDescending(a => a.Aceitou).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario);
 
             return await consultaAmigos.ToArrayAsync();
         }
@@ -311,13 +311,13 @@ namespace ProjetoPratica_API.Data
             return await consultaTag.FirstOrDefaultAsync();
         }
 
-       public async Task<Situacoes[]> GetAllSituacoes()
+        public async Task<Situacoes[]> GetAllSituacoes()
         {
             IQueryable<Situacoes> consultaSituacoes = (IQueryable<Situacoes>)this.Context.Situacoes;
             return await consultaSituacoes.ToArrayAsync();
         }
 
-         public async Task<Notificacoes[]> GetAllNotificacoes()
+        public async Task<Notificacoes[]> GetAllNotificacoes()
         {
             IQueryable<Notificacoes> consultaNotificacoes = (IQueryable<Notificacoes>)this.Context.Notificacoes;
             return await consultaNotificacoes.ToArrayAsync();
@@ -332,18 +332,18 @@ namespace ProjetoPratica_API.Data
 
         public async Task<Notificacoes[]> GetNotificacoesByUsuario(int IdDestino)
         {
-        IQueryable<Notificacoes> consultaNotificacao = (IQueryable<Notificacoes>)this.Context.Notificacoes;
-        consultaNotificacao = consultaNotificacao.OrderBy(t => t.Visualizada).Where(not => not.IdDestino == IdDestino);
+            IQueryable<Notificacoes> consultaNotificacao = (IQueryable<Notificacoes>)this.Context.Notificacoes;
+            consultaNotificacao = consultaNotificacao.OrderBy(t => t.Visualizada).Where(not => not.IdDestino == IdDestino);
 
-        return await consultaNotificacao.ToArrayAsync();
+            return await consultaNotificacao.ToArrayAsync();
         }
 
         public async Task<Notificacoes[]> GetNotificacoesByUsuarioVisu(int IdDestino)
         {
-        IQueryable<Notificacoes> consultaNotificacao = (IQueryable<Notificacoes>)this.Context.Notificacoes;
-        consultaNotificacao = consultaNotificacao.OrderBy(t => t.Visualizada).Where(not => not.IdDestino == IdDestino && not.Visualizada == 0);
+            IQueryable<Notificacoes> consultaNotificacao = (IQueryable<Notificacoes>)this.Context.Notificacoes;
+            consultaNotificacao = consultaNotificacao.OrderBy(t => t.Visualizada).Where(not => not.IdDestino == IdDestino && not.Visualizada == 0);
 
-        return await consultaNotificacao.ToArrayAsync();
+            return await consultaNotificacao.ToArrayAsync();
         }
 
         public async Task<Tarefas> GetTarefaById(int Id)
@@ -367,12 +367,12 @@ namespace ProjetoPratica_API.Data
         }
 
         public async Task<Comunicados[]> GetAllComunicados()
-         {
-           IQueryable<Comunicados> consultaComunicados = (IQueryable<Comunicados>)this.Context.Comunicados;
-           return await consultaComunicados.ToArrayAsync();
+        {
+            IQueryable<Comunicados> consultaComunicados = (IQueryable<Comunicados>)this.Context.Comunicados;
+            return await consultaComunicados.ToArrayAsync();
         }
 
-        public async Task<Comunicados> GetComunicadoById(int Id)    
+        public async Task<Comunicados> GetComunicadoById(int Id)
         {
             IQueryable<Comunicados> consultaComunicados = (IQueryable<Comunicados>)this.Context.Comunicados;
             consultaComunicados = consultaComunicados.OrderBy(c => c.Id).Where(com => com.Id == Id);
@@ -380,14 +380,14 @@ namespace ProjetoPratica_API.Data
             return await consultaComunicados.FirstOrDefaultAsync();
         }
 
-         public async Task<Atividades[]> GetAllAtividades()
-         {
-           IQueryable<Atividades> consultaAtividades = (IQueryable<Atividades>)this.Context.Atividades;
-           consultaAtividades = consultaAtividades.OrderBy(a => a.Id).Where(ativ => ativ.Id > 1);
-           return await consultaAtividades.ToArrayAsync();
+        public async Task<Atividades[]> GetAllAtividades()
+        {
+            IQueryable<Atividades> consultaAtividades = (IQueryable<Atividades>)this.Context.Atividades;
+            consultaAtividades = consultaAtividades.OrderBy(a => a.Id).Where(ativ => ativ.Id > 1);
+            return await consultaAtividades.ToArrayAsync();
         }
 
-        public async Task<Atividades> GetAtividadeById(int Id)    
+        public async Task<Atividades> GetAtividadeById(int Id)
         {
             IQueryable<Atividades> consultaAtividades = (IQueryable<Atividades>)this.Context.Atividades;
             consultaAtividades = consultaAtividades.OrderBy(a => a.Id).Where(ativ => ativ.Id == Id);
@@ -396,12 +396,12 @@ namespace ProjetoPratica_API.Data
         }
 
         public async Task<Produtos[]> GetAllProdutos()
-         {
-           IQueryable<Produtos> consultaProdutos = (IQueryable<Produtos>)this.Context.Produtos;
-           return await consultaProdutos.ToArrayAsync();
+        {
+            IQueryable<Produtos> consultaProdutos = (IQueryable<Produtos>)this.Context.Produtos;
+            return await consultaProdutos.ToArrayAsync();
         }
 
-        public async Task<Produtos> GetProdutoById(int Id)    
+        public async Task<Produtos> GetProdutoById(int Id)
         {
             IQueryable<Produtos> consultaProdutos = (IQueryable<Produtos>)this.Context.Produtos;
             consultaProdutos = consultaProdutos.OrderBy(p => p.Id).Where(produto => produto.Id == Id);
@@ -409,15 +409,62 @@ namespace ProjetoPratica_API.Data
             return await consultaProdutos.FirstOrDefaultAsync();
         }
 
-        /* =========================== SPs ================================*/
-
-        public Salas SpGetSalaByCodigo(string codigo)    
+        public List<Salas> GetSalasByIdProfessor(int IdProfessor)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
-            
+
             SqlCommand cmd = new SqlCommand("comando", con);
-            cmd.CommandText = "sp_getSalaByCod '"+codigo+"'";
+            cmd.CommandText = "sp_getSalasProfessor " + IdProfessor;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            var result = new List<Salas>();
+
+            while (leitor.Read())
+            {
+                Salas dados = new Salas(
+                    (int)leitor["id"],
+                    (string)leitor["nome"],
+                    (int)leitor["idProfessor"],
+                    (string)leitor["professor"],
+                    (string)leitor["codigo"]);
+
+                result.Add(dados);
+            }
+
+            con.Close();
+            return result;
+        }
+
+        public async Task<Postagens[]> GetPostagensBySalaId(int Id)
+        {
+            IQueryable<Postagens> consultaPostagens = (IQueryable<Postagens>)this.Context.Postagens;
+            consultaPostagens = consultaPostagens.OrderBy(p => p.IdSala).Where(post => post.IdSala == Id);
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaPostagens.ToArrayAsync();
+        }
+
+
+        public async Task<Postagens> GetPostagemById(int Id)
+        {
+            IQueryable<Postagens> consultaPostagens = (IQueryable<Postagens>)this.Context.Postagens;
+            consultaPostagens = consultaPostagens.OrderBy(p => p.Id).Where(postagem => postagem.Id == Id);
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaPostagens.FirstOrDefaultAsync();
+        }
+
+
+
+        /* =========================== SPs ================================*/
+
+        public Salas SpGetSalaByCodigo(string codigo)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_getSalaByCod '" + codigo + "'";
 
             SqlDataReader leitor = cmd.ExecuteReader();
 
@@ -432,7 +479,7 @@ namespace ProjetoPratica_API.Data
                     (string)leitor["professor"],
                     (string)leitor["codigo"]
                 );
-                    
+
                 result.Add(dados);
             }
 
@@ -440,13 +487,13 @@ namespace ProjetoPratica_API.Data
             return result[0];
         }
 
-        public Salas SpGetSalaById(int Id)    
+        public Salas SpGetSalaById(int Id)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
-            
+
             SqlCommand cmd = new SqlCommand("comando", con);
-            cmd.CommandText = "sp_getSalaById "+ Id;
+            cmd.CommandText = "sp_getSalaById " + Id;
 
             SqlDataReader leitor = cmd.ExecuteReader();
 
@@ -472,9 +519,9 @@ namespace ProjetoPratica_API.Data
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
-            
+
             SqlCommand cmd = new SqlCommand("comando", con);
-            cmd.CommandText = "sp_quiz "+ QuizId;
+            cmd.CommandText = "sp_quiz " + QuizId;
 
             SqlDataReader leitor = cmd.ExecuteReader();
 
@@ -492,109 +539,87 @@ namespace ProjetoPratica_API.Data
 
             string pergunta = "";
             string[] alternativas;
-            
+
             var result = new List<Quiz>();
-            
-            for(int i = 0; i < aux.Count; i+=4)
+
+            for (int i = 0; i < aux.Count; i += 4)
             {
                 alternativas = new string[4];
                 int correta = -1;
-                
-                for(int j = 0; j<4; j++)
+
+                for (int j = 0; j < 4; j++)
                 {
-                    alternativas[j] = aux[i+j].Alternativa;
+                    alternativas[j] = aux[i + j].Alternativa;
                     pergunta = aux[i].Descricao;
 
-                    if(aux[i+j].Correta)
+                    if (aux[i + j].Correta)
                         correta = j;
                 }
-                
+
                 result.Add(new Quiz(aux[i].Descricao, alternativas, correta));
             }
 
             con.Close();
             return result;
         }
-   
 
-        public void SpCriarSala(ref Salas sala)    
+
+        public void SpCriarSala(ref Salas sala)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
-            
+
             SqlCommand cmd = new SqlCommand("comando", con);
-            
+
             var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var random = new Random();
             var result = new string(
             Enumerable.Repeat(chars, 6)
                 .Select(s => s[random.Next(s.Length)])
                 .ToArray());
-            
+
             sala.Codigo = result;
-            
+
             cmd.CommandText = "sp_CriarSala " + sala.IdProfessor + ", '" + sala.Nome + "' , '" + sala.Codigo + "'";
             cmd.ExecuteNonQuery();
 
             con.Close();
         }
 
-        public void SpExcluirSala(int id)    
+        public void SpExcluirSala(int id)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
-            
+
             SqlCommand cmd = new SqlCommand("comando", con);
-            
+
             cmd.CommandText = "sp_DeletarSala " + id;
             cmd.ExecuteNonQuery();
 
             con.Close();
         }
 
-        public List<Salas> GetSalasByIdProfessor(int IdProfessor)    
+        public void SpDeletarTarefaById(int id)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
-            
+
             SqlCommand cmd = new SqlCommand("comando", con);
-            cmd.CommandText = "sp_getSalasProfessor "+IdProfessor;
 
-            SqlDataReader leitor = cmd.ExecuteReader();
-
-            var result = new List<Salas>();
-
-            while (leitor.Read())
-            {
-                Salas dados = new Salas(
-                    (int)leitor["id"],
-                    (string)leitor["nome"],
-                    (int)leitor["idProfessor"],
-                    (string)leitor["professor"],
-                    (string)leitor["codigo"]);
-
-                result.Add(dados);
-            }
+            cmd.CommandText = "sp_DeletarTarefa " + id;
+            cmd.ExecuteNonQuery();
 
             con.Close();
-            return result;
         }
 
-        public async Task<Postagens[]> GetPostagensBySalaId(int Id)    
-        {
-            IQueryable<Postagens> consultaPostagens = (IQueryable<Postagens>)this.Context.Postagens;
-            consultaPostagens = consultaPostagens.OrderBy(p => p.IdSala).Where(post => post.IdSala == Id);
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaPostagens.ToArrayAsync();
-        }
 
-        public List<Postagens> SpGetPostagensBySalaCod(string codigo)    
+        public List<Postagens> SpGetPostagensBySalaCod(string codigo)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
-            
+
             SqlCommand cmd = new SqlCommand("comando", con);
-            cmd.CommandText = "sp_GetPostagensCod '"+codigo+"'";
+            cmd.CommandText = "sp_GetPostagensCod '" + codigo + "'";
 
             SqlDataReader leitor = cmd.ExecuteReader();
 

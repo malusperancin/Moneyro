@@ -10,7 +10,9 @@
           <div v-for="(prod, i) in produtos_destaque" :key="i" class="produto_destaque">
             <p class="nome_produto"> {{prod.nome}} </p>
             <div class="ft">
-              <img alt="" :src="'../src/images/' + prod.imagem + '.png'">
+              <div class="destaque_imagem">
+                <img alt="" :src="'../src/images/' + prod.imagem + '.png'">
+              </div>
               <div class="descricao">
                 <p>{{prod.descricao}}</p>
                 <p class="preco">R$ {{prod.preco}}.00</p>
@@ -184,7 +186,7 @@ export default {
   flex-direction: column;
   box-sizing: border-box;
   padding: 22px 2px 22px 20px;
-  background: #701c1cda;
+  background: hsl(229, 78%, 61%);
   border-radius: 12px;
   color: whitesmoke;
   box-shadow: 6px 5px 16px 0px black;
@@ -192,6 +194,17 @@ export default {
 
 .ft {
   display: flex;
+  justify-content: space-between;
+}
+
+.destaque_imagem{
+  padding: 15px 0 0 15px;
+}
+
+.destaque_imagem img {
+  height: 100%;
+  border-radius: 8px;
+  object-fit: cover;
 }
 
 .descricao {
@@ -201,6 +214,7 @@ export default {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+  flex: 1;
 }
 
 .nome_produto{
@@ -213,10 +227,11 @@ export default {
 
 .preco {
   font-size: 2.5em;
+  line-height: 45px;
 }
 
 .texto {
-  color: white;
+  color: hsl(0, 0%, 100%);
   font-size: 2.5em;
 }
 
@@ -237,7 +252,8 @@ export default {
   color: white;
   border-radius: 5px;
   box-shadow: 1px 1px 12px 0px black;
-  background: hsl(298, 32%, 20%);
+  /* background: hsl(229, 49%, 55%); */
+  background: hsl(229, 78%, 61%);
 }
 
 .produto_lista .nome_produto {
