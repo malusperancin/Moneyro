@@ -186,7 +186,9 @@ export default {
   flex-direction: column;
   box-sizing: border-box;
   padding: 22px 2px 22px 20px;
-  background: hsl(229, 78%, 61%);
+  background: hsl(229, 78%, 61%,40%);
+  
+  
   border-radius: 12px;
   color: whitesmoke;
   box-shadow: 6px 5px 16px 0px black;
@@ -253,7 +255,7 @@ export default {
   border-radius: 5px;
   box-shadow: 1px 1px 12px 0px black;
   /* background: hsl(229, 49%, 55%); */
-  background: hsl(229, 78%, 61%);
+   background: hsl(229, 78%, 61%,40%);
 }
 
 .produto_lista .nome_produto {

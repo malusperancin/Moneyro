@@ -112,7 +112,6 @@ export default {
         btnAnterior.style.color = "darkgray";
         btnAnterior.disabled= true;
         this.indice = this.perguntas.length;
-        alert(this.acertos);
       }
     }
   },
@@ -124,7 +123,6 @@ export default {
   },
   created() {  
     document.title = "Moneyro - Quiz";
-    alert(this.$route.query.codigo);
     this.$http
         .get("https://localhost:5001/api/quiz/" + this.$route.query.codigo)
         .then(dados => {

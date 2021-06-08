@@ -122,21 +122,7 @@ export default {
         },
       ],
       conteudos: [
-        {
-          titulo:
-            "Rafael Portugal diz que irá colocar Gil novamente no 'BBB' 21 e Boninho se pronuncia",
-          link:
-            "https://kogut.oglobo.globo.com/noticias-da-tv/noticia/2021/05/rafael-portugal-diz-que-ira-colocar-gil-novamente-na-casa-e-boninho-se-pronuncia.html",
-          texto:
-            "Portugal postou uma foto com a frase: “Vou colocar o Gil na casa de novo. Não quero nem saber!”. Na legenda, ele escreveu: “Tá resolvido”. Nos comentários, o diretor do programa escreveu: 'Bora, concordo'.",
-          imagem:
-            "https://s2.glbimg.com/Ixaj3VTK0so1XmtEdOM0lqZpE0w=/640x424/top/i.glbimg.com/og/ig/infoglobo/f/original/2021/05/04/image-1_3.jpg",
-          assunto: "BBB",
-          data: "04/05/2021",
-          curtidas: 5,
-          tipo: "noticia",
-          curtido: true
-        },
+        
         {
           titulo:
             "Guedes: país teve desempenho 'bastante razoável' na pandemia",
