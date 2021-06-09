@@ -1,84 +1,88 @@
 <template>
   <div class="pag">
-    <Menu />
-    <Cabecalho />
+    <Cabecalho :filtro="filtro"/>
     <div class="centro">
-      <div class="feed">
-        <div class="postagem" v-bind:key='i' v-for="(postagem,i) in conteudos">
-          <!-- BLOG E NOTICIA -->
-          <div v-if="postagem.tipo == 'blog' || postagem.tipo == 'noticia'">
-            <p class="titulo">{{ postagem.titulo }}</p>
-            <div class="data">{{ postagem.data }}</div>
-            <p class="texto">{{ postagem.texto }}</p>
-            <img class="imagem" :src="postagem.imagem" />
-            <div class="rodape">
-              <span>
-                <div class="assunto">{{ postagem.assunto }}</div>
-              </span>
-              <div class="curtidas" v-bind:class="{like: postagem.curtido}" v-on:click="curtir(i,this)">
-                {{ postagem.curtidas }} <img src="../../images/fav.svg" />
+      <div id="conteudo">
+        <div class="feed">
+          <div class="postagem" v-bind:key='i' v-for="(postagem,i) of filtraPostagens">
+            <!-- BLOG E NOTICIA -->
+            <div v-if="postagem.tipo == 'blog' || postagem.tipo == 'noticia'">
+                      {{filtro}}
+              <p class="titulo">{{ postagem.titulo }}</p>
+              <div class="data">{{ postagem.data }}</div>
+              <p class="texto">{{ postagem.texto }}</p>
+              <img alt="" class="imagem" :src="postagem.imagem" />
+              <div class="rodape">
+                <span>
+                  <div class="assunto">{{ postagem.assunto }}</div>
+                </span>
+                <div class="curtidas" v-bind:class="{like: postagem.curtido}" v-on:click="curtir(i)">
+                  {{ postagem.curtidas }} <img alt="" src="../../images/fav.svg" />
+                </div>
+              </div>
+            </div>  
+            <!-- VIDEO -->
+            <div v-if="postagem.tipo == 'video'">
+              <p class="titulo">{{ postagem.titulo }}</p>
+              <div class="data">{{ postagem.data }}</div>
+              <p class="texto">{{ postagem.texto }}</p>
+              <iframe width="560" height="315" src="https://www.youtube.com/embed/t5eapLCabOU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              <div class="rodape">
+                <span>
+                  <div class="assunto">{{ postagem.assunto }}</div>
+                </span>
+                <div class="curtidas" v-bind:class="{like: postagem.curtido}" v-on:click="curtir(i)">
+                  {{ postagem.curtidas }} <img src="../../images/fav.svg" />
+                </div>
               </div>
             </div>
-          </div>  
-          <!-- VIDEO -->
-          <div v-if="postagem.tipo == 'video'">
-            <p class="titulo">{{ postagem.titulo }}</p>
-            <div class="data">{{ postagem.data }}</div>
-            <p class="texto">{{ postagem.texto }}</p>
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/t5eapLCabOU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            <div class="rodape">
-              <span>
-                <div class="assunto">{{ postagem.assunto }}</div>
-              </span>
-              <div class="curtidas" v-bind:class="{like: postagem.curtido}" v-on:click="curtir(i,this)">
-                {{ postagem.curtidas }} <img src="../../images/fav.svg" />
-              </div>
-            </div>
-          </div>
-          <!-- DICA -->
-          <div v-if="postagem.tipo == 'dica'">
-            <p class="titulo">{{postagem.autor}} once said: </p>
-            <div class="data">{{ postagem.data }}</div>
-            <p class="texto">{{ postagem.texto }}</p>
-            <div class="rodape">
-              <span>
-                <div class="assunto">{{ postagem.assunto }}</div>
-              </span>
-              <div class="curtidas" v-bind:class="{like: postagem.curtido}" v-on:click="curtir(i, this)" >
-                {{ postagem.curtidas }} <img src="../../images/fav.svg" />
+            <!-- DICA -->
+            <div v-if="postagem.tipo == 'dica'">
+              <p class="titulo">{{postagem.autor}} once said: </p>
+              <div class="data">{{ postagem.data }}</div>
+              <p class="texto">{{ postagem.texto }}</p>
+              <div class="rodape">
+                <span>
+                  <div class="assunto">{{ postagem.assunto }}</div>
+                </span>
+                <div class="curtidas" v-bind:class="{like: postagem.curtido}" v-on:click="curtir(i)" >
+                  {{ postagem.curtidas }} <img src="../../images/fav.svg" />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div id="direita">
-        <div class="filtros">
-          <label class="container"
-            >Notícias
-            <input type="checkbox" checked="checked" name="radio" />
-            <span class="checkmark"></span>
-          </label>
-          <label class="container"
-            >Vídeos
-            <input type="checkbox" name="radio" />
-            <span class="checkmark"></span>
-          </label>
-          <label class="container"
-            >Blogs
-            <input type="checkbox" name="radio" />
-            <span class="checkmark"></span>
-          </label>
-          <label class="container"
-            >Dicas
-            <input type="checkbox" name="radio" />
-            <span class="checkmark"></span>
-          </label>
-        </div>
-        <div class="alta">
-          <p class="titulo">Em alta</p>
-          <div class="enumeracao" v-bind:key='i' v-for="(alta, i) in altas">
-            <span class="numeros">{{ i + 1 }}</span>
-            <p class="tit">{{ alta.titulo }}</p>
+        <div id="direita">
+          <div class="filtros">
+            <p class="titulo">Mostrar apenas:</p>
+            <br>
+            <label class="container"
+              >Notícias
+              <input type="checkbox" name="radio" checked="checked" v-model="tipo" value="noticia"/>
+              <span class="checkmark"></span>
+            </label>
+            <label class="container"
+              >Vídeos
+              <input type="checkbox" name="radio" checked="checked" v-model="tipo" value="video"/>
+              <span class="checkmark"></span>
+            </label>
+            <label class="container"
+              >Blogs
+              <input type="checkbox" name="radio" checked="checked" v-model="tipo" value="blog"/>
+              <span class="checkmark"></span>
+            </label>
+            <label class="container"
+              >Dicas
+              <input type="checkbox" name="radio" checked="checked" v-model="tipo" value="dica"/>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="alta">
+            <p class="titulo">Em alta</p>
+            <div class="enumeracao" v-bind:key='i' v-for="(alta, i) in altas">
+              <span class="numeros">{{ i + 1 }}</span>
+              <p class="tit">{{ alta.titulo }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -87,17 +91,17 @@
 </template>
 
 <script>
-import Menu from "../shared/menu-inicial/MenuInicial.vue";
 import Cabecalho from "../shared/cabecalho-feed/CabecalhoFeed.vue";
 
 export default {
   components: {
-    Menu,
     Cabecalho,
   },
   data() {
     return {
-      login: false,
+      posiScroll: 0,
+      filtro: "",
+      tipo: ["noticia", "video", "blog", "dica"],
       altas: [
         {
           titulo:
@@ -122,7 +126,6 @@ export default {
         },
       ],
       conteudos: [
-        
         {
           titulo:
             "Guedes: país teve desempenho 'bastante razoável' na pandemia",
@@ -190,7 +193,7 @@ export default {
     };
   },
   methods: {
-    curtir(id, div){
+    curtir(id){
       // if usuario.logado
       var post = this.conteudos[id];
 
@@ -208,45 +211,70 @@ export default {
       this.conteudos[id] = post;
     }
   },
-  mounted() {
-    var div = document.getElementById("direita");
-
-    window.onscroll = function scrollFunction() {
-      if (
-        document.body.scrollTop > 260 ||
-        document.documentElement.scrollTop > 260
-         )
-        {
-          div.style.position = "fixed";
-          div.style.left = "65.2%";
-          div.style.top = "-15%";
-          div.style.width = "350px";
-        }
-        else  
-        {
-          div.style.position = "relative";
-          div.style.left = null;
-          div.style.width = "350px";
-          div.style.top = null;
-        }
-    };
-  },
   created() {
     document.title = "Moneyro";
+
+    this.posiScroll = window.pageYOffset;
+
+    window.onscroll = function() {
+
+      var soma = 0
+
+      if(window.scrollY.valueOf() > 200)
+      {
+        if (this.posiScroll > window.pageYOffset) //subiu => mostrou
+          document.getElementById("header").style.top = "0";
+        else //desceu => sumiu
+        {
+          document.getElementById("header").style.top = "-110px";
+          soma = -100
+        }
+  
+        this.posiScroll = window.pageYOffset;
+      }
+  
+      //PRA VOLTAR A FUNCIONAR MAIS OU MENOS EH SÓ TIRAR O HEIGHT
+      if(document.getElementById("direita").offsetTop < document.getElementById("conteudo").style.height)
+        document.getElementById("direita").style.top = soma + Math.round(window.scrollY.valueOf()) + "px";
+    }
   },
   beforeCreate() {
     if (this.$session.exists()) this.$router.push("usuario");
+  },
+  computed: {
+    filtraPostagens() {
+      var ret = this.conteudos.filter(c => this.tipo.includes(c.tipo));
+
+      if (this.filtro) {
+        let exp = new RegExp(this.filtro.trim(), "i");
+        return ret.filter(c => exp.test(c.titulo));
+      }
+      
+      return ret;
+    }
   },
 };
 </script>
 
 <style scoped>
 .centro {
+  padding: 160px 180px;
+}
+
+#conteudo {
+  position: relative;
   display: grid;
   grid-template-columns: 2fr 1fr;
-  padding: 10% 10% 10% 15%;
   color: white;
   grid-gap: 10px;
+  min-height: 800px;
+}
+
+#direita{
+   width: 350px;
+   position: absolute;
+   top: 0;
+   right: 0;
 }
 
 /* ---------- FEED ----------- */
@@ -355,10 +383,6 @@ iframe{
 
 /*------- FILTRO DE RADIO BUTTONS ------*/
 
-#direita{
-   width: 350px;
-}
-
 .filtros {
   background-color: #303030;
   border-radius: 10px;
@@ -368,7 +392,8 @@ iframe{
 }
 
 .container {
-  display: block;
+  display: flex;
+  align-items: center;
   position: relative;
   padding-left: 35px;
   margin-bottom: 12px;
@@ -390,7 +415,7 @@ iframe{
 /* Create a custom radio button */
 .checkmark {
   position: absolute;
-  top: 0;
+  top: 4px;
   left: 0;
   height: 25px;
   width: 25px;

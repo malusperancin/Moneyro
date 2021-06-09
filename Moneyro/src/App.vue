@@ -42,7 +42,7 @@ html {
 }
 
 #footer {
-  padding: 30px 100px;
+  padding: 30px 150px;
   color: white;
   background-color: rgb(67, 67, 67);
 }

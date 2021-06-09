@@ -1,7 +1,7 @@
 <template>
   <div class="pag">
     <Menu />
-    <Compra :produto="this.produto" v-if="carrinho" v-on:fechar="carrinho = false" />
+    <Compra :carrinho="carrinho" v-if="mostrarCarrinho" v-on:fechar="mostrarCarrinho = false" />
     <div class="centro">
       <span class="texto">Confira nossos produtos exclusivos Moneyro:</span>
       <div class="produtos">
@@ -16,7 +16,9 @@
               <div class="descricao">
                 <p>{{prod.descricao}}</p>
                 <p class="preco">R$ {{prod.preco}}.00</p>
-                <button class="botao" v-on:click="comprar(prod.comprar_code)">Comprar</button>
+                
+                <button style="background: grey;" v-if="prod.nome == 'Área do Professor' && $session.get('professor')" class="botao" title="Você já comprou este produto!">Já Possui</button>
+                <button v-else class="botao" v-on:click="comprar(prod)">Comprar</button>
               </div>
             </div>
           </div>
@@ -30,7 +32,7 @@
               <p>{{prod.descricao}}</p>
               <div class="lista_preco">
                 <p class="">R$ {{prod.preco}}.00</p>
-                <button class="botao botao_lista" v-on:click="comprar(prod.comprar_code)">Comprar</button>
+                <button class="botao botao_lista" v-on:click="comprar(prod)">Comprar</button>
               </div>
             </div>
           </div>
@@ -52,7 +54,8 @@ export default {
   },
   data() {
     return {
-      carrinho: false,
+      mostrarCarrinho: false,
+      carrinho: [],
       produto: {
         nome: "",
         preco: 0
@@ -63,7 +66,7 @@ export default {
           nome: "Caneca",
           preco: 18.00,
           imagem: "cofre",
-          descricao: "Descricao do prduto so que em baixo",
+          descricao: "Descricao do prduto so que em baixo"
         },
         {
           id: 4,
@@ -121,33 +124,34 @@ export default {
           nome: "Cofre inteligente",
           preco: 35.00,
           imagem: "cofre",
-          descricao: "Descricao muito legal do produto eba",
-          comprar_code: "cofre"
+          descricao: "Descricao muito legal do produto eba"
         },
         {
           id: 1,
           nome: "Área do Professor",
           preco: 85.00,
           imagem: "porcoprofessor",
-          descricao: "Descricao muito legal do produto eba",
-          comprar_code: "professor"
+          descricao: "Descricao muito legal do produto eba"
         }
       ]
     };
   },
   methods: {
     comprar(produto){
-     if(produto == 'professor')
-     {
-       this.produto.nome = 'professor';
-       this.produto.preco = 25
-     }
-     else
-     {
-      this.produto.nome = 'cofre';
-      this.produto.preco = 5;
-     }
-     this.carrinho = true;
+      if(this.carrinho.includes(produto))
+      {
+        var i = this.carrinho.indexOf(produto);
+        produto.quantidade += 1;
+        this.carrinho.splice(i, 1);
+        this.carrinho.push(produto);
+      }
+      else
+      {
+        produto.quantidade = 1;
+        this.carrinho.push(produto);
+      }
+
+      this.mostrarCarrinho = true;
     } 
   },
   created() {
@@ -307,6 +311,10 @@ p{
   padding: 8px 12px;
   text-align: center;
   margin: 0 0 0 auto;
+}
+
+.botao:hover, .botao_lista:hover {
+  background-color: rgb(250, 199, 88);
 }
 
 img {

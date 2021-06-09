@@ -2,18 +2,12 @@
   <div class="modal">
     <form class="modal-conteudo animate width-25" v-on:submit.prevent="logar">
       <div class="cima">
+        <p>Login</p>
         <span v-on:click="$emit('fechar')" class="fechar" title="Fechar login">&times;</span>
       </div>
       <div class="corpo">
-        <label for="apelido">
-          <b>Apelido</b>
-        </label>
-        <input type="text" name="apelido" required v-model="apelido" />
-
-        <label for="senha">
-          <b>Senha</b>
-        </label>
-        <input type="password" name="senha" required v-model="senha" />
+        <input type="text" name="apelido" placeholder="Apelido" required v-model="apelido" />
+        <input type="password" name="senha" placeholder="Senha" required v-model="senha" />
 
         <button id="btnlogin" type="submit">Login</button>
         <div id="erro">{{erro}}</div>
@@ -92,10 +86,17 @@ input[type="password"] {
   border-radius: 3px;
   width: 100%;
   padding: 8px 14px;
-  margin: 8px 0;
   border: 1px solid #ccc;
   box-sizing: border-box;
   font-size: 20px;
+}
+
+.corpo {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 15px;
+  color: black;
+  padding-top: 40px;
 }
 
 #btnlogin {
@@ -126,5 +127,16 @@ input[type="password"] {
 
 #btncancelar:hover {
   background: red;
+}
+
+.cima {
+  color: black;
+}
+
+.cima p {
+  padding: 0 10px;
+  font-size: 2em;
+  margin: 0;
+  font-weight: bold;
 }
 </style>

@@ -53,6 +53,7 @@
           placeholder="Bairro"
           maxlength="70"
           required
+          v-model="informacoes.bairro"
         />
         <br />
 
@@ -62,6 +63,7 @@
           id="rua"
           placeholder="Rua/Avenida"
           maxlength="70"
+          v-model="informacoes.logradouro"
           required
         />
         <br />
@@ -107,7 +109,8 @@ export default {
   data() {
     return {
       informacoes: {
-        estado: "",
+        logradouro: "",
+        bairro: ""
       },
       siglas: [],
       msg: {
@@ -138,17 +141,17 @@ export default {
   },
   methods: {
     gerar(){
-      var produto = this.$route.query.produto;
+      var carrinho = this.$route.query.carrinho;
 
-      if(produto == 'professor') {
+      if(carrinho.find(p => p.id == 1)) {
         this.usuario.professor = true;
         this.usuario.idSala = 1;
+        this.$session.set("professor", true);
       }
 
       this.$http.put("https://localhost:5001/api/usuarios/" + this.usuario.id, this.usuario)
       .then(
         response => {
-        this.$session.set("professor", true);
           this.msg = {
             visivel: true,
             titulo: "COMPRA REALIZADA COM SUCESSO!",
@@ -197,6 +200,14 @@ export default {
         for (var i = 0; i < response.body.length; i++)
           this.siglas.push(response.body[i].sigla);
       });
+
+    var cep = this.$route.query.cep.replace("-", "");
+
+    this.$http
+    .get("https://viacep.com.br/ws/" + cep + "/json/")
+    .then(response => {
+      this.informacoes = response.body;
+    });
 
     document.title = "Boleto";
   }

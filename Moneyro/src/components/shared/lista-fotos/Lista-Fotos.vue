@@ -6,16 +6,14 @@
         <span class="fechar" v-on:click="$emit('fechar')">&times;</span>
       </div>
       <div class="corpo">
-        <div class="over">
-          <img
-            :src="'src/images/perfil' + num + '.png'"
-            v-for="num in qtdImagem"
-            v-bind:key="num"
-            class="imagem"
-            :id="num"
-            v-on:click="enviar(num)"
+        <img
+          :src="'src/images/perfil' + num + '.png'"
+          v-for="num in qtdImagem"
+          v-bind:key="num"
+          class="imagem"
+          :id="num"
+          v-on:click="enviar(num)"
           />
-        </div>
       </div>
     </div>
   </div>
@@ -26,7 +24,7 @@ export default {
   props: ["atual"],
   data() {
     return {
-      qtdImagem: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      qtdImagem: [1, 2, 3]
     };
   },
   methods: {
@@ -50,7 +48,9 @@ export default {
 .corpo {
   background: rgba(0, 0, 0, 0.815);
   border-radius: 0 0 5px 5px;
-  height: 60vh;
+  max-height: 60vh;
+  display: flex;
+  flex-wrap:wrap;
 }
 
 .cima {
@@ -61,6 +61,7 @@ export default {
 big {
   font-size: 2em;
   color: white;
+  padding: 0 0 0 25px;
 }
 
 .imagem {
@@ -70,10 +71,11 @@ big {
   box-shadow: 5px 5px 5px #00000040;
   border-radius: 15px;
   border: 4px solid #ffffff00;
+  flex: 1;
 }
 
 .imagem:hover {
-  transform: scale(1.2);
+  transform: scale(1.05);
   cursor: pointer;
 }
 
