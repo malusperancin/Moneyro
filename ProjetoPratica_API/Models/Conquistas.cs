@@ -8,5 +8,6 @@ namespace ProjetoPratica_API.Models
         public string Foto { get; set; }
         public int Pontos { get; set; }
         public int Objetivo { get; set; }
+        public int Feito { get; set; }
     }
 }

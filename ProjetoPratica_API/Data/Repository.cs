@@ -91,6 +91,12 @@ namespace ProjetoPratica_API.Data
             return await consultaUsuario.FirstOrDefaultAsync();
         }
 
+        public async Task<Conquistas[]> GetAllConquistas()
+        {
+            IQueryable<Conquistas> consultaConquistas = (IQueryable<Conquistas>)this.Context.Conquistas;
+            return await consultaConquistas.ToArrayAsync(); 
+        }
+
         public async Task<Registros[]> GetAllRegistros()
         {
             IQueryable<Registros> consultaRegistros = (IQueryable<Registros>)this.Context.Registros;
@@ -192,6 +198,8 @@ namespace ProjetoPratica_API.Data
             return await consultaTips.ToArrayAsync();
         }
 
+
+
         // public async Task<Tips[]> GetTipsByAssunto(string Assunto)
         // {
         //     IQueryable<Assuntos> consultaAssunto = (IQueryable<Assuntos>)this.Context.Assuntos;
@@ -201,6 +209,10 @@ namespace ProjetoPratica_API.Data
         //     IQueryable<Tips> consultaTips = (IQueryable<Tips>)this.Context.Receitas;
         //     consultaTips = consultaTips.OrderBy(t => t.Id)
         //                                .Where(tip => tip.IdAssunto == consultaAssunto.FirstOrDefaultAsync().Id);
+
+        //     // aqui efetivamente ocorre o SELECT no BD
+        //     return await consultaTips.FirstOrDefaultAsync();
+        // }
 
         //     // aqui efetivamente ocorre o SELECT no BD
         //     return await consultaTips.FirstOrDefaultAsync();
@@ -403,19 +415,20 @@ namespace ProjetoPratica_API.Data
             return await consultaAtividades.FirstOrDefaultAsync();
         }
 
-        public async Task<Produtos[]> GetAllProdutos()
+        public async Task<Compras[]> GetAllCompras()
         {
-            IQueryable<Produtos> consultaProdutos = (IQueryable<Produtos>)this.Context.Produtos;
-            return await consultaProdutos.ToArrayAsync();
+            IQueryable<Compras> consultaCompras = (IQueryable<Compras>)this.Context.Compras;
+            return await consultaCompras.ToArrayAsync();
         }
 
-        public async Task<Produtos> GetProdutoById(int Id)
+        public async Task<Trocas[]> GetAllTrocas()
         {
-            IQueryable<Produtos> consultaProdutos = (IQueryable<Produtos>)this.Context.Produtos;
-            consultaProdutos = consultaProdutos.OrderBy(p => p.Id).Where(produto => produto.Id == Id);
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaProdutos.FirstOrDefaultAsync();
+            IQueryable<Trocas> consultaTrocas = (IQueryable<Trocas>)this.Context.Trocas;
+            return await consultaTrocas.ToArrayAsync();
         }
+
+
+       
 
         public List<Salas> GetSalasByIdProfessor(int IdProfessor)
         {
@@ -663,6 +676,64 @@ namespace ProjetoPratica_API.Data
 
             cmd.ExecuteNonQuery();
             con.Close();
+        }
+
+        public List<Trocas> SpGetTrocasByUsuario(int IdUsuario)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_getTrocasByUsuario " + IdUsuario;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            var result = new List<Trocas>();
+
+            while (leitor.Read())
+            {
+                Trocas dados = new Trocas(
+                    (int)leitor["id"],
+                    (string)leitor["nome"],
+                    (string)leitor["foto"],
+                    (int)leitor["preco"]);
+
+                result.Add(dados);
+            }
+            con.Close();
+            return result;
+        }
+
+        public void SpAddTrocaUsuario(int IdUsuario, int IdTroca)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_addTrocaUsuario " + IdUsuario + ", " + IdTroca;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            con.Close();
+        }
+        
+        public List<String> SpGetFotosByUsuario(int UsuarioId)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_getFotosByUsuario " + UsuarioId;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            var result = new List<String>();
+
+            while (leitor.Read())
+                result.Add((string)leitor["foto"]);
+
+            con.Close();
+            return result;
         }
     }
 }

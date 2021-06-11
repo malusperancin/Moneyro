@@ -7,11 +7,11 @@
       </div>
       <div class="corpo">
         <img
-          :src="'src/images/perfil' + num + '.png'"
-          v-for="num in qtdImagem"
-          v-bind:key="num"
+          :src="'src/images/'+ foto+ '.png'"
+          v-for="(foto, i) in fotos"
+          v-bind:key="i"
           class="imagem"
-          :id="num"
+          :id="i"
           v-on:click="enviar(num)"
           />
       </div>
@@ -24,7 +24,11 @@ export default {
   props: ["atual"],
   data() {
     return {
-      qtdImagem: [1, 2, 3]
+      fotos: [
+        "perfil1",
+        "perfil2",
+        "perfil3"
+      ]
     };
   },
   methods: {
@@ -35,7 +39,19 @@ export default {
       document.getElementById(numero).classList.add("selecionada");
 
       this.$emit("receber", numero);
+    },
+    getFotos(){
+      this.$http
+        .get("https://localhost:5001/api/usuarios/fotos/"+this.$session.get("id"))
+        .then(
+          dados => {
+            dados.body.map(d => this.fotos.push(d));
+          }
+        ); 
     }
+  },
+  created(){
+    this.getFotos()
   },
   mounted() {
     document.getElementById(this.atual).classList.add("selecionada");
@@ -51,6 +67,7 @@ export default {
   max-height: 60vh;
   display: flex;
   flex-wrap:wrap;
+  overflow: hidden;
 }
 
 .cima {

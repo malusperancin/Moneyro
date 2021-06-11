@@ -172,5 +172,20 @@ namespace ProjetoPratica_API.Controllers
             }
             return BadRequest();
         }
+
+        [HttpGet("fotos/{UsuarioId}")]
+        //[Route("fotos/")]
+        public async Task<IActionResult> getFotos(int UsuarioId)
+        {
+            try
+            {
+                var result = this.Repo.SpGetFotosByUsuario(UsuarioId);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
     }
 }

@@ -15,7 +15,7 @@
         <ion-icon name="person-add" class="nav__icon"></ion-icon>
         <span class="nav__name">Cadastro</span>
       </a>
-      <a title="Sobre" class="nav__link">
+      <a title="Sobre" class="nav__link"  v-on:click="$router.push('sobre')">
         <ion-icon name="information-circle"  class="nav__icon" ></ion-icon>
         <span class="nav__name">Sobre</span>
       </a>

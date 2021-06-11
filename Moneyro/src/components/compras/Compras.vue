@@ -11,7 +11,7 @@
             <p class="nome_produto"> {{prod.nome}} </p>
             <div class="ft">
               <div class="destaque_imagem">
-                <img alt="" :src="'../src/images/' + prod.imagem + '.png'">
+                <img alt="" :src="'../src/images/' + prod.foto + '.png'">
               </div>
               <div class="descricao">
                 <p>{{prod.descricao}}</p>
@@ -60,80 +60,9 @@ export default {
         nome: "",
         preco: 0
       },
-      produtos: [
-        {
-          id: 3,
-          nome: "Caneca",
-          preco: 18.00,
-          imagem: "cofre",
-          descricao: "Descricao do prduto so que em baixo"
-        },
-        {
-          id: 4,
-          nome: "Camisa",
-          preco: 27.00,
-          imagem: "porcoprofessor",
-          descricao: "Descricao do prduto so que em baixo",
-        },
-        {
-          id: 3,
-          nome: "Chaveiro",
-          preco: 18.00,
-          imagem: "cofre",
-          descricao: "Descricao do prduto so que em baixo",
-        },
-        {
-          id: 4,
-          nome: "Brinco",
-          preco: 27.00,
-          imagem: "porcoprofessor",
-          descricao: "Descricao do prduto so que em baixo",
-        },
-        {
-          id: 3,
-          nome: "Caneca",
-          preco: 18.00,
-          imagem: "cofre",
-          descricao: "Descricao do prduto so que em baixo",
-        },
-        {
-          id: 4,
-          nome: "Chaveiro",
-          preco: 27.00,
-          imagem: "porcoprofessor",
-          descricao: "Descricao do prduto so que em baixo",
-        },
-        {
-          id: 3,
-          nome: "Moletom",
-          preco: 18.00,
-          imagem: "cofre",
-          descricao: "Descricao do prduto so que em baixo",
-        },
-        {
-          id: 3,
-          nome: "Chaveiro",
-          preco: 18.00,
-          imagem: "cofre",
-          descricao: "Descricao do prduto so que em baixo",
-        },
-      ],
+      produtos: [],
       produtos_destaque: [
-        {
-          id: 2,
-          nome: "Cofre inteligente",
-          preco: 35.00,
-          imagem: "cofre",
-          descricao: "Descricao muito legal do produto eba"
-        },
-        {
-          id: 1,
-          nome: "Área do Professor",
-          preco: 85.00,
-          imagem: "porcoprofessor",
-          descricao: "Descricao muito legal do produto eba"
-        }
-      ]
+]
     };
   },
   methods: {
@@ -152,7 +81,16 @@ export default {
       }
 
       this.mostrarCarrinho = true;
-    } 
+    },
+    getProdutos() {
+      this.$http
+        .get("https://localhost:5001/api/produtos") 
+        .then(
+          dados => {
+            this.produtos = dados.body;
+          }
+        ); 
+    }
   },
   created() {
     document.title = "Loja";

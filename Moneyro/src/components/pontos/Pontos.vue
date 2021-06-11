@@ -1,24 +1,32 @@
 <template>
   <div class="pag">
+   <Mensagem
+      :msg="msg"
+      v-if="msg.visivel" 
+      v-on:cancelar="msg.visivel = false"
+      v-on:trocar="trocarbanco()"/>
     <Menu />
     <div class="centro">
       <div>
-        <h3 class="pts"> Seus pontos: 10 </h3>
+        <h3 class="pts"> Seus pontos: {{  this.$session.get("usuario").pontos }} </h3>
       </div>
       <h1 id="titulo"> Conquistas </h1>
       <div class="conquistas">
         <div class="conquista" v-for="conquista in conquistas"> 
-          <img src="../../images/perfil11.png"> 
+          <img :src="'../src/images/'+conquista.foto+'.png'"> 
           <div class="descricao">
+          <div class="linha">
             <p><b>{{conquista.nome}}</b></p>
+            <p><b>{{conquista.pontos}} pontos</b></p>
+          </div>
             <p>{{conquista.descricao}}</p>
             <div class="progresso">
               <div class="porcentagem">
                 <div class="numero">
-                  {{conquista.feito}}/{{conquista.total}}
+                  {{conquista.feito}}/{{conquista.objetivo}}
                 </div>
               </div>
-              <div :style="'width:' + (conquista.feito/conquista.total*100) + '%'" class="progresso-barra"></div>
+              <div :style="'width:' + (conquista.feito/conquista.objetivo*100) + '%'" class="progresso-barra"></div>
             </div>
           </div> 
         </div>
@@ -27,13 +35,16 @@
       <h1> Já Adquiridos </h1>
       <div class="conquistas">
         <div class="conquista" v-for="feito in feitos"> 
-          <img src="../../images/perfil10.png"> 
+          <img :src="'../src/images/' + feito.foto + '.png'"> 
           <div class="descricao">
+            <div class="linha">
             <p><b>{{feito.nome}}</b></p>
+            <p><b>{{feito.pontos}} pontos</b></p>
+          </div>
             <p>{{feito.descricao}}</p>
             <div class="progresso">
               <div class="porcentagem">
-                  {{feito.feito}}/{{feito.total}}
+                  {{feito.feito}}/{{feito.objetivo}}
                 </div>
               <div :style="'width:100%'" class="progresso-barra concluido"></div>
             </div>
@@ -43,147 +54,127 @@
 
       <h1> Troca de Pontos </h1>
       <div class="conteudo">
-        <div class="quadrado">
-          <img src="../../images/status4.png">
-          <p class="infotroca">10 coins </p>
-          <p class="infotroca">30 pontos </p>
-          <button class="btncompra">Comprar</button>
-        </div>
-        <div class="quadrado">
-          <img src="../../images/jogo.png">
-          <p class="infotroca">Liberar The Game </p>
-          <p class="infotroca">5 pontos </p>
-          <button class="btncompra">Comprar</button>
-        </div>
-        <div class="quadrado">
-          <img src="../../images/perfil4.png">
-          <p class="infotroca"> Perfil Apaixonado </p>
-          <p class="infotroca">20 pontos </p>
-          <button class="btncompra">Comprar</button>
-        </div>
-        <div class="quadrado">
-          <img src="../../images/perfil5.png">
-          <p class="infotroca">Perfil Chiq </p>
-          <p class="infotroca">20 pontos </p>
-          <button class="btncompra">Comprar</button>
-        </div>
-        <div class="quadrado">
-          <img src="../../images/perfil6.png">
-          <p class="infotroca"> Perfil Caipira </p>
-          <p class="infotroca">20 pontos </p>
-          <button class="btncompra">Comprar</button>
-        </div>
-        <div class="quadrado">
-          <img src="../../images/perfil7.png">
-          <p class="infotroca">Perfil Guei </p>
-          <p class="infotroca">20 pontos </p>
-          <button class="btncompra">Comprar</button>
-        </div>
-        <div class="quadrado">
-          <img src="../../images/perfil9.png">
-          <p class="infotroca">Perfil Brabo </p>
-          <p class="infotroca">20 pontos </p>
-          <button class="btncompra">Comprar</button>
-        </div>
-        <div class="quadrado">
-          <img src="../../images/perfil10.png">
-          <p class="infotroca"> Perfil E-grilo </p>
-          <p class="infotroca">20 pontos </p>
-          <button class="btncompra">Comprar</button>
-        </div>
-        <div class="quadrado">
-          <img src="../../images/perfil11.png">
-          <p class="infotroca">Perfil Pepinha </p>
-          <p class="infotroca">20 pontos </p>
-          <button class="btncompra">Comprar</button>
-        </div>
-        <div class="quadrado">
-          <img src="../../images/perfil8.png">
-          <p class="infotroca"> Perfil Estrela </p>
-          <p class="infotroca">2 pontos </p>
-          <button class="btncompra">Comprar</button>
-        </div>
-        <div class="quadrado">
-          <img src="../../images/perfil12.png">
-          <p class="infotroca"> Perfil Brazil </p>
-          <p class="infotroca">2 pontos </p>
-          <button class="btncompra">Comprar</button>
-        </div>
+        <div class="quadrado" v-for="produto in produtos">
+          <img :src="'../src/images/'+produto.foto+'.png'">
+          <p class="infotroca">{{produto.nome}} </p>
+          <p class="infotroca">{{produto.preco}} pontos </p>
+          <button class="btncompra" v-on:click="trocar(produto)">Trocar</button>
         </div>
       </div>
+
     </div>
   </div>
 </template>
 
 <script>
 import Menu from "../shared/menu/Menu.vue";
+import Mensagem from "../shared/mensagem/Mensagem.vue";
 
 export default {
   components: {
-    Menu
+    Menu,
+    Mensagem
   },
   data() {
     return {
-      conquistas: [
+       msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: [],
+      },
+      conquistas: [],
+      produtos: [],
+      idProd: 0,
+      feitos: [
         {
-          nome: "Ai como eu to organizadah",
-          descricao: "Faça 15 registros",
-          feito: 5,
-          total: 15,
+          nome: "A primeira é inesquecível",
+          descricao: "Faça sua primeira receita",
+          feito: 1,
+          objetivo: 1,
+          pontos: 10,
+          foto: "status4"
         },
         {
-          nome: "Entrando na linha",
-          descricao: "Faça 30 registros",
-          feito: 5,
-          total: 30,
-        },
-        {
-          nome: "Ai como eu to organizadah",
-          descricao: "Faça 15 registros",
-          feito: 3,
-          total: 15,
-        },
-        {
-          nome: "Popularidade a mil",
-          descricao: "Tenha 10 amigos",
-          feito: 8,
-          total: 10
-        },
-        {
-          nome: "Rumo ao desejado",
-          descricao: "Complete 5 metas",
-          feito: 2,
-          total: 5
-        },
-        {
-          nome: "Mestre milho o nariah",
-          descricao: "Conquiste a fortuna de 1 milhão de reais",
-          feito: 125000,
-          total: 1000000
-        }
-      ],
-    feitos: [
-        {
-          nome: "Rumo ao desejado",
-          descricao: "Complete 5 metas",
-          feito: 5,
-          total: 5
-        },
-        {
-          nome: "Mestre milho o nariah",
-          descricao: "Conquiste a fortuna de 1 milhão de reais",
-          feito: 10,
-          total: 10
+          nome: "Quase um professor!",
+          descricao: "Complete um de nossos quizzes",
+          feito: 1,
+          objetivo: 1,
+          pontos: 50,
+          foto: "tornarprof"
         }
       ],
     };
   },
   methods: {
-    
+    trocarbanco(){
+      this.msg.visivel = false;
+      this.$http
+          .post("https://localhost:5001/api/trocas/"+this.$session.get("id") +"/"+ this.idProd)
+          .then(response => {
+            this.produtos = this.produtos.filter(p => p.id != this.idProd);
+          }, erro =>{
+            console.log(erro);
+          });
+    },
+    trocar(produto){
+      var pontos = this.$session.get("usuario").pontos
+
+      if(pontos < produto.preco)
+        this.msg = {
+          visivel: true,
+          titulo: "Poucos pontos",
+          mensagem: "Você não possui a quantidade de pontos necessária!",
+          botoes: [
+            {
+              mensagem: "Ok",
+              evento: "cancelar",
+            }
+          ],
+        };
+      else
+      {
+        this.msg = {
+          visivel: true,
+          titulo: "Trocar pontos",
+          mensagem: "Deseja trocar "+ produto.preco + " pontos pelo(a) "+ produto.nome +"?",
+          botoes: [
+            {
+              mensagem: "Cancelar",
+              evento: "cancelar",
+            },
+            {
+              mensagem: "Sim",
+              evento: "trocar",
+            }
+          ],
+        };
+        this.idProd = produto.id;
+      }
+    },
+    getConquistas() {
+      this.$http
+        .get("https://localhost:5001/api/conquistas") 
+        .then(
+          dados => {
+            this.conquistas = dados.body;
+          }
+        ); 
+    },
+    getProdutos() {
+      this.$http
+        .get("https://localhost:5001/api/trocas/"+this.$session.get("id")) 
+        .then(
+          dados => {
+            this.produtos = dados.body;
+          }
+        ); 
+    }
   },
   created() {
     document.title = "Pontos";
-    
+    this.getConquistas();
+    this.getProdutos();
   },
    beforeCreate() {
     if (!this.$session.exists()) {
@@ -200,6 +191,10 @@ export default {
   color: white;
 }
 */
+.linha{
+  display: flex;
+  justify-content: space-between;
+}
 .pts{
   float:right;
   margin:0;
