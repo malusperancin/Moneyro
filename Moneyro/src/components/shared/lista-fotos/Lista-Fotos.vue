@@ -10,10 +10,10 @@
           :src="'src/images/'+ foto+ '.png'"
           v-for="(foto, i) in fotos"
           v-bind:key="i"
-          class="imagem"
-          :id="i"
-          v-on:click="enviar(num)"
-          />
+          :class="[{selecionada: foto == atual}, 'imagem']"
+          :id="foto"
+          v-on:click="enviar(foto)"
+        />
       </div>
     </div>
   </div>
@@ -32,13 +32,8 @@ export default {
     };
   },
   methods: {
-    enviar(numero) {
-      var div = document.getElementsByClassName("selecionada");
-
-      div.item(0).classList.remove("selecionada");
-      document.getElementById(numero).classList.add("selecionada");
-
-      this.$emit("receber", numero);
+    enviar(foto) {
+      this.$emit("receber", foto);
     },
     getFotos(){
       this.$http
@@ -51,10 +46,10 @@ export default {
     }
   },
   created(){
-    this.getFotos()
+    this.getFotos();
   },
   mounted() {
-    document.getElementById(this.atual).classList.add("selecionada");
+    // document.getElementById(this.atual).classList.add("selecionada");
   }
 };
 </script>
@@ -64,9 +59,10 @@ export default {
 .corpo {
   background: rgba(0, 0, 0, 0.815);
   border-radius: 0 0 5px 5px;
-  max-height: 60vh;
-  display: flex;
-  flex-wrap:wrap;
+  max-height: 70vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  flex-wrap: wrap;
   overflow: hidden;
 }
 
@@ -83,12 +79,13 @@ big {
 
 .imagem {
   width: 100px;
+  max-height: 100px;
+  max-width: 100px;
   margin: 10px;
   transition: transform 0.5s;
   box-shadow: 5px 5px 5px #00000040;
   border-radius: 15px;
   border: 4px solid #ffffff00;
-  flex: 1;
 }
 
 .imagem:hover {

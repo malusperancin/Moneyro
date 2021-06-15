@@ -8,19 +8,19 @@
 
       <div class="corpo">
         <div class="produto" v-if="carrinho[0]">
-          <img alt="" :src="'../src/images/' + carrinho[carrinho.length-1].imagem + '.png'">
+         <img alt="" :src="'../src/images/' + carrinho[carrinho.length-1].foto + '.png'"> 
           <div class="flex">
             <p>{{carrinho[carrinho.length-1].nome}}</p>
-            <p>R${{carrinho[carrinho.length-1].preco}},00</p>
+            <p class="prec">R${{carrinho[carrinho.length-1].preco}}</p>
           </div>
         </div>
 
         <div class="carrinho">
           <p style="font-size: 1.3em">Seu carrinho: {{carrinho[0]?"":"Vazio"}}</p>
-          <div class="carrinho_produto" v-for="(prod, i) in carrinho">
+          <div class="carrinho_produto flex" v-for="(prod, i) in carrinho">
             <p>{{prod.quantidade>1?prod.quantidade+"x":""}}{{prod.nome}}</p>
-            <p>R${{prod.preco}},00</p>
-            <span class="remover" v-on:click="remover(prod, i)">-</span>
+            <p class="preco"><bold>R${{prod.preco}} </bold><span class="remover" v-on:click="remover(prod, i)">-</span></p>
+            
           </div>
         </div>
       </div>
@@ -28,7 +28,7 @@
 
         <div class="baixo">
           <div class="total">
-            <p>Total: R${{total}},00</p>
+            <p>Total: R${{Math.round(total * 100) / 100}}</p>
           </div>
           <div class="cep_div" >
             <p>CEP</p>
@@ -56,7 +56,7 @@ export default {
       visivel: false,
       cep: null,
       qtd: 1,
-      total: 0
+      total: 0,
     };
   },
   methods: {
@@ -98,12 +98,45 @@ export default {
 
 
 <style scoped>
+.modal-conteudo {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.modal-conteudo::-webkit-scrollbar {
+  width: 0px;
+}
+
+/* Track */
+.modal-conteudo::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+.modal-conteudo::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+.modal-conteudo::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+
+.preco {
+  display: flex;
+  grid-gap: 15px;
+}
+
+.prec{
+  color: hsl(208, 80%, 5%);
+}
 
 .risco {
   background: rgba(0, 0, 0, 0.35);
   width: 100%;
   height: 1px;
-  margin: 15px 0;
+  margin: 10px 0;
 }
 
 .modal {
@@ -122,6 +155,7 @@ export default {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  padding: 5px 0 0 15px;
 }
 
 .cima p {
@@ -134,14 +168,13 @@ export default {
 .fechar {
   font-family: "sans-serif";
   color: #000;
-  width: 17px;
-  height: 17px;
+  width: 35px;
   display: flex;
+  padding: 5px;
   justify-content: center;
   align-items: center;
-  padding: 10px 11px;
   border-radius: 87px;
-  font-size: 25px;
+  font-size: 30px;
   font-weight: bold;
   background: rgb(220, 105, 105);
   margin: 10px;
@@ -158,7 +191,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 25px 0 10px;
+  padding: 15px 0 10px;
 }
 
 p {
@@ -189,6 +222,7 @@ form {
 
 .produto img {
   width: 70%;
+  height: 200px;
   object-fit: cover;  
   border-radius: 15px;
 }
@@ -198,7 +232,7 @@ form {
   justify-content: space-between;
   font-size: 1.75em;
   width: 100%;
-  padding: 0 15%;
+  padding: 15px 0;
   box-sizing: border-box;
 }
 
@@ -209,7 +243,6 @@ form {
 
 .carrinho::-webkit-scrollbar {
   width: 5px;
-
 }
 
 /* Track */
@@ -231,7 +264,7 @@ form {
   font-size: 1em;
   display: flex;
   justify-content: space-between;
-  padding: 0 30px 0 0;
+  padding: 0 10px 0 0;
   position: relative;
   margin-bottom: 3px;
 }
@@ -284,17 +317,18 @@ input {
 }
 
 .remover {
-  background: red;
-  width: 15px;
-  height: 15px;
-  position: absolute;
-  right: 0;
-  border-radius: 100px;
+  background: tomato;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  font-size: 1.5em;
+  padding: 1px;
+  max-width:15px;
+  max-height:15px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5em;
-  padding: 2px;
-  cursor: pointer;
+  line-height: 0;
 }
 </style>

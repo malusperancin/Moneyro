@@ -19,9 +19,9 @@
               <div id="editar" v-on:click="mudarFoto = true">
                 <img src="src/images/editar.png" id="imgEditar" />
               </div>
-              <img :src="'src/images/perfil' + usuario.foto + '.png'" id="imgPerfil" />
+              <img :src="'src/images/' + usuario.foto + '.png'" id="imgPerfil" />
               <Lista
-                v-on:receber="receber"
+                v-on:receber="receber($event)"
                 v-on:fechar="mudarFoto = false"
                 v-if="mudarFoto"
                 :atual="usuario.foto"
@@ -211,21 +211,23 @@ export default {
     };
   },
   methods: {
-    receber: function(numero) {
-      this.usuario.foto = numero;
+    receber(foto) {
+      this.usuario.foto = foto;
     },
     getUsuario(){
       this.$http
-            .get("https://localhost:5001/api/usuarios/" + this.$session.get("id"))
-            .then(response => {
-              this.usuario = response.body;
+        .get("https://localhost:5001/api/usuarios/" + this.$session.get("id"))
+        .then(response => {
+          this.usuario = response.body;
+          this.usuario.foto = "perfil" + this.usuario.foto;
+          this.usuario.dataDeNascimento = response.body.dataDeNascimento.split("T")[0];
 
-              var data = new Date(response.body.dataDeNascimento);
+          var data = new Date(response.body.dataDeNascimento);
 
-              this.dia = data.getDate();
-              this.mes = data.getMonth()+1;
-              this.ano = data.getFullYear();
-            });
+          this.dia = data.getDate();
+          this.mes = data.getMonth()+1;
+          this.ano = data.getFullYear();
+        });
     },
     enviarAvaliacao() {
       var today = new Date();
@@ -233,6 +235,7 @@ export default {
       var dd = String(today.getDate()).padStart(2, '0');
       var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
       var yyyy = today.getFullYear();
+
       today = yyyy + '-' + mm + '-' + dd;
       
       var avaliacao = {
@@ -243,19 +246,20 @@ export default {
       }
 
        this.$http.post("https://localhost:5001/api/avaliacoes", avaliacao).then(
-          response => {
-            this.msg.titulo = "Enviado!";
-            this.msg.mensagem =
-              "Sua avaliacao de " + this.estrelas + "⭐ foi enviada com sucesso";
-            this.msg.botoes = [
+          response => { 
+            this.qtdEstrelas = "";
+            this.comentario = "";
+            
+            this.msg = {
+              titulo: "Enviado!",
+              mensagem: "Sua avaliacao de " + this.estrelas + "⭐ foi enviada com sucesso",
+              botoes: [
               {
                 mensagem: "OK",
                 evento: "fechar"
-              }
-            ];
-            this.qtdEstrelas = "";
-            this.comentario = "";
-            this.msg.visivel = true;
+              }],
+              visivel: true
+            };
           },
           response => {
             this.msg.titulo = "Opa neném";
@@ -274,13 +278,15 @@ export default {
       var dd = String(this.dia).padStart(2, '0');
       var mm = String(this.mes).padStart(2, '0');
       this.usuario.dataDeNascimento = this.ano + "-" + mm + "-" + dd;
-
+      var fotonova = this.usuario.foto.substring(6);
+      this.usuario.foto = fotonova;
       this.$session.set("MA", this.usuario.modoAnonimo);
       this.$session.set("foto", this.usuario.foto);
       this.$session.set("nome", this.usuario.nome);
       this.$http.put("https://localhost:5001/api/usuarios/" + this.usuario.id, this.usuario)
       .then(
           response => {
+            this.usuario.foto = "perfil" + this.usuario.foto;
             this.msg.titulo = "Sucesso";
             this.msg.mensagem =
               "Suas informações foram alteradas com sucesso";
@@ -308,10 +314,10 @@ export default {
         this.msg.visivel = true;
     },
     cancelar(){
-        this.msg.titulo = "Cancelamento";
-        this.msg.mensagem =
-          "Deseja restaurar os valores anteriores?";
-        this.msg.botoes = [
+        this.msg = {
+          titulo: "Cancelamento",
+          mensagem: "Deseja restaurar os valores anteriores?",
+          botoes: [
           {
             mensagem: "Sim",
             evento: "restaurar"
@@ -319,23 +325,22 @@ export default {
           {
             mensagem: "Não",
             evento: "cancelar"
-          }
-        ];
-        this.msg.visivel = true; 
+          }],
+          visivel: true
+        };
     },
     mudarSenha(){
-        this.msg.titulo = "Sucesso";
-            this.msg.mensagem =
-            "Sua senha foi alterada com sucesso";
-          this.msg.botoes = [
+        this.msg = {
+          titulo: "Sucesso",
+          mensagem: "Sua senha foi alterada com sucesso",
+          botoes : [
             {
               mensagem: "Ok",
               evento: "fechar"
             }
-          ];
-
-          this.msg.visivel = true;
-          this.senha = false;
+          ],
+          visivel: true
+        };
     }
   },
   mounted() {
@@ -343,6 +348,8 @@ export default {
     lista.value = this.usuario.estado;
   },
   created() {
+    document.title = "Configurações";
+
     this.$http
       .get("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
       .then(response => {
@@ -350,14 +357,11 @@ export default {
           this.siglas.push(response.body[i].sigla);
       });
 
-      this.getUsuario();
-
-      document.title = "Configurações";
+    this.getUsuario();
   },
   beforeCreate() {
-    if (!this.$session.exists()) {
-      this.$router.push('/')
-    }
+    if (!this.$session.exists())
+      this.$router.push('/');
   }
 }
 </script>

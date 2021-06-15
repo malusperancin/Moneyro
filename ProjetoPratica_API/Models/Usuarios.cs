@@ -12,7 +12,7 @@ namespace ProjetoPratica_API.Models
         public string Email { get; set; }
         public string Celular { get; set; }
         public DateTime DataDeNascimento { get; set; }
-        public int Foto { get; set; }
+        public string Foto { get; set; }
         public string Senha { get; set; }
         public string Cidade { get; set; }
         public string Estado { get; set; }

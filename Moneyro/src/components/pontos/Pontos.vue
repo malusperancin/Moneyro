@@ -8,7 +8,7 @@
     <Menu />
     <div class="centro">
       <div>
-        <h3 class="pts"> Seus pontos: {{  this.$session.get("usuario").pontos }} </h3>
+        <h3 class="pts"> Seus pontos: {{ $session.get("pontos") }} </h3>
       </div>
       <h1 id="titulo"> Conquistas </h1>
       <div class="conquistas">
@@ -118,7 +118,8 @@ export default {
           });
     },
     trocar(produto){
-      var pontos = this.$session.get("usuario").pontos
+      alert(this.$session.get("pontos"));
+      var pontos = this.$session.get("pontos");
 
       if(pontos < produto.preco)
         this.msg = {
