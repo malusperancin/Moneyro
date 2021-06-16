@@ -24,6 +24,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -33,33 +34,33 @@ export default {
     };
   },
   methods: {
-    logar: function() {
+    logar() {
       this.$http
-        .post("https://localhost:5001/api/usuarios/login", {
-          apelido: this.apelido,
-          senha: this.senha
-        })
-        .then(
-          function(response) {
-            if (response.status === 200 && "id" in response.body) {
-              this.$session.start();
-              this.$session.set("usuario", response.body);
-              this.$session.set("id", response.body.id);
-              this.$session.set("MA", response.body.modoAnonimo);
-              this.$session.set("nome", response.body.nome);
-              this.$session.set("foto", response.body.foto);
-              this.$session.set("professor", response.body.professor);
-              this.$session.set("idSala", response.body.idSala);
-              this.$session.set("pontos", response.body.pontos);
-              this.$http.headers.common["Authorization"] = "Bearer " + response.body.id;
+          .post("https://localhost:5001/api/usuarios/login", {
+            apelido: this.apelido,
+            senha: this.senha
+          })
+          .then(
+            response => {
+              if (response.status === 200 && "id" in response.body) {
+                this.$session.start();
+                this.$session.set("usuario", response.body);
+                this.$session.set("id", response.body.id);
+                this.$session.set("MA", response.body.modoAnonimo);
+                this.$session.set("nome", response.body.nome);
+                this.$session.set("foto", response.body.foto);
+                this.$session.set("professor", response.body.professor);
+                this.$session.set("idSala", response.body.idSala);
+                this.$session.set("pontos", response.body.pontos);
+                this.$http.headers.common["Authorization"] = "Bearer " + response.body.id;
               
-              this.$router.push("/usuario");
+                this.$router.go()
+              }
+            },
+            err => {
+              this.erro = err.body;
             }
-          },
-          function(err) {
-            this.erro = err.body;
-          }
-        );
+          );
     }
   }
 };

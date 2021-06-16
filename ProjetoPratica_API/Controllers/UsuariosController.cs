@@ -51,6 +51,20 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
+       /* [HttpGet("curtidas/{UsuarioId}")]
+        public async Task<IActionResult> GetUsuarioCurtida(int UsuarioId)
+        {
+            try
+            {
+                var result = await this.Repo.GetUsuarioCurtidaByIdUsuario(UsuarioId);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }*/
+
         [HttpPost]
         [Route("login/")]
         public async Task<IActionResult> postLogin(Usuarios modelo)

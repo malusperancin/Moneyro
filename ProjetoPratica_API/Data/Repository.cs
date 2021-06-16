@@ -65,7 +65,7 @@ namespace ProjetoPratica_API.Data
             consultaUsuario = consultaUsuario.OrderBy(u => u.Id).Where(usuario => usuario.Id == Id);
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaUsuario.FirstOrDefaultAsync();
-        }
+    }
 
         public async Task<Usuarios> GetUsuarioByNome(string nome)
         {
@@ -89,6 +89,17 @@ namespace ProjetoPratica_API.Data
             consultaUsuario = consultaUsuario.OrderBy(u => u.Id).Where(usuario => usuario.Email == email);
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaUsuario.FirstOrDefaultAsync();
+        }
+
+        public async Task<Usuarios> GetUsuarioCurtidaByIdUsuario(int UsuarioId)
+        {
+
+            //throw new System.NotImplementedException();
+            //Retornar para uma query qualquer do tipo Aluno
+            IQueryable<Usuarios> consultaCurtidas = (IQueryable<Usuarios>)this.Context.CurtidasUsuarios;
+            consultaCurtidas = consultaCurtidas.OrderBy(u => u.Id).Where(usuario => usuario.Id == UsuarioId);
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaCurtidas.FirstOrDefaultAsync();
         }
 
         public async Task<Conquistas[]> GetAllConquistas()
@@ -178,68 +189,7 @@ namespace ProjetoPratica_API.Data
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaMeta.ToArrayAsync();
         }
-
-        public async Task<Assuntos[]> GetAllAssuntos()
-        {
-            IQueryable<Assuntos> consultaAssuntos = (IQueryable<Assuntos>)this.Context.Assuntos;
-            return await consultaAssuntos.ToArrayAsync();
-        }
-        public async Task<Assuntos> GetAssuntoById(int Id)
-        {
-            IQueryable<Assuntos> consultaAssunto = (IQueryable<Assuntos>)this.Context.Assuntos;
-            consultaAssunto = consultaAssunto.OrderBy(a => a.Id).Where(assunto => assunto.Id == Id);
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaAssunto.FirstOrDefaultAsync();
-        }
-
-        public async Task<Tips[]> GetAllTips()
-        {
-            IQueryable<Tips> consultaTips = (IQueryable<Tips>)this.Context.Tips;
-            return await consultaTips.ToArrayAsync();
-        }
-
-
-
-        // public async Task<Tips[]> GetTipsByAssunto(string Assunto)
-        // {
-        //     IQueryable<Assuntos> consultaAssunto = (IQueryable<Assuntos>)this.Context.Assuntos;
-        //     consultaAssunto = consultaAssunto.Where(assunto => assunto.Nome == Assunto);
-        //     Assuntos assunto = (Assuntos)consultaAssunto.FirstOrDefaultAsync();
-
-        //     IQueryable<Tips> consultaTips = (IQueryable<Tips>)this.Context.Receitas;
-        //     consultaTips = consultaTips.OrderBy(t => t.Id)
-        //                                .Where(tip => tip.IdAssunto == consultaAssunto.FirstOrDefaultAsync().Id);
-
-        //     // aqui efetivamente ocorre o SELECT no BD
-        //     return await consultaTips.FirstOrDefaultAsync();
-        // }
-
-        //     // aqui efetivamente ocorre o SELECT no BD
-        //     return await consultaTips.FirstOrDefaultAsync();
-        // }
-
-        public async Task<Tips> GetTipById(int Id)
-        {
-            IQueryable<Tips> consultaTips = (IQueryable<Tips>)this.Context.Tips;
-            consultaTips = consultaTips.OrderBy(t => t.Id).Where(tip => tip.Id == Id);
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaTips.FirstOrDefaultAsync();
-        }
-
-        public async Task<Videos[]> GetAllVideos()
-        {
-            IQueryable<Videos> consultaVideos = (IQueryable<Videos>)this.Context.Videos;
-            return await consultaVideos.ToArrayAsync();
-        }
-
-        public async Task<Videos> GetVideoById(int Id)
-        {
-            IQueryable<Videos> consultaVideo = (IQueryable<Videos>)this.Context.Videos;
-            consultaVideo = consultaVideo.OrderBy(v => v.Id).Where(video => video.Id == Id);
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaVideo.FirstOrDefaultAsync();
-        }
-
+      
         public async Task<Amigos[]> GetAmigosByIds(Amigos amigos)
         {
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
@@ -283,26 +233,6 @@ namespace ProjetoPratica_API.Data
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
             return await consultaAmigos.ToArrayAsync();
         }
-
-        public async Task<Artigos[]> GetAllArtigos()
-        {
-            IQueryable<Artigos> consultaArtigos = (IQueryable<Artigos>)this.Context.Artigos;
-            return await consultaArtigos.ToArrayAsync();
-        }
-
-        // public async Task<Artigos[]> GetArtigosByAssunto(string Assunto)
-        // {
-
-        // }
-
-        public async Task<Artigos> GetArtigoById(int Id)
-        {
-            IQueryable<Artigos> consultaArtigo = (IQueryable<Artigos>)this.Context.Artigos;
-            consultaArtigo = consultaArtigo.OrderBy(a => a.Id).Where(artigo => artigo.Id == Id);
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaArtigo.FirstOrDefaultAsync();
-        }
-
         public async Task<Avaliacoes[]> GetAllAvaliacoes()
         {
             IQueryable<Avaliacoes> consultaAvaliacao = (IQueryable<Avaliacoes>)this.Context.Avaliacoes;
@@ -427,9 +357,6 @@ namespace ProjetoPratica_API.Data
             return await consultaTrocas.ToArrayAsync();
         }
 
-
-       
-
         public List<Salas> GetSalasByIdProfessor(int IdProfessor)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
@@ -475,9 +402,76 @@ namespace ProjetoPratica_API.Data
             return await consultaPostagens.FirstOrDefaultAsync();
         }
 
+        public async Task<Conteudos[]> GetAllConteudos()
+        {
+            IQueryable<Conteudos> consultaConteudos = (IQueryable<Conteudos>)this.Context.Conteudos;
+            return await consultaConteudos.ToArrayAsync();
+        }
 
 
         /* =========================== SPs ================================*/
+
+        public void SpCurtirConteudo(int idUsu, int idCont)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+
+
+            cmd.CommandText = "sp_curtirConteudo " + idUsu + ", " + idCont;
+            cmd.ExecuteNonQuery();
+
+            con.Close();
+        }
+
+        public void SpDescurtirConteudo(int idUsu, int idCont)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+
+
+            cmd.CommandText = "sp_descurtirConteudo " + idUsu + ", " + idCont;
+            cmd.ExecuteNonQuery();
+
+            con.Close();
+        }
+        public List<Conteudos> SpGetConteudosByUsuario(int UsuarioId)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_getConteudosUsu " + UsuarioId;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            var result = new List<Conteudos>();
+
+            while (leitor.Read())
+            {
+                Conteudos dados = new Conteudos(
+                    (int)leitor["id"],
+                    (string)leitor["titulo"],
+                    (string)leitor["link"],
+                    (string)leitor["texto"],
+                    (string)leitor["imagem"],
+                    (string)leitor["assunto"],
+                    (int)leitor["curtidas"],
+                    (string)leitor["tipo"],
+                    (DateTime)leitor["data"],
+                    (bool)leitor["emAlta"],
+                    (bool)leitor["curtido"]
+                );
+
+                result.Add(dados);
+            }
+
+            con.Close();
+            return result;
+        }
 
         public Salas SpGetSalaByCodigo(string codigo)
         {

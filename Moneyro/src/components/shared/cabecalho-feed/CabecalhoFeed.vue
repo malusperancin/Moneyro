@@ -7,11 +7,11 @@
     </div>
     <input class="filtro" placeholder="Pesquisar" v-model="filtro" type="text" />
     <div class="nav__list">
-      <a title="Login" class="nav__link" v-on:click="login = true">
+      <a v-show="!$session.exists()" title="Login" class="nav__link" v-on:click="login = true">
         <ion-icon name="log-in-outline" class="nav__icon"></ion-icon>
         <span class="nav__name">Login</span>
       </a>
-      <a title="Cadastro" class="nav__link" v-on:click="$router.push('cadastro')">
+      <a v-show="!$session.exists()" title="Cadastro" class="nav__link" v-on:click="$router.push('cadastro')">
         <ion-icon name="person-add" class="nav__icon"></ion-icon>
         <span class="nav__name">Cadastro</span>
       </a>
@@ -41,6 +41,17 @@ export default {
 
 
 <style scoped>
+@media only screen and (max-width: 1000px) {
+  .marca {
+    display: none !important;
+  }
+
+  #header {
+    padding: 35px 80px 35px 45px !important;
+  }
+}
+
+
 #header {
   display: flex;
   color: white;
@@ -50,7 +61,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 50px;
+  padding: 0 120px;
   z-index: 99;
   box-sizing: border-box;
 }

@@ -3,68 +3,66 @@
     <mensagem
       :msg="msg"
       v-if="msg.visivel"
-      v-on:sair="(msg.visivel = false), $session.destroy(), $router.push('/')"
+      v-on:sair="(msg.visivel = false), $session.destroy(), $router.go()"
       v-on:fechar="msg.visivel = false"
     ></mensagem>
     <div class="l-navbar" id="navbar" v-bind:class="{expander: ativo}">
       <nav class="nav">
-        <div>
-          <div class="nav__brand">
-            <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle" v-on:click="ativo = !ativo, tipos = false"></ion-icon>
-            <a class="nav__logo" v-on:click="$router.push('usuario')">Moneyro</a>
+        <div class="nav__brand">
+          <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle" v-on:click="ativo = !ativo, tipos = false"></ion-icon>
+          <a v-if="this.$route.path != '/'" class="nav__logo" v-on:click="$router.push('/')">Moneyro</a>
+        </div>
+        <div class="nav__list">
+          <div class="nav__link collapse">
+            <img src="../../../images/adicionar.png" alt="a" class="nav__icon" v-on:click="tipos = !tipos, ativo = true" />
+            <span class="nav__name">Adicionar</span>
+            <ion-icon name="chevron-down-outline" class="collapse__link" v-bind:class="{rotate: tipos}" v-on:click="tipos = !tipos, ativo = true"></ion-icon>
+            
+            <ul class="collapse__menu" v-bind:class="{showCollapse: tipos}">
+              <a href="#" class="collapse__sublink" v-on:click="verCard = true">Registro</a>
+              <a href="#" class="collapse__sublink" v-on:click="verMeta = true">Meta</a>
+            </ul>
           </div>
-          <div class="nav__list">
-            <div class="nav__link collapse">
-              <img src="../../../images/adicionar.png" alt="a" class="nav__icon" v-on:click="tipos = !tipos, ativo = true" />
-              <span class="nav__name">Adicionar</span>
-              <ion-icon name="chevron-down-outline" class="collapse__link" v-bind:class="{rotate: tipos}" v-on:click="tipos = !tipos, ativo = true"></ion-icon>
-              
-              <ul class="collapse__menu" v-bind:class="{showCollapse: tipos}">
-                <a href="#" class="collapse__sublink" v-on:click="verCard = true">Registro</a>
-                <a href="#" class="collapse__sublink" v-on:click="verMeta = true">Meta</a>
-              </ul>
-            </div>
-            <a title="Planilhas" v-bind:class="{active: this.$route.path == '/planilhas'}" class="nav__link" v-on:click="$router.push('planilhas')">
-              <img src="../../../images/planilha.png" alt="a" class="nav__icon" />
-              <span class="nav__name">Planilhas</span>
-            </a>
-            <a title="Relatórios" v-bind:class="{active: this.$route.path == '/relatorios'}" class="nav__link" v-on:click="$router.push('relatorios')">
-              <img src="../../../images/relatorios.png" class="nav__icon" />
-              <span class="nav__name">Relatórios</span>
-            </a>
-            <a title="Amigos"  v-bind:class="{active: this.$route.path == '/amigos'}" class="nav__link" v-on:click="$router.push('amigos')">
-              <img src="../../../images/amigos.png" alt="a" class="nav__icon" />
-              <span class="nav__name">Amigos</span>
-            </a>
-            <a title="Metas" v-bind:class="{active: this.$route.path == '/metas'}" class="nav__link" v-on:click="$router.push('metas')">
-              <img src="../../../images/metas.png" alt="a" class="nav__icon" />
-              <span class="nav__name">Metas</span>
-            </a>
-            <a title="Loja" v-bind:class="{active: this.$route.path == '/compras'}" class="nav__link" v-on:click="$router.push('compras')">
-              <img src="../../../images/compras.png" alt="a" class="nav__icon" />
-              <span class="nav__name">Loja</span>
-            </a>
-            <a title="Pontos" v-bind:class="{active: this.$route.path == '/pontos'}" class="nav__link" v-on:click="$router.push('pontos')">
-              <img src="../../../images/pontos.png" alt="a" class="nav__icon" />
-              <span class="nav__name">Pontos</span>
-            </a>
-            <a title="Sala de Aula" v-if="this.$session.get('professor')" v-bind:class="{active: this.$route.path == '/salaprofessor'}" class="nav__link" v-on:click="$router.push('salaprofessor')">
-              <img src="../../../images/aula.png" alt="a" class="nav__icon" />
-              <span class="nav__name">Sala de Aula</span>
-            </a>
-             <a title="Sala de Aula" v-else v-bind:class="{active: this.$route.path == '/salaaluno'}" class="nav__link" v-on:click="$router.push('salaaluno')">
-              <img src="../../../images/aula.png" alt="a" class="nav__icon" />
-              <span class="nav__name">Sala de Aula</span>
-            </a>
-            <a title="Atividades" v-bind:class="{active: this.$route.path == '/atividades'}" class="nav__link" v-on:click="$router.push('atividades')">
-              <img src="../../../images/atividade.png" alt="a" class="nav__icon" />
-              <span class="nav__name">Atividades</span>
-            </a>
-            <a title="Configurações" v-bind:class="{active: this.$route.path == '/configuracoes'}" class="nav__link" v-on:click="$router.push('configuracoes')">
-              <img src="../../../images/configuracao.png" class="nav__icon" />
-              <span class="nav__name">Configurações</span>
-            </a>
-          </div>
+          <a title="Planilhas" v-bind:class="{active: this.$route.path == '/planilhas'}" class="nav__link" v-on:click="$router.push('planilhas')">
+            <img src="../../../images/planilha.png" alt="a" class="nav__icon" />
+            <span class="nav__name">Planilhas</span>
+          </a>
+          <a title="Relatórios" v-bind:class="{active: this.$route.path == '/relatorios'}" class="nav__link" v-on:click="$router.push('relatorios')">
+            <img src="../../../images/relatorios.png" class="nav__icon" />
+            <span class="nav__name">Relatórios</span>
+          </a>
+          <a title="Amigos"  v-bind:class="{active: this.$route.path == '/amigos'}" class="nav__link" v-on:click="$router.push('amigos')">
+            <img src="../../../images/amigos.png" alt="a" class="nav__icon" />
+            <span class="nav__name">Amigos</span>
+          </a>
+          <a title="Metas" v-bind:class="{active: this.$route.path == '/metas'}" class="nav__link" v-on:click="$router.push('metas')">
+            <img src="../../../images/metas.png" alt="a" class="nav__icon" />
+            <span class="nav__name">Metas</span>
+          </a>
+          <a title="Loja" v-bind:class="{active: this.$route.path == '/compras'}" class="nav__link" v-on:click="$router.push('compras')">
+            <img src="../../../images/compras.png" alt="a" class="nav__icon" />
+            <span class="nav__name">Loja</span>
+          </a>
+          <a title="Pontos" v-bind:class="{active: this.$route.path == '/pontos'}" class="nav__link" v-on:click="$router.push('pontos')">
+            <img src="../../../images/pontos.png" alt="a" class="nav__icon" />
+            <span class="nav__name">Pontos</span>
+          </a>
+          <a title="Sala de Aula" v-if="this.$session.get('professor')" v-bind:class="{active: this.$route.path == '/salaprofessor'}" class="nav__link" v-on:click="$router.push('salaprofessor')">
+            <img src="../../../images/aula.png" alt="a" class="nav__icon" />
+            <span class="nav__name">Sala de Aula</span>
+          </a>
+            <a title="Sala de Aula" v-else v-bind:class="{active: this.$route.path == '/salaaluno'}" class="nav__link" v-on:click="$router.push('salaaluno')">
+            <img src="../../../images/aula.png" alt="a" class="nav__icon" />
+            <span class="nav__name">Sala de Aula</span>
+          </a>
+          <a title="Atividades" v-bind:class="{active: this.$route.path == '/atividades'}" class="nav__link" v-on:click="$router.push('atividades')">
+            <img src="../../../images/atividade.png" alt="a" class="nav__icon" />
+            <span class="nav__name">Atividades</span>
+          </a>
+          <a title="Configurações" v-bind:class="{active: this.$route.path == '/configuracoes'}" class="nav__link" v-on:click="$router.push('configuracoes')">
+            <img src="../../../images/configuracao.png" class="nav__icon" />
+            <span class="nav__name">Configurações</span>
+          </a>
         </div>
         <a title="Sair" class="nav__link" v-on:click="sair()">
           <img src="../../../images/sair.png" alt="a" class="nav__icon" />
@@ -127,9 +125,6 @@ export default {
             evento: "fechar",
           }]
       };
-    },
-    salaDeAula()
-    {
     }
   },
 };
@@ -172,19 +167,45 @@ export default {
     /*===== NAV =====*/
     
     .nav {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        overflow: hidden;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
     }
-    
+
+    .nav__list {
+      overflow-y: scroll;
+      overflow-x: hidden;
+      direction: rtl; 
+    }
+
+    /* width */
+    .nav__list::-webkit-scrollbar {
+      width: 2px;
+    }
+
+    .nav__list::-webkit-scrollbar-track {
+      background: #0000000;
+    }
+
+    /* Handle */
+    .nav__list::-webkit-scrollbar-thumb {
+      background: hsl(208, 75%, 15%);
+    }
+
+    /* Handle on hover */
+    .nav__list::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
     .nav__brand {
         display: grid;
         grid-template-columns: max-content max-content;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1rem;
+        padding: 10px 10px 0 0;
     }
     
     .nav__toggle {

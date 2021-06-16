@@ -19,7 +19,7 @@
           <p style="font-size: 1.3em">Seu carrinho: {{carrinho[0]?"":"Vazio"}}</p>
           <div class="carrinho_produto flex" v-for="(prod, i) in carrinho">
             <p>{{prod.quantidade>1?prod.quantidade+"x":""}}{{prod.nome}}</p>
-            <p class="preco"><bold>R${{prod.preco}} </bold><span class="remover" v-on:click="remover(prod, i)">-</span></p>
+            <p class="preco">R${{prod.preco}} <span class="remover" v-on:click="remover(prod, i)">-</span></p>
             
           </div>
         </div>

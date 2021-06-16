@@ -46,29 +46,28 @@ export default {
   methods: {
     mudarSituacao(){
       if(this.saldo <= -20)
-           this.situacao = 2;
+        this.situacao = 2;
 
-        if(this.saldo <= -200)
-          this.situacao = 1;
+      if(this.saldo <= -200)
+        this.situacao = 1;
 
-        if(this.saldo >= 100)
-          this.situacao = 4;
+      if(this.saldo >= 100)
+        this.situacao = 4;
 
-        if(this.saldo >= 500)
-           this.situacao = 5;
-           
-        if(this.saldo > -20 && this.saldo <100 )
-           this.situacao = 3;
+      if(this.saldo >= 500)
+        this.situacao = 5;
+          
+      if(this.saldo > -20 && this.saldo <100 )
+        this.situacao = 3;
 
-        this.$http
-          .get("https://localhost:5001/api/situacoes")
-          .then(dados => {
-            this.msg = dados.body[(this.situacao-1)].mensagem;
-            this.cor = dados.body[(this.situacao-1)].cor;
-            
-            document.getElementsByClassName("saldo")[0].style.backgroundColor = this.cor;
-            //document.getElementsByClassName("gradient-box")[0].background = "linear-gradient(to right, "+this.cor+", "+this.cor+")";
-          });
+      this.$http
+        .get("https://localhost:5001/api/situacoes")
+        .then(dados => {
+          this.msg = dados.body[(this.situacao-1)].mensagem;
+          this.cor = dados.body[(this.situacao-1)].cor;
+          
+          document.getElementsByClassName("saldo")[0].style.backgroundColor = this.cor;
+        });
     }
   },
   created() {

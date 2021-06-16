@@ -11,15 +11,12 @@ namespace ProjetoPratica_API.Data
 
         public DbSet<Usuarios> Usuarios { get; set; }
         public DbSet<Amigos> Amigos { get; set; }
-        public DbSet<Artigos> Artigos { get; set; }
-        public DbSet<Assuntos> Assuntos { get; set; }
         public DbSet<Conquistas> Conquistas { get; set; }
         public DbSet<Registros> Registros { get; set; }
         public DbSet<Metas> Metas { get; set; }
         public DbSet<Tags> Tags { get; set; }
-        public DbSet<Videos> Videos { get; set; }
+        public DbSet<Conteudos> Conteudos { get; set; }
         public DbSet<Avaliacoes> Avaliacoes { get; set; }
-        public DbSet<Tips> Tips { get; set; }
         public DbSet<Situacoes> Situacoes { get; set; }
         public DbSet<Notificacoes> Notificacoes { get; set; }
         public DbSet<Salas> Salas { get; set; }
@@ -29,5 +26,6 @@ namespace ProjetoPratica_API.Data
         public DbSet<Trocas> Trocas { get; set; }
         public DbSet<Postagens> Postagens { get; set; }
         public DbSet<Compras> Compras { get; set; }
+        public DbSet<CurtidasUsuarios> CurtidasUsuarios { get; set; }
     }
 }

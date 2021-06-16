@@ -37,24 +37,11 @@ namespace ProjetoPratica_API.Data
         Task<Metas> GetMetaById(int Id);
         Task<Metas[]> GetMetasByUsuario(int IdUsuario);
 
-        Task<Assuntos[]> GetAllAssuntos();
-        Task<Assuntos> GetAssuntoById(int Id);
-
-        Task<Tips[]> GetAllTips();
-        // Task<Tips[]> GetTipsByAssunto(string Assunto);
-        Task<Tips> GetTipById(int Id);
-        Task<Videos[]> GetAllVideos();
-        Task<Videos> GetVideoById(int Id);
-
         Task<Amigos> GetAmigoById(int Id);
         Task<Amigos[]> GetAmigosByUsuario(int IdUsuario);
         Task<Amigos[]> GetAllAmigos();
         Task<Amigos[]> GetAmigosByIds(Amigos amigos);
         Task<Amigos[]> GetAllAmigosByUsuario(int IdUsuario);
-
-        Task<Artigos[]> GetAllArtigos();
-        //Task<Artigos[]> GetArtigosByAssunto(string Assunto);
-        Task<Artigos> GetArtigoById(int Id);
 
         Task<Avaliacoes[]> GetAllAvaliacoes();
         Task<Avaliacoes> GetAvaliacaoById(int Id);
@@ -96,7 +83,9 @@ namespace ProjetoPratica_API.Data
         Salas SpGetSalaByCodigo(string codigo);
         Salas SpGetSalaById(int Id);
         void SpAtualizarUsuarioSala(int idUsu, int idSala);
-
-
+        Task<Conteudos[]> GetAllConteudos();
+        List<Conteudos> SpGetConteudosByUsuario(int UsuarioId);
+        void SpCurtirConteudo(int idUsu, int idCont);
+        void SpDescurtirConteudo(int idUsu, int idCont);
     }
 }

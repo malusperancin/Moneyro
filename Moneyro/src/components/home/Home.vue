@@ -1,12 +1,20 @@
 <template>
   <div class="pag">
     <Cabecalho :filtro="filtro"/>
+    <Menu v-if="$session.exists()"/>
+    <Topo />
+    <Mensagem
+      :msg="msg"
+      v-if="msg.visivel" 
+      v-on:cancelar="msg.visivel = false"
+      v-on:logar="abrirLogin()"/>
+    <Login v-show="login" v-on:fechar="login = false"/>
     <div class="centro">
       <div id="conteudo">
         <div class="feed">
           <div class="postagem" v-bind:key='i' v-for="(postagem,i) of filtraPostagens">
             <!-- BLOG E NOTICIA -->
-            <div v-if="postagem.tipo == 'blog' || postagem.tipo == 'noticia'">
+            <div v-if="postagem.tipo == 'blog' || postagem.tipo == 'noticia'" :id="postagem.id">
                       {{filtro}}
               <p class="titulo">{{ postagem.titulo }}</p>
               <div class="data">{{ postagem.data }}</div>
@@ -22,7 +30,7 @@
               </div>
             </div>  
             <!-- VIDEO -->
-            <div v-if="postagem.tipo == 'video'">
+            <div v-if="postagem.tipo == 'video'" :id="postagem.id">
               <p class="titulo">{{ postagem.titulo }}</p>
               <div class="data">{{ postagem.data }}</div>
               <p class="texto">{{ postagem.texto }}</p>
@@ -37,8 +45,8 @@
               </div>
             </div>
             <!-- DICA -->
-            <div v-if="postagem.tipo == 'dica'">
-              <p class="titulo">{{postagem.autor}} once said: </p>
+            <div v-if="postagem.tipo == 'dica'" :id="postagem.id">
+              <p class="titulo">{{postagem.titulo}} once said: </p>
               <div class="data">{{ postagem.data }}</div>
               <p class="texto">{{ postagem.texto }}</p>
               <div class="rodape">
@@ -53,6 +61,13 @@
           </div>
         </div>
         <div id="direita">
+          <div class="saldo" v-if="$session.exists()" v-on:click="$router.push('usuario')">
+            <div>
+              <p>{{ $session.get("usuario").apelido }}</p>
+              <p><big><strong> {{ $session.get("usuario").pontos }}</strong></big> pontos</p>
+            </div>
+            <img :src="'src/images/perfil' + $session.get('foto') + '.png'"/>
+          </div>
           <div class="filtros">
             <p class="titulo">Mostrar apenas:</p>
             <br>
@@ -79,9 +94,11 @@
           </div>
           <div class="alta">
             <p class="titulo">Em alta</p>
-            <div class="enumeracao" v-bind:key='i' v-for="(alta, i) in altas">
-              <span class="numeros">{{ i + 1 }}</span>
-              <p class="tit">{{ alta.titulo }}</p>
+            <div v-bind:key='i' v-for="(conteudo, i) in conteudos">
+             <div class="enumeracao" v-if="conteudo.emAlta == true" v-else="i--" v-on:click ="clicou(conteudo.id)">
+              <span class="numeros">{{ i + 1}}</span>
+              <p class="tit">{{ conteudo.titulo }}</p>
+             </div> 
             </div>
           </div>
         </div>
@@ -92,154 +109,153 @@
 
 <script>
 import Cabecalho from "../shared/cabecalho-feed/CabecalhoFeed.vue";
+import Menu from "../shared/menu/Menu.vue";
+import Topo from "../shared/voltar-topo/Voltar-Topo.vue";
+import Mensagem from "../shared/mensagem/Mensagem.vue";
+import Login from '../shared/login/Login.vue'
 
 export default {
   components: {
     Cabecalho,
+    Menu,
+    Topo,
+    Mensagem,
+    Login
   },
   data() {
     return {
       posiScroll: 0,
+      login: false,
       filtro: "",
       tipo: ["noticia", "video", "blog", "dica"],
-      altas: [
-        {
-          titulo:
-            "Homem invade escola e mata crianças e funcionárias em Santa Catarina",
-        },
-        {
-          titulo: "Paulo Gustavo",
-        },
-        {
-          titulo: "Cloroquina",
-        },
-        {
-          titulo: "São Paulo: as últimas notícias sobre a pandemia",
-        },
-        {
-          titulo:
-            "Colômbia vive semana de protestos; ao menos 19 manifestantes foram mortos e centenas ficaram feridos",
-        },
-        {
-          titulo:
-            "Bolsonaro queria que Anvisa mudasse bula da cloroquina, diz Mandetta em CPI da Covid-19",
-        },
-      ],
-      conteudos: [
-        {
-          titulo:
-            "Guedes: país teve desempenho 'bastante razoável' na pandemia",
-          link:
-            "https://noticias.uol.com.br/ultimas-noticias/ansa/2021/05/04/papa-cobra-regulamentacao-do-mercado-financeiro.htm",
-          texto:
-            "O ministro da Economia, Paulo Guedes, argumentou nesta terça-feira (4) que o Brasil",
-          imagem:
-            "https://img.r7.com/images/paulo-guedes-audiencia-publica-comissoes-camara-04052021122850483?dimensions=771x420",
-          assunto: "Economy",
-          data: "04/05/2021",
-          curtidas: 5,
-          tipo: "noticia",
-          curtido: false
-        },
-        {
-          titulo: "Papa cobra regulamentação do mercado financeiro",
-          link:
-            "https://kogut.oglobo.globo.com/noticias-da-tv/noticia/2021/05/rafael-portugal-diz-que-ira-colocar-gil-novamente-na-casa-e-boninho-se-pronuncia.html",
-          texto:
-            "VATICANO, 4 MAI (ANSA) - O Vaticano divulgou nesta terça-feira (4) uma mensagem em que o papa Francisco defende a regulamentação da especulação financeira no mundo e pede a construção de uma 'economia inclusiva e sustentável'",
-          imagem:
-            "https://ibcdn.canaltech.com.br/tSVFGtIt8j4M5Kx3Ay8PLS_5b0U=/512x288/smart/i11063.jpeg",
-          assunto: "Economy Religion",
-          data: "04/05/2021",
-          curtidas: 5,
-          tipo: "noticia",
-          curtido: true
-        },
-        {
-          titulo: "PAULO GUEDES QUER TAXAR OS LIVROS! TE CONTAMOS TUDO AQUI!",
-          link: "https://www.youtube.com/watch?v=t5eapLCabOU",
-          texto:
-            "Na semana passada, Receita Federal, disse em um documento que os livros podem perder a isenção tributária porque no Brasil, quem lê é a população mais rica, que recebe mais de 10 salários mínimos.",
-          assunto: "Economy Bolsonaro Burrices",
-          data: "03/05/2021",
-          curtidas: 100000,
-          tipo: "video",
-          curtido: true
-        },
-        {
-          texto:
-            "Dependendo da situação, não dá para fazer tudo ao mesmo tempo. Poupar não significa poupar muito. Você consegue poupar R$ 10, R$ 20 ou R$ 30. Vá juntando os centavos quando pagar uma compra no débito em vez de em dinheiro, assim você economiza.",
-          assunto: "Economizar",
-          data: "04/01/2021",
-          curtidas: 578,
-          autor: "Nath Finanças",
-          tipo: "dica",
-          curtido: true
-        },
-        {
-          titulo: "Golpe financeiro: como identificar e fugir de todos eles!",
-          link: "https://conteudos.mepoupenaweb.com.br/mepoupedegolpes/",
-          texto:
-            "O golpe tá aí…'Cai quem quer??' NADA DISSO! Quem cai num golpe financeiro é vítima e pode buscar ajuda! Porém, mais fácil do que remediar é prevenir, certo? Por isso, nesta página você vai encontrar TUDO sobre golpes financeiros: quais os mais comuns hoje, como fugir deles e o que fazer caso você ou alguém que você conhece caia em uma dessas armadilhas.",
-          imagem:
-            "https://d9hhrg4mnvzow.cloudfront.net/conteudos.mepoupenaweb.com.br/mepoupedegolpes/6aad5399-nath-frase_1000000000000000000028.png",
-          assunto: "Golpe",
-          data: "29/04/2021",
-          curtidas: 18000,
-          tipo: "blog",
-          curtido: false
-        },
-      ],
+      altas: [],
+      conteudos: [],
+      msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: [],
+      },
     };
   },
   methods: {
+    clicou(id){
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    },
+    getConteudos(){
+      var id = 0
+      if(this.$session.exists())
+        id = this.$session.get("id");
+
+      this.$http
+        .get("https://localhost:5001/api/conteudos/" + id) 
+        .then(
+          dados => {
+            this.conteudos = dados.body;
+          }
+        ); 
+    
+    },
     curtir(id){
-      // if usuario.logado
-      var post = this.conteudos[id];
-
-      if(post.curtido) // Descurtir
+      if(this.$session.exists())
       {
-        post.curtidas--;
-        post.curtido = false;
-      }
-      else // curtir
+        var post = this.conteudos[id];
+        post.curtidas = this.$session.get("id");
+        if(this.conteudos[id].curtido) // Descurtir
+        {
+          this.$http
+          .post("https://localhost:5001/api/conteudos", post) 
+          .then(
+          dados => {
+            this.conteudos[id].curtidas--;
+            this.conteudos[id].curtido = false;
+          });
+      
+        }
+        else // Curtir
+        {
+          this.$http
+          .post("https://localhost:5001/api/conteudos",post) 
+          .then(
+          dados => {
+          this.conteudos[id].curtidas++;
+          this.conteudos[id].curtido = true;
+          }); 
+        } 
+      } 
+      else
       {
-        post.curtidas++;
-        post.curtido = true;
+        this.msg = {
+          visivel: true,
+          titulo: "Ops",
+          mensagem: "Você precisa estar logado para curtir as postagens!",
+          botoes: [
+            {
+              mensagem: "Cancelar",
+              evento: "cancelar",
+            },
+            {
+              mensagem: "Logar",
+              evento: "logar",
+            }
+          ],
+        };
       }
+    },
+    getPerfil() {
+      var saldo = this.$session.get("usuario").saldo;
+      var situacao;
 
-      this.conteudos[id] = post;
+      if(saldo <= -20)
+        situacao = 2;
+
+      if(saldo <= -200)
+        situacao= 1;
+
+      if(saldo >= 100)
+        situacao = 4;
+
+      if(saldo >= 500)
+        situacao = 5;
+           
+      if(saldo > -20 && saldo < 100)
+        situacao = 3;
+
+      this.$http
+        .get("https://localhost:5001/api/situacoes")
+        .then(
+          dados => {
+            document.getElementsByClassName("saldo")[0].style.backgroundColor = dados.body[(situacao-1)].cor;
+          },
+          erro => {
+            console.log(erro.bodyText);
+          }
+        );
+    },
+    abrirLogin(){
+      this.login = true;
+      this.msg.visivel = false;
     }
   },
   created() {
     document.title = "Moneyro";
 
+    this.getConteudos();
+    this.getPerfil();
+
     this.posiScroll = window.pageYOffset;
-
     window.onscroll = function() {
-
-      var soma = 0
 
       if(window.scrollY.valueOf() > 200)
       {
         if (this.posiScroll > window.pageYOffset) //subiu => mostrou
           document.getElementById("header").style.top = "0";
         else //desceu => sumiu
-        {
           document.getElementById("header").style.top = "-110px";
-          soma = -100
-        }
   
         this.posiScroll = window.pageYOffset;
       }
-  
-      //PRA VOLTAR A FUNCIONAR MAIS OU MENOS EH SÓ TIRAR O HEIGHT
-      if(document.getElementById("direita").offsetTop < document.getElementById("conteudo").style.height)
-        document.getElementById("direita").style.top = soma + Math.round(window.scrollY.valueOf()) + "px";
     }
-  },
-  beforeCreate() {
-    if (this.$session.exists()) this.$router.push("usuario");
   },
   computed: {
     filtraPostagens() {
@@ -251,30 +267,62 @@ export default {
       }
       
       return ret;
-    }
+    },
   },
 };
 </script>
 
 <style scoped>
+@media only screen and (max-width: 1000px) {
+  #conteudo {
+    flex-direction: column-reverse;
+  }
+
+  .centro {
+    padding: 160px 120px !important;
+  }
+}
+
+
 .centro {
   padding: 160px 180px;
 }
 
 #conteudo {
   position: relative;
-  display: grid;
-  grid-template-columns: 2fr 1fr;
+  display: flex;
   color: white;
   grid-gap: 10px;
   min-height: 800px;
 }
 
+.feed {
+}
+
 #direita{
-   width: 350px;
-   position: absolute;
-   top: 0;
-   right: 0;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+  grid-gap: 10px;
+}
+
+.saldo {
+  display: flex;
+  background: grey;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.saldo div {
+  font-size: 2em;
+  flex: 1;
+  padding-left: 10px;
+}
+
+.saldo img {
+  width: 120px;
+  border-radius: 10px;
 }
 
 /* ---------- FEED ----------- */
@@ -387,8 +435,6 @@ iframe{
   background-color: #303030;
   border-radius: 10px;
   padding: 8% 0 5% 8%;
-  margin: 0 0 5% 10px;
-  
 }
 
 .container {
@@ -438,7 +484,6 @@ iframe{
   background-color: #303030;
   border-radius: 10px;
   padding: 5px 15px 5px 30px;
-  margin: 0 0 0 10px;
 }
 
 .alta .titulo {
