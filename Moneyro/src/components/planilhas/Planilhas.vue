@@ -166,8 +166,6 @@ export default {
     organizar(vetor){
       var novos = [];
       var ret = [];
-
-      
         
       for (var i = 0; i < vetor.length; i++) {
         novos.push({

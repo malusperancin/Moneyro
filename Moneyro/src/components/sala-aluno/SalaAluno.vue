@@ -15,10 +15,9 @@
           </div>
           <p class="nomeProf"> <b>Professor:</b> {{sala.professor}}</p>
         </div>
-        <div v-if="postagens[0] != null">
+        <div class="lista" v-if="postagens[0] != null">
           <div v-for="(post, i) in postagens" v-bind:key="i">
             <Comunicado v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="prof"/> 
-            <br>
             <Atividade v-if="post.tipo == 'atividade'" :atividade="post" :professor="prof"/>
           </div>
         </div>
@@ -134,22 +133,29 @@ export default {
     if (!this.$session.exists()) {
       this.$router.push('/')
     }
+    
     if(this.$session.get("idSala") > 1) {
       this.$http
         .get("https://localhost:5001/api/salas/id/"+this.$session.get("idSala")) 
         .then(
           dados => {
-            alert("a");
             this.sala = dados.body;
-            this.prof.nome = this.sala.professor;
+            this.prof = {
+              id: this.sala.idProfessor,
+              foto: "",
+              nome:  this.sala.professor
+            };
+
             this.$http
-            .get("https://localhost:5001/api/usuarios" + this.prof.nome)
-            .then(response => {
-              this.prof.foto = dados.body[0].foto;
-            }, 
-            response => {
-              console.log("Erro ao pergar foto prof");
-            });
+            .get("https://localhost:5001/api/usuarios/" + this.prof.id)
+            .then(  
+              response => {
+                this.prof.foto = response.body.foto;
+              }, 
+              response => {
+                console.log("Erro ao pergar foto prof");
+              });
+
             this.getPostagens(this.sala.id);
           }
         );  
@@ -272,5 +278,11 @@ button{
   margin-top:1%;
 }
 
+.lista {
+  display: flex;
+  grid-gap: 15px;
+  flex-direction: column;
+  width: 80%;
+}
 
 </style>

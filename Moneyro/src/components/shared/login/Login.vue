@@ -9,11 +9,11 @@
         <input type="text" name="apelido" placeholder="Apelido" required v-model="apelido" />
         <input type="password" name="senha" placeholder="Senha" required v-model="senha" />
 
-        <button id="btnlogin" type="submit">Login</button>
+        <button class="btnlogin" type="submit">Login</button>
         <div id="erro">{{erro}}</div>
       </div>
       <div class="baixo">
-        <button type="button" v-on:click="$emit('fechar')" id="btncancelar">Cancelar</button>
+        <button type="button" v-on:click="$emit('fechar')" class="btncancelar">Cancelar</button>
         <span class="psw">
           Esqueceu a
           <a href="#">Senha?</a>
@@ -100,7 +100,7 @@ input[type="password"] {
   padding-top: 40px;
 }
 
-#btnlogin {
+.btnlogin {
   background-color: rgb(12, 65, 111);
   font-size: 18px;
   color: white;
@@ -112,7 +112,7 @@ input[type="password"] {
   border-radius: 3px;
 }
 
-#btncancelar {
+.btncancelar {
   background-color: rgba(255, 0, 0, 0.5);
   font-size: 18px;
   color: white;
@@ -122,11 +122,11 @@ input[type="password"] {
   border-radius: 3px;
 }
 
-#btnlogin:hover {
+.btnlogin:hover {
   opacity: 0.9;
 }
 
-#btncancelar:hover {
+.btncancelar:hover {
   background: red;
 }
 

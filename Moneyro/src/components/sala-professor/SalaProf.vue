@@ -5,9 +5,9 @@
       v-if="msg.visivel" 
       v-on:sair="msg.visivel = false, $router.push({ path: `/usuario` })"
       v-on:cancelar="msg.visivel = false"
-      v-on:excluir="excluir(sala.id)"
-      v-on:excluirPostagem="postagens.splice(i,1), msg.visivel = false"/>
+      v-on:excluir="excluirSala(sala.id)"/>
     <MenuProfessor v-on:getPostagens="getPostagensByCodigo($event)" :sala="sala"/>
+    <TabelaAlunos :atividade="ativ.id" v-if="verTabela" v-on:fechar="verTabela = false"/>
     <div class="centro">
       <NovoComunicado :sala="sala" :postagens="postagens" v-if="novoComunicado" v-on:fechar="novoComunicado = false"/> 
       <NovaAtividade :sala="sala" :postagens="postagens" v-if="novaAtividade" v-on:fechar="novaAtividade = false"/>
@@ -25,12 +25,8 @@
           </div>
           <div v-if="postagens[0] != null">
             <div class="postagens" v-bind:key="i" v-for="(post, i) in postagens">
-              <div>
-                <Comunicado v-on:deletada="excluirPostagem(i)" v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="prof"/> 
-              </div>
-              <div>
-                <Atividade v-on:deletada="excluirPostagem(i)" v-if="post.tipo == 'atividade'" :atividade="post" :professor="$session.get('nome')"/>
-              </div>
+              <Comunicado v-on:excluirPostagem="excluirPostagem(i)" v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="prof"/> 
+              <Atividade v-on:tabela="verTabela = true, ativ = post"  v-on:deletada="excluirPostagem(i)" v-if="post.tipo == 'atividade'" :atividade="post" :professor="prof"/>
             </div>
           </div>
           <div class="sala_vazia" v-else> 
@@ -62,6 +58,7 @@ import Comunicado from "../shared/comunicado/Comunicado.vue";
 import Atividade from "../shared/atividade/Atividade.vue";
 import NovoComunicado from "../shared/comunicado/NovoComunicado.vue";
 import NovaAtividade from "../shared/atividade/NovaAtividade.vue";
+import TabelaAlunos from "../shared/tabela-alunos/TabelaAlunos.vue";
 import Mensagem from "../shared/mensagem/Mensagem.vue";
 
 export default {
@@ -72,16 +69,18 @@ export default {
     Atividade,
     NovoComunicado,
     NovaAtividade,
+    TabelaAlunos,
     Mensagem
   },
   data() {
     return {
       novoComunicado: false,
       novaAtividade: false,
+      verTabela: false,
       clicou: false,
+      ativ:[],
       i:0,
       sala: {},
-      postagens:[],
       msg: {
         visivel: false,
         titulo: "",
@@ -89,25 +88,27 @@ export default {
         botoes: [],
       },
       prof:{
+        id: 0,
         nome: this.$session.get('nome'), 
         foto: this.$session.get('foto')
-      }
+      },
+      postagens:[]
     }
    },
   methods: {
-    getPostagensByCodigo(sala)
-    {
+    getPostagensByCodigo(sala){
       this.sala = sala;
-      var cod = sala.codigo;
+      this.prof.id = this.sala.idProfessor;
+
       this.$http
-      .get("https://localhost:5001/api/postagens/codigo/"+cod)
+      .get("https://localhost:5001/api/postagens/codigo/"+sala.codigo)
       .then(response => {
         this.postagens = response.body;
         }, erro =>{
           console.log(erro);
       });
     },
-    excluir(id){
+    excluirSala(id){
       this.$http
       .delete("https://localhost:5001/api/salas/"+id)
       .then(
@@ -137,26 +138,20 @@ export default {
       }
     },
     excluirPostagem(i) {
-      this.i = i;
-      this.msg = {
-        visivel: true,
-        titulo: "Excluir Postagem",
-        mensagem: "Deseja mesmo excluir essa postagem de forma definitiva?",
-        botoes: [
-          {
-            mensagem: "Cancelar",
-            evento: "cancelar",
-          },
-          {
-            mensagem: "Sim",
-            evento: "excluirPostagem",
-          }
-        ],
-      }
+       this.$http
+            .delete("https://localhost:5001/api/postagens/"+id)
+            .then(
+                response => {
+                    this.$emit('deletada', id);
+                }, 
+                erro =>{
+                    console.log(erro);
+            });
     },
   },
   created() {
     document.title = "Sala de Aula";
+
     this.getPostagensByCodigo(this.sala);
   }
 };

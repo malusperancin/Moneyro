@@ -55,46 +55,40 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                this.Repo.Add(modelo);
+                if(modelo.Tipo.Equals("atividade"))
+                    this.Repo.SpAddTarefa(modelo);
+                else
+                    this.Repo.Add(modelo);
 
-                if (await this.Repo.SaveChangesAsync())
-                {
-                    return Ok(modelo);
-                    // return Created($"/api/{modelo.Id}", modelo);
-                }
+                return Ok();
             }
             catch
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
-            return BadRequest();
         }
 
         [HttpDelete("{PostagemId}")]
         public async Task<IActionResult> delete(int PostagemId)
         {
             try
-            {
+           {
                 //verifica se existe postagem a ser excluído
                 Postagens postagem = await this.Repo.GetPostagemById(PostagemId);
 
                 if (postagem == null) return NotFound();
 
-                if (postagem.Tipo == "tarefa")
+                if (postagem.Tipo == "atividade")
                     this.Repo.SpDeletarTarefaById(PostagemId);
+                else
+                    this.Repo.Delete<Postagens>(postagem);
 
-                this.Repo.Delete<Postagens>(postagem);
-
-                if (await this.Repo.SaveChangesAsync())
-                {
-                    return Ok();
-                }
+                return Ok();
             }
             catch
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
-            return BadRequest();
-        }
     }
+}
 }

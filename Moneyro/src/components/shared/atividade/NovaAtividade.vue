@@ -4,7 +4,7 @@
       <div class="conteudo">
         <div class="cabecalho">
           <div class="info_professor">
-            <img alt="" src="../../../images/perfil2.png" style="width: 50px; height: 50px;">
+            <img alt="" :src="'src/images/perfil'+this.$session.get('foto')+'.png'" style="width: 50px; height: 50px; border-radius: 10px">
             <div class="infos">
               <strong><b>{{sala.professor}}</b></strong>
               <p>{{datahojebarra}} </p>
@@ -75,7 +75,7 @@ export default {
       this.$http
           .post("https://localhost:5001/api/postagens", this.tarefa)
           .then(response => {
-            this.postagens.push(response.body);
+            this.postagens.unshift(response.body);
             this.$emit('fechar');
           }, erro =>{
             console.log(erro);

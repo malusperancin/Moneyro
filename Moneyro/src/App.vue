@@ -25,6 +25,10 @@ export default {
 
 <style src="./css/responsivo.css"></style>
 <style >
+html {
+  scroll-behavior: smooth;
+}
+
 * {
   transition: all 0.3s;
   font-family: "Baloo Chettan 2", cursive;

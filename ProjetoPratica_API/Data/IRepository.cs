@@ -85,7 +85,9 @@ namespace ProjetoPratica_API.Data
         void SpAtualizarUsuarioSala(int idUsu, int idSala);
         Task<Conteudos[]> GetAllConteudos();
         List<Conteudos> SpGetConteudosByUsuario(int UsuarioId);
-        void SpCurtirConteudo(int idUsu, int idCont);
-        void SpDescurtirConteudo(int idUsu, int idCont);
+        void SpCurtir(CurtidasUsuarios cu);
+        void SpDescurtir(CurtidasUsuarios cu);
+        List<TarefaUsuario> SpGetRelatorioTarefa(int TarefaId);
+        void SpAddTarefa(Postagens post);
     }
 }

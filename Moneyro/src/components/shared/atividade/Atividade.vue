@@ -1,16 +1,26 @@
 <template>
   <div class="atividade">
+    <Mensagem
+      :msg="msg"
+      v-if="msg.visivel" 
+      v-on:cancelar="msg.visivel = false"
+      v-on:excluir="$emit('excluirPostagem', atividade.id)"/>
     <div class="conteudo">
       <div class="cabecalho">
         <div class="infos">
-          <img :src="'../../src/images/perfil'+$session.get('foto')+'.png'">
+          <img :src="'../../src/images/perfil'+professor.foto+'.png'">
             <div class="textos">
-              <strong><b>{{professor}}</b></strong>
+              <strong><b>{{professor.nome}}</b></strong>
               <small>{{dataView}}</small>
             </div>
         </div>
-        <div v-on:click="excluir(atividade.id)" class="deletar_icone">
-          <ion-icon name="trash"></ion-icon>
+        <div v-if="professor.id == $session.get('usuario').id" class="acoes">
+            <div v-on:click="$emit('tabela', atividade.id)" class="ver_icone">
+                <ion-icon name="eye"></ion-icon>
+            </div>
+            <div v-on:click="msgExluir()" class="deletar_icone">
+                <ion-icon name="trash"></ion-icon>
+            </div>
         </div>
       </div>
       <div class="infos_atividade">
@@ -26,31 +36,43 @@
 </template>
 
 <script>
-  
+import Mensagem from "../../shared/mensagem/Mensagem.vue";
+
 export default {
   props: ["atividade", "professor"],
+  components: {
+      Mensagem
+  },
   data() {
     return {
       dataEntregaView: '',
       dataView:'',
-      imgProf:''  
+      msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: []
+      }  
     };
   },
   methods: {
-    excluir(id) {
-        this.$http
-            .delete("https://localhost:5001/api/postagens/"+id)
-            .then(
-                response => {
-                    this.$emit('deletada', id);
-                }, 
-                erro =>{
-                    console.log(erro);
-            });
+    msgExluir(id) {
+      this.msg = {
+          visivel: true,
+          titulo: "Excluir Postagem",
+          mensagem: "Deseja mesmo excluir essa postagem de forma definitiva?",
+          botoes: [
+              {
+                  mensagem: "Cancelar",
+                  evento: "cancelar",
+              },
+              {
+                  mensagem: "Sim",
+                  evento: "excluir",
+              }
+          ],
+      };
     }
-  },
-  computed: {
-    
   },
   created() {
     var a = new Date(this.atividade.data);
@@ -67,11 +89,6 @@ export default {
     yyyy = b.getFullYear();
 
     this.dataEntregaView =  dd + '/' + mm + '/' + yyyy;
-  },
-  watch: {
-    expanded(){
-      
-    }
   },
 };
 
@@ -91,7 +108,7 @@ export default {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding: 30px 30px 15px 30px;
+  padding: 30px 30px 25px 30px;
 }
 
 .cabecalho{
@@ -106,7 +123,12 @@ export default {
   width: 100%;
 }
 
-.deletar_icone {
+.acoes {
+    display: flex;
+    grid-gap: 6px;
+}
+
+.deletar_icone, .ver_icone {
     border: 1px solid grey;
     height: fit-content;
     padding: 5px;
@@ -120,6 +142,11 @@ export default {
 .deletar_icone:hover {
     color: white;
     background: rgb(211, 49, 49);
+}
+
+.ver_icone:hover {
+    color: white;
+    background: grey;
 }
 
 p {
@@ -144,6 +171,7 @@ img{
   padding: 15px 0 0 0;
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
 }
 
 .nome_atividade {
@@ -151,8 +179,7 @@ img{
 }
 
 .data_atividade {
-  display: flex;
-  align-items: flex-end;
+  text-align: end;
 }
 
 .data_atividade strong{

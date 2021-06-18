@@ -1,5 +1,10 @@
 <template>
     <div class="comunicado">
+    <Mensagem
+    :msg="msg"
+    v-if="msg.visivel" 
+    v-on:cancelar="msg.visivel = false"
+    v-on:excluir="$emit('excluirPostagem', comunicado.id)"/>
         <div class="conteudo">
             <div class="cabecalho">
                 <div class="infos">
@@ -9,8 +14,10 @@
                         <small>{{data}}</small>
                     </div>
                 </div>
-                <div v-on:click="excluir(comunicado.id)" class="deletar_icone">
-                    <ion-icon name="trash"></ion-icon>
+                <div v-if="professor.id == $session.get('usuario').id" class="acoes">
+                    <div v-on:click="excluir(comunicado.id)" class="deletar_icone">
+                        <ion-icon name="trash"></ion-icon>
+                    </div>
                 </div>
             </div>
             <div class="texto">
@@ -18,14 +25,13 @@
             </div>
             <div class="divi"></div>
             <div class="enviar_comentario">
-                <img src="../../../images/perfil2.png">  
+                <img :src="'../../src/images/perfil'+$session.get('usuario').foto+'.png'">
                 <div class="comentario">
                     <input class="input" 
                     type="text"
                     placeholder="Adicionar comentário..."
                     />
                     <ion-icon name="send-outline" class="enviar"></ion-icon>
-                
                 </div>
             </div>
         </div>
@@ -34,47 +40,61 @@
 
 
 <script>
+import Mensagem from "../../shared/mensagem/Mensagem.vue";
+
 export default {
-props: ["comunicado", "professor"],
-  data() {
-    return {
-        data: ""
-   };
-  },
-  methods: {
-    excluir(id) {
-        this.$http
-            .delete("https://localhost:5001/api/postagens/"+id)
-            .then(
-                response => {
-                    this.$emit('deletada', id);
-                }, 
-                erro =>{
-                    console.log(erro);
-            });
-    }
-  },
-  computed: {
-    
-  },
-  created() {
-      var a = new Date(this.comunicado.data);
-      var dd = String(a.getDate()).padStart(2, '0');
-      var mm = String(a.getMonth() + 1).padStart(2, '0'); //January is 0!
-      var yyyy = a.getFullYear();
-     
-      this.data = dd + '/' + mm + '/' + yyyy;
-  },
-  watch: {
-    expanded(){
-      
-    }
-  },
+    props: ["comunicado", "professor"],
+    components: {
+        Mensagem
+    },
+    data() {
+        return {
+            data: "",
+            msg: {
+                visivel: false,
+                titulo: "",
+                mensagem: "",
+                botoes: []
+            }
+        };
+    },
+    methods: {
+        excluir(id) {
+            this.msg = {
+                visivel: true,
+                titulo: "Excluir Postagem",
+                mensagem: "Deseja mesmo excluir essa postagem de forma definitiva?",
+                botoes: [
+                    {
+                        mensagem: "Cancelar",
+                        evento: "cancelar",
+                    },
+                    {
+                        mensagem: "Sim",
+                        evento: "excluir",
+                    }
+                ],
+            };
+        }
+    },
+    created() {
+        var a = new Date(this.comunicado.data);
+        var dd = String(a.getDate()).padStart(2, '0');
+        var mm = String(a.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = a.getFullYear();
+        
+        this.data = dd + '/' + mm + '/' + yyyy;
+    },
 };
 
 </script>
 
 <style scoped>
+.acoes {
+    display: flex;
+    grid-gap: 6px;
+}
+
 .conteudo {
     color: rgb(255, 255, 255);
     background: rgb(46, 48, 46);
@@ -96,10 +116,10 @@ props: ["comunicado", "professor"],
 
 .infos {
     display: flex;
-    width: 100%;
+    flex: 1;
 }
 
-.deletar_icone {
+.deletar_icone{
     border: 1px solid grey;
     height: fit-content;
     padding: 5px;
@@ -118,7 +138,7 @@ props: ["comunicado", "professor"],
 .enviar_comentario {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    grid-gap: 10px;
     padding: 15px 0 0 0;
 }
 
@@ -129,10 +149,8 @@ props: ["comunicado", "professor"],
 }
 
 .comentario {
-    display: flex;
-    height: 90%;
-    justify-content: space-between;
     border-radius: 15px;
+    display: flex;
     flex: 1;
     position: relative;
 }
@@ -142,7 +160,7 @@ props: ["comunicado", "professor"],
     color: gray;
     position: absolute;
     top: 10px;
-    right: 10px;
+    right: 15px;
 }
 
 .enviar:hover {
@@ -154,7 +172,7 @@ props: ["comunicado", "professor"],
     margin-left:5px;
     box-sizing: border-box;
     border-radius: 25px;
-    width: 100%;
+    flex: 1;
     padding: 9px 50px 9px 15px;
     outline: none;
     border: 3px solid rgba(0, 0, 0, 0);

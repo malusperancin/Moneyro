@@ -7,7 +7,7 @@
       :msg="msg"
       v-if="msg.visivel" 
       v-on:cancelar="msg.visivel = false"
-      v-on:logar="abrirLogin()"/>
+      v-on:logar="login = true, msg.visivel = false"/>
     <Login v-show="login" v-on:fechar="login = false"/>
     <div class="centro">
       <div id="conteudo">
@@ -24,7 +24,7 @@
                 <span>
                   <div class="assunto">{{ postagem.assunto }}</div>
                 </span>
-                <div class="curtidas" v-bind:class="{like: postagem.curtido}" v-on:click="curtir(i)">
+                <div class="curtidas" v-bind:class="{like: postagem.curtido}" v-on:click="postagem.curtido?descurtir(i):curtir(i)">
                   {{ postagem.curtidas }} <img alt="" src="../../images/fav.svg" />
                 </div>
               </div>
@@ -39,7 +39,7 @@
                 <span>
                   <div class="assunto">{{ postagem.assunto }}</div>
                 </span>
-                <div class="curtidas" v-bind:class="{like: postagem.curtido}" v-on:click="curtir(i)">
+                <div class="curtidas" v-bind:class="{like: postagem.curtido}" v-on:click="postagem.curtido?descurtir(i):curtir(i)">
                   {{ postagem.curtidas }} <img src="../../images/fav.svg" />
                 </div>
               </div>
@@ -53,7 +53,7 @@
                 <span>
                   <div class="assunto">{{ postagem.assunto }}</div>
                 </span>
-                <div class="curtidas" v-bind:class="{like: postagem.curtido}" v-on:click="curtir(i)" >
+                <div class="curtidas" v-bind:class="{like: postagem.curtido}" v-on:click="postagem.curtido?descurtir(i):curtir(i)">
                   {{ postagem.curtidas }} <img src="../../images/fav.svg" />
                 </div>
               </div>
@@ -156,32 +156,22 @@ export default {
         ); 
     
     },
-    curtir(id){
+    curtir(i){
       if(this.$session.exists())
       {
-        var post = this.conteudos[id];
-        post.curtidas = this.$session.get("id");
-        if(this.conteudos[id].curtido) // Descurtir
-        {
-          this.$http
-          .post("https://localhost:5001/api/conteudos", post) 
-          .then(
-          dados => {
-            this.conteudos[id].curtidas--;
-            this.conteudos[id].curtido = false;
-          });
-      
-        }
-        else // Curtir
-        {
-          this.$http
-          .post("https://localhost:5001/api/conteudos",post) 
-          .then(
-          dados => {
-          this.conteudos[id].curtidas++;
-          this.conteudos[id].curtido = true;
-          }); 
-        } 
+        var post = {
+          id: 1,
+          idConteudo: this.conteudos[i].id,
+          idUsuario: this.$session.get("id")
+        };
+        
+        this.$http
+        .post("https://localhost:5001/api/curtidasUsuarios", post) 
+        .then(
+        dados => {
+          this.conteudos[i].curtidas++;
+          this.conteudos[i].curtido = true;
+        }); 
       } 
       else
       {
@@ -201,6 +191,21 @@ export default {
           ],
         };
       }
+    },
+    descurtir(i){
+      var post = {
+          id: 1,
+          idConteudo: this.conteudos[i].id,
+          idUsuario: this.$session.get("id")
+        };
+
+      this.$http
+        .put("https://localhost:5001/api/curtidasUsuarios", post) 
+        .then(
+        dados => {
+          this.conteudos[i].curtidas--;
+          this.conteudos[i].curtido = false;
+        });
     },
     getPerfil() {
       var saldo = this.$session.get("usuario").saldo;
@@ -231,10 +236,6 @@ export default {
             console.log(erro.bodyText);
           }
         );
-    },
-    abrirLogin(){
-      this.login = true;
-      this.msg.visivel = false;
     }
   },
   created() {

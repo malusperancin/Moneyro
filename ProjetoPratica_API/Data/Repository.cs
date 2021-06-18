@@ -286,7 +286,7 @@ namespace ProjetoPratica_API.Data
             consultaNotificacao = consultaNotificacao.OrderBy(t => t.Visualizada).Where(not => not.IdDestino == IdDestino);
 
             return await consultaNotificacao.ToArrayAsync();
-        }
+     }
 
         public async Task<Notificacoes[]> GetNotificacoesByUsuarioVisu(int IdDestino)
         {
@@ -411,33 +411,6 @@ namespace ProjetoPratica_API.Data
 
         /* =========================== SPs ================================*/
 
-        public void SpCurtirConteudo(int idUsu, int idCont)
-        {
-            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
-            con.Open();
-
-            SqlCommand cmd = new SqlCommand("comando", con);
-
-
-            cmd.CommandText = "sp_curtirConteudo " + idUsu + ", " + idCont;
-            cmd.ExecuteNonQuery();
-
-            con.Close();
-        }
-
-        public void SpDescurtirConteudo(int idUsu, int idCont)
-        {
-            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
-            con.Open();
-
-            SqlCommand cmd = new SqlCommand("comando", con);
-
-
-            cmd.CommandText = "sp_descurtirConteudo " + idUsu + ", " + idCont;
-            cmd.ExecuteNonQuery();
-
-            con.Close();
-        }
         public List<Conteudos> SpGetConteudosByUsuario(int UsuarioId)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
@@ -720,14 +693,72 @@ namespace ProjetoPratica_API.Data
             cmd.CommandText = "sp_getFotosByUsuario " + UsuarioId;
 
             SqlDataReader leitor = cmd.ExecuteReader();
-
             var result = new List<String>();
-
             while (leitor.Read())
                 result.Add((string)leitor["foto"]);
 
             con.Close();
             return result;
+        }
+
+        public void SpDescurtir(CurtidasUsuarios cu)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+            
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_descurtirConteudo " + cu.IdUsuario + "," + cu.IdConteudo;
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        public void SpCurtir(CurtidasUsuarios cu)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_curtirConteudo " + cu.IdUsuario + "," + cu.IdConteudo;
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        public List<TarefaUsuario> SpGetRelatorioTarefa(int TarefaId)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_getRelatorioTarefa " + TarefaId;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+            var result = new List<TarefaUsuario>();
+
+            while (leitor.Read())
+            {
+                TarefaUsuario dados = new TarefaUsuario(
+                    (string)leitor["nomeAluno"], 
+                    (string)leitor["fotoAluno"], 
+                    (bool)leitor["concluido"], 
+                    (double)leitor["nota"]);
+                        
+                result.Add(dados);
+            }
+        
+            con.Close();
+            return result;
+        }
+
+        public void SpAddTarefa(Postagens post)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_addTarefa " + post.IdSala + ", '" + post.Descricao +"', '"+ post.Data+"', '"+ post.Tipo+"', '"+post.DataEntrega+"', "+post.IdAtividade;
+
+            cmd.ExecuteNonQuery();
+            con.Close();
         }
     }
 }

@@ -140,5 +140,19 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
+        [HttpGet("relatorio/{IdTarefa}")]
+        public async Task<IActionResult> GetRelatorioTarefa(int IdTarefa)
+        {
+            try
+            {
+                var result = this.Repo.SpGetRelatorioTarefa(IdTarefa);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
     }
 }

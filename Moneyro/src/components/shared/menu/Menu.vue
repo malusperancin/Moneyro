@@ -177,7 +177,6 @@ export default {
     .nav__list {
       overflow-y: scroll;
       overflow-x: hidden;
-      direction: rtl; 
     }
 
     /* width */
