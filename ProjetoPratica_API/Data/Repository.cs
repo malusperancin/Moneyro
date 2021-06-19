@@ -755,6 +755,9 @@ namespace ProjetoPratica_API.Data
             con.Open();
 
             SqlCommand cmd = new SqlCommand("comando", con);
+            if(post.Tipo == "comunicado")
+            cmd.CommandText = "sp_addComunicado " + post.IdSala + ", '" + post.Descricao +"', '"+ post.Data+"', '"+ post.Tipo+"', '"+post.DataEntrega+"', "+post.IdAtividade;
+            else
             cmd.CommandText = "sp_addTarefa " + post.IdSala + ", '" + post.Descricao +"', '"+ post.Data+"', '"+ post.Tipo+"', '"+post.DataEntrega+"', "+post.IdAtividade;
 
             cmd.ExecuteNonQuery();

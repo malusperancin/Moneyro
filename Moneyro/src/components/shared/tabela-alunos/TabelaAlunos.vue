@@ -112,7 +112,23 @@ export default {
 }
 
 .corpo {
-    padding: 3%;
+    padding: 1% 3%;
+    overflow-y: auto;
+    max-height: 300px;
+}
+.corpo::-webkit-scrollbar {
+  width: 5px;
+  background: transparent;
+}
+
+.corpo::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: rgba(87, 86, 86, 0.637);
+}
+
+.corpo::-webkit-scrollbar-arrow {
+  color: white;
+  background: yellowgreen;
 }
 
 .tabela{

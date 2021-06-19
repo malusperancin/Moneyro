@@ -55,11 +55,7 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                if(modelo.Tipo.Equals("atividade"))
-                    this.Repo.SpAddTarefa(modelo);
-                else
-                    this.Repo.Add(modelo);
-
+                this.Repo.SpAddTarefa(modelo);
                 return Ok();
             }
             catch
