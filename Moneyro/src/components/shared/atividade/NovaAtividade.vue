@@ -75,8 +75,8 @@ export default {
       this.$http
           .post("https://localhost:5001/api/postagens", this.tarefa)
           .then(response => {
-            this.postagens.unshift(response.body);
-            this.$emit('fechar');
+            console.log(response.body);
+            this.$emit('fechar', response.body);
           }, erro =>{
             console.log(erro);
           });

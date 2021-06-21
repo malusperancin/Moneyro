@@ -55,8 +55,8 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                this.Repo.SpAddTarefa(modelo);
-                return Ok();
+                var result = this.Repo.SpAddTarefa(modelo);
+                return Ok(result);
             }
             catch
             {
@@ -68,16 +68,13 @@ namespace ProjetoPratica_API.Controllers
         public async Task<IActionResult> delete(int PostagemId)
         {
             try
-           {
+            {
                 //verifica se existe postagem a ser excluído
                 Postagens postagem = await this.Repo.GetPostagemById(PostagemId);
 
                 if (postagem == null) return NotFound();
-
-                if (postagem.Tipo == "atividade")
-                    this.Repo.SpDeletarTarefaById(PostagemId);
-                else
-                    this.Repo.Delete<Postagens>(postagem);
+                
+                this.Repo.SpDeletarPostagemById(postagem);
 
                 return Ok();
             }

@@ -10,7 +10,7 @@
       <nav class="nav">
         <div>
           <div class="nav__brand">
-            <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle" v-on:click="ativo = !ativo, tipos = false"></ion-icon>
+            <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle" v-on:click="ativo = !ativo, tipos = false" v-pre></ion-icon>
             <a class="nav__logo">Turmas</a>
           </div>
 

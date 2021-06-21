@@ -201,5 +201,21 @@ namespace ProjetoPratica_API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
         }
+
+        [HttpGet]
+        [Route("pontos/{UsuarioID}/{Pontos}")]
+        public async Task<IActionResult> addPontos(int UsuarioID, int Pontos)
+        {
+            try
+            {
+                this.Repo.SpAddPontos(UsuarioID, Pontos);
+
+                return Ok();
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
     }
 }

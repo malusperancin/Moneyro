@@ -2,7 +2,7 @@
   <div class="modal">
     <form v-on:submit.prevent class="modal-conteudo animate">
       <div class="cima">
-        <p>Carrinho <ion-icon name="cart"></ion-icon></p>
+        <p>Carrinho <ion-icon name="cart" v-pre></ion-icon></p>
         <span class="fechar" v-on:click="$emit('fechar')">&times;</span>
       </div>
 

@@ -5,12 +5,13 @@
       v-if="msg.visivel" 
       v-on:sair="msg.visivel = false, $router.push({ path: `/usuario` })"
       v-on:cancelar="msg.visivel = false"
-      v-on:excluir="excluirSala(sala.id)"/>
+      v-on:excluir="excluirSala(sala.id)"
+      v-on:excluirPostagem="excluirPostagem(), msg.visivel = false"/>
     <MenuProfessor v-on:getPostagens="getPostagensByCodigo($event)" :sala="sala"/>
     <TabelaAlunos :atividade="ativ.id" v-if="verTabela" v-on:fechar="verTabela = false"/>
     <div class="centro">
-      <NovoComunicado :sala="sala" :postagens="postagens" v-if="novoComunicado" v-on:fechar="novoComunicado = false"/> 
-      <NovaAtividade :sala="sala" :postagens="postagens" v-if="novaAtividade" v-on:fechar="novaAtividade = false"/>
+      <NovoComunicado :sala="sala" :postagens="postagens" v-if="novoComunicado" v-on:fechar="fecharModal($event)"/> 
+      <NovaAtividade :sala="sala" :postagens="postagens" v-if="novaAtividade" v-on:fechar="fecharModal($event)"/>
       <Perfil/>
       <div class="corpo">
         <div class="sala" v-if="sala.id">
@@ -25,8 +26,8 @@
           </div>
           <div v-if="postagens[0] != null">
             <div class="postagens" v-bind:key="i" v-for="(post, i) in postagens">
-              <Comunicado v-on:excluirPostagem="excluirPostagem(i)" v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="prof"/> 
-              <Atividade v-on:tabela="verTabela = true, ativ = post"  v-on:deletada="excluirPostagem(i)" v-if="post.tipo == 'atividade'" :atividade="post" :professor="prof"/>
+              <Comunicado v-on:excluir="msg = $event, qualExcluir = i" v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="prof"/> 
+              <Atividade v-on:excluir="msg = $event, qualExcluir = i" v-if="post.tipo == 'atividade'" v-on:tabela="verTabela = true, ativ = post" :atividade="post" :professor="prof"/>
             </div>
           </div>
           <div class="sala_vazia" v-else> 
@@ -35,10 +36,10 @@
           </div>
           <div class="adicionar">
             <div class="opcoes" v-bind:class="{aberto: clicou}">
-              <span v-on:click="novoComunicado = true" class="opcao" title="Adicionar Comunicado"> <ion-icon name="chatbubble"></ion-icon></span>
-              <span v-on:click="novaAtividade = true" class="opcao" title="Adicionar Atividade"> <ion-icon name="checkmark-circle"></ion-icon></span>
+              <span v-on:click="novoComunicado = true" class="opcao" title="Adicionar Comunicado"> <ion-icon name="chatbubble" v-pre></ion-icon></span>
+              <span v-on:click="novaAtividade = true" class="opcao" title="Adicionar Atividade"> <ion-icon name="checkmark-circle" v-pre></ion-icon></span>
             </div>  
-            <div id="botao" v-on:click="clicou = !clicou" title="Adicionar"><ion-icon name="add"></ion-icon></div>
+            <div id="botao" v-on:click="clicou = !clicou" title="Adicionar"><ion-icon name="add" v-pre></ion-icon></div>
           </div>
         </div>
         <div v-else class="nao_sala" >
@@ -79,7 +80,7 @@ export default {
       verTabela: false,
       clicou: false,
       ativ:[],
-      i:0,
+      qualExcluir: -1,
       sala: {},
       msg: {
         visivel: false,
@@ -96,6 +97,13 @@ export default {
     }
    },
   methods: {
+    fecharModal(evento){
+      this.novoComunicado = false;
+      this.novaAtividade = false;
+      
+      if(evento)
+        this.postagens.unshift(evento);
+    },
     getPostagensByCodigo(sala){
       this.sala = sala;
       this.prof.id = this.sala.idProfessor;
@@ -137,12 +145,12 @@ export default {
         ],
       }
     },
-    excluirPostagem(i) {
+    excluirPostagem() {
        this.$http
-            .delete("https://localhost:5001/api/postagens/"+id)
+            .delete("https://localhost:5001/api/postagens/"+this.postagens[this.qualExcluir].id)
             .then(
                 response => {
-                    this.$emit('deletada', id);
+                    this.postagens.splice(this.qualExcluir, 1);
                 }, 
                 erro =>{
                     console.log(erro);

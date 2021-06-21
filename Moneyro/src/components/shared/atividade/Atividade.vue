@@ -1,10 +1,5 @@
 <template>
   <div class="atividade">
-    <Mensagem
-      :msg="msg"
-      v-if="msg.visivel" 
-      v-on:cancelar="msg.visivel = false"
-      v-on:excluir="$emit('excluirPostagem', atividade.id)"/>
     <div class="conteudo">
       <div class="cabecalho">
         <div class="infos">
@@ -16,10 +11,10 @@
         </div>
         <div v-if="professor.id == $session.get('usuario').id" class="acoes">
             <div v-on:click="$emit('tabela', atividade.id)" class="ver_icone">
-                <ion-icon name="eye"></ion-icon>
+                <ion-icon name="eye" v-pre></ion-icon>
             </div>
             <div v-on:click="msgExluir()" class="deletar_icone">
-                <ion-icon name="trash"></ion-icon>
+                <ion-icon name="trash" v-pre></ion-icon>
             </div>
         </div>
       </div>
@@ -36,28 +31,18 @@
 </template>
 
 <script>
-import Mensagem from "../../shared/mensagem/Mensagem.vue";
 
 export default {
   props: ["atividade", "professor"],
-  components: {
-      Mensagem
-  },
   data() {
     return {
       dataEntregaView: '',
       dataView:'',
-      msg: {
-        visivel: false,
-        titulo: "",
-        mensagem: "",
-        botoes: []
-      }  
     };
   },
   methods: {
     msgExluir(id) {
-      this.msg = {
+      var msg = {
           visivel: true,
           titulo: "Excluir Postagem",
           mensagem: "Deseja mesmo excluir essa postagem de forma definitiva?",
@@ -68,10 +53,12 @@ export default {
               },
               {
                   mensagem: "Sim",
-                  evento: "excluir",
+                  evento: "excluirPostagem",
               }
           ],
       };
+
+      this.$emit('excluir', msg);
     }
   },
   created() {

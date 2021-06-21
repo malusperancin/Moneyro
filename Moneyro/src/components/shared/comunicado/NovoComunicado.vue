@@ -52,8 +52,7 @@ export default {
       this.$http
           .post("https://localhost:5001/api/postagens", this.comunicado)
           .then(response => {
-            this.postagens.unshift(response.body);
-            this.$emit('fechar');
+            this.$emit('fechar', response.body);
           }, erro =>{
             console.log(erro);
           });

@@ -1,6 +1,6 @@
 <template>
   <div class="modal">
-      <form v-on:submit.prevent="mudarSenha" class="modal-conteudo animate width-30">
+      <form class="modal-conteudo animate width-30">
           <div class="cima">
                 <big>
                    <b>Altere sua senha</b>
@@ -14,7 +14,7 @@
           </div>
           <div class="baixo">
               {{erro}}
-              <span class="botao">Mudar</span>
+              <span v-on:click="mudarSenha" class="botao">Mudar</span>
           </div>
       </form>
   </div>
@@ -62,8 +62,7 @@ export default {
             this.usuario.senha = this.senha2;
             
             this.$http
-            .put("https://localhost:5001/api/usuarios/1", this.usuario
-            )
+            .put("https://localhost:5001/api/usuarios/1", this.usuario)
             .then(
                 response => {
                     this.$emit("sucesso");

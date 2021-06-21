@@ -13,18 +13,17 @@
         <div class="quadrado" v-on:click="$router.push({ path: 'quiz', query: { codigo: 2} })">
           <img src="../../images/quiz2.png">
         </div>
-        <div class="quadrado">
-          <img src="../../images/jogo.png">
+        <div class="quadrado" v-on:click="$router.push({ path: 'quiz', query: { codigo: 3} })">
+          <img src="../../images/quiz3.png">
         </div>
         <div class="quadrado">
-          <span title="Este conteúdo é pago!" class="capelo">🎓</span>
-          <img src="../../images/jogo.png">
+          <img src="../../images/breve.png">
         </div>
         <div class="quadrado">
-          <img src="../../images/turma.png">
+          <img src="../../images/breve.png">
         </div>
         <div class="quadrado">
-          <img src="../../images/cofre.png">
+          <img src="../../images/breve.png">
         </div>
       </div>
     </div>

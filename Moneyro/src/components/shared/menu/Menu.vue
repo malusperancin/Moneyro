@@ -9,14 +9,14 @@
     <div class="l-navbar" id="navbar" v-bind:class="{expander: ativo}">
       <nav class="nav">
         <div class="nav__brand">
-          <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle" v-on:click="ativo = !ativo, tipos = false"></ion-icon>
+          <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle" v-on:click="ativo = !ativo, tipos = false" v-pre></ion-icon>
           <a v-if="this.$route.path != '/'" class="nav__logo" v-on:click="$router.push('/')">Moneyro</a>
         </div>
         <div class="nav__list">
           <div class="nav__link collapse">
             <img src="../../../images/adicionar.png" alt="a" class="nav__icon" v-on:click="tipos = !tipos, ativo = true" />
             <span class="nav__name">Adicionar</span>
-            <ion-icon name="chevron-down-outline" class="collapse__link" v-bind:class="{rotate: tipos}" v-on:click="tipos = !tipos, ativo = true"></ion-icon>
+            <ion-icon name="chevron-down-outline" class="collapse__link" v-bind:class="{rotate: tipos}" v-on:click="tipos = !tipos, ativo = true" v-pre></ion-icon>
             
             <ul class="collapse__menu" v-bind:class="{showCollapse: tipos}">
               <a href="#" class="collapse__sublink" v-on:click="verCard = true">Registro</a>

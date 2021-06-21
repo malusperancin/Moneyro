@@ -8,15 +8,15 @@
     <input class="filtro" placeholder="Pesquisar" v-model="filtro" type="text" />
     <div class="nav__list">
       <a v-show="!$session.exists()" title="Login" class="nav__link" v-on:click="login = true">
-        <ion-icon name="log-in-outline" class="nav__icon"></ion-icon>
+        <ion-icon name="log-in-outline" class="nav__icon" v-pre></ion-icon>
         <span class="nav__name">Login</span>
       </a>
       <a v-show="!$session.exists()" title="Cadastro" class="nav__link" v-on:click="$router.push('cadastro')">
-        <ion-icon name="person-add" class="nav__icon"></ion-icon>
+        <ion-icon name="person-add" class="nav__icon" v-pre></ion-icon>
         <span class="nav__name">Cadastro</span>
       </a>
       <a title="Sobre" class="nav__link"  v-on:click="$router.push('sobre')">
-        <ion-icon name="information-circle"  class="nav__icon" ></ion-icon>
+        <ion-icon name="information-circle"  class="nav__icon" v-pre></ion-icon>
         <span class="nav__name">Sobre</span>
       </a>
     </div>

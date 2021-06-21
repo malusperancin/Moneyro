@@ -1,8 +1,8 @@
 <template>
   <header id="moneyro">
-    <div class="voltar">
+    <div class="voltar" v-if="this.$route.path != '/quiz'">
       <a title="Login" class="nav__link" v-on:click="$router.push('/')">
-        <ion-icon name="arrow-back-circle"></ion-icon>
+        <ion-icon name="arrow-back-circle" v-pre></ion-icon>
         <span class="nav__name">Voltar</span>
       </a>
     </div>
@@ -10,9 +10,9 @@
       <img id="logo" src="src/images/logo.png" alt />
       <h1>{{titulo}}</h1>
     </div>
-    <div class="voltar-none">
+    <div class="voltar-none" v-if="this.$route.path != '/quiz'">
       <a title="Login" class="nav__link" v-on:click="login = true">
-        <ion-icon name="log-in-outline" class="nav__icon"></ion-icon>
+        <ion-icon name="log-in-outline" class="nav__icon" v-pre></ion-icon>
         <span class="nav__name">Login</span>
       </a>
     </div>

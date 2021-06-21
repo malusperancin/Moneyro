@@ -17,8 +17,8 @@
             <tr v-for="reg in relatorio">
               <td class="linha"><img :src="'src/images/perfil'+reg.fotoAluno+'.png'"> <p>{{reg.nomeAluno}}</p></td>
               
-              <td v-if="reg.concluido"> <ion-icon name="checkmark-circle" class="icone"></ion-icon> </td>
-              <td v-else> <ion-icon name="close-circle" class="icone"></ion-icon> </td>
+              <td v-if="reg.concluido"> <ion-icon name="checkmark-circle" class="icone" v-pre></ion-icon> </td>
+              <td v-else> <ion-icon name="close-circle" class="icone" v-pre></ion-icon> </td>
               
               <td v-if="reg.concluido"> {{reg.nota}} </td>
               <td v-else>---</td>
@@ -45,7 +45,6 @@ export default {
   },
   methods: {
     pegarInfos(){
-        alert(this.atividade);
       this.$http
           .get("https://localhost:5001/api/salas/relatorio/"+ this.atividade)
           .then(response => {

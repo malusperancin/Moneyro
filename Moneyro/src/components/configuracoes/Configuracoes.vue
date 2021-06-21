@@ -278,34 +278,37 @@ export default {
       var dd = String(this.dia).padStart(2, '0');
       var mm = String(this.mes).padStart(2, '0');
       this.usuario.dataDeNascimento = this.ano + "-" + mm + "-" + dd;
-      var fotonova = this.usuario.foto.substring(6);
-      this.usuario.foto = fotonova;
+
+      this.usuario.foto = this.usuario.foto.substring(6);
+
       this.$session.set("MA", this.usuario.modoAnonimo);
       this.$session.set("foto", this.usuario.foto);
       this.$session.set("nome", this.usuario.nome);
+
       this.$http.put("https://localhost:5001/api/usuarios/" + this.usuario.id, this.usuario)
       .then(
           response => {
             this.usuario.foto = "perfil" + this.usuario.foto;
-            this.msg.titulo = "Sucesso";
-            this.msg.mensagem =
-              "Suas informações foram alteradas com sucesso";
-            this.msg.botoes = [
+            this.msg = {
+              titulo: "Sucesso",
+              mensagem: "Suas informações foram alteradas com sucesso",
+              botoes: [
               {
                 mensagem: "OK",
                 evento: "fechar"
-              }
-            ]; 
+              }]
+            };
           },
-          response => {
-            this.msg.titulo = "Opa neném";
-            this.msg.mensagem = "Algo deu errado ao alterar suas informações";
-            this.msg.botoes = [
+          erro => {
+            this.msg = {
+              titulo: "Opa neném",
+              mensagem: "Algo deu errado ao alterar suas informações",
+              botoes: [
               {
                mensagem: "Tentar Novamente",
                evento: "fechar"
-             }
-            ];
+              }]
+            };
             
             this.getUsuario();
           }

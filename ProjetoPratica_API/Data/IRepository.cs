@@ -21,6 +21,7 @@ namespace ProjetoPratica_API.Data
         Task<Usuarios> GetUsuarioByApelido(string apelido);
         Task<Usuarios> GetUsuarioByEmail(string email);
         List<String> SpGetFotosByUsuario(int UsuarioId);
+        void SpAddPontos(int UsuarioID, int Pontos);
 
         Task<Conquistas[]> GetAllConquistas();
 
@@ -61,7 +62,7 @@ namespace ProjetoPratica_API.Data
 
         Task<Tarefas> GetTarefaById(int Id);
         Task<Tarefas[]> GetAllTarefas();
-        void SpDeletarTarefaById(int Id);
+        void SpDeletarPostagemById(Postagens post);
 
         Task<Comunicados[]> GetAllComunicados();
         Task<Comunicados> GetComunicadoById(int Id);
@@ -88,6 +89,6 @@ namespace ProjetoPratica_API.Data
         void SpCurtir(CurtidasUsuarios cu);
         void SpDescurtir(CurtidasUsuarios cu);
         List<TarefaUsuario> SpGetRelatorioTarefa(int TarefaId);
-        void SpAddTarefa(Postagens post);
+        Postagens SpAddTarefa(Postagens post);
     }
 }

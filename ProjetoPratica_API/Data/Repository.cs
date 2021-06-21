@@ -587,15 +587,18 @@ namespace ProjetoPratica_API.Data
             con.Close();
         }
 
-        public void SpDeletarTarefaById(int id)
+        public void SpDeletarPostagemById(Postagens post)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
 
             SqlCommand cmd = new SqlCommand("comando", con);
+            if(post.Tipo == "atividade")
+                cmd.CommandText = "sp_DeletarTarefa " + post.Id;
+            else
+                cmd.CommandText = "sp_DeletarComunicado " + post.Id;
 
-            cmd.CommandText = "sp_DeletarTarefa " + id;
-            cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
 
             con.Close();
         }
@@ -749,16 +752,35 @@ namespace ProjetoPratica_API.Data
             return result;
         }
 
-        public void SpAddTarefa(Postagens post)
+        public Postagens SpAddTarefa(Postagens post)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
 
             SqlCommand cmd = new SqlCommand("comando", con);
+
             if(post.Tipo == "comunicado")
-            cmd.CommandText = "sp_addComunicado " + post.IdSala + ", '" + post.Descricao +"', '"+ post.Data+"', '"+ post.Tipo+"', '"+post.DataEntrega+"', "+post.IdAtividade;
+                cmd.CommandText = "sp_addComunicado " + post.IdSala + ", '" + post.Descricao +"', '"+ post.Data+"', '"+ post.Tipo+"', '"+post.DataEntrega+"', "+post.IdAtividade;
             else
-            cmd.CommandText = "sp_addTarefa " + post.IdSala + ", '" + post.Descricao +"', '"+ post.Data+"', '"+ post.Tipo+"', '"+post.DataEntrega+"', "+post.IdAtividade;
+                cmd.CommandText = "sp_addTarefa " + post.IdSala + ", '" + post.Descricao +"', '"+ post.Data+"', '"+ post.Tipo+"', '"+post.DataEntrega+"', "+post.IdAtividade;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            while (leitor.Read())
+                post.Id = Convert.ToInt32(leitor["id"]);
+        
+            con.Close();
+            return post;
+        }
+
+        public void SpAddPontos(int UsuarioID, int Pontos)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+
+            cmd.CommandText = "sp_addPontos " + UsuarioID +", "+ Pontos;
 
             cmd.ExecuteNonQuery();
             con.Close();

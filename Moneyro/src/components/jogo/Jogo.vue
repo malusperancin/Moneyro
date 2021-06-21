@@ -9,7 +9,7 @@
             </canvas>
             <div class="direita">
                 <button v-on:click="fullscreen()" title="Tela cheia">
-                    <ion-icon name="scan-circle-sharp"></ion-icon>
+                    <ion-icon name="scan-circle-sharp" v-pre></ion-icon>
                 </button>
             </div>
         </div>

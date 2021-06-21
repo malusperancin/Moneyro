@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="resultado" v-else>
-        <h1 style="text-align:center"> Você acertou {{acertos}} de {{perguntas.length}} questões</h1>
+        <h1 style="text-align:center"> Você acertou {{acertos}} de {{perguntas.length}} questões e ganhou {{acertos * 5}} pontos!</h1>
       </div>
       <div class="controles">
           <button class="botao" id="ant" v-on:click="anterior()">Anterior</button>
@@ -60,9 +60,6 @@ export default {
   },
   data() {
     return {
-      acertos: 0,
-      j: 0,
-      indice: 0,
       respostas: [],
       perguntas: [],
       msg: {
@@ -71,55 +68,67 @@ export default {
         mensagem: "",
         botoes: []
       },
+      acertos: 0,
+      indice: 0,
+      pntQuestao: 5,
+      pntTotal: 0,
     };
   },
   methods: {
     pontuar(){
       if(this.respostas[this.indice] == this.perguntas[this.indice].resposta)
-      {
         this.acertos++;
-      }
     },
     proxima() {
       if(this.respostas[this.indice] == null) //se não respondeu
-      {
-          this.msg.titulo = "Tem certeza que deseja ir para proxima?";
-          this.msg.mensagem = "Você esqueceu de marcar a ultima questão,\n pode voltar quando quiser para arrumar";
-          this.msg.botoes = [
-            {
+        this.msg = {
+          titulo: "Tem certeza que deseja ir para proxima?",
+          mensagem: "Você esqueceu de marcar a ultima questão,\n pode voltar quando quiser para arrumar",
+          botoes: [{
             mensagem: "Ok",
             evento: "fechar"
-            }
-          ];
-          this.msg.visivel = true;
-        }
-      
-      this.pontuar();
+          }],
+          visivel: true
+        };
+      else 
+        this.pontuar();
+
       this.indice = this.indice+1;
     },
     anterior() {
       if(this.indice > 0)
-      {
         this.indice = this.indice-1;
-      }
     },
     enviar(){
-      if(this.respostas[this.indice])
+      if(this.respostas[this.indice] != null)
       {
         this.pontuar();
+
         var btnAnterior = document.getElementById("ant");
         btnAnterior.style.background = "#696969"
         btnAnterior.style.color = "darkgray";
         btnAnterior.disabled= true;
+
         this.indice = this.perguntas.length;
+        this.pntTotal = this.acertos * this.pntQuestao;
+
+        this.$http.get("https://localhost:5001/api/usuarios/pontos/" + this.$session.get("id") + "/" + this.pntTotal);
+        var user = this.$session.get("usuario");
+        user.pontos += this.pntTotal;
+        this.$session.set("usuario", user);
+        this.$session.set("pontos", user.pontos);
       }
     }
   },
   mounted(){
     var rb = document.getElementsByClassName("rb");
-    for(var i=0;i<rb.length;i++)
+    
+    for(var i = 0; i < rb.length; i++)
       rb[i].checked = false;
-
+  },
+  beforeCreate() {
+    if (!this.$session.exists())
+      this.$router.push('/')
   },
   created() {  
     document.title = "Moneyro - Quiz";
@@ -128,18 +137,15 @@ export default {
         .then(dados => {
           this.perguntas = dados.body;
         });
-  },
-   beforeCreate() {
-     if (!this.$session.exists()) {
-      this.$router.push('/')
-    }
-  },
-  watch: {
   }
 };
 </script>
 
 <style scoped>
+#moneyro {
+  justify-content: center !important;
+}
+
 h1{
   margin-top: 0;
 }

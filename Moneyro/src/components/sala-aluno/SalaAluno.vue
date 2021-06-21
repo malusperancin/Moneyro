@@ -5,7 +5,7 @@
     <Mensagem
       :msg="msg"
       v-if="msg.visivel" 
-      v-on:ok="msg.visivel = false"/>
+      v-on:ok="msg.visivel = false"
     <div class="centro">
       <div v-if="sala.id">
         <div class="cima">
@@ -18,7 +18,9 @@
         <div class="lista" v-if="postagens[0] != null">
           <div v-for="(post, i) in postagens" v-bind:key="i">
             <Comunicado v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="prof"/> 
-            <Atividade v-if="post.tipo == 'atividade'" :atividade="post" :professor="prof"/>
+            <div v-on:click="redirecionar(post)">
+              <Atividade v-if="post.tipo == 'atividade'" :atividade="post" :professor="prof"/>
+            </div>
           </div>
         </div>
         <div class="sala_vazia" v-else> 
@@ -86,6 +88,13 @@ export default {
    };
   },
   methods: {
+    redirecionar(atividade)
+    {
+      if(atividade.idAtividade != 4)
+        this.$router.push({ path: 'quiz', query: { codigo: atividade.idAtividade} });
+      else
+        this.$router.push('/jogo');
+    },
     entrarSala(cod) {
       this.$http
           .put("https://localhost:5001/api/usuarios/sala/" + cod, this.$session.get("usuario"))
@@ -124,7 +133,7 @@ export default {
         .get("https://localhost:5001/api/postagens/"+idSala) 
         .then(
           dados => {
-            this.postagens = dados.body;
+            this.postagens = dados.body.reverse();
           }
         ); 
     }
@@ -272,10 +281,10 @@ button{
 }
 
 .texto {
-  background: green;
   margin-left: 2.3%;
   margin-bottom: 1%;
   margin-top:1%;
+  color: darkgray;
 }
 
 .lista {

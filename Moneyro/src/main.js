@@ -9,6 +9,7 @@ Vue.use(VueResource);
 //Vue.use(VueSession, options);
 Vue.use(VueSession, { persist: true });
 Vue.use(VueRouter);
+//Vue.component('ion-icon', Component);
 
 const router = new VueRouter({
     routes: routes
