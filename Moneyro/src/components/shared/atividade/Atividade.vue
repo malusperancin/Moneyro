@@ -20,7 +20,7 @@
       </div>
       <div class="infos_atividade">
         <div class="nome_atividade">
-          {{atividade.descricao}}
+          <strong>{{nome}}</strong>: {{atividade.descricao}}
         </div>
         <div class="data_atividade">
           Data entrega: <strong> {{dataEntregaView}}</strong>
@@ -38,24 +38,25 @@ export default {
     return {
       dataEntregaView: '',
       dataView:'',
+      nome: ""
     };
   },
   methods: {
     msgExluir(id) {
       var msg = {
-          visivel: true,
-          titulo: "Excluir Postagem",
-          mensagem: "Deseja mesmo excluir essa postagem de forma definitiva?",
-          botoes: [
-              {
-                  mensagem: "Cancelar",
-                  evento: "cancelar",
-              },
-              {
-                  mensagem: "Sim",
-                  evento: "excluirPostagem",
-              }
-          ],
+        visivel: true,
+        titulo: "Excluir Postagem",
+        mensagem: "Deseja mesmo excluir essa postagem de forma definitiva?",
+        botoes: [
+          {
+            mensagem: "Cancelar",
+            evento: "cancelar",
+          },
+          {
+            mensagem: "Sim",
+            evento: "excluirPostagem",
+          }
+        ],
       };
 
       this.$emit('excluir', msg);
@@ -76,6 +77,12 @@ export default {
     yyyy = b.getFullYear();
 
     this.dataEntregaView =  dd + '/' + mm + '/' + yyyy;
+    
+    this.$http.get("https://localhost:5001/api/atividades/"+this.atividade.idAtividade)
+    .then(
+      response => {
+        this.nome = response.body.nome;  
+      });
   },
 };
 
@@ -89,7 +96,7 @@ export default {
 .conteudo {
   color: rgb(255, 255, 255);
   background: rgb(46, 48, 46);
-  border-radius: 5px;
+  border-radius: 0 5px 5px 5px;
   height: fit-content;
   min-width: 250px;
   display: flex;

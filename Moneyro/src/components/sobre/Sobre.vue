@@ -87,15 +87,13 @@ export default {
     document.title = "Moneyro";
   },
   beforeCreate() {
-    if(this.$session.exists())
-      this.$router.push("usuario");
+
   },
 };
 </script>
 
 <style scoped>
 .pag {
-  background: blue;
   min-height: 70% !important;
 }
 
@@ -173,7 +171,6 @@ a {
 
 #inicio {
   width: 100%;
-  background-color: rgb(255, 227, 74);
   display: flex;
 }
 
@@ -233,7 +230,7 @@ h2{
 }
 
 #porque {
-  background-color: rgb(241, 194, 50);
+  background-color: rgba(241, 194, 50,0.85);
   font-size: 1.5em;
   padding: 70px 10px 80px 10px;
   height: 100%;

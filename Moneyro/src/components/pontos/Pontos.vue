@@ -4,7 +4,7 @@
       :msg="msg"
       v-if="msg.visivel" 
       v-on:cancelar="msg.visivel = false"
-      v-on:trocar="trocarbanco()"/>
+      v-on:trocar="msg.visivel = false, trocarbanco()"/>
     <Menu />
     <div class="centro">
       <div>
@@ -85,7 +85,7 @@ export default {
       },
       conquistas: [],
       produtos: [],
-      idProd: 0,
+      produtoTroca: {},
       feitos: [
         {
           nome: "A primeira é inesquecível",
@@ -108,20 +108,21 @@ export default {
   },
   methods: {
     trocarbanco(){
-      this.msg.visivel = false;
       this.$http
-          .post("https://localhost:5001/api/trocas/"+this.$session.get("id") +"/"+ this.idProd)
+          .post("https://localhost:5001/api/trocas/"+this.$session.get("id") +"/"+ this.produtoTroca.id)
           .then(response => {
-            this.produtos = this.produtos.filter(p => p.id != this.idProd);
+            this.produtos = this.produtos.filter(p => p.id != this.produtoTroca.id);
+
+            var user = this.$session.get("usuario");
+            user.pontos -= this.produtoTroca.preco;
+            this.$session.set("usuario", user);
+            this.$session.set("pontos", user.pontos);
           }, erro =>{
             console.log(erro);
           });
     },
     trocar(produto){
-      alert(this.$session.get("pontos"));
-      var pontos = this.$session.get("pontos");
-
-      if(pontos < produto.preco)
+      if(this.$session.get("pontos") < produto.preco)
         this.msg = {
           visivel: true,
           titulo: "Poucos pontos",
@@ -139,7 +140,8 @@ export default {
           visivel: true,
           titulo: "Trocar pontos",
           mensagem: "Deseja trocar "+ produto.preco + " pontos pelo(a) "+ produto.nome +"?",
-          botoes: [
+          botoes: 
+          [
             {
               mensagem: "Cancelar",
               evento: "cancelar",
@@ -150,7 +152,8 @@ export default {
             }
           ],
         };
-        this.idProd = produto.id;
+
+       this.produtoTroca = produto;
       }
     },
     getConquistas() {
@@ -174,13 +177,13 @@ export default {
   },
   created() {
     document.title = "Pontos";
+
     this.getConquistas();
     this.getProdutos();
   },
    beforeCreate() {
-    if (!this.$session.exists()) {
-      this.$router.push('/')
-    }
+    if (!this.$session.exists())
+      this.$router.push('/');
   }
 };
 </script>

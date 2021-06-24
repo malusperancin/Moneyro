@@ -70,8 +70,7 @@ export default {
       },
       acertos: 0,
       indice: 0,
-      pntQuestao: 5,
-      pntTotal: 0,
+      pntQuestao: 5
     };
   },
   methods: {
@@ -110,11 +109,11 @@ export default {
         btnAnterior.disabled= true;
 
         this.indice = this.perguntas.length;
-        this.pntTotal = this.acertos * this.pntQuestao;
 
-        this.$http.get("https://localhost:5001/api/usuarios/pontos/" + this.$session.get("id") + "/" + this.pntTotal);
+        this.$http.get("https://localhost:5001/api/usuarios/pontos/" + this.$session.get("id") + "/" +this.$route.query.id+ "/" + this.acertos +"/"+this.perguntas.length);
+
         var user = this.$session.get("usuario");
-        user.pontos += this.pntTotal;
+        user.pontos += this.acertos * this.pntQuestao;
         this.$session.set("usuario", user);
         this.$session.set("pontos", user.pontos);
       }

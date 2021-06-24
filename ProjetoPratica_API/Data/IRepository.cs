@@ -20,8 +20,9 @@ namespace ProjetoPratica_API.Data
         Task<Usuarios> GetUsuarioByNome(string nome);
         Task<Usuarios> GetUsuarioByApelido(string apelido);
         Task<Usuarios> GetUsuarioByEmail(string email);
+        object SpVerificaConclusao(int UsuarioID, int AtividadeID);
         List<String> SpGetFotosByUsuario(int UsuarioId);
-        void SpAddPontos(int UsuarioID, int Pontos);
+        void SpAddPontos(int UsuarioID, int AtividadeID, double Pontos, double Total);
 
         Task<Conquistas[]> GetAllConquistas();
 

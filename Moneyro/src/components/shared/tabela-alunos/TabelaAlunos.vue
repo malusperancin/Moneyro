@@ -20,7 +20,7 @@
               <td v-if="reg.concluido"> <ion-icon name="checkmark-circle" class="icone" v-pre></ion-icon> </td>
               <td v-else> <ion-icon name="close-circle" class="icone" v-pre></ion-icon> </td>
               
-              <td v-if="reg.concluido"> {{reg.nota}} </td>
+              <td v-if="reg.concluido"> {{reg.nota}}% </td>
               <td v-else>---</td>
             </tr>
           </table> 

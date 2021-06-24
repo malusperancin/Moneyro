@@ -64,7 +64,7 @@
             <span class="nav__name">Configurações</span>
           </a>
         </div>
-        <a title="Sair" class="nav__link" v-on:click="sair()">
+        <a title="Sair" class="nav__link" v-on:click="sair()" v-if="this.$route.path != '/'">
           <img src="../../../images/sair.png" alt="a" class="nav__icon" />
           <span class="nav__name">Sair</span>
         </a>
@@ -177,6 +177,7 @@ export default {
     .nav__list {
       overflow-y: scroll;
       overflow-x: hidden;
+      flex: 1;
     }
 
     /* width */

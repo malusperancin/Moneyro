@@ -1,13 +1,14 @@
 <template>
   <div class="pag">
-    <Cabecalho :filtro="filtro"/>
+    <Cabecalho :filtro="filtro" v-on:sair="deslogar"/>
     <Menu v-if="$session.exists()"/>
     <Topo />
     <Mensagem
       :msg="msg"
       v-if="msg.visivel" 
       v-on:cancelar="msg.visivel = false"
-      v-on:logar="login = true, msg.visivel = false"/>
+      v-on:logar="login = true, msg.visivel = false"
+      v-on:sair="(msg.visivel = false), $session.destroy(), $router.go()"/>
     <Login v-show="login" v-on:fechar="login = false"/>
     <div class="centro">
       <div id="conteudo">
@@ -95,7 +96,7 @@
           <div class="alta">
             <p class="titulo">Em alta</p>
             <div v-bind:key='i' v-for="(conteudo, i) in conteudos">
-             <div class="enumeracao" v-if="conteudo.emAlta == true" v-else="i--" v-on:click ="clicou(conteudo.id)">
+             <div class="enumeracao" v-if="conteudo.emAlta" v-else="i--" v-on:click ="clicou(conteudo.id)">
               <span class="numeros">{{ i + 1}}</span>
               <p class="tit">{{ conteudo.titulo }}</p>
              </div> 
@@ -139,6 +140,22 @@ export default {
     };
   },
   methods: {
+    deslogar(){
+      this.msg = {
+        visivel: true,
+        titulo: "Sair da sessão",
+        mensagem: "Você realmente deseja sair?",
+        botoes: [
+          {
+            mensagem: "Sair",
+            evento: "sair",
+          },
+          {
+            mensagem: "Cancelar",
+            evento: "cancelar",
+          }]
+      };
+    },
     clicou(id){
       document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'center' });
     },
@@ -152,6 +169,11 @@ export default {
         .then(
           dados => {
             this.conteudos = dados.body;
+            this.conteudos.map(c => {
+              var data =  c.data.split("T")[0];
+              var partes = data.split("-");
+              c.data = partes[2] + "/" + partes[1] + "/" + partes[0];
+            });
           }
         ); 
     
@@ -242,7 +264,9 @@ export default {
     document.title = "Moneyro";
 
     this.getConteudos();
-    this.getPerfil();
+
+    if(this.$session.exists())
+      this.getPerfil();
 
     this.posiScroll = window.pageYOffset;
     window.onscroll = function() {

@@ -37,11 +37,11 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpGet("{IdAtividade}")]
-        public async Task<IActionResult> Get(int IdSala)
+        public async Task<IActionResult> Get(int IdAtividade)
         {
             try
             {
-                var result = await this.Repo.GetAtividadeById(IdSala);
+                var result = await this.Repo.GetAtividadeById(IdAtividade);
                 return Ok(result);
             }
             catch

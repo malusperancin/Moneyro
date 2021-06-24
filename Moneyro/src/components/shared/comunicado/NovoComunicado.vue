@@ -3,7 +3,7 @@
     <div class="comunicado">
       <div class="conteudo">
         <div class="titulo">
-          <img src="../../../images/perfil2.png" style="width: 50px">
+          <img :src="'src/images/perfil'+this.$session.get('foto')+'.png'" style="width: 50px">
           <div>
               <strong><b>{{sala.professor}}</b></strong>
               <p class="data">{{datahoje}} </p>

@@ -1,12 +1,13 @@
-<template>
+d<template>
   <div class="pag">
     <Menu />
     <Perfil />
     <Mensagem
       :msg="msg"
       v-if="msg.visivel" 
-      v-on:ok="msg.visivel = false"
+      v-on:ok="msg.visivel = false"/>
     <div class="centro">
+    <div id="botao"> </div>
       <div v-if="sala.id">
         <div class="cima">
           <div class="infoSala">
@@ -19,6 +20,9 @@
           <div v-for="(post, i) in postagens" v-bind:key="i">
             <Comunicado v-if="post.tipo == 'comunicado'" :comunicado="post" :professor="prof"/> 
             <div v-on:click="redirecionar(post)">
+              <div v-if="post.tipo == 'atividade'" :class="[{'conc' : post.concluido == true}, {'n-conc' : post.concluido == false}]">
+                {{post.concluido?"Concluída":"Pendente"}} {{post.concluido?"• Nota: "+post.nota+"%":""}}
+               </div>  
               <Atividade v-if="post.tipo == 'atividade'" :atividade="post" :professor="prof"/>
             </div>
           </div>
@@ -79,6 +83,7 @@ export default {
         titulo: "",
         mensagem: "",
         botoes: [],
+        concluiu: 0
       },
       prof:{
         nome:'',
@@ -91,7 +96,20 @@ export default {
     redirecionar(atividade)
     {
       if(atividade.idAtividade != 4)
-        this.$router.push({ path: 'quiz', query: { codigo: atividade.idAtividade} });
+      {
+        if(!atividade.concluido)
+          this.$router.push({ path: 'quiz', query: { codigo: atividade.idAtividade, id: atividade.id} });
+        else
+          this.msg = {
+              visivel: true,
+              titulo: "Ops...",
+              mensagem: "Você já concluiu essa atividade e acertou "+atividade.nota+"%!",
+              botoes: [{
+                mensagem: "Ok",
+                evento: "ok",
+              }]
+            };
+      }
       else
         this.$router.push('/jogo');
     },
@@ -114,16 +132,15 @@ export default {
                   }]
               }
           },
-            erro => {
-              this.msg = {
-                visivel: true,
-                titulo: "Erro",
-                mensagem: erro,
-                botoes: [
-                  {
-                    mensagem: "Voltar",
-                    evento: "ok",
-                  }]
+          erro => {
+            this.msg = {
+              visivel: true,
+              titulo: "Erro",
+              mensagem: erro,
+              botoes: [{
+                mensagem: "Voltar",
+                evento: "ok",
+              }]
             }
           }
         );
@@ -131,17 +148,26 @@ export default {
     getPostagens(idSala) {
       this.$http
         .get("https://localhost:5001/api/postagens/"+idSala) 
-        .then(
-          dados => {
+        .then( dados => {
             this.postagens = dados.body.reverse();
+
+            this.postagens.map(p => {
+              if(p.idAtividade != 4)
+                 this.$http
+                  .get("https://localhost:5001/api/usuarios/postagens/"+this.$session.get("usuario").id+"/"+p.id) 
+                  .then(response => {
+                    p.nota = response.body[0];
+                    p.concluido = response.body[1];
+                    this.$forceUpdate();
+                  });
+            });
           }
         ); 
     }
   },
   beforeCreate() {
-    if (!this.$session.exists()) {
+    if (!this.$session.exists())
       this.$router.push('/')
-    }
     
     if(this.$session.get("idSala") > 1) {
       this.$http
@@ -154,20 +180,19 @@ export default {
               foto: "",
               nome:  this.sala.professor
             };
-
+    
             this.$http
             .get("https://localhost:5001/api/usuarios/" + this.prof.id)
             .then(  
               response => {
                 this.prof.foto = response.body.foto;
               }, 
-              response => {
+              erro => {
                 console.log("Erro ao pergar foto prof");
               });
 
             this.getPostagens(this.sala.id);
-          }
-        );  
+        });
     }
   },
   created() {
@@ -177,6 +202,24 @@ export default {
 </script>
 
 <style scoped>
+.conc {
+  background: rgb(119, 163, 103);
+  background: rgb(103, 166, 65);
+  width: fit-content;
+  padding: 2px 10px;
+  border-radius: 5px 5px 0 0;
+  color: black; 
+}
+
+.n-conc {
+  background: rgb(163, 103, 103);
+  background: rgb(166, 65, 65);
+  width: fit-content;
+  padding: 2px 10px;
+  border-radius: 5px 5px 0 0;
+  color: black; 
+}
+
 .sala_vazia {
   display: flex;
   flex-direction: column-reverse;
@@ -208,8 +251,6 @@ export default {
   color: whitesmoke;
   margin-right:5%;
 }
-
-/*  */
 
 img {
   width: 270px;

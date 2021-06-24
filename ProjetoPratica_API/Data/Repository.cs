@@ -333,7 +333,7 @@ namespace ProjetoPratica_API.Data
         public async Task<Atividades[]> GetAllAtividades()
         {
             IQueryable<Atividades> consultaAtividades = (IQueryable<Atividades>)this.Context.Atividades;
-            consultaAtividades = consultaAtividades.OrderBy(a => a.Id).Where(ativ => ativ.Id > 1);
+            consultaAtividades = consultaAtividades.OrderBy(a => a.Id).Where(ativ => ativ.Id > 0);
             return await consultaAtividades.ToArrayAsync();
         }
 
@@ -773,17 +773,48 @@ namespace ProjetoPratica_API.Data
             return post;
         }
 
-        public void SpAddPontos(int UsuarioID, int Pontos)
+        public void SpAddPontos(int UsuarioID, int AtividadeID, double Pontos, double Total)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
 
             SqlCommand cmd = new SqlCommand("comando", con);
 
-            cmd.CommandText = "sp_addPontos " + UsuarioID +", "+ Pontos;
+            cmd.CommandText = "sp_addPontos " + UsuarioID + ", " + AtividadeID + ", " + Pontos + ", " + Total;
 
-            cmd.ExecuteNonQuery();
+            SqlDataReader leitor = cmd.ExecuteReader();
+            
+
             con.Close();
+        }
+
+        public object SpVerificaConclusao(int UsuarioID, int AtividadeID)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+
+            cmd.CommandText = "sp_verificaConclusao " + UsuarioID + ", " + AtividadeID;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            var result = new List<object>();
+            
+            while (leitor.Read())
+            {
+                object[] dados = {
+                    leitor["nota"],
+                    leitor["concluido"]
+                };
+
+                result.Add(dados);
+            }
+
+            con.Close();
+            
+            return result[0];
+          
         }
     }
 }

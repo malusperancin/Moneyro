@@ -1,5 +1,11 @@
 <template>
   <header id="header">
+  <mensagem
+      :msg="msg"
+      v-if="msg.visivel"
+      v-on:sair="(msg.visivel = false), $session.destroy(), $router.go()"
+      v-on:fechar="msg.visivel = false"
+    ></mensagem>
     <login v-show="login" v-on:fechar="login = false"/>
     <div class="marca">
       <img class="logo" src="src/images/logo.png" alt />
@@ -15,27 +21,36 @@
         <ion-icon name="person-add" class="nav__icon" v-pre></ion-icon>
         <span class="nav__name">Cadastro</span>
       </a>
-      <a title="Sobre" class="nav__link"  v-on:click="$router.push('sobre')">
-        <ion-icon name="information-circle"  class="nav__icon" v-pre></ion-icon>
-        <span class="nav__name">Sobre</span>
+
+      <a v-show="$session.exists()" title="Sair" class="nav__link" v-on:click="$emit('sair')">
+        <ion-icon name="log-out-outline" class="nav__icon" v-pre></ion-icon>
+        <span class="nav__name">Sair</span>
       </a>
     </div>
   </header>
 </template>
 
 <script>
-import Menu from '../login/Login.vue'
+import Menu from '../login/Login.vue';
+import Mensagem from "../mensagem/Mensagem.vue";
 
 export default {
   props: ["filtro"],
   components: {
     login: Menu,
+    mensagem: Mensagem,
   },
   data() {
     return {
-      login: false
+      login: false,
+      msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: [],
+      },
     };
-  }
+  },
 };
 </script>
 

@@ -203,14 +203,30 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpGet]
-        [Route("pontos/{UsuarioID}/{Pontos}")]
-        public async Task<IActionResult> addPontos(int UsuarioID, int Pontos)
+        [Route("pontos/{UsuarioID}/{AtividadeID}/{Pontos}/{Total}")]
+        public async Task<IActionResult> addPontos(int UsuarioID, int AtividadeID, double Pontos, double Total)
         {
             try
             {
-                this.Repo.SpAddPontos(UsuarioID, Pontos);
+                this.Repo.SpAddPontos(UsuarioID, AtividadeID, Pontos, Total);
 
                 return Ok();
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+        [HttpGet]
+        [Route("postagens/{UsuarioID}/{AtividadeID}")]
+        public async Task<IActionResult> verificaConclusao(int UsuarioID, int AtividadeID)
+        {
+            try
+            {
+                object ret = this.Repo.SpVerificaConclusao(UsuarioID, AtividadeID);
+
+                return Ok(ret);
             }
             catch
             {
