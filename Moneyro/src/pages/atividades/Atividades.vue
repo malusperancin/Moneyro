@@ -1,8 +1,13 @@
 <template>
   <div class="pag">
     <Menu />
+    <Mensagem
+      :msg="msg"
+      v-if="msg.visivel" 
+      v-on:cancelar="msg.visivel = false"
+      />
     <div class="centro">
-      <div class="retangulo"> 
+      <div class="retangulo" v-on:click="irJogo"> 
         <span title="Este conteúdo é pago!" class="capelo">🎓</span>
         <img src="../../images/jogojogar.png">
       </div>
@@ -32,10 +37,12 @@
 
 <script>
 import Menu from "../shared/menu/Menu.vue";
+import Mensagem from "../shared/mensagem/Mensagem.vue";
 
 export default {
   components: {
-    Menu
+    Menu,
+    Mensagem
   },
   data() {
     return {
@@ -43,11 +50,25 @@ export default {
       produto: {
         nome: "",
         preco: 0
-      }
+      },
+      msg: {}
     };
   },
   methods: {
-    
+    irJogo(){
+      if(this.$session.get('idSala') != 1) 
+        this.$router.push('/jogo');
+     
+      this.msg = {
+        visivel: true,
+        titulo: "Humm que pena!",
+        mensagem: "Este conteúdo é apenas para estudantes!",
+        botoes: [{
+            mensagem: "Ok",
+            evento: "cancelar",
+        }]
+      };
+    }
   },
   created() {
     document.title = "Atividades";

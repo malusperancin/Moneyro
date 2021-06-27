@@ -5,7 +5,7 @@
       :msg="msg"
       v-if="msg.visivel"
       v-on:login="login = true, msg.visivel = false"
-      v-on:home="msg.visivel = false, $router.push('/')"
+      v-on:home="msg.visivel = false, $router.push('/usuario')"
       v-on:fechar="msg.visivel = false"
     ></Mensagem>
     <div id="formCadastro">
@@ -198,16 +198,16 @@ export default {
         email: "",
         celular: "",
         dataDeNascimento: "",
-        foto: 1,
+        foto: "1",
         senha: "",
         cidade: "",
         estado: "",
         modoAnonimo: false,
         notificacoes: false,
         saldo: 0.0,
-        professor: 0,
+        professor: false,
         pontos: 0,
-        idSala: null
+        idSala: 1
       },
       dia: 1,
       mes: 1,
@@ -235,11 +235,10 @@ export default {
         .post("https://localhost:5001/api/usuarios", this.informacoes)
         .then(
           response => {
-            this.msg.titulo = "INÍCIO DE UM SONHO!";
-            this.msg.mensagem =
-              "Você foi cadastrado com sucesso!\n Agora vá na página de login e entre.";
-
-            this.msg.botoes = [
+            this.msg = {
+              titulo: "INÍCIO DE UM SONHO!",
+              mensagem: "Você foi cadastrado com sucesso!\n Agora vá na página de login e entre.",
+              botoes: [
               {
                 mensagem: "Fazer login",
                 evento: "login"
@@ -247,26 +246,23 @@ export default {
               {
                 mensagem: "OK",
                 evento: "home"
-              }
-            ];
-
-            this.msg.visivel = true;
+              }],
+              visivel: true
+            };
           },
-          response => {
-            this.msg.titulo = "Deu tudo errado...";
-            this.msg.mensagem = response.bodyText;
-
-            this.msg.botoes = [
-              {
-              mensagem: "Ok",
-              evento: "fechar"
-             }
-            ];
-
-            this.msg.visivel = true;
+          erro => {
+            this.msg = {
+              titulo: "Deu tudo errado...",
+              mensagem: erro.bodyText,
+              botoes: [{
+                mensagem: "Ok",
+                evento: "fechar"
+              }],
+              visivel: true
+            };
           }
         );
-      }
+    }
   },
   created() {
     this.$http
@@ -275,7 +271,7 @@ export default {
         for (var i = 0; i < response.body.length; i++)
           this.siglas.push(response.body[i].sigla);
       });
-  document.title = "Cadastro";
+    document.title = "Cadastro";
   }
 };
 </script>

@@ -5,7 +5,8 @@ d<template>
     <Mensagem
       :msg="msg"
       v-if="msg.visivel" 
-      v-on:ok="msg.visivel = false"/>
+      v-on:ok="msg.visivel = false"
+      v-on:sairAula="sairSala(), msg.visivel = false"/>
     <div class="centro">
     <div id="botao"> </div>
       <div v-if="sala.id">
@@ -14,7 +15,10 @@ d<template>
             <p class="nomeSala"><b>Sala:</b> {{sala.nome}} </p>
             <p><b>Código da sala:</b> {{sala.codigo}}</p>
           </div>
-          <p class="nomeProf"> <b>Professor:</b> {{sala.professor}}</p>
+          <div class="infoSala">
+            <p class="nomeProf"> <b>Professor:</b> {{sala.professor}}</p>
+            <img src="../../images/sair.png" v-on:click="msgSairDaSala()" alt="Sair da Sala" class="icone" />
+          </div>
         </div>
         <div class="lista" v-if="postagens[0] != null">
           <div v-for="(post, i) in postagens" v-bind:key="i">
@@ -77,24 +81,61 @@ export default {
   data(){
     return {
       sala: {},
+      usuario: {},
       postagens: [],
       msg: {
         visivel: false,
         titulo: "",
         mensagem: "",
-        botoes: [],
-        concluiu: 0
+        botoes: []
       },
       prof:{
         nome:'',
         foto:''
       },
-      session: "",
    };
   },
   methods: {
-    redirecionar(atividade)
-    {
+    sairSala(){
+      this.$http.get("https://localhost:5001/api/usuarios/" + this.$session.get("id"))
+        .then(response => {
+          this.usuario = response.body;
+          this.usuario.idSala = 1;
+          this.$session.set("idSala", 1);
+          this.$session.set("usuario", this.usuario);
+          
+          this.$http.put("https://localhost:5001/api/usuarios/" + this.usuario.id, this.usuario)
+            .then(response => {
+              this.sala = {};
+              this.msg = {
+                visivel: true,
+                titulo: "Sucesso",
+                mensagem: "Você saiu de sua sala!",
+                botoes: [{
+                  mensagem: "OK",
+                  evento: "ok"
+                }]
+              };
+            });
+        });
+    },
+    msgSairDaSala(){
+      this.msg = {
+        visivel: true,
+        titulo: "Sair da Sala",
+        mensagem: "Deseja sair da sala de aula?",
+        botoes: [
+          {
+            mensagem: "Cancelar",
+            evento: "ok",
+          },
+          {
+            mensagem: "Sair",
+            evento: "sairAula",
+          }]
+      };
+    },
+    redirecionar(atividade){
       if(atividade.idAtividade != 4)
       {
         if(!atividade.concluido)
@@ -114,36 +155,34 @@ export default {
         this.$router.push('/jogo');
     },
     entrarSala(cod) {
-      this.$http
-          .put("https://localhost:5001/api/usuarios/sala/" + cod, this.$session.get("usuario"))
-          .then(
-            dados => {
-              this.sala = dados.body;
-              this.getPostagens(this.sala.id);
-              this.$session.set("idSala", this.sala.id);
-              this.msg = {
-                visivel: true,
-                titulo: "Sucesso!",
-                mensagem: "Você ingressou na sala: "+this.sala.nome,
-                botoes: [
-                  {
-                    mensagem: "Legal",
-                    evento: "ok",
-                  }]
-              }
-          },
-          erro => {
-            this.msg = {
-              visivel: true,
-              titulo: "Erro",
-              mensagem: erro,
-              botoes: [{
-                mensagem: "Voltar",
-                evento: "ok",
-              }]
-            }
-          }
-        );
+      this.$http.put("https://localhost:5001/api/usuarios/sala/" + cod, this.$session.get("usuario")).then(
+        dados => {
+          this.$session.set("idSala", dados.body.id);
+
+          this.msg = {
+            visivel: true,
+            titulo: "Sucesso!",
+            mensagem: "Você ingressou na sala: " + dados.body.nome,
+            botoes: [{
+              mensagem: "Legal",
+              evento: "ok"
+            }]
+          };
+
+          this.getSala(dados.body.id)
+        },
+        erro => {
+          this.msg = {
+            visivel: true,
+            titulo: "Erro",
+            mensagem: erro,
+            botoes: [{
+              mensagem: "Voltar",
+              evento: "ok",
+            }]
+          };
+        }
+      );
     },
     getPostagens(idSala) {
       this.$http
@@ -163,15 +202,9 @@ export default {
             });
           }
         ); 
-    }
-  },
-  beforeCreate() {
-    if (!this.$session.exists())
-      this.$router.push('/')
-    
-    if(this.$session.get("idSala") > 1) {
-      this.$http
-        .get("https://localhost:5001/api/salas/id/"+this.$session.get("idSala")) 
+    },
+    getSala(id) {
+      this.$http.get("https://localhost:5001/api/salas/id/"+id) 
         .then(
           dados => {
             this.sala = dados.body;
@@ -181,27 +214,31 @@ export default {
               nome:  this.sala.professor
             };
     
-            this.$http
-            .get("https://localhost:5001/api/usuarios/" + this.prof.id)
-            .then(  
-              response => {
-                this.prof.foto = response.body.foto;
-              }, 
-              erro => {
-                console.log("Erro ao pergar foto prof");
-              });
+            this.$http.get("https://localhost:5001/api/usuarios/" + this.prof.id).then(response => this.prof.foto = response.body.foto);
 
             this.getPostagens(this.sala.id);
         });
     }
   },
+  beforeCreate() {
+    if (!this.$session.exists() || this.$session.get('MA'))
+      this.$router.push('/');
+  },
   created() {
     document.title = "Sala de Aula";
+
+    if(this.$session.get("idSala") > 1)
+      this.getSala(this.$session.get("idSala"));
   },
 };
 </script>
 
 <style scoped>
+.icone {
+  width: 1.5em;
+ margin-right: 05px;
+}
+
 .conc {
   background: rgb(119, 163, 103);
   background: rgb(103, 166, 65);

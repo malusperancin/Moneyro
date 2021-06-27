@@ -233,5 +233,35 @@ namespace ProjetoPratica_API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
         }
+
+        [HttpGet]
+        [Route("prof/{UsuarioID}")]
+        public async Task<IActionResult> cancelarProfessor(int UsuarioID)
+        {
+            try
+            {
+                this.Repo.SpCancelaProfessor(UsuarioID);
+                return Ok();
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
+        [HttpGet("cmp-prof/{UsuarioId}")]
+        public async Task<IActionResult> GetComprar(int UsuarioId)
+        {
+            try
+            {
+                this.Repo.SpComprarProf(UsuarioId);
+                return Ok();
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
     }
 }

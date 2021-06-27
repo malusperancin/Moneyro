@@ -715,6 +715,17 @@ namespace ProjetoPratica_API.Data
             con.Close();
         }
 
+         public void SpCancelaProfessor(int id)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+            
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_cancelaprof " + id;
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
         public void SpCurtir(CurtidasUsuarios cu)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
@@ -782,9 +793,7 @@ namespace ProjetoPratica_API.Data
 
             cmd.CommandText = "sp_addPontos " + UsuarioID + ", " + AtividadeID + ", " + Pontos + ", " + Total;
 
-            SqlDataReader leitor = cmd.ExecuteReader();
-            
-
+            cmd.ExecuteReader();
             con.Close();
         }
 
@@ -816,5 +825,19 @@ namespace ProjetoPratica_API.Data
             return result[0];
           
         }
+
+        public void SpComprarProf(int UsuarioID)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+
+            cmd.CommandText = "sp_comprarProf " + UsuarioID;
+
+            cmd.ExecuteReader();
+            con.Close();
+        }
+        
     }
 }

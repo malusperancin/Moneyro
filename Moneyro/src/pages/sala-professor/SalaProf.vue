@@ -161,7 +161,11 @@ export default {
     document.title = "Sala de Aula";
 
     this.getPostagensByCodigo(this.sala);
-  }
+  },
+  beforeCreate() {
+    if (!this.$session.exists() || this.$session.get('MA') || !this.$session.get('professor'))
+      this.$router.push('/')
+    }
 };
 
 </script>

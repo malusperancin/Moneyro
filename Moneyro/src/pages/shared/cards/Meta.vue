@@ -60,7 +60,8 @@
         </div>
       </div>
       <div class="baixo">
-        <button class="excluir" v-on:click="excluir" v-if="id">Excluir</button>
+        <button class="excluir" v-on:click="excluir" v-if="meta.idUsuario == $session.get('id') && id">Excluir</button>
+        <button class="excluir" v-if="meta.idUsuario != $session.get('id') && id" v-on:click="sairMeta">Sair</button>
         <button class="salvar" v-if="id" v-on:click="atualizar">Salvar</button>
         <button class="salvar" v-else v-on:click="adicionar">Salvar</button>
       </div>
@@ -91,10 +92,22 @@ export default {
   methods: {
     abrirCompartilhar(){
       if(this.meta.idUsuario == this.$session.get("id"))
-      this.expanded = !this.expanded
-      else{
-       this.$emit('msgNaoAbrir');
-      }
+        this.expanded = !this.expanded
+      else
+        this.$emit('msgNaoAbrir');
+    },
+    sairMeta()
+    {
+      var comp = '';
+      this.meta.compartilhamentos = this.meta.compartilhamentos.filter(id => id != this.$session.get("id"));
+      for(let id in this.meta.compartilhamentos)
+        comp += id + ' ';
+      this.meta.compartilhamentos = comp;
+      this.$http.put("https://localhost:5001/api/metas/"+ this.id, this.meta)
+      .then(() => {
+        this.$emit('atualizar');
+        this.$emit('fechar');
+      });
     },
     adicionar() {
         var ret = "";

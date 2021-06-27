@@ -2,6 +2,12 @@
   <div class="pag">
     <Menu />
     <Carrinho :carrinho="carrinho" v-if="mostrarCarrinho" v-on:fechar="mostrarCarrinho = false" />
+     <Mensagem
+     :msg="msg"
+      v-if="msg.visivel"
+      v-on:fechar="msg.visivel = false"
+      v-on:cancelar="cancela(), msg.visivel = false"
+    ></Mensagem>
     <div class="centro">
       <span class="texto">Confira nossos produtos exclusivos Moneyro:</span>
       <div class="produtos">
@@ -16,9 +22,7 @@
               <div class="descricao">
                 <p>{{produtos[0].descricao}}</p>
                 <p class="preco">R$ {{produtos[0].preco}}</p>
-                
-                <button style="background: grey;" v-if="produtos[0].nome == 'Área do Professor' && $session.get('professor')" class="botao" title="Você já comprou este produto!">Já Possui</button>
-                <button v-else class="botao" v-on:click="comprar(produtos[0])">Comprar</button>
+                <button class="botao" v-on:click="comprar(produtos[0])">Comprar</button>
               </div>
             </div>
           </div>
@@ -31,7 +35,7 @@
               <div class="descricao">
                 <p>{{produtos[1].descricao}}</p>
                 <p class="preco">R$ {{produtos[1].preco}}</p>
-                <button style="background: grey;" v-if="produtos[1].nome == 'Área do Professor' && $session.get('professor')" class="botao" title="Você já comprou este produto!">Já Possui</button>
+                <button style="background: grey;" v-if="produtos[1].nome == 'Área do Professor' && $session.get('professor')" v-on:click="cancelarProf()" class="botao" title="Cancelar sua assinatura.">Cancelar</button>
                 <button v-else class="botao" v-on:click="comprar(produtos[1])">Comprar</button>
               </div>
             </div>
@@ -56,15 +60,16 @@
   </div>
 </template>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
 import Menu from "../shared/menu/Menu.vue";
 import Carrinho from './components/Carrinho.vue';
+import Mensagem from '../shared/mensagem/Mensagem.vue';
 
 export default {
   components: {
     Menu,
-    Carrinho
+    Carrinho,
+    Mensagem
   },
   data() {
     return {
@@ -73,6 +78,12 @@ export default {
       produto: {
         nome: "",
         preco: 0
+      },
+      msg: {
+        visivel: false,
+        titulo: "",
+        mensagem: "",
+        botoes: []
       },
       produtos: [],
       cores: [
@@ -89,6 +100,40 @@ export default {
     };
   },
   methods: {
+    cancela(){
+       this.$http
+          .get("https://localhost:5001/api/usuario/prof/"+this.$session.get("id"))
+          .then(response => {
+            this.msg = {
+              visivel: true,
+              titulo: 'Feito',
+              mensagem: 'Assinatura de professor cancelada com sucesso.',
+              botoes: [{
+                  mensagem: "Ok",
+                  evento: "fechar"
+              }],
+            };
+          }, erro =>{
+            console.log(erro);
+          });
+    },
+    cancelarProf(){
+      this.msg = {
+        visivel: true,
+        titulo: 'Cancelar Assinatura',
+        mensagem: 'Você deseja mesmo cancelar sua assinatura com Professor no Moneyro e perder todas as suas salas de aula?',
+        botoes: [
+          {
+            mensagem: "Cancelar",
+            evento: "fechar"
+          },
+          {
+            mensagem: "Sim",
+            evento: "cancelar"
+          }
+        ],
+      };
+    },
     getRandomInt(min, max) {
       min = Math.ceil(min);
       max = Math.floor(max);

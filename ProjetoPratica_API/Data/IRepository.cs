@@ -23,6 +23,8 @@ namespace ProjetoPratica_API.Data
         object SpVerificaConclusao(int UsuarioID, int AtividadeID);
         List<String> SpGetFotosByUsuario(int UsuarioId);
         void SpAddPontos(int UsuarioID, int AtividadeID, double Pontos, double Total);
+        void SpCancelaProfessor(int id);
+        void SpComprarProf(int UsuarioID);
 
         Task<Conquistas[]> GetAllConquistas();
 

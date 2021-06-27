@@ -53,6 +53,8 @@ export default {
 .texto {
   padding: 20px;
   white-space: pre-line;
+  min-width: 300px;
+  max-width: 450px;
 }
 
 .animate {

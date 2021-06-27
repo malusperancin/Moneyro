@@ -3,7 +3,12 @@
     <Menu v-on:atualizar="getTodos()"/>
     <Perfil />
     <Topo />
-    <Meta v-if="verMeta" :id="id" v-on:mostrarMsg="mostrarMensagem" v-on:atualizar="getTodos()" v-on:fechar="verMeta = false"  v-on:msgNaoAbrir="mensagemNao" v-on:deletou="msgDeletou"/>
+    <Meta v-if="verMeta" :id="id" 
+      v-on:mostrarMsg="mostrarMensagem" 
+      v-on:atualizar="getTodos" 
+      v-on:fechar="verMeta = false"  
+      v-on:msgNaoAbrir="mensagemNao" 
+      v-on:deletou="msgDeletou"/>
     <Mensagem
       :msg="msg"
       v-if="msg.visivel"
@@ -124,8 +129,7 @@ export default {
       });
     },
     getTodos(){
-       this.$http
-      .get("https://localhost:5001/api/metas/usu/" + this.$session.get("id"))
+      this.$http.get("https://localhost:5001/api/metas/usu/" + this.$session.get("id"))
       .then(dados => {
         this.metas = dados.body;
 
@@ -145,25 +149,19 @@ export default {
                this.getUsuario(this.metas[i].idUsuario, i);       
             }
       },
-       erro => {
+      erro => {
         alert("algo deu errado meta");
       });
     },
-    atualizar(){
-      window.location.reload(true);
-    }
-  },
-  mounted() {
-    //
   },
   created(){
     document.title = "Metas";
+
     this.getTodos();
   },
   beforeCreate() {
-    if (!this.$session.exists()) {
+    if (!this.$session.exists())
       this.$router.push('/')
-    }
   }  
 };
 </script>

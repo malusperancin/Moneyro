@@ -149,7 +149,7 @@ export default {
         this.$session.set("professor", true);
       }
 
-      this.$http.put("https://localhost:5001/api/usuarios/" + this.usuario.id, this.usuario)
+      this.$http.get("https://localhost:5001/api/usuarios/cmp-prof/" + this.usuario.id)
       .then(
         response => {
           this.msg = {

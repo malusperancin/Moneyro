@@ -7,7 +7,7 @@
       </div>
       <div class="corpo">
         <img
-          :src="'src/images/'+ foto+ '.png'"
+          :src="'src/images/perfil'+ foto+ '.png'"
           v-for="(foto, i) in fotos"
           v-bind:key="i"
           :class="[{selecionada: foto == atual}, 'imagem']"
@@ -25,9 +25,9 @@ export default {
   data() {
     return {
       fotos: [
-        "perfil1",
-        "perfil2",
-        "perfil3"
+        "1",
+        "2",
+        "3"
       ]
     };
   },

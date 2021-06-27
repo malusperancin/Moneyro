@@ -31,7 +31,7 @@
             <img src="../../../images/relatorios.png" class="nav__icon" />
             <span class="nav__name">Relatórios</span>
           </a>
-          <a title="Amigos"  v-bind:class="{active: this.$route.path == '/amigos'}" class="nav__link" v-on:click="$router.push('amigos')">
+          <a title="Amigos" v-bind:class="{active: this.$route.path == '/amigos'}" class="nav__link" v-if="!$session.get('MA')" v-on:click="$router.push('amigos')">
             <img src="../../../images/amigos.png" alt="a" class="nav__icon" />
             <span class="nav__name">Amigos</span>
           </a>
@@ -51,7 +51,7 @@
             <img src="../../../images/aula.png" alt="a" class="nav__icon" />
             <span class="nav__name">Sala de Aula</span>
           </a>
-            <a title="Sala de Aula" v-else v-bind:class="{active: this.$route.path == '/salaaluno'}" class="nav__link" v-on:click="$router.push('salaaluno')">
+            <a title="Sala de Aula"  v-if="!$session.get('MA') && !this.$session.get('professor')"  v-bind:class="{active: this.$route.path == '/salaaluno'}" class="nav__link" v-on:click="$router.push('salaaluno')">
             <img src="../../../images/aula.png" alt="a" class="nav__icon" />
             <span class="nav__name">Sala de Aula</span>
           </a>
@@ -172,6 +172,7 @@ export default {
       flex-direction: column;
       justify-content: space-between;
       overflow: hidden;
+      direction: rtl;
     }
 
     .nav__list {
@@ -191,7 +192,7 @@ export default {
 
     /* Handle */
     .nav__list::-webkit-scrollbar-thumb {
-      background: hsl(208, 75%, 15%);
+      background: rgb(150,150,150);
     }
 
     /* Handle on hover */
@@ -205,12 +206,11 @@ export default {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1rem;
-        padding: 10px 10px 0 0;
     }
     
     .nav__toggle {
         font-size: 1.75rem;
-        padding: .75rem;
+        padding: .75rem .60rem .75rem .75rem;
         cursor: pointer;
     }
     
@@ -243,6 +243,8 @@ export default {
     
     .nav__name {
         font-size: 1rem;
+        width: 100px;
+        text-align: left;
     }
     /*Expander menu*/
     
