@@ -147,7 +147,7 @@ export default {
           
               if(this.metas[i].idUsuario != this.$session.get("id"))
                this.getUsuario(this.metas[i].idUsuario, i);       
-            }
+          }
       },
       erro => {
         alert("algo deu errado meta");

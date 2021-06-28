@@ -29,11 +29,14 @@ namespace ProjetoPratica_API.Data
         Task<Conquistas[]> GetAllConquistas();
 
         Task<Registros[]> GetAllRegistros();
-        Task<Registros[]> GetRegistrosCompartilhados(int UsuarioId, int AmigoId);
+        List<Registros> SpGetRegistrosCompartilhados(int UsuarioId, int AmigoId);
         Task<Registros> GetRegistroById(int Id);
         Task<Registros[]> GetReceitasByUsuario(int IdUsuario);
         Task<Registros[]> GetDespesasByUsuario(int IdUsuario);
-        Task<Registros[]> GetRegistrosByUsuario(int IdUsuario);
+        List<Registros> SpGetRegistrosByUsuario(int IdUsuario);
+
+        Task<CompartilhadosRegistro[]> GetCompByIdRegistro(int RegistroId);
+        Task<CompartilhadosRegistro> GetCompById(int IdCompartilhamento);
 
 
         Task<Metas[]> GetAllMetas();
@@ -93,5 +96,6 @@ namespace ProjetoPratica_API.Data
         void SpDescurtir(CurtidasUsuarios cu);
         List<TarefaUsuario> SpGetRelatorioTarefa(int TarefaId);
         Postagens SpAddTarefa(Postagens post);
+        void SpSairRegistro(int IdRegistro, int IdCompartilhado);
     }
 }

@@ -2,11 +2,12 @@
   <div class="pag">
     <Menu v-on:atualizar="getRegistros()"/>
     <Perfil />
-    <Card v-if="verCard" :id="id" v-on:atualizar="getRegistros(), verCard = false"  v-on:mostrarMsg="mostrarMensagem"  v-on:tiraZero="mensagemZero" v-on:fechar="verCard = false" />
+    <Card v-if="verCard" :id="id" v-on:atualizar="getRegistros(), verCard = false"  v-on:mostrarMsg="mostrarMensagem" v-on:fechar="verCard = false" />
      <Mensagem
       :msg="msg"
       v-if="msg.visivel"
       v-on:fechar="msg.visivel = false"
+      v-on:sair="sairRegistro"
     ></Mensagem>
     <Topo />
     <div class="centro">
@@ -48,8 +49,13 @@
                 </div>
               </td>
               <td class="quantia">
-                <img src="src/images/moeda.png" alt class="moedaImg" />
+                <img src="src/images/moeda.png" class="moedaImg" />
                 &nbsp; {{(Math.abs(reg.quantia)).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}}
+              </td>
+              <td class="sair">
+                <div v-if="reg.idUsuario != $session.get('id')">
+                  <ion-icon  name="log-out-outline" class="nav_icon" title="Sair" v-pre></ion-icon>
+                </div>
               </td>
             </tr>
           </table>
@@ -84,40 +90,36 @@ export default {
       verCard: false,
       filtro: "todos",
       pesquisa: "",
-      msg: {}
+      msg: {},
     };
   },
   methods: {
     abrirRegistro(registro)
     {
-      if(registro.idUsuario != this.$session.get("id"))
-      {
-        this.msg = { 
+      if(registro.idUsuario == this.$session.get('id'))
+        this.verCard = true;
+      else
+        this.msg = {
           visivel: true,
-          titulo: "Ops :P",
-          mensagem: "Este registro esta sendo compartilhado com você, \n portanto não pode ser alterado!",
+          titulo: "Atenção!",
+          mensagem: "Você deseja sair dessa despesa?",
           botoes: [{
-            mensagem: "Ok",
+            mensagem: "Cancelar",
             evento: "fechar"
-          }]
+          },
+          {
+            mensagem: "Sim",
+            evento: "sair"
+          }
+          ]
         };
 
-        return;
-      }
-
       this.id = registro.id;
-      this.verCard = true;
     },
-    mensagemZero(){
-      this.msg = {
-        visivel: true,
-        titulo: "Valor inválido!",
-        mensagem: "Coloque um valor válido.",
-        botoes: [{
-          mensagem: "Ok",
-          evento: "fechar"
-        }]
-      };
+    sairRegistro() 
+    {
+      this.$http.delete("https://localhost:5001/api/compartilhadoRegistros/"+this.id+"/"+this.$session.get('id'));
+      this.getRegistros();
     },
     mostrarMensagem(){
       this.msg = {
@@ -165,7 +167,6 @@ export default {
     },
     setCompartilhamentos(i, comp){
       this.registros[i].compartilhamentos = [];
-      
       if(comp == null)
         return;
 
@@ -242,6 +243,19 @@ export default {
 </script>
 
 <style scoped>
+.nav_icon{
+  font-size: 30px;
+}
+
+.sair {
+  width: 4%;
+}
+
+.sair div{
+  display: flex;
+  align-items: center;
+}
+
 #registros{
   display: flex;
   flex-direction: column;

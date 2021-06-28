@@ -15,7 +15,7 @@ namespace ProjetoPratica_API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class RegistrosController : Controller
-    { //oi ta lendo?
+    { 
         public IRepository Repo { get; }
         public RegistrosController(IRepository repo)
         {
@@ -41,7 +41,7 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                var result = await this.Repo.GetRegistrosByUsuario(UsuarioId);
+                var result = this.Repo.SpGetRegistrosByUsuario(UsuarioId);
                 return Ok(result);
             }
             catch
@@ -97,7 +97,7 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                var result = await this.Repo.GetRegistrosCompartilhados(UsuarioId, AmigoId);
+                var result = this.Repo.SpGetRegistrosCompartilhados(UsuarioId, AmigoId);
                 return Ok(result);
             }
             catch
@@ -112,11 +112,9 @@ namespace ProjetoPratica_API.Controllers
             try
             {
                 this.Repo.Add(modelo);
+
                 if (await this.Repo.SaveChangesAsync())
-                {
-                    return Ok();
-                    // return Created($"/api/{modelo.Id}", modelo);
-                }
+                    return Ok(modelo);
             }
             catch
             {

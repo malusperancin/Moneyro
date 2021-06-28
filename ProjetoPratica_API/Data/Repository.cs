@@ -137,27 +137,6 @@ namespace ProjetoPratica_API.Data
             consultaRegistros = consultaRegistros.OrderByDescending(r => r.Data).Where(registro => registro.Quantia > 0);
             return await consultaRegistros.ToArrayAsync();
         }
-
-        public async Task<Registros[]> GetRegistrosByUsuario(int IdUsuario)
-        {
-            IQueryable<Registros> consultaRegistro = (IQueryable<Registros>)this.Context.Registros;
-            consultaRegistro = consultaRegistro.OrderByDescending(r => r.Data).Where(registro => registro.IdUsuario == IdUsuario || registro.Compartilhamentos.Contains(" " + IdUsuario + " "));
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaRegistro.ToArrayAsync();
-        }
-
-        public async Task<Registros[]> GetRegistrosCompartilhados(int UsuarioId, int AmigoId)
-        {
-            IQueryable<Registros> consultaRegistro = (IQueryable<Registros>)this.Context.Registros;
-            consultaRegistro = consultaRegistro.OrderByDescending(r => r.Data)
-                                               .Where(registro => registro.IdUsuario == UsuarioId &&
-                                                                  registro.Compartilhamentos.Contains(" " + AmigoId + " ") ||
-                                                                  registro.IdUsuario == AmigoId &&
-                                                                  registro.Compartilhamentos.Contains(" " + UsuarioId + " "));
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaRegistro.ToArrayAsync();
-        }
-
         public async Task<Metas[]> GetMetasCompartilhadas(int UsuarioId, int AmigoId)
         {
             IQueryable<Metas> consultaMeta = (IQueryable<Metas>)this.Context.Metas;
@@ -213,7 +192,6 @@ namespace ProjetoPratica_API.Data
         {
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
 
-            // consultaAmigos = consultaAmigos.Where(a => a.Aceitou == true);
             consultaAmigos = consultaAmigos.OrderByDescending(a => a.Aceitou).Where(a => a.IdAmigoA == IdUsuario || a.IdAmigoB == IdUsuario);
             consultaAmigos = consultaAmigos.Where(a => a.Aceitou == 0);
 
@@ -839,5 +817,106 @@ namespace ProjetoPratica_API.Data
             con.Close();
         }
         
+        public void SpUpdateRegistro(Registros novo, Registros an)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+
+            //cmd.CommandText = $"update registros set idTag={novo.IdTag}, nome={novo.Nome}, lugar={novo.Lugar},"" + UsuarioID;
+
+            //if()
+
+            cmd.ExecuteReader();
+            con.Close();
+        }
+
+        public List<Registros> SpGetRegistrosCompartilhados(int UsuarioId, int AmigoId)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_getRegistrosCompartilhados " + UsuarioId +","+ AmigoId;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+            var result = new List<Registros>();
+
+            while (leitor.Read())
+            {
+                Registros dados = new Registros(
+                    (int)leitor["id"], 
+                    (int)leitor["idUsuario"], 
+                    (DateTime)leitor["data"], 
+                    (string)leitor["nome"],
+                    (int)leitor["idTag"],
+                    (string)leitor["lugar"],
+                    (decimal)leitor["quantia"]);
+                        
+                result.Add(dados);
+            }
+        
+            con.Close();
+            return result;
+        }
+
+        public List<Registros> SpGetRegistrosByUsuario(int IdUsuario)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_getRegistrosUsuario " + IdUsuario;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+            var result = new List<Registros>();
+
+            while (leitor.Read())
+            {
+                Registros dados = new Registros(
+                    (int)leitor["id"], 
+                    (int)leitor["idUsuario"], 
+                    (DateTime)leitor["data"], 
+                    (string)leitor["nome"],
+                    (int)leitor["idTag"],
+                    (string)leitor["lugar"],
+                    (decimal)leitor["quantia"]);
+                        
+                result.Add(dados);
+            }
+        
+            con.Close();
+            return result;
+        }
+
+        public async Task<CompartilhadosRegistro[]> GetCompByIdRegistro(int RegistroId)
+        {
+            IQueryable<CompartilhadosRegistro> consultaComp = (IQueryable<CompartilhadosRegistro>)this.Context.CompartilhadosRegistro;
+            consultaComp = consultaComp.OrderBy(c => c.Id).Where(comp => comp.IdRegistro == RegistroId);
+            // aqui efetivamente ocorre o SELECT no BD
+            return await consultaComp.ToArrayAsync();
+        }
+
+        public void SpSairRegistro(int IdRegistro, int IdCompartilhado)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_sairRegistro " + IdRegistro + ", " + IdCompartilhado;
+
+            cmd.ExecuteNonQuery();
+
+            con.Close();
+        }
+
+        public async Task<CompartilhadosRegistro> GetCompById(int IdCompartilhamento)
+        {
+            IQueryable<CompartilhadosRegistro> consultaComp = (IQueryable<CompartilhadosRegistro>)this.Context.CompartilhadosRegistro;
+            consultaComp = consultaComp.OrderBy(c => c.Id).Where(comp => comp.Id == IdCompartilhamento);
+            // aqui efetivamente ocorre o SELECT no BD
+            return consultaComp.FirstOrDefault();
+        }
     }
 }

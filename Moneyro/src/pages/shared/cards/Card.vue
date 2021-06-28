@@ -9,7 +9,7 @@
             name="tipo"
             value="despensa"
             checked
-            v-on:click="despesa = true, receita = false"
+            v-on:click="despesa = true, receita = false, compartilhamentos = []"
           />
           <label for="desp">Despesa</label>
           <input
@@ -18,7 +18,7 @@
             name="tipo"
             value="receita"
             maxlength="40"
-            v-on:click="despesa = false, receita = true, registro.lugar = null"
+            v-on:click="despesa = false, receita = true, registro.lugar = null, compartilhamentos = null"
           />
           <label for="rend">Receita</label>
         </div>
@@ -29,6 +29,7 @@
         <span class="fechar" v-on:click="$emit('fechar')">&times;</span>
       </div>
       <div class="corpo">
+          <p v-if="quantiaInvalida">insira uma quantia válida</p>
           <div class="quantia">
             <big>R$</big>
             <input
@@ -62,12 +63,13 @@
           </select>
 
           <div class="dropdown" v-if="despesa">
+            <p v-if="maximoCompartilhamentos">Máximo de 5 compartilhamentos!!</p>
             <div v-on:click="expanded = !expanded" id="btnDrop" class="campos">Compartilhar com... ▾</div>
             <div id="listaAmigos">
               <input type="search" placeholder="Pesquisar" v-model="filtroNome" />
               <div v-for="(amigo, i) of filtraNome" :key="i" class="amigos">
                 <div class="pretty p-default p-curve p-fill">
-                  <input type="checkbox"  v-on:click="incluirAmg(amigo.id)" :id="'amigo'+amigo.id" class="amigo" :name="amigo.nome" :value="amigo.id"/>
+                  <input v-model="compartilhamentos" type="checkbox" :id="'amigo'+amigo.id" class="amigo" :name="amigo.nome" :value="amigo.id"/>
                   <div class="state p-primary">
                     <label class="nomeAmigo">{{amigo.apelido}}</label>
                   </div>
@@ -96,141 +98,124 @@ export default {
       expanded: false,
       despesa: true,
       receita: false,
+      quantiaInvalida: false,
+      maximoCompartilhamentos: false,
       filtroNome: "",
-      tags: [],
-      amigos: [],
       registro: {
         idUsuario: this.$session.get("id"),
         idTag: "default",
         nome: "",
         lugar: null,
         data: Date,
-        quantia: null,
-        compartilhamentos:[]
-      }
+        quantia: null
+      },
+      tags: [],
+      amigos: [],
+      compartilhamentos: []
     };
   },
   methods: {
     adicionar() {
-      if(this.registro.quantia == null)
+      if(this.registro.quantia == null || this.registro.quantia == 0)
       {
-        this.$emit('tiraZero');   
+        this.quantiaInvalida = true;
         return;
       }
 
-      var ret = "";
-
       if(this.despesa)
       {
-        this.enviarNotificacoes(this.registro.compartilhamentos);
+        this.enviarNotificacoes(this.compartilhamentos);
         this.registro.quantia = -(this.registro.quantia);
-
-        if(this.registro.compartilhamentos[0])
-        {
-          this.registro.compartilhamentos.map(c => {
-            ret += " "+c;
-          });
-
-          ret+=" ";
-        }
-        else
-          ret = null;
       }
-      else
-        ret = null;
 
-      this.registro.compartilhamentos = ret;
       this.registro.quantia = parseFloat(this.registro.quantia);
 
-      this.$http
-      .post("https://localhost:5001/api/registros", this.registro)
-      .then(dados=> {
-        if(this.$router.currentRoute.path != "/planilhas")
-          this.$router.push("planilhas");
+      this.$http.post("https://localhost:5001/api/registros", this.registro)
+        .then(
+          dados => {
+            for(let comp in this.compartilhados)
+            {
+              this.$http.post("https://localhost:5001/api/compartilhadoRegistros", {
+                id: 0,
+                idRegistro: dados.body.id,
+                IdCompartilhado: comp
+              });
+            }
 
-          this.$emit('atualizar'); 
-      }, erro => {
-        console.log("Erro ao adicionar registro: " + erro.bodyText);
-      });
+            if(this.$router.currentRoute.path != "/planilhas")
+              this.$router.push("planilhas");
+
+            this.$emit('atualizar'); 
+          }, 
+          erro => console.log("Erro ao adicionar registro: " + erro.bodyText)
+        );
 
       this.registro.quantia = Math.abs(this.registro.quantia);
     },
     atualizar(){
-      var ret = "";
+      if(this.registro.quantia == null || this.registro.quantia == 0)
+      {
+        this.quantiaInvalida = true;
+        return;
+      }
 
       if(this.despesa)
       {
         this.enviarNotificacoes(this.registro.compartilhamentos);
         this.registro.quantia = -(this.registro.quantia);
-
-        if(this.registro.compartilhamentos[0])
-        {
-          this.registro.compartilhamentos.map(c => {
-            ret += " "+c;
-          });
-
-          ret+=" ";
-        }
-        else
-          ret = null;
       }
-      else
-        ret = null;
 
-      this.registro.compartilhamentos = ret;
       this.registro.quantia = parseFloat(this.registro.quantia);
 
       this.$http
-      .put("https://localhost:5001/api/registros/" + this.registro.id, this.registro)
-      .then(dados => {
-          this.$emit('atualizar');
-          this.$emit('mostrarMsg');
-      }, erro => {
-        console.log("Erro ao atualizar registro: " + erro.body);
-      });
+          .put("https://localhost:5001/api/registros/" + this.registro.id, this.registro)
+          .then(
+            dados => {
+              this.$emit('atualizar');
+              this.$emit('mostrarMsg');
+            }, 
+            erro => console.log("Erro ao atualizar registro: " + erro.body));
+
+      // Compartilhando - Mudar os compartilhamentos
+      for(let comp in this.compartilhados)
+      {
+
+      }
 
       this.registro.quantia = Math.abs(this.registro.quantia);
     },
-    excluir(){
-      this.$http
-      .delete("https://localhost:5001/api/registros/" + this.registro.id)
-      .then(dados => {
+    sairRegistro()
+    {
+      this.$http.delete("https://localhost:5001/api/compartilhadoRegistros/"+ this.id)
+      .then(() => {
         this.$emit('atualizar');
-      }, erro => {
-        console.log("Erro ao remover registro: " + erro.body);
+        this.$emit('fechar');
       });
     },
+    excluir(){
+      this.$http
+          .delete("https://localhost:5001/api/registros/" + this.registro.id)
+          .then(
+            dados => this.$emit('atualizar'), 
+            erro => console.log("Erro ao remover registro: " + erro.body)
+          );
+    },
     checkarAmigos() {
-      for (var i = 0; i < this.registro.compartilhamentos.length; i++)
+      /*for (var i = 0; i < this.registro.compartilhamentos.length; i++)
         for (var a = 0; a < this.amigos.length; a++) 
           if (this.registro.compartilhamentos[i] == this.amigos[a].id) 
-            document.getElementById("amigo" + this.amigos[a].id).checked = true;
-    },
-    incluirAmg(id) {
-      var checkObj = document.getElementById("amigo"+id);
-      
-      if (this.registro.compartilhamentos.length >= 5 && checkObj.checked)
-      {
-        checkObj.checked = false;
-        alert("máximo 5 pessoas!");
-        return;
-      }
-
-      if (checkObj.checked)
-        this.registro.compartilhamentos.push(id);
-      else
-        this.registro.compartilhamentos = this.registro.compartilhamentos.filter(a => a!=id);
+            document.getElementById("amigo" + this.amigos[a].id).checked = true;*/
     },
     getAmigo(id){
       this.$http
-        .get("https://localhost:5001/api/usuarios/" + id)
-        .then(dados => {
-          this.amigos.push({
-            id: dados.body.id, 
-            apelido: dados.body.apelido});
-        }, erro => {
-          console.log("Erro ao recuperar amigo: " + erro.body);
-        });
+          .get("https://localhost:5001/api/usuarios/" + id)
+          .then(dados => {
+            this.amigos.push({
+              id: dados.body.id, 
+              apelido: dados.body.apelido});
+          }, erro => {
+            console.log("Erro ao recuperar amigo: " + erro.body);
+          });
     },
     enviarNotificacoes(amigos){
       for(let amigo of amigos)
@@ -240,9 +225,7 @@ export default {
           mensagem: this.$session.get("nome") + " adicionou voce à despesa: " + this.registro.nome + ". ",
           visualizada: 0,
           data: new Date(),
-        })
-        .then()
-        .catch( erro => {
+        }).catch( erro => {
           alert("Erro ao enviar as notificações: " + erro.bodyText);
         });
     }
@@ -252,55 +235,45 @@ export default {
       if (this.filtroNome) {
         let exp = new RegExp(this.filtroNome.trim(), "i");
         return this.amigos.filter(amigo => exp.test(amigo.apelido));
-      } else {
+      } 
+      else
         return this.amigos;
-      }
     }
   },
   created() {
      if (this.id) {
-      this.$http.get("https://localhost:5001/api/registros/" + this.id)
-      .then(dados => {
-        this.registro = dados.body;
+      this.$http
+          .get("https://localhost:5001/api/registros/" + this.id)
+          .then(
+            dados => {
+              this.registro = dados.body;
 
-        this.registro.data = new Date(this.registro.data).toJSON().substring(0,10);
+              this.registro.data = new Date(this.registro.data).toJSON().substring(0,10);
 
-        if(this.registro.compartilhamentos)
-          this.registro.compartilhamentos = this.registro.compartilhamentos.trim().split(" ").map(Number);
-        else
-          this.registro.compartilhamentos = []
+              //GET COMPARTILHAMENTOS
 
-        if(this.registro.quantia > 0)
-        {
-          this.receita = true;
-          this.despesa = false
-        }
+              if(this.registro.quantia > 0)
+              {
+                this.receita = true;
+                this.despesa = false
+              }
 
-        this.registro.quantia = Math.abs(this.registro.quantia);
-      }, erro => {
-        console.log("Erro ao recuperar registro: " + erro.body);
-      });
+              this.registro.quantia = Math.abs(this.registro.quantia);
+            }, erro => console.log("Erro ao recuperar registro: " + erro.body));
     }
 
     this.$http
-    .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
-    .then(dados => {
-      for(var i=0; i< dados.body.length; i++)
-        if(dados.body[i].idAmigoA == this.$session.get("id"))
-              this.getAmigo(dados.body[i].idAmigoB);
-          else
-              this.getAmigo(dados.body[i].idAmigoA);          
-    }, erro => {
-      console.log("Erro ao recuperar amigos: " + erro.body);
-    });
+        .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
+        .then(
+          dados => {
+            for(let amigo of dados.body)
+              if(amigo.idAmigoA == this.$session.get("id"))
+                this.getAmigo(amigo.idAmigoB);
+              else
+                this.getAmigo(amigo.idAmigoA);          
+          }, erro => console.log("Erro ao recuperar amigos: " + erro.body));
 
-    this.$http
-    .get("https://localhost:5001/api/tags")
-    .then(dados => {
-      this.tags = dados.body;
-    }, erro => {
-      console.log("Erro ao recuperar tags: " + erro.bodyText);
-    });
+    this.$http.get("https://localhost:5001/api/tags").then(dados => this.tags = dados.body);
     
     if(!this.id)
       this.registro.data = new Date().toJSON().substring(0,10);
@@ -316,11 +289,22 @@ export default {
       }   
       else
         checkboxes.style.display = "none";
+    },
+    compartilhamentos(){
+      if(this.compartilhamentos)
+      {
+        if (this.compartilhamentos.length > 5)
+        {
+          document.getElementById("amigo"+this.compartilhamentos.pop()).checked = false;
+          this.maximoCompartilhamentos = true;
+        }
+        else
+          this.maximoCompartilhamentos = false;
+      }
     }
   },
 };
 
-// this.$set(this.someObject, "b", 2);
 </script>
 
 <style scoped src="../../../css/modal.css"></style>
