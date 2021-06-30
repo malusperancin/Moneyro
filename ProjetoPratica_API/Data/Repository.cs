@@ -65,7 +65,7 @@ namespace ProjetoPratica_API.Data
             consultaUsuario = consultaUsuario.OrderBy(u => u.Id).Where(usuario => usuario.Id == Id);
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaUsuario.FirstOrDefaultAsync();
-    }
+        }
 
         public async Task<Usuarios> GetUsuarioByNome(string nome)
         {
@@ -105,7 +105,7 @@ namespace ProjetoPratica_API.Data
         public async Task<Conquistas[]> GetAllConquistas()
         {
             IQueryable<Conquistas> consultaConquistas = (IQueryable<Conquistas>)this.Context.Conquistas;
-            return await consultaConquistas.ToArrayAsync(); 
+            return await consultaConquistas.ToArrayAsync();
         }
 
         public async Task<Registros[]> GetAllRegistros()
@@ -168,7 +168,7 @@ namespace ProjetoPratica_API.Data
             // aqui efetivamente ocorre o SELECT no BD
             return await consultaMeta.ToArrayAsync();
         }
-      
+
         public async Task<Amigos[]> GetAmigosByIds(Amigos amigos)
         {
             IQueryable<Amigos> consultaAmigos = (IQueryable<Amigos>)this.Context.Amigos;
@@ -264,7 +264,7 @@ namespace ProjetoPratica_API.Data
             consultaNotificacao = consultaNotificacao.OrderBy(t => t.Visualizada).Where(not => not.IdDestino == IdDestino);
 
             return await consultaNotificacao.ToArrayAsync();
-     }
+        }
 
         public async Task<Notificacoes[]> GetNotificacoesByUsuarioVisu(int IdDestino)
         {
@@ -571,12 +571,12 @@ namespace ProjetoPratica_API.Data
             con.Open();
 
             SqlCommand cmd = new SqlCommand("comando", con);
-            if(post.Tipo == "atividade")
+            if (post.Tipo == "atividade")
                 cmd.CommandText = "sp_DeletarTarefa " + post.Id;
             else
                 cmd.CommandText = "sp_DeletarComunicado " + post.Id;
 
-                cmd.ExecuteNonQuery();
+            cmd.ExecuteNonQuery();
 
             con.Close();
         }
@@ -664,7 +664,7 @@ namespace ProjetoPratica_API.Data
 
             con.Close();
         }
-        
+
         public List<String> SpGetFotosByUsuario(int UsuarioId)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
@@ -686,18 +686,18 @@ namespace ProjetoPratica_API.Data
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
-            
+
             SqlCommand cmd = new SqlCommand("comando", con);
             cmd.CommandText = "sp_descurtirConteudo " + cu.IdUsuario + "," + cu.IdConteudo;
             cmd.ExecuteNonQuery();
             con.Close();
         }
 
-         public void SpCancelaProfessor(int id)
+        public void SpCancelaProfessor(int id)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
-            
+
             SqlCommand cmd = new SqlCommand("comando", con);
             cmd.CommandText = "sp_cancelaprof " + id;
             cmd.ExecuteNonQuery();
@@ -729,14 +729,14 @@ namespace ProjetoPratica_API.Data
             while (leitor.Read())
             {
                 TarefaUsuario dados = new TarefaUsuario(
-                    (string)leitor["nomeAluno"], 
-                    (string)leitor["fotoAluno"], 
-                    (bool)leitor["concluido"], 
+                    (string)leitor["nomeAluno"],
+                    (string)leitor["fotoAluno"],
+                    (bool)leitor["concluido"],
                     (double)leitor["nota"]);
-                        
+
                 result.Add(dados);
             }
-        
+
             con.Close();
             return result;
         }
@@ -748,16 +748,16 @@ namespace ProjetoPratica_API.Data
 
             SqlCommand cmd = new SqlCommand("comando", con);
 
-            if(post.Tipo == "comunicado")
-                cmd.CommandText = "sp_addComunicado " + post.IdSala + ", '" + post.Descricao +"', '"+ post.Data+"', '"+ post.Tipo+"', '"+post.DataEntrega+"', "+post.IdAtividade;
+            if (post.Tipo == "comunicado")
+                cmd.CommandText = "sp_addComunicado " + post.IdSala + ", '" + post.Descricao + "', '" + post.Data + "', '" + post.Tipo + "', '" + post.DataEntrega + "', " + post.IdAtividade;
             else
-                cmd.CommandText = "sp_addTarefa " + post.IdSala + ", '" + post.Descricao +"', '"+ post.Data+"', '"+ post.Tipo+"', '"+post.DataEntrega+"', "+post.IdAtividade;
+                cmd.CommandText = "sp_addTarefa " + post.IdSala + ", '" + post.Descricao + "', '" + post.Data + "', '" + post.Tipo + "', '" + post.DataEntrega + "', " + post.IdAtividade;
 
             SqlDataReader leitor = cmd.ExecuteReader();
 
             while (leitor.Read())
                 post.Id = Convert.ToInt32(leitor["id"]);
-        
+
             con.Close();
             return post;
         }
@@ -787,7 +787,7 @@ namespace ProjetoPratica_API.Data
             SqlDataReader leitor = cmd.ExecuteReader();
 
             var result = new List<object>();
-            
+
             while (leitor.Read())
             {
                 object[] dados = {
@@ -799,9 +799,9 @@ namespace ProjetoPratica_API.Data
             }
 
             con.Close();
-            
+
             return result[0];
-          
+
         }
 
         public void SpComprarProf(int UsuarioID)
@@ -816,7 +816,7 @@ namespace ProjetoPratica_API.Data
             cmd.ExecuteReader();
             con.Close();
         }
-        
+
         public void SpUpdateRegistro(Registros novo, Registros an)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
@@ -832,13 +832,26 @@ namespace ProjetoPratica_API.Data
             con.Close();
         }
 
+        public void SpDeleteRegistro(int RegistroId)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+
+            cmd.CommandText = "sp_apagarRegistro " + RegistroId;
+
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
         public List<Registros> SpGetRegistrosCompartilhados(int UsuarioId, int AmigoId)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
 
             SqlCommand cmd = new SqlCommand("comando", con);
-            cmd.CommandText = "sp_getRegistrosCompartilhados " + UsuarioId +","+ AmigoId;
+            cmd.CommandText = "sp_getRegistrosCompartilhados " + UsuarioId + "," + AmigoId;
 
             SqlDataReader leitor = cmd.ExecuteReader();
             var result = new List<Registros>();
@@ -846,17 +859,17 @@ namespace ProjetoPratica_API.Data
             while (leitor.Read())
             {
                 Registros dados = new Registros(
-                    (int)leitor["id"], 
-                    (int)leitor["idUsuario"], 
-                    (DateTime)leitor["data"], 
+                    (int)leitor["id"],
+                    (int)leitor["idUsuario"],
+                    (DateTime)leitor["data"],
                     (string)leitor["nome"],
                     (int)leitor["idTag"],
                     (string)leitor["lugar"],
                     (decimal)leitor["quantia"]);
-                        
+
                 result.Add(dados);
             }
-        
+
             con.Close();
             return result;
         }
@@ -875,27 +888,47 @@ namespace ProjetoPratica_API.Data
             while (leitor.Read())
             {
                 Registros dados = new Registros(
-                    (int)leitor["id"], 
-                    (int)leitor["idUsuario"], 
-                    (DateTime)leitor["data"], 
+                    (int)leitor["id"],
+                    (int)leitor["idUsuario"],
+                    (DateTime)leitor["data"],
                     (string)leitor["nome"],
                     (int)leitor["idTag"],
                     (string)leitor["lugar"],
                     (decimal)leitor["quantia"]);
-                        
+
                 result.Add(dados);
             }
-        
+
             con.Close();
             return result;
         }
 
-        public async Task<CompartilhadosRegistro[]> GetCompByIdRegistro(int RegistroId)
+        public List<object> GetCompByIdRegistro(int RegistroId)
         {
-            IQueryable<CompartilhadosRegistro> consultaComp = (IQueryable<CompartilhadosRegistro>)this.Context.CompartilhadosRegistro;
-            consultaComp = consultaComp.OrderBy(c => c.Id).Where(comp => comp.IdRegistro == RegistroId);
-            // aqui efetivamente ocorre o SELECT no BD
-            return await consultaComp.ToArrayAsync();
+            SqlConnection conn = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", conn);
+            cmd.CommandText = "select u.foto, u.id,u.nome from Usuarios u, CompartilhadosRegistro rg where rg.idRegistro = " + RegistroId + " and u.id = rg.idCompartilhado ";
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            var result = new List<object>();
+
+            while (leitor.Read())
+            {
+                object[] dados = {
+                    leitor["id"],
+                    leitor["foto"],
+                    leitor["nome"]
+                };
+
+                result.Add(dados);
+            }
+
+            conn.Close();
+
+            return result;
         }
 
         public void SpSairRegistro(int IdRegistro, int IdCompartilhado)
@@ -911,12 +944,38 @@ namespace ProjetoPratica_API.Data
             con.Close();
         }
 
+        public void SpUpdateCompartilhados(int IdRegistro, int IdCompartilhado)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_updateCompartilhados " + IdRegistro + ", " + IdCompartilhado;
+
+            cmd.ExecuteNonQuery();
+
+            con.Close();
+        }
+
         public async Task<CompartilhadosRegistro> GetCompById(int IdCompartilhamento)
         {
             IQueryable<CompartilhadosRegistro> consultaComp = (IQueryable<CompartilhadosRegistro>)this.Context.CompartilhadosRegistro;
             consultaComp = consultaComp.OrderBy(c => c.Id).Where(comp => comp.Id == IdCompartilhamento);
             // aqui efetivamente ocorre o SELECT no BD
             return consultaComp.FirstOrDefault();
+        }
+
+        public void SpAddCompartilhados(int idRegistro, int idComp, int tam)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+
+            cmd.CommandText = "sp_addCompartilhados " + idRegistro + "," + idComp + "," + tam;
+
+            cmd.ExecuteNonQuery();
+            con.Close();
         }
     }
 }

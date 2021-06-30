@@ -2,12 +2,12 @@
   <div class="pag">
     <Menu v-on:atualizar="getRegistros()"/>
     <Perfil />
-    <Card v-if="verCard" :id="id" v-on:atualizar="getRegistros(), verCard = false"  v-on:mostrarMsg="mostrarMensagem" v-on:fechar="verCard = false" />
+    <Card v-if="verCard" :id="id" v-on:atualizar="getRegistros()"  v-on:mostrarMsg="mostrarMensagem" v-on:fechar="verCard = false" />
      <Mensagem
       :msg="msg"
       v-if="msg.visivel"
       v-on:fechar="msg.visivel = false"
-      v-on:sair="sairRegistro"
+      v-on:sair="sairRegistro(), msg.visivel = false"
     ></Mensagem>
     <Topo />
     <div class="centro">
@@ -61,8 +61,6 @@
           </table>
         </div>
       </div>
-      <div>
-      </div>
     </div>
   </div>
 </template>
@@ -85,7 +83,6 @@ export default {
   data() {
     return {
       registros: [],
-      registrosData: [],
       id: 0,
       verCard: false,
       filtro: "todos",
@@ -96,6 +93,8 @@ export default {
   methods: {
     abrirRegistro(registro)
     {
+      this.id = registro.id;
+
       if(registro.idUsuario == this.$session.get('id'))
         this.verCard = true;
       else
@@ -110,16 +109,13 @@ export default {
           {
             mensagem: "Sim",
             evento: "sair"
-          }
-          ]
+          }]
         };
-
-      this.id = registro.id;
     },
     sairRegistro() 
     {
       this.$http.delete("https://localhost:5001/api/compartilhadoRegistros/"+this.id+"/"+this.$session.get('id'));
-      this.getRegistros();
+      this.registros = this.registros.filter(r => r.id != this.id);
     },
     mostrarMensagem(){
       this.msg = {
@@ -146,6 +142,7 @@ export default {
         document.getElementById("registros").style = "flex-direction: column-reverse";      
     },
     getRegistros(){
+      this.verCard = false;
       this.$http
         .get("https://localhost:5001/api/registros/todos/" + this.$session.get("id"))
         .then(dados => {
@@ -153,38 +150,46 @@ export default {
           
           for(let [i, registro] of this.registros.entries())
           {
-            this.setCompartilhamentos(i, registro.compartilhamentos);
+            this.setCompartilhamentos(i, registro);
               
             if(registro.idUsuario != this.$session.get("id"))
-               this.getUsuario(i, registro.idUsuario);
+              this.getUsuario(i, registro.idUsuario);
 
             registro.quantia = Math.floor(registro.quantia*100)/100;
             registro.tag = this.tags.filter(t => t.id == registro.idTag)[0];
           }
-        }, erro => {
-          alert("algo deu errado");
-        });
+        })
+        .catch( erro => alert("algo deu errado"));
     },
-    setCompartilhamentos(i, comp){
-      this.registros[i].compartilhamentos = [];
-      if(comp == null)
-        return;
+    setCompartilhamentos(index, registro){
+      this.$http
+          .get("https://localhost:5001/api/compartilhadoRegistros/"+registro.id)
+          .then(dados => {
+            this.registros[index].compartilhamentos = [];
+            
+            for(let i = 0; i < dados.body.length; i++)
+              this.registros[index].compartilhamentos.push({
+                id: dados.body[i][0],
+                nome: dados.body[i][2],
+                foto: dados.body[i][1]
+              });
 
-      for(let id of comp.trim().split(" ").map(Number))
-        this.getUsuario(i, id);
+            this.$forceUpdate();
+          })
+          .catch(erro => console.log("Erro:" + erro.bodyText));
     },
     getUsuario(i, id) {
       this.$http
-      .get("https://localhost:5001/api/usuarios/" + id)
-      .then(dados => { 
-        this.registros[i].compartilhamentos.push({
-          id: dados.body.id,
-          nome: dados.body.nome,
-          foto: dados.body.foto
-        });
-      }, erro => {
-        alert("algo deu errado metakkk" + erro.bodyText);
-      });
+          .get("https://localhost:5001/api/usuarios/" + id)
+          .then(dados => { 
+            this.registros[i].compartilhamentos.push({
+              id: dados.body.id,
+              nome: dados.body.nome,
+              foto: dados.body.foto
+            });
+            this.$forceUpdate();
+          })
+          .catch(erro => console.log("Erro: " + erro.bodyText));
     },
     organizar(vetor){
       var ret = [];

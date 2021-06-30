@@ -11,7 +11,7 @@
       <img class="logo" src="src/images/logo.png" alt />
       <h1>Moneyro</h1>
     </div>
-    <input class="filtro" placeholder="Pesquisar" v-model="filtro" type="text" />
+
     <div class="nav__list">
       <a v-show="!$session.exists()" title="Login" class="nav__link" v-on:click="login = true">
         <ion-icon name="log-in-outline" class="nav__icon" v-pre></ion-icon>
@@ -84,18 +84,6 @@ export default {
 .marca{
   display: grid;
   grid-template-columns: 1fr 1fr;
-}
-
-input{
-  border-radius: 5px;
-  border: none;
-  padding: 7px 14px;
-  margin: 0 80px;
-  flex: 1;
-  box-sizing: border-box;
-  font-size: 1.2em;
-  color: rgb(255, 255, 255);
-  background: rgba(255, 255, 255, 0.078);
 }
 
 .logo {

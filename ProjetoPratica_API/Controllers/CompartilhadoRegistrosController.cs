@@ -15,9 +15,9 @@ namespace ProjetoPratica_API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class CompartilhadoRegistrosController : Controller
-    { 
+    {
         public IRepository Repo { get; }
-        public CompartilhadoRegistrosController (IRepository repo)
+        public CompartilhadoRegistrosController(IRepository repo)
         {
             this.Repo = repo;
         }
@@ -27,7 +27,7 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                var result = await this.Repo.GetCompByIdRegistro(RegistroId);
+                var result = this.Repo.GetCompByIdRegistro(RegistroId);
                 return Ok(result);
             }
             catch
@@ -36,22 +36,20 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> post(CompartilhadosRegistro modelo)
+        [HttpPost("{RegistroId}")]
+        public async Task<IActionResult> post(int[] compartilhados, int RegistroId)
         {
             try
             {
-                this.Repo.Add(modelo);
+                foreach (int comp in compartilhados)
+                    this.Repo.SpAddCompartilhados(RegistroId, comp, compartilhados.Length + 1);
 
-                if (await this.Repo.SaveChangesAsync())
-                    return Ok();
+                return Ok();
             }
             catch
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
-
-            return BadRequest();
         }
 
         [HttpDelete("{CompartilhamentoId}")]
@@ -63,7 +61,7 @@ namespace ProjetoPratica_API.Controllers
                 if (registro == null) return NotFound();
 
                 this.Repo.Delete(registro);
-                
+
                 if (await this.Repo.SaveChangesAsync())
                     return Ok();
             }
@@ -81,7 +79,44 @@ namespace ProjetoPratica_API.Controllers
             try
             {
                 this.Repo.SpSairRegistro(RegistroId, CompartilhadoId);
-                
+
+                return Ok();
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+
+            return BadRequest();
+        }
+
+
+        [HttpPut("{RegistroId}/{CompartilhadoId}")]
+        public async Task<IActionResult> update(int RegistroId, int[] compartilhados)
+        {
+            try
+            {
+                List<object> lista = this.Repo.GetCompByIdRegistro(RegistroId);
+                // 4 5 antiga
+                // 8 7 nova
+
+                for (int i = 0; i < lista.Length; i++)
+                    novosPar.Remove(compartilhados.Find(p => p.Id == lista.Participantes[i].Id));
+
+                for (int i = 0; i < compartilhados.Length; i++)
+                    antigosPar.Remove(lista.Find(p => p.Id == compartilhados.Participantes[i].Id));
+
+                for (int i = 0; i < lista.Length(); i++)
+                {
+                    // btoa no excloi
+                }
+                for (int i = 0; i < compartilhados.Length(); i++)
+                {
+                    // btoa no excloi
+                }
+
+                this.Repo.SpUpdateCompartilhados(RegistroId, CompartilhadoId);
+
                 return Ok();
             }
             catch

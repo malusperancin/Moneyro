@@ -11,12 +11,12 @@
       v-on:sair="(msg.visivel = false), $session.destroy(), $router.go()"/>
     <Login v-show="login" v-on:fechar="login = false"/>
     <div class="centro">
+       <input class="filtro" placeholder="Pesquisar" v-model="filtro" type="text" />
       <div id="conteudo">
         <div class="feed">
           <div class="postagem" v-bind:key='i' v-for="(postagem,i) of filtraPostagens">
             <!-- BLOG E NOTICIA -->
             <div v-if="postagem.tipo == 'blog' || postagem.tipo == 'noticia'" :id="postagem.id">
-                      {{filtro}}
               <p class="titulo">{{ postagem.titulo }}</p>
               <div class="data">{{ postagem.data }}</div>
               <p class="texto">{{ postagem.texto }}</p>
@@ -127,9 +127,9 @@ export default {
     return {
       posiScroll: 0,
       login: false,
-      filtro: "",
       tipo: ["noticia", "video", "blog", "dica"],
       altas: [],
+      filtro:"",
       conteudos: [],
       msg: {
         visivel: false,
@@ -288,12 +288,12 @@ export default {
 
       if (this.filtro) {
         let exp = new RegExp(this.filtro.trim(), "i");
-        return ret.filter(c => exp.test(c.titulo));
+        return ret.filter(c => exp.test(c.titulo) || exp.test(c.assunto) || exp.test(c.tipo) || exp.test(c.data));
       }
-      
+
       return ret;
     },
-  },
+  }
 };
 </script>
 
@@ -308,6 +308,18 @@ export default {
   }
 }
 
+.filtro{
+  border-radius: 5px;
+  border: none;
+  padding: 7px 14px;
+  flex: 1;
+  margin: 20px 0;
+  box-sizing: border-box;
+  font-size: 1.2em;
+  color: rgb(255, 255, 255);
+  background: rgba(255, 255, 255, 0.078);
+  width: 65%;
+}
 
 .centro {
   padding: 160px 180px;

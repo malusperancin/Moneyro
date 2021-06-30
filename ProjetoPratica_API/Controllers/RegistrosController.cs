@@ -15,7 +15,7 @@ namespace ProjetoPratica_API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class RegistrosController : Controller
-    { 
+    {
         public IRepository Repo { get; }
         public RegistrosController(IRepository repo)
         {
@@ -63,7 +63,7 @@ namespace ProjetoPratica_API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
         }
-         
+
         [HttpGet("despesas/{UsuarioId}")]
         public async Task<IActionResult> GetDespesas(int UsuarioId)
         {
@@ -157,16 +157,8 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                //verifica se existe aluno a ser excluído
-                var registro = await this.Repo.GetRegistroById(RegistroId);
-                if (registro == null) return NotFound(); //método do EF
-
-                this.Repo.Delete(registro);
-                //
-                if (await this.Repo.SaveChangesAsync())
-                {
-                    return Ok();
-                }
+                this.Repo.SpDeleteRegistro(RegistroId);
+                return Ok();
             }
             catch
             {

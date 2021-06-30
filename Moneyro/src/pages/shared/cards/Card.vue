@@ -9,7 +9,7 @@
             name="tipo"
             value="despensa"
             checked
-            v-on:click="despesa = true, receita = false, compartilhamentos = []"
+            v-on:click="despesa = true, receita = false, registro.lugar = ''"
           />
           <label for="desp">Despesa</label>
           <input
@@ -18,7 +18,7 @@
             name="tipo"
             value="receita"
             maxlength="40"
-            v-on:click="despesa = false, receita = true, registro.lugar = null, compartilhamentos = null"
+            v-on:click="despesa = false, receita = true, registro.lugar = '', compartilhamentos = null"
           />
           <label for="rend">Receita</label>
         </div>
@@ -105,7 +105,7 @@ export default {
         idUsuario: this.$session.get("id"),
         idTag: "default",
         nome: "",
-        lugar: null,
+        lugar: "",
         data: Date,
         quantia: null
       },
@@ -115,7 +115,8 @@ export default {
     };
   },
   methods: {
-    adicionar() {
+    adicionar() 
+    {
       if(this.registro.quantia == null || this.registro.quantia == 0)
       {
         this.quantiaInvalida = true;
@@ -133,15 +134,9 @@ export default {
       this.$http.post("https://localhost:5001/api/registros", this.registro)
         .then(
           dados => {
-            for(let comp in this.compartilhados)
-            {
-              this.$http.post("https://localhost:5001/api/compartilhadoRegistros", {
-                id: 0,
-                idRegistro: dados.body.id,
-                IdCompartilhado: comp
-              });
-            }
-
+            if(!this.receita && this.compartilhamentos[0])
+              this.$http.post("https://localhost:5001/api/compartilhadoRegistros/" + dados.body.id, this.compartilhamentos);
+    
             if(this.$router.currentRoute.path != "/planilhas")
               this.$router.push("planilhas");
 
@@ -152,7 +147,8 @@ export default {
 
       this.registro.quantia = Math.abs(this.registro.quantia);
     },
-    atualizar(){
+    atualizar()
+    {
       if(this.registro.quantia == null || this.registro.quantia == 0)
       {
         this.quantiaInvalida = true;
@@ -169,42 +165,37 @@ export default {
 
       this.$http
           .put("https://localhost:5001/api/registros/" + this.registro.id, this.registro)
-          .then(
-            dados => {
-              this.$emit('atualizar');
-              this.$emit('mostrarMsg');
-            }, 
-            erro => console.log("Erro ao atualizar registro: " + erro.body));
-
-      // Compartilhando - Mudar os compartilhamentos
-      for(let comp in this.compartilhados)
-      {
-
-      }
+          .then(dados => {
+            if(!this.receita && this.compartilhamentos[0])
+              this.$http.put("https://localhost:5001/api/compartilhadoRegistros/" + dados.body.id, this.compartilhamentos);
+  
+            this.$emit('atualizar');
+            this.$emit('mostrarMsg');
+          })
+          .catch(erro => console.log("Erro ao atualizar registro: " + erro.body));
 
       this.registro.quantia = Math.abs(this.registro.quantia);
     },
     sairRegistro()
     {
-      this.$http.delete("https://localhost:5001/api/compartilhadoRegistros/"+ this.id)
-      .then(() => {
-        this.$emit('atualizar');
-        this.$emit('fechar');
-      });
+      this.$http
+          .delete("https://localhost:5001/api/compartilhadoRegistros/"+ this.id)
+          .then(() => {
+            this.$emit('atualizar');
+            this.$emit('fechar');
+          });
     },
     excluir(){
       this.$http
           .delete("https://localhost:5001/api/registros/" + this.registro.id)
-          .then(
-            dados => this.$emit('atualizar'), 
-            erro => console.log("Erro ao remover registro: " + erro.body)
-          );
+          .then(dados => this.$emit('atualizar'))
+          .catch(erro => console.log("Erro ao remover registro: " + erro.body));
     },
     checkarAmigos() {
-      /*for (var i = 0; i < this.registro.compartilhamentos.length; i++)
-        for (var a = 0; a < this.amigos.length; a++) 
-          if (this.registro.compartilhamentos[i] == this.amigos[a].id) 
-            document.getElementById("amigo" + this.amigos[a].id).checked = true;*/
+      for (let comp of this.registro.compartilhamentos)
+        for (let amigo of this.amigos) 
+          if (comp.id == amigos.id) 
+            document.getElementById("amigo" + amigos.id).checked = true;
     },
     getAmigo(id){
       this.$http
@@ -213,9 +204,8 @@ export default {
             this.amigos.push({
               id: dados.body.id, 
               apelido: dados.body.apelido});
-          }, erro => {
-            console.log("Erro ao recuperar amigo: " + erro.body);
-          });
+          })
+          .catch(erro => console.log("Erro ao recuperar amigo: " + erro.body));
     },
     enviarNotificacoes(amigos){
       for(let amigo of amigos)
@@ -241,37 +231,51 @@ export default {
     }
   },
   created() {
-     if (this.id) {
+    if (this.id) {
       this.$http
           .get("https://localhost:5001/api/registros/" + this.id)
-          .then(
-            dados => {
-              this.registro = dados.body;
+          .then(dados => {
+            this.registro = dados.body;
 
-              this.registro.data = new Date(this.registro.data).toJSON().substring(0,10);
+            this.registro.data = new Date(this.registro.data).toJSON().substring(0,10);
 
-              //GET COMPARTILHAMENTOS
+            this.$http
+                .get("https://localhost:5001/api/compartilhadoRegistros/"+this.id)
+                .then(dados => {
+                  this.registro.compartilhamentos = [];
+                  
+                  for(let i = 0; i < dados.body.length; i++)
+                    this.registros.compartilhamentos.push({
+                      id: dados.body[i][0],
+                      nome: dados.body[i][2],
+                      foto: dados.body[i][1]
+                    });
+                })
+                .catch(erro => console.log("Erro:" + erro.bodyText));
 
-              if(this.registro.quantia > 0)
-              {
-                this.receita = true;
-                this.despesa = false
-              }
+            if(this.registro.quantia > 0)
+            {
+              this.receita = true;
+              this.despesa = false;
+            }
 
-              this.registro.quantia = Math.abs(this.registro.quantia);
-            }, erro => console.log("Erro ao recuperar registro: " + erro.body));
+            this.registro.quantia = Math.abs(this.registro.quantia);
+          })
+          .catch(erro => console.log("Erro ao recuperar registro: " + erro.body));
     }
 
     this.$http
         .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
-        .then(
-          dados => {
-            for(let amigo of dados.body)
-              if(amigo.idAmigoA == this.$session.get("id"))
-                this.getAmigo(amigo.idAmigoB);
-              else
-                this.getAmigo(amigo.idAmigoA);          
-          }, erro => console.log("Erro ao recuperar amigos: " + erro.body));
+        .then(dados => {
+          for(let amigo of dados.body)
+            if(amigo.idAmigoA == this.$session.get("id"))
+              this.getAmigo(amigo.idAmigoB);
+            else
+              this.getAmigo(amigo.idAmigoA); 
+
+          this.checkarAmigos();         
+        }).
+        catch(erro => console.log("Erro ao recuperar amigos: " + erro.body));
 
     this.$http.get("https://localhost:5001/api/tags").then(dados => this.tags = dados.body);
     

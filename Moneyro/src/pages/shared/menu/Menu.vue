@@ -72,12 +72,12 @@
     </div>
     <registro
       v-on:fechar="verCard = false"
-      v-on:atualizar="$emit('atualizar')"
+      v-on:atualizar="$emit('atualizar'), verCard = false"
       v-if="verCard"
     ></registro>
     <meta-registro
       v-on:fechar="verMeta = false"
-      v-on:atualizar="$emit('atualizar')"
+      v-on:atualizar="$emit('atualizar'), verCard = false"
       v-if="verMeta"
     ></meta-registro>
   </div>
