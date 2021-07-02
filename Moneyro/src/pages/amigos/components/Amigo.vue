@@ -23,6 +23,8 @@ export default {
     };
   },
   methods: {}
+  //background-image: linear-gradient(#e6b531, #ecb318); amarelo
+  // background: rgba(99, 88, 160, 0.336); roxixo
 };
 </script>
 
@@ -44,9 +46,10 @@ export default {
   padding: 15px;
   width: 13em;
   height: 18em;
-  border-radius: 5px;
-  background-image: linear-gradient(#e6b531, #ecb318);
-  box-shadow: 5px 5px 5px #00000040;
+  border-radius: 10px;
+  background:linear-gradient(#e6b531, #ecb318);
+  
+  box-shadow: 5px 5px 5px #00000020;
   margin: 0 8px 8px 0;
   box-sizing: border-box;
   overflow: hidden;
@@ -81,7 +84,7 @@ export default {
   padding: 5px;
   text-align: center;
   font-size: 1.1em;
-  background: rgba(99, 88, 160, 0.336);
+  background: rgba(99, 88, 160, 0.45);
   border-bottom: 5px solid rgba(77, 63, 158, 0);
   margin: 10px 0px;
 }

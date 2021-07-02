@@ -9,6 +9,6 @@ namespace ProjetoPratica_API.Models
         public int IdDestino { get; set; }
         public string Mensagem { get; set; }
         public byte Visualizada { get; set; }
-         public DateTime data { get; set; }
+        public DateTime data { get; set; }
     }
 }

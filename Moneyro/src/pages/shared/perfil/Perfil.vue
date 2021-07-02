@@ -12,15 +12,15 @@
       </div>
     </div>
     <div id="notificacoes" class="" @mouseleave="fecharNotificacoes">
-      <div
-        class="notificacao animate"
-        v-for="notif in notificacoes"
-        v-bind:key="notif.id"
-      >
-      {{notif.mensagem}}&nbsp; 
-      <router-link v-if="getResposta(notif.mensagem) == 'solicitação'" to="/amigos">Responder</router-link>
-      <router-link v-if="getResposta(notif.mensagem) == 'despesa:'" to="/planilhas">Ver</router-link>
-      <router-link v-if="getResposta(notif.mensagem) == 'meta:'" to="/metas">Ver</router-link>
+      <div class="notificacao animate" :class="[{'meta' : notif.mensagem.split(' ')[7] == 'meta:'}, {'despesa' : notif.mensagem.split(' ')[7] == 'despesa:'}, {'solicitacao' : notif.mensagem.split(' ')[7] == 'solicitacao:'}]" v-on:click="redirecionar(notif.mensagem.split(' ')[7])" v-for="notif in notificacoes" v-bind:key="notif.id">
+        <div class="icones"> 
+          <img v-if="notif.mensagem.split(' ')[7] == 'meta:'" src="../../../images/metas.png">
+          <img v-if="notif.mensagem.split(' ')[7] == 'despesa:'" src="../../../images/pontos.png">
+          <img class="foto-idOrigem" :src="'src/images/perfil' + notif.foto + '.png'">
+        </div>
+        <div class="msg">
+          {{notif.mensagem}}
+        </div>
       </div>
     </div>
   </div>
@@ -32,69 +32,78 @@ export default {
     return {
       novas: false,
       recentes: [],
-      notificacoes: [],
-      agora: new Date(),
+      notificacoes: []
     };
   },
   methods: {
-    abrirNotificacoes() {
+    redirecionar(tipo)
+    {
+      if(tipo == 'solicitação') 
+        this.$router.push("/amigos");
+      
+      if(tipo == 'meta:')
+        this.$router.push("/metas")  
+
+      if(tipo == 'despesa:')
+        this.$router.push("/planilhas");
+    
+    },
+    abrirNotificacoes() 
+    {
       for(var i = 0; i < this.notificacoes.length; i++)
       {
+        this.notificacoes[i].visualizada = 1;
+
         this.$http
-            .put("https://localhost:5001/api/notificacoes/" + this.notificacoes[i].id, 
-              {
-                id:this.notificacoes[i].id,
-                idOrigem: this.notificacoes[i].idOrigem,
-                idDestino: this.notificacoes[i].idDestino,
-                mensagem: this.notificacoes[i].mensagem,
-                visualizada: 1,
-                data: this.notificacoes[i].data
-              }
-            )
-            .then().catch( erro => {
-              alert("Erro ao atualizar as notif: " + erro.bodyText);
-            });
+            .put("https://localhost:5001/api/notificacoes/" + this.notificacoes[i].id, this.notificacoes[i])
+            .catch(erro => console.log("Erro ao atualizar as notif: " + erro.Text));
       }
+
       this.novas = false;
       document.getElementById("notificacoes").classList.toggle("mostrar");
     },
-    fecharNotificacoes() {
+    fecharNotificacoes() 
+    {
       document.getElementById("notificacoes").classList.toggle("mostrar");
     },
     getNotificacoes()
     {
       if(this.$session.exists())
         this.$http
-        .get("https://localhost:5001/api/notificacoes/todas/" + this.$session.get("id"))
-        .then(dados => {
-            this.notificacoes = dados.body;
-            this.recentes = this.notificacoes.filter(n => n.visualizada == 0);
-        }).catch( erro => {
-          console.log("Erro ao pegar as notif: " + erro.bodyText);
-        });
-    },
-    getResposta(string)
-    {
-      return string.split(" ")[7];
+            .get("https://localhost:5001/api/notificacoes/todas/" + this.$session.get("id"))
+            .then(dados => {
+              this.notificacoes = [];
+
+              for(let i = 0; i < dados.body.length; i++)
+                this.notificacoes.push({
+                  id: dados.body[i][0],
+                  idOrigem: dados.body[i][1],
+                  idDestino:dados.body[i][2],
+                  mensagem:dados.body[i][3],
+                  visualizada:dados.body[i][4],
+                  data:dados.body[i][5],
+                  foto: dados.body[i][6]
+                });
+                
+              this.recentes = this.notificacoes.filter(n => n.visualizada == 0);
+            })
+            .catch(erro => console.log("Erro ao pegar as notif: " + erro.Text));
     }
   },
   created(){
-      this.$http
-      .get("https://localhost:5001/api/notificacoes/todas/" + this.$session.get("id"))
-      .then(dados => {
-        for(var i; i < dados.body.length; i++)
-          if((this.agora.value() - dados.body[i].data.value()) >= 2592000000) // 1 mes em milissegundos
-            this.$http
-                .delete("https://localhost:5001/api/notificacoes/" +  dados.body[i].id)
-                .catch( erro => {
-                  console.log("Erro ao deletar as notificações: " + erro.bodyText);
-                });
-      }).catch( erro => {
-        console.log("Erro ao pegar as notif: " + erro.bodyText);
-      });
+    this.$http
+        .get("https://localhost:5001/api/notificacoes/todas/" + this.$session.get("id"))
+        .then(dados => {
+          for(let notificacao in dados.body)
+            if((new Date().value() - notificacao.data.value()) >= 2592000000) // 1 mes em milissegundos
+              this.$http
+                  .delete("https://localhost:5001/api/notificacoes/" +  notificacao.id)
+                  .catch(erro => console.log("Erro ao deletar as notificações: " + erro.Text));
+        })
+        .catch( erro => console.log("Erro ao pegar as notif: " + erro.bodyText));
 
     this.getNotificacoes();
-    setInterval(this.getNotificacoes,30000); 
+    setInterval(this.getNotificacoes(), 15000); 
   },
   watch: {
     novas() {
@@ -105,23 +114,30 @@ export default {
     },
     recentes()
     {
-      if(this.recentes[0])
+      this.novas = false;
+
+      if(this.recentes[0]) 
         this.novas = true;
-      else
-        this.novas = false;
     },
   }
 };
 </script>
 
 <style scoped>
+.icones {
+  padding: 3px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 #perfil {
   z-index: 99;
   position: fixed;
   top: 3%;
   right: 3%;
   text-align: end;
-  width: 12pc;
+  width: 15pc;
 }
 
 #imagem {
@@ -192,9 +208,30 @@ export default {
   padding: 2px 8px;
   margin: 5px;
   text-align: start;
-  background: rgb(128, 128, 128);
+  background: rgb(55, 55, 55);
   overflow: auto;
   color:whitesmoke;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.notificacao img {
+  float: left;
+  margin: 3px;
+  width:30px;
+  height:30px;
+}
+
+.foto-idOrigem{
+  border-radius: 50px;
+}
+
+.meta{
+  border-right: 10px solid rgb(68, 42, 110);
+}
+
+.despesa{
+ border-right: 10px solid rgb(112, 35, 31);
 }
 
 #notificacoes {

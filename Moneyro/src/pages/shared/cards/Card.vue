@@ -18,7 +18,7 @@
             name="tipo"
             value="receita"
             maxlength="40"
-            v-on:click="despesa = false, receita = true, registro.lugar = '', compartilhamentos = null"
+            v-on:click="despesa = false, receita = true, registro.lugar = ''"
           />
           <label for="rend">Receita</label>
         </div>
@@ -131,21 +131,20 @@ export default {
 
       this.registro.quantia = parseFloat(this.registro.quantia);
 
-      this.$http.post("https://localhost:5001/api/registros", this.registro)
-        .then(
-          dados => {
-            if(!this.receita && this.compartilhamentos[0])
-              this.$http.post("https://localhost:5001/api/compartilhadoRegistros/" + dados.body.id, this.compartilhamentos);
-    
-            if(this.$router.currentRoute.path != "/planilhas")
-              this.$router.push("planilhas");
+      this.$http
+          .post("https://localhost:5001/api/registros", this.registro)
+          .then(
+            dados => {
+              if(this.despesa && this.compartilhamentos[0])
+                this.$http.post("https://localhost:5001/api/compartilhadoRegistros/" + dados.body.id, this.compartilhamentos);
+      
+              if(this.$router.currentRoute.path != "/planilhas")
+                this.$router.push("planilhas");
 
-            this.$emit('atualizar'); 
-          }, 
-          erro => console.log("Erro ao adicionar registro: " + erro.bodyText)
-        );
-
-      this.registro.quantia = Math.abs(this.registro.quantia);
+              this.$emit('atualizar'); 
+            }
+          )
+          .catch(erro => console.log("Erro ao adicionar registro: " + erro.bodyText));
     },
     atualizar()
     {
@@ -156,25 +155,31 @@ export default {
       }
 
       if(this.despesa)
-      {
-        this.enviarNotificacoes(this.registro.compartilhamentos);
         this.registro.quantia = -(this.registro.quantia);
-      }
 
       this.registro.quantia = parseFloat(this.registro.quantia);
 
-      this.$http
-          .put("https://localhost:5001/api/registros/" + this.registro.id, this.registro)
-          .then(dados => {
-            if(!this.receita && this.compartilhamentos[0])
-              this.$http.put("https://localhost:5001/api/compartilhadoRegistros/" + dados.body.id, this.compartilhamentos);
-  
-            this.$emit('atualizar');
-            this.$emit('mostrarMsg');
-          })
-          .catch(erro => console.log("Erro ao atualizar registro: " + erro.body));
+      if(this.despesa)
+      {
+        this.$http
+            .put("https://localhost:5001/api/compartilhadoRegistros/" + this.id, this.compartilhamentos)
+            .then(dados => {
+              this.$http.put("https://localhost:5001/api/registros/" + this.registro.id, this.registro);
+              
+              this.$emit('atualizar');
+              this.$emit('mostrarMsg');
+            })
+            .catch(erro => console.log("Erro ao atualizar despesa: " + erro.body));
+      }
+      else
+        this.$http
+            .put("https://localhost:5001/api/registros/" + this.registro.id, this.registro)
+            .then(dados => {
+              this.$emit('atualizar');
+              this.$emit('mostrarMsg');
+            })
+            .catch(erro => console.log("Erro ao atualizar registro: " + erro.body));
 
-      this.registro.quantia = Math.abs(this.registro.quantia);
     },
     sairRegistro()
     {
@@ -192,10 +197,10 @@ export default {
           .catch(erro => console.log("Erro ao remover registro: " + erro.body));
     },
     checkarAmigos() {
-      for (let comp of this.registro.compartilhamentos)
+      /*
         for (let amigo of this.amigos) 
           if (comp.id == amigos.id) 
-            document.getElementById("amigo" + amigos.id).checked = true;
+            document.getElementById("amigo" + amigos.id).checked = true;*/
     },
     getAmigo(id){
       this.$http
@@ -241,16 +246,7 @@ export default {
 
             this.$http
                 .get("https://localhost:5001/api/compartilhadoRegistros/"+this.id)
-                .then(dados => {
-                  this.registro.compartilhamentos = [];
-                  
-                  for(let i = 0; i < dados.body.length; i++)
-                    this.registros.compartilhamentos.push({
-                      id: dados.body[i][0],
-                      nome: dados.body[i][2],
-                      foto: dados.body[i][1]
-                    });
-                })
+                .then(dados => this.registro.compartilhamentos = dados.body)
                 .catch(erro => console.log("Erro:" + erro.bodyText));
 
             if(this.registro.quantia > 0)

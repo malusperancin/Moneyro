@@ -30,7 +30,7 @@
           <h1 style="color: white">Minha nossa mas não tem nada aqui! <br> Faça alguns registros e eles ficarão paradinhos te esperando...</h1>
         </div>
         <div v-else class="umDia" v-for="(dia, i) in filtraReg" :key="i">
-          <p class="data">Dia {{formataData(dia.data)}}</p>
+          <p class="data">{{ formataData(dia.data)}}</p>
           <table cellspacin="0">
             <tr
               v-for="(reg, j) in dia.registros"
@@ -83,6 +83,20 @@ export default {
   data() {
     return {
       registros: [],
+      meses: [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro"
+      ],
       id: 0,
       verCard: false,
       filtro: "todos",
@@ -130,7 +144,7 @@ export default {
     },
     formataData(data) {
       data = data.split("T")[0].split("-");
-      return data[2] +"/"+ data[1] +"/"+ data[0];
+      return data[2] + " de " + this.meses[parseInt(data[1])-1] + " de " + data[0];
     },
     ordem(){
       var select = document.getElementById('ordem').value;
@@ -165,18 +179,10 @@ export default {
       this.$http
           .get("https://localhost:5001/api/compartilhadoRegistros/"+registro.id)
           .then(dados => {
-            this.registros[index].compartilhamentos = [];
-            
-            for(let i = 0; i < dados.body.length; i++)
-              this.registros[index].compartilhamentos.push({
-                id: dados.body[i][0],
-                nome: dados.body[i][2],
-                foto: dados.body[i][1]
-              });
-
+            this.registros[index].compartilhamentos = dados.body;
             this.$forceUpdate();
           })
-          .catch(erro => console.log("Erro:" + erro.bodyText));
+          .catch(erro => console.log("Erro:" + erro.text));
     },
     getUsuario(i, id) {
       this.$http
@@ -189,7 +195,7 @@ export default {
             });
             this.$forceUpdate();
           })
-          .catch(erro => console.log("Erro: " + erro.bodyText));
+          .catch(erro => console.log("Erro: " + erro.text));
     },
     organizar(vetor){
       var ret = [];
@@ -353,6 +359,7 @@ tr:last-child { border-bottom-right-radius: 10px; }
 .tag {
   width: 25%;
   display: flex;
+  grid-gap: 10px;
 }
 
 .nome {

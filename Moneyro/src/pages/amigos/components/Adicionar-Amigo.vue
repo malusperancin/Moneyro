@@ -195,15 +195,21 @@ export default {
     }
   },
   created(){
-      this.$http
-      .get("https://localhost:5001/api/amigos/todos/"+this.$session.get("id"))
-      .then(response => {
-        this.amigos = response.body;
-        this.getUsuarios();
-      }, 
-      response => {
-        alert("cu");
-      });
+    this.$http
+        .get("https://localhost:5001/api/amigos/todos/"+this.$session.get("id"))
+        .then(response => {
+          this.amigos = response.body.sort(function(a, b) {
+            if (a.aceitou > b.aceitou) 
+              return 1;
+
+            if (a.aceitou < b.aceitou)
+              return -1;
+
+            return 0;
+          });
+          this.getUsuarios();
+        })
+        .catch(response => alert("cu"));
   },
   mounted() {      
   },
@@ -235,7 +241,7 @@ export default {
 }
 
 .baixo span {
-  color: black;
+  color: white;
   font-size: 1.3em;
   margin-right: 15px;
 }
@@ -359,7 +365,7 @@ tr td:last-child {
 
 #busca{
     background-color: rgb(40, 39, 41);
-    color:rgb(135, 138, 135)
+    color: whitesmoke;
 }
 
 #busca input {
@@ -367,5 +373,6 @@ tr td:last-child {
   border: none;
   padding: 5px 10px;
   font-size: 1.2em;
+  color: whitesmoke; 
 }
 </style>

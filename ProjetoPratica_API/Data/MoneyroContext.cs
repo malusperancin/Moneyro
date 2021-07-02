@@ -28,5 +28,7 @@ namespace ProjetoPratica_API.Data
         public DbSet<Compras> Compras { get; set; }
         public DbSet<CurtidasUsuarios> CurtidasUsuarios { get; set; }
         public DbSet<CompartilhadosRegistro> CompartilhadosRegistro { get; set; }
+        public DbSet<Compartilhados> Compartilhados { get; set; }
+
     }
 }

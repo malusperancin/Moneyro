@@ -35,7 +35,7 @@ namespace ProjetoPratica_API.Data
         Task<Registros[]> GetDespesasByUsuario(int IdUsuario);
         List<Registros> SpGetRegistrosByUsuario(int IdUsuario);
 
-        List<object> GetCompByIdRegistro(int RegistroId);
+        List<Compartilhados> GetCompByIdRegistro(int RegistroId);
         Task<CompartilhadosRegistro> GetCompById(int IdCompartilhamento);
 
 
@@ -60,7 +60,7 @@ namespace ProjetoPratica_API.Data
         Task<Notificacoes[]> GetNotificacoesByUsuarioVisu(int IdDestino);
         Task<Notificacoes> GetNotificacaoById(int Id);
         Task<Notificacoes[]> GetAllNotificacoes();
-        Task<Notificacoes[]> GetNotificacoesByUsuario(int IdDestino);
+        List<object> GetNotificacoesByUsuario(int IdDestino);
 
         Task<Trocas[]> GetAllTrocas();
         void SpAddTrocaUsuario(int idUsuario, int idTroca);
@@ -100,6 +100,7 @@ namespace ProjetoPratica_API.Data
         void SpUpdateCompartilhados(int IdRegistro, int IdCompartilhado);
         void SpDeleteRegistro(int RegistroId);
         void SpAddCompartilhados(int idRegistro, int idComp, int tam);
+        void SpUpdateRegistro(Registros novo);
     }
 
 }

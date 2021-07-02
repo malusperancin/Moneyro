@@ -86,26 +86,24 @@ export default {
     removerAmigo(idAmigo){
         var amigo = this.amigos[idAmigo];
         
-         var index = this.amigos.indexOf(amigo);
-         this.amigos.splice(index, 1);
+        var index = this.amigos.indexOf(amigo);
+        this.amigos.splice(index, 1);
          
         this.$http
-        .delete("https://localhost:5001/api/amigos/" + amigo.id)
-        .then(dados => {
-            this.getAmigos();
-             this.msg.titulo = "Sucesso";
-            this.msg.mensagem =
-              "Seu amigo foi removido com sucesso!";
-            this.msg.botoes = [
-              {
-                mensagem: "Ok",
-                evento: "fechar"
-              }
-            ]; 
-              this.msg.visivel = true;
-        },erro => {
-        alert("Erro ao deletar");
-        });
+            .delete("https://localhost:5001/api/amigos/" + amigo.id)
+            .then(dados => {
+                this.getAmigos();
+                this.msg = {
+                  titulo: "Sucesso",
+                  mensagem: "Seu amigo foi removido com sucesso!",
+                  botoes: [{
+                    mensagem: "Ok",
+                    evento: "fechar"
+                  }]. 
+                  visivel = true
+                };
+            })
+            .catch(erro => console.log("Erro ao deletar"));
     },
     getAmigo(id, idTabela){
       this.$http
@@ -123,6 +121,7 @@ export default {
     },
     getAmigos(){
       this.amigos = [];
+
       this.$http
       .get("https://localhost:5001/api/amigos/" + this.$session.get("id"))
       .then(dados => {
@@ -161,11 +160,14 @@ export default {
   margin-top: 20px;
   list-style: none;
   width: 100%;
+  display: flex;
+  grid-gap: 10px;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 #lista-alunos #lista-alunos-item {
-  display: inline-block;
-  margin: 0.5%;
+
 }
 
 #busca {
@@ -194,6 +196,7 @@ export default {
 #imgAdd {
   width: 60px;
   margin: auto;
+  z-index: 99999999;
 }
 
 .icone {

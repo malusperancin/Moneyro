@@ -41,7 +41,7 @@ namespace ProjetoPratica_API.Controllers
         {
             try
             {
-                var result = await this.Repo.GetNotificacoesByUsuario(UsuarioId);
+                var result = this.Repo.GetNotificacoesByUsuario(UsuarioId);
                 return Ok(result);
             }
             catch

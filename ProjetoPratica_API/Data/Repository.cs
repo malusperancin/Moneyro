@@ -258,13 +258,38 @@ namespace ProjetoPratica_API.Data
             return await consultaNotificacao.FirstOrDefaultAsync();
         }
 
-        public async Task<Notificacoes[]> GetNotificacoesByUsuario(int IdDestino)
+        public List<object> GetNotificacoesByUsuario(int IdDestino)
         {
-            IQueryable<Notificacoes> consultaNotificacao = (IQueryable<Notificacoes>)this.Context.Notificacoes;
-            consultaNotificacao = consultaNotificacao.OrderBy(t => t.Visualizada).Where(not => not.IdDestino == IdDestino);
+             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
 
-            return await consultaNotificacao.ToArrayAsync();
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_getNotificacoes " + IdDestino;
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            var result = new List<object>();
+
+            while (leitor.Read())
+            {
+                    object[] dados = {
+                    leitor["id"],
+                    leitor["idOrigem"],
+                    leitor["idDestino"],
+                    leitor["mensagem"],
+                    leitor["visualizada"],
+                    leitor["data"],
+                    leitor["foto"]
+                };
+
+                result.Add(dados);
+            }
+
+            con.Close();
+            return result;
         }
+
+        
 
         public async Task<Notificacoes[]> GetNotificacoesByUsuarioVisu(int IdDestino)
         {
@@ -817,16 +842,14 @@ namespace ProjetoPratica_API.Data
             con.Close();
         }
 
-        public void SpUpdateRegistro(Registros novo, Registros an)
+        public void SpUpdateRegistro(Registros novo)
         {
             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             con.Open();
 
             SqlCommand cmd = new SqlCommand("comando", con);
 
-            //cmd.CommandText = $"update registros set idTag={novo.IdTag}, nome={novo.Nome}, lugar={novo.Lugar},"" + UsuarioID;
-
-            //if()
+            cmd.CommandText = "sp_updateRegistro " + novo.Id +", "+ novo.IdUsuario + ", " + novo.IdTag + ", '" + novo.Nome + "', '" + novo.Lugar + "', '" + novo.Data + "', " + novo.Quantia;
 
             cmd.ExecuteReader();
             con.Close();
@@ -903,25 +926,25 @@ namespace ProjetoPratica_API.Data
             return result;
         }
 
-        public List<object> GetCompByIdRegistro(int RegistroId)
+        public List<Compartilhados> GetCompByIdRegistro(int RegistroId)
         {
             SqlConnection conn = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
             conn.Open();
 
             SqlCommand cmd = new SqlCommand("comando", conn);
-            cmd.CommandText = "select u.foto, u.id,u.nome from Usuarios u, CompartilhadosRegistro rg where rg.idRegistro = " + RegistroId + " and u.id = rg.idCompartilhado ";
+            cmd.CommandText = "select u.id, u.foto, u.nome from Usuarios u, CompartilhadosRegistro rg where rg.idRegistro = " + RegistroId + " and u.id = rg.idCompartilhado ";
 
             SqlDataReader leitor = cmd.ExecuteReader();
 
-            var result = new List<object>();
+            var result = new List<Compartilhados>();
 
             while (leitor.Read())
             {
-                object[] dados = {
-                    leitor["id"],
-                    leitor["foto"],
-                    leitor["nome"]
-                };
+                var dados = new Compartilhados(
+                    (int)leitor["id"], 
+                    (string)leitor["foto"], 
+                    (string)leitor["nome"]
+                );
 
                 result.Add(dados);
             }

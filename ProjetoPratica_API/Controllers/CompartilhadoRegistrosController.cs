@@ -91,31 +91,35 @@ namespace ProjetoPratica_API.Controllers
         }
 
 
-        [HttpPut("{RegistroId}/{CompartilhadoId}")]
+        [HttpPut("{RegistroId}")]
         public async Task<IActionResult> update(int RegistroId, int[] compartilhados)
         {
             try
             {
-                List<object> lista = this.Repo.GetCompByIdRegistro(RegistroId);
-                // 4 5 antiga
-                // 8 7 nova
+                List<Compartilhados> lista = this.Repo.GetCompByIdRegistro(RegistroId);
+                List<int> antigos = new List<int>();
+                List<int> novos = compartilhados.ToList();
 
-                for (int i = 0; i < lista.Length; i++)
-                    novosPar.Remove(compartilhados.Find(p => p.Id == lista.Participantes[i].Id));
+                List<int> cantigos = new List<int>();
+                List<int> cnovos = compartilhados.ToList();
 
-                for (int i = 0; i < compartilhados.Length; i++)
-                    antigosPar.Remove(lista.Find(p => p.Id == compartilhados.Participantes[i].Id));
-
-                for (int i = 0; i < lista.Length(); i++)
+                for (int i = 0; i<lista.Count; i++)
                 {
-                    // btoa no excloi
-                }
-                for (int i = 0; i < compartilhados.Length(); i++)
-                {
-                    // btoa no excloi
+                    cantigos.Add(lista.ElementAt(i).Id);
+                    antigos.Add(lista.ElementAt(i).Id);
                 }
 
-                this.Repo.SpUpdateCompartilhados(RegistroId, CompartilhadoId);
+                foreach (int antigo in cantigos)
+                    antigos.Remove(cnovos.Find(p => p == antigo));
+
+                foreach (int novo in cnovos)
+                    novos.Remove(cantigos.Find(p => p == novo));
+
+                foreach (int antigo in antigos)
+                    this.Repo.SpSairRegistro(RegistroId, antigo);
+
+                foreach (int novo in novos)
+                   this.Repo.SpAddCompartilhados(RegistroId, novo, compartilhados.Length + 1);
 
                 return Ok();
             }
@@ -126,30 +130,5 @@ namespace ProjetoPratica_API.Controllers
 
             return BadRequest();
         }
-
-        /*[HttpPut]
-        public async Task<IActionResult> put(CompartilhadosRegistro model)
-        {
-            try
-            {
-                //verifica se existe aluno a ser alterado
-                var registro = await this.Repo.GetRegistroById(RegistroId);
-                if (registro == null) return NotFound();
-
-                this.Repo.Entry(registro);
-                this.Repo.Update(model);
-
-                if (await this.Repo.SaveChangesAsync())
-                {
-                    return Ok();
-                }
-            }
-            catch
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
-            }
-            // retorna BadRequest se não conseguiu alterar
-            return BadRequest();
-        }*/
     }
 }

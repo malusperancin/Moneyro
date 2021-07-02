@@ -133,15 +133,17 @@ namespace ProjetoPratica_API.Controllers
                 if (registro == null) return NotFound();
 
                 this.Repo.Entry(registro);
-                this.Repo.Update(model);
 
-                if (await this.Repo.SaveChangesAsync())
+                if(model.Quantia > 0)
                 {
-
-                    //pegar o aluno novamente, agora alterado para devolver pela rota abaixo
-                    //despesa = await this.Repo.GetDespesaByID(DespesaId);
-                    //return Created($"/api/despesas/{model.Id}", model);
-                    return Ok();
+                    this.Repo.Update(model);
+                    if (await this.Repo.SaveChangesAsync())
+                        return Ok(model);
+                }
+                else
+                {
+                    this.Repo.SpUpdateRegistro(model);
+                    return Ok(model);   
                 }
             }
             catch
