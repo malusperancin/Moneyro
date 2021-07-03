@@ -224,6 +224,7 @@ export default {
           mensagem: this.$session.get("nome") + " adicionou voce à meta: " + this.meta.nome + ". ",
           visualizada: 0,
           data: new Date(),
+          tipo: 'meta'
         })
         .then(dados => {
             alert("enviou no registro");
@@ -264,7 +265,7 @@ export default {
     .then(dados => {
       this.tags = dados.body;
     }, erro => {
-      alert("algo deu errado");
+      alert("algo deu errado4");
     });
     
     this.$http
@@ -276,7 +277,7 @@ export default {
           else
               this.getAmigo(dados.body[i].idAmigoA);  
     }, erro => {
-      alert("algo deu errado");
+      alert("");
     });
 
     var today = new Date();

@@ -245,6 +245,7 @@ namespace ProjetoPratica_API.Data
             return await consultaSituacoes.ToArrayAsync();
         }
 
+        
         public async Task<Notificacoes[]> GetAllNotificacoes()
         {
             IQueryable<Notificacoes> consultaNotificacoes = (IQueryable<Notificacoes>)this.Context.Notificacoes;
@@ -279,7 +280,8 @@ namespace ProjetoPratica_API.Data
                     leitor["mensagem"],
                     leitor["visualizada"],
                     leitor["data"],
-                    leitor["foto"]
+                    leitor["foto"],
+                    leitor["tipo"]
                 };
 
                 result.Add(dados);
@@ -574,6 +576,18 @@ namespace ProjetoPratica_API.Data
             cmd.CommandText = "sp_CriarSala " + sala.IdProfessor + ", '" + sala.Nome + "' , '" + sala.Codigo + "'";
             cmd.ExecuteNonQuery();
 
+            con.Close();
+        }
+
+          public void DeleteNotificacaoAmizade(int IdOrigem, int IdDestino)
+        {            
+             SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con);
+            cmd.CommandText = "sp_deleteNotificacaoAmizade " + IdOrigem + ","+ IdDestino;
+
+            cmd.ExecuteNonQuery();
             con.Close();
         }
 

@@ -173,7 +173,7 @@ export default {
             registro.tag = this.tags.filter(t => t.id == registro.idTag)[0];
           }
         })
-        .catch( erro => alert("algo deu errado"));
+        .catch( erro => alert("algo deu errado3"));
     },
     setCompartilhamentos(index, registro){
       this.$http

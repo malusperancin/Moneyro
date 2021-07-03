@@ -116,7 +116,7 @@ export default {
             foto: dados.body.foto,
           });
         }, erro => {
-          alert("algo deu errado");
+          alert("algo deu errado1");
         });
     },
     getAmigos(){
@@ -131,7 +131,6 @@ export default {
             else
               this.getAmigo(dados.body[i].idAmigoA, dados.body[i].id);     
       }, erro => {
-        alert("algo deu errado");
       });
     }
   },

@@ -123,11 +123,13 @@ namespace ProjetoPratica_API.Controllers
                 var amigo = await this.Repo.GetAmigoById(AmigoId);
                 if (amigo == null) return NotFound(); //método do EF
                 this.Repo.Delete(amigo);
-                //
+            
                 if (await this.Repo.SaveChangesAsync())
                 {
                     return Ok();
                 }
+
+
 
             }
             catch

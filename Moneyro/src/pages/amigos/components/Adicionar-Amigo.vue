@@ -84,7 +84,8 @@ export default {
       .post("https://localhost:5001/api/amigos", {
         idAmigoA: this.$session.get("id"),
         idAmigoB: amigo.id,
-        aceitou: 1
+        aceitou: 1,
+        tipo: 'solicitacao'
       })
       .then(dados => {
         this.usuarios[index].aceitou = 1;
@@ -101,18 +102,22 @@ export default {
         Id: 0,
         IdAmigoA: amigo.id,
         IdAmigoB: this.$session.get("id"),
-        Aceitou: 1
+        Aceitou: 1,
+        Tipo: 'solicitacao'
       })
       .then(dados => {
+        console.log(dados.body[0].id);
          this.$http
          .put("https://localhost:5001/api/amigos/" + dados.body[0].id, {
            id: dados.body[0].id,
            idAmigoA: amigo.id,
            idAmigoB: this.$session.get("id"),
-           aceitou: 0
+           aceitou: 0,
+           tipo: 'solicitacao'
          })
          .then(dados => {
            this.usuarios[index].aceitou = 0;
+           this.apagarNotificacao(amigo.id);
            this.$emit('atualizar');
          }, erro => {
            console.log("Erro ao aceitar solicitação");
@@ -131,13 +136,15 @@ export default {
         Id: 0,
         IdAmigoA: amigo.id,
         IdAmigoB: this.$session.get("id"),
-        Aceitou: 1
+        Aceitou: 1,
+        Tipo: 'solicitacao'
       })
       .then(dados => {
         this.$http
         .delete("https://localhost:5001/api/amigos/" + dados.body[0].id)
         .then(dados => {
           this.usuarios[index].aceitou = -1;
+          this.apagarNotificacao(amigo.id);
         }, erro => {
           alert("algo deu negar");
         });
@@ -156,6 +163,15 @@ export default {
       response => {
         console.log("Erro ao pergar usuarios");
       });
+    },
+    apagarNotificacao(idOrigem){
+      this.$http
+        .get("https://localhost:5001/api/notificacoes/especifica/amizade/"+ idOrigem + "/"+this.$session.get("id"))
+        .then(dados => {
+         alert("apagou");
+        }, erro => {
+          alert("algo deu negar");
+        });
     },
     setUsuario(usuario){
       usuario.aceitou = -1;
@@ -186,6 +202,7 @@ export default {
           idDestino: amigo.id,
           mensagem: this.$session.get("nome") + " te enviou um solicitação de amizade. ",
           visualizada: 0,
+          tipo: 'solicitacao',
           data: new Date(),
         })
         .then(dados => {

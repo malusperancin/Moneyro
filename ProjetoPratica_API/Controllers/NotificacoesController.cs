@@ -50,6 +50,32 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
+        [HttpGet("especifica/amizade/{IdOrigem}/{IdDestino}")]
+        public async Task<IActionResult> Delete(int IdOrigem, int IdDestino)
+        {
+            try
+            {
+                this.Repo.DeleteNotificacaoAmizade(IdOrigem, IdDestino);
+                return Ok();
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+        public async Task<IActionResult> GetUsu(int UsuarioId)
+        {
+            try
+            {
+                var result = this.Repo.GetNotificacoesByUsuario(UsuarioId);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
         [HttpGet("{NotificaoId}")]
         public async Task<IActionResult> GetById(int NotificaoId)
         {
@@ -128,12 +154,12 @@ namespace ProjetoPratica_API.Controllers
         }
 
         [HttpDelete("{NotificacoesId}")]
-        public async Task<IActionResult> delete(int NotificacaoId)
+        public async Task<IActionResult> delete(int NotificacoesId)
         {
             try
             {
                 //verifica se existe aluno a ser excluído
-                var notif = await this.Repo.GetNotificacaoById(NotificacaoId);
+                var notif = await this.Repo.GetNotificacaoById(NotificacoesId);
                 if (notif == null) return NotFound(); //método do EF
                 this.Repo.Delete(notif);
                 //

@@ -58,6 +58,7 @@ namespace ProjetoPratica_API.Data
 
         Task<Situacoes[]> GetAllSituacoes();
         Task<Notificacoes[]> GetNotificacoesByUsuarioVisu(int IdDestino);
+        void DeleteNotificacaoAmizade(int IdOrigem, int IdDestino);
         Task<Notificacoes> GetNotificacaoById(int Id);
         Task<Notificacoes[]> GetAllNotificacoes();
         List<object> GetNotificacoesByUsuario(int IdDestino);

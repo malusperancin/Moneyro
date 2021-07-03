@@ -220,6 +220,7 @@ export default {
           mensagem: this.$session.get("nome") + " adicionou voce à despesa: " + this.registro.nome + ". ",
           visualizada: 0,
           data: new Date(),
+          tipo: 'despesa',
         }).catch( erro => {
           alert("Erro ao enviar as notificações: " + erro.bodyText);
         });

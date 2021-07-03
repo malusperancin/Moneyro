@@ -12,14 +12,22 @@
       </div>
     </div>
     <div id="notificacoes" class="" @mouseleave="fecharNotificacoes">
-      <div class="notificacao animate" :class="[{'meta' : notif.mensagem.split(' ')[7] == 'meta:'}, {'despesa' : notif.mensagem.split(' ')[7] == 'despesa:'}, {'solicitacao' : notif.mensagem.split(' ')[7] == 'solicitacao:'}]" v-on:click="redirecionar(notif.mensagem.split(' ')[7])" v-for="notif in notificacoes" v-bind:key="notif.id">
+      <div class="notificacao animate" :class="[{'meta' : notif.tipo == 'meta'},{'solicitacao' : notif.tipo == 'solicitacao'}, {'despesa' : notif.tipo == 'despesa'}]" v-on:click="redirecionar(notif.tipo)" v-for="notif in notificacoes" v-bind:key="notif.id">
         <div class="icones"> 
-          <img v-if="notif.mensagem.split(' ')[7] == 'meta:'" src="../../../images/metas.png">
-          <img v-if="notif.mensagem.split(' ')[7] == 'despesa:'" src="../../../images/pontos.png">
+          <img v-if="notif.tipo == 'meta:'" src="../../../images/metas.png">
+          <img v-if="notif.tipo == 'despesa:'" src="../../../images/pontos.png">
           <img class="foto-idOrigem" :src="'src/images/perfil' + notif.foto + '.png'">
         </div>
         <div class="msg">
-          {{notif.mensagem}}
+          <p class="texto">{{notif.mensagem}} </p>
+        </div>
+        <div class="amizade"  v-if="notif.tipo == 'solicitacao'">
+            <button class="aceitar" v-on:click="aceitar(notif.idOrigem, notif.id)" title="Aceitar">
+               ✔
+              </button>
+              <button class="negar" v-on:click="negar(notif.idOrigem, notif.id)" title="Negar">
+               ❌
+              </button>
         </div>
       </div>
     </div>
@@ -38,15 +46,81 @@ export default {
   methods: {
     redirecionar(tipo)
     {
-      if(tipo == 'solicitação') 
+      if(tipo == 'solicitacao') 
         this.$router.push("/amigos");
       
-      if(tipo == 'meta:')
+      if(tipo == 'meta')
         this.$router.push("/metas")  
 
-      if(tipo == 'despesa:')
+      if(tipo == 'despesa')
         this.$router.push("/planilhas");
     
+    },
+    aceitar(idOrigem,idNotif){
+        this.$http
+      .post("https://localhost:5001/api/amigos/amg", { 
+        Id: 0,
+        IdAmigoA: idOrigem,
+        IdAmigoB: this.$session.get("id"),
+        Aceitou: 1
+      })
+      .then(dados => {
+        console.log(dados.body[0].id);
+         this.$http
+         .put("https://localhost:5001/api/amigos/" + dados.body[0].id, {
+           id: dados.body[0].id,
+           idAmigoA: idOrigem,
+           idAmigoB: this.$session.get("id"),
+           aceitou: 0
+         })
+         .then(dados => {
+
+          this.$http
+          .delete("https://localhost:5001/api/notificacoes/" + idNotif)
+          .then(dados => { 
+            this.getNotificacoes();
+            this.$forceUpdate();
+         }, erro => {
+           console.log("Erro ao aceitar solicitação");
+         });
+
+         }, erro => {
+           console.log("Erro ao aceitar solicitação");
+         });
+       
+      },erro => {
+        console.log("Erro ao pegar id dos amigos");
+      });
+    },
+    negar(idOrigem,idNotif){
+    this.$http
+      .post("https://localhost:5001/api/amigos/amg", { 
+        Id: 0,
+        IdAmigoA: idOrigem,
+        IdAmigoB: this.$session.get("id"),
+        Aceitou: 1
+      })
+      .then(dados => {
+        console.log(dados);
+        this.$http
+        .delete("https://localhost:5001/api/amigos/" + dados.body[0].id)
+        .then(dados => {
+          
+          this.$http
+          .delete("https://localhost:5001/api/notificacoes/" + idNotif).then(dados => { 
+            this.getNotificacoes();
+            this.$forceUpdate();
+
+         }, erro => {
+           console.log("Erro ao aceitar solicitação");
+         });
+
+        }, erro => {
+          alert("algo deu negar");
+        });
+      },erro => {
+        console.log("Erro ao pegar id dos amigos");
+      });
     },
     abrirNotificacoes() 
     {
@@ -82,7 +156,8 @@ export default {
                   mensagem:dados.body[i][3],
                   visualizada:dados.body[i][4],
                   data:dados.body[i][5],
-                  foto: dados.body[i][6]
+                  foto: dados.body[i][6],
+                  tipo: dados.body[i][7]
                 });
                 
               this.recentes = this.notificacoes.filter(n => n.visualizada == 0);
@@ -137,22 +212,55 @@ export default {
   top: 3%;
   right: 3%;
   text-align: end;
-  width: 15pc;
-}
+  width: 20pc;
+  }
 
 #imagem {
   position: relative;
   display: flex;
   justify-content: flex-end;
 }
+.aceitar {
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: #00000040 0px 2px 5px;
+}
 
+.negar {
+  box-shadow: 0px -2px 5px #00000040;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+button {
+  font-size: 1.2em;
+  border: none;
+  width: 100%;
+  color: white;
+  background-color: gray;
+  cursor: pointer;
+  font-weight: 1000;
+  height: 50px;
+  border-radius: 10px;
+  text-align: center;
+  margin: 2px 0px;
+}
 #conteudo {
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 5px 5px 10px rgb(0, 0, 0, 0.2);
   border-radius: 87px;
   display: flex;
+  
+}
+.msg{
+  text-align: center;
+  margin: center;
+}
+.amizade{
+  bottom: 0;
+  margin: 0px 5px 0 0px;
 }
 
+.texto{
+}
 #notificacaoIcone {
   cursor: pointer;
   bottom: 0;
@@ -201,7 +309,10 @@ export default {
 .mostrar{
   display: block !important;
 }
+.solicitacao{
+    border-right: 10px solid rgb(68, 110, 42);
 
+}
 .notificacao {
   padding: 2px 4px;
   border-radius: 5px;
@@ -241,6 +352,7 @@ export default {
   background: rgba(0, 0, 0, 0.4);
   border-radius: 10px;
   margin: 5px;
+  
   max-height: 70vh;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
 }
