@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tcc/data/api_services.dart';
+import 'package:tcc/models/usuario_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -9,7 +11,7 @@ class HomeScreen extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-const _url = 'https://localhost:8080/cadastro';
+const _url = 'http://localhost:8080/#/cadastro';
 void _launchURL() async =>
     await canLaunch(_url) ? await launch(_url) : throw 'Could not launch $_url';
 
@@ -18,6 +20,30 @@ final _senhaController = TextEditingController();
 
 class _HomePageState extends State<HomeScreen> {
   Future<void> createInstances() async {}
+
+  String erro = "";
+
+  String _erro_login() {
+    if (erro != "") return erro;
+
+    return null;
+  }
+
+  void _login() {
+    Usuario usuario =
+        new Usuario.login(_apelidoController.text, _senhaController.text);
+
+    APIServices.login(usuario).then((response) {
+      if (response.statusCode == 200) {
+        print("foi");
+        //bota sessão e redireciona
+        //  Navigator.of(context).pushReplacement(
+        //    MaterialPageRoute(builder: (_) => CofreScreen(id: usu.id)));
+      } else {
+        erro = response.body;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +96,7 @@ class _HomePageState extends State<HomeScreen> {
                     fillColor: Colors.white,
                     hoverColor: Colors.blue,
                     focusColor: Colors.white,
+                    errorText: _erro_login(),
                     labelText: "Senha",
                     contentPadding: EdgeInsets.fromLTRB(15.0, 30.0, 15.0, 0.0),
                     border: OutlineInputBorder(
@@ -94,18 +121,7 @@ class _HomePageState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(5.0)),
               ),
               onPressed: () {
-                // Usuario usu = new Usuario(
-                //     nome: _apelidoController.text,
-                //     data: _senhaController.text);
-                // if(usuarioService.login(usu){
-                //  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                //     builder: (_) =>
-                //         CofreScreen(id: usu.id)));
-                // }
-                // else{
-                //   _senhnaController.setText("");
-                //   _senhnaController.setErrorText("Apelido e/ou senha incorretos");
-                //}
+                _login();
               },
             ),
             SizedBox(height: 30),

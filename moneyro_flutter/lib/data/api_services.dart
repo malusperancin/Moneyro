@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:tcc/models/usuario_model.dart';
 
 class APIServices {
-  static final String url = 'http://192.168.0.136:5001/api/';
+  static final String url = 'http://192.168.15.155:5001/api/';
 
   static Map<String, String> header = {
     'Content-type': 'application/json',
@@ -14,7 +14,7 @@ class APIServices {
   static Future login(Usuario usuario) async {
     var resultado = await http.post(Uri.parse(url + "usuarios/login"),
         headers: header, body: json.encode(usuario.toJson()));
-    return Future.value(resultado);
+    return resultado;
   }
 
   /*static Future buscarFuncionarios() async {
