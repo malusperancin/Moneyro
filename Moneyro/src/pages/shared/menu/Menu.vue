@@ -10,7 +10,7 @@
       <nav class="nav">
         <div class="nav__brand">
           <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle" v-on:click="ativo = !ativo, tipos = false"></ion-icon>
-          <a v-if="this.$route.path != '/'" class="nav__logo" v-on:click="$router.push('/')">Moneyro</a>
+          <a class="nav__logo" v-on:click="$router.push('/')">Moneyro</a>
         </div>
         <div class="nav__list">
           <div class="nav__link collapse">
@@ -172,32 +172,12 @@ export default {
       flex-direction: column;
       justify-content: space-between;
       overflow: hidden;
-      direction: rtl;
     }
 
     .nav__list {
       overflow-y: scroll;
       overflow-x: hidden;
       flex: 1;
-    }
-
-    /* width */
-    .nav__list::-webkit-scrollbar {
-      width: 2px;
-    }
-
-    .nav__list::-webkit-scrollbar-track {
-      background: #0000000;
-    }
-
-    /* Handle */
-    .nav__list::-webkit-scrollbar-thumb {
-      background: rgb(150,150,150);
-    }
-
-    /* Handle on hover */
-    .nav__list::-webkit-scrollbar-thumb:hover {
-      background: #555;
     }
 
     .nav__brand {

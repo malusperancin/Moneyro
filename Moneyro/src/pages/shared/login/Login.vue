@@ -13,7 +13,7 @@
         <div id="erro">{{erro}}</div>
       </div>
       <div class="baixo">
-        <button type="button" v-on:click="$emit('fechar')" class="btncancelar">Cancelar</button>
+        <button type="button" v-on:click="$emit('login')" class="btncancelar">Cancelar</button>
         <span class="psw">
           Esqueceu a
           <a href="#">Senha?</a>
@@ -40,8 +40,7 @@ export default {
             apelido: this.apelido,
             senha: this.senha
           })
-          .then(
-            response => {
+          .then(response => {
               if (response.status === 200 && "id" in response.body) {
                 this.$session.start();
                 this.$session.set("usuario", response.body);
@@ -56,11 +55,8 @@ export default {
               
                 this.$router.go()
               }
-            },
-            err => {
-              this.erro = err.body;
-            }
-          );
+            })
+          .catch(err => this.erro = err.body);
     }
   }
 };
@@ -68,6 +64,10 @@ export default {
 
 <style scoped src="../../../css/modal.css"></style>
 <style scoped>
+.psw {
+  color: black;
+}
+
 #erro {
   margin: 5px 0;
   font-weight: 1000;

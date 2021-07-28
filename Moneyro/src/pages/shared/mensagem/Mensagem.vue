@@ -5,7 +5,7 @@
         <strong>{{msg.titulo}}</strong>
       </div>
       <div class="texto">{{msg.mensagem}}</div>
-      <div class="botoes">
+      <div class="botoes" :style="msg.botoes.length>1?'justify-content:space-between':'justify-content:flex-end'">
         <span
           class="botao"
           v-for="(botao, i) in msg.botoes"
@@ -47,11 +47,11 @@ export default {
 }
 
 .titulo {
-  padding: 20px;
+  padding: 20px 20px 5px;
 }
 
 .texto {
-  padding: 20px;
+  padding: 10px 20px 20px;
   white-space: pre-line;
   min-width: 300px;
   max-width: 450px;

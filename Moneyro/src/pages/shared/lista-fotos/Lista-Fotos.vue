@@ -6,14 +6,10 @@
         <span class="fechar" v-on:click="$emit('fechar')">&times;</span>
       </div>
       <div class="corpo">
-        <img
-          :src="'src/images/perfil'+ foto+ '.png'"
-          v-for="(foto, i) in fotos"
-          v-bind:key="i"
-          :class="[{selecionada: foto == atual}, 'imagem']"
-          :id="foto"
-          v-on:click="enviar(foto)"
-        />
+        <img alt="" :src="'src/images/perfil'+ foto+ '.png'"
+          v-for="(foto, i) in fotos" v-bind:key="i"
+          :class="[{selecionada: foto == atual}, 'imagem']"  :id="foto"
+          v-on:click="$emit('receber', foto)" />
       </div>
     </div>
   </div>
@@ -31,25 +27,15 @@ export default {
       ]
     };
   },
-  methods: {
-    enviar(foto) {
-      this.$emit("receber", foto);
-    },
-    getFotos(){
-      this.$http
-        .get("https://localhost:5001/api/usuarios/fotos/"+this.$session.get("id"))
-        .then(
-          dados => {
-            dados.body.map(d => this.fotos.push(d));
-          }
-        ); 
-    }
-  },
   created(){
-    this.getFotos();
-  },
-  mounted() {
-    // document.getElementById(this.atual).classList.add("selecionada");
+    if(this.$session.get("id"))
+      this.$http
+          .get("https://localhost:5001/api/usuarios/fotos/"+this.$session.get("id"))
+          .then(
+            dados => {
+              dados.body.map(d => this.fotos.push(d));
+            }
+          ); 
   }
 };
 </script>

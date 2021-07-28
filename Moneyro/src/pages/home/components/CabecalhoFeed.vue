@@ -1,6 +1,6 @@
 <template>
   <header id="header">
-  <mensagem
+    <mensagem
       :msg="msg"
       v-if="msg.visivel"
       v-on:sair="(msg.visivel = false), $session.destroy(), $router.go()"
@@ -9,7 +9,7 @@
     <login v-show="login" v-on:fechar="login = false"/>
     <div class="marca">
       <img class="logo" src="src/images/logo.png" alt />
-      <h1>Moneyro</h1>
+      <h1>Feed</h1>
     </div>
 
     <div class="nav__list">
@@ -56,16 +56,16 @@ export default {
 
 
 <style scoped>
-@media only screen and (max-width: 1000px) {
-  .marca {
+@media only screen and (max-width: 700px) {
+  .marca h1 {
     display: none !important;
+    padding: 0 !important;
   }
 
   #header {
-    padding: 35px 80px 35px 45px !important;
+    padding: 10px 45px !important;
   }
 }
-
 
 #header {
   display: flex;
@@ -76,7 +76,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 120px;
+  padding: 0 10vw;
   z-index: 99;
   box-sizing: border-box;
 }
@@ -84,6 +84,8 @@ export default {
 .marca{
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-gap: 15px;
+  align-items: center;
 }
 
 .logo {

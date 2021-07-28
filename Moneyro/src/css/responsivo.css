@@ -28,19 +28,6 @@
         width: 80%;
     }
     /* ---------- PLANILHAS ---------------- OKOK */
-    .filtros {
-        flex-wrap: wrap !important;
-    }
-    .filtros div {
-        width: 100%;
-    }
-    .filtros select {
-        width: 50% !important;
-    }
-    #buscaNome {
-        width: 100% !important;
-        margin-top: 10px !important;
-    }
     .despesa,
     .receita {
         padding: 35px 0 10px 0;

@@ -17,9 +17,9 @@
           <div id="principal">
             <div id="foto">
               <div id="editar" v-on:click="mudarFoto = true">
-                <img src="src/images/editar.png" id="imgEditar" />
+                <ion-icon name="create" v-pre></ion-icon>
               </div>
-              <img :src="'src/images/' + usuario.foto + '.png'" id="imgPerfil" />
+              <img alt="" :src="'src/images/' + usuario.foto + '.png'" id="imgPerfil" />
               <Lista
                 v-on:receber="receber($event)"
                 v-on:fechar="mudarFoto = false"
@@ -28,14 +28,10 @@
               />
             </div>
             <div id="coisas">
-              <label class="enunciado" for="apelido">Apelido</label>
-              <input
-                type="text"
-                class="campos"
-                name="apelido"
-                maxlength="14"
-                v-model="usuario.apelido"
-              />
+              <div :class="['input-container', {'campo-valido' : usuario.apelido != ''}]">
+                <input type="text" class="campos" id="apelido" maxlength="20" v-model="usuario.apelido" required/>
+                <label for="apelido">Apelido</label>
+              </div>
               <div class="pretty p-switch p-fill p-primary" style="margin: 10px 0">
                 <input type="checkbox" v-model="usuario.notificacoes"/>
                 <div class="state p-primary">
@@ -74,77 +70,45 @@
             <button type="submit" class="botoes" id="enviar">Enviar</button>
           </form>
         </div>
-
-        <div class="divi"></div>
-
         <div class="informacoes">
-          <label class="enunciado" for="email">E-mail</label>
-          <input
-            type="text"
-            class="campos"
-            v-model="usuario.email"
-            maxlength="70"
-            name="email"
-            readonly
-            disabled
-          />
-
-          <label class="enunciado" for="nome">Nome</label>
-          <input
-            type="text"
-            class="campos"
-            v-model="usuario.nome"
-            maxlength="70"
-            name="nome"
-          />
-          
-          <label for="data" class="enunciado">Data de Nascimento</label>
-          <div id="dataNasc">
-            <input
-              type="number"
-              class="campos"
-              min="1"
-              max="31"
-              maxlength="2"
-              v-model="dia"
-            />
-            <p class="barra">/</p>
-            <input
-              type="number"
-              class="campos"
-              min="1"
-              max="12"
-              maxlength="2"
-              v-model="mes"
-            />
-            <p class="barra">/</p>
-            <input
-              type="number"
-              class="campos"
-              min="1900"
-              max="this"
-              maxlength="4"
-              minlength="4"
-              v-model="ano"
-            />
+          <div :class="['input-container', {'campo-valido' : usuario.email != ''}]">
+            <input type="text" class="campos" id="email" maxlength="40" v-model="usuario.email" required readonly/>
+            <label for="email">E-mail</label>
           </div>
 
+          <div :class="['input-container', {'campo-valido' : usuario.nome != ''}]">
+            <input type="text" class="campos" id="nome" maxlength="70" v-model="usuario.nome" required/>
+            <label for="nome">Nome</label>
+          </div>
+          
+          <div class="flex">
+            <div class="nascimento">
+              <label class="labels">Data de Nascimento</label>
+              <div id="dataNasc">
+                <input placeholder="Dia" type="number" id="dia" min="1" max="31" v-model="dia" required/>
+                <p>/</p>
+                <input placeholder="Mês" type="number" id="mes" min="1" max="12" v-model="mes" required/>
+                <p>/</p>
+                <input placeholder="Ano" type="number" id="ano" min="1900" max="3000" v-model="ano" required/>
+              </div>
+            </div>
 
-          <label for="celular" class="enunciado">Celular</label>
-          <input
-            type="tel"
-            class="campos"
-            pattern="(\([0-9]{2}\))\s([9]{1})?([0-9]{4})-([0-9]{4})"
-            maxlength="15"
-            v-model="usuario.celular"
-            style="width: 35%"
-          />
+            <div :class="['input-container', {'campo-valido' : usuario.celular != ''}]">
+              <input type="tel" class="campos" pattern="(\([0-9]{2}\))\s([9]{1})?([0-9]{4})-([0-9]{4})"
+              id="celular" title="Número de telefone precisa ser no formato (99) 9999-9999 ou (99) 99999-9999"
+              maxlength="15" v-model="usuario.celular" required />
+              <label for="celular">Celular</label>
+            </div>
+          </div>
 
-          <label for="cidade" class="enunciado">Cidade</label>
-          <div id="outras">
-            <input type="text" class="campos" v-model="usuario.cidade" maxlength="30" />
-            <select id="estado" class="campos" name="estado" required v-model="usuario.estado">
-              <option :value="item" v-for="(item, i) in siglas" :key="i">{{item}}</option>
+          <div class="cidade_estado">
+            <div :class="['input-container', {'campo-valido' : usuario.estado != ''}]">
+              <input type="text" class="campos" id="cidade" maxlength="30" v-model="usuario.cidade" required/>
+              <label for="cidade">Cidade</label>
+            </div>
+
+            <select id="estado" class="campos" name="estado" >
+              <option :value="item.sigla" v-for="(item, i) in siglas" :key="i">{{item.sigla}}</option>
             </select>
           </div>
 
@@ -229,7 +193,8 @@ export default {
           this.ano = data.getFullYear();
         });
     },
-    enviarAvaliacao() {
+    enviarAvaliacao() 
+    {
       var today = new Date();
 
       var dd = String(today.getDate()).padStart(2, '0');
@@ -274,7 +239,8 @@ export default {
           }
         );
     },
-    salvar(){
+    salvar()
+    {
       var dd = String(this.dia).padStart(2, '0');
       var mm = String(this.mes).padStart(2, '0');
       this.usuario.dataDeNascimento = this.ano + "-" + mm + "-" + dd;
@@ -316,53 +282,102 @@ export default {
 
         this.msg.visivel = true;
     },
-    cancelar(){
-        this.msg = {
-          titulo: "Cancelamento",
-          mensagem: "Deseja restaurar os valores anteriores?",
-          botoes: [
-          {
-            mensagem: "Sim",
-            evento: "restaurar"
-          },
-          {
-            mensagem: "Não",
-            evento: "cancelar"
-          }],
-          visivel: true
-        };
+    cancelar()
+    {
+      this.msg = {
+        titulo: "Cancelamento",
+        mensagem: "Deseja restaurar os valores anteriores?",
+        botoes: [
+        {
+          mensagem: "Sim",
+          evento: "restaurar"
+        },
+        {
+          mensagem: "Não",
+          evento: "cancelar"
+        }],
+        visivel: true
+      };
     },
-    mudarSenha(){
-        this.msg = {
-          titulo: "Sucesso",
-          mensagem: "Sua senha foi alterada com sucesso",
-          botoes : [
-            {
-              mensagem: "Ok",
-              evento: "fechar"
-            }
-          ],
-          visivel: true
-        };
+    mudarSenha()
+    {
+      this.msg = {
+        titulo: "Sucesso",
+        mensagem: "Sua senha foi alterada com sucesso",
+        botoes : [{
+            mensagem: "Ok",
+            evento: "fechar"
+        }],
+        visivel: true
+      };
     }
   },
-  mounted() {
+  mounted() 
+  {
     var lista = document.getElementById("estado");
     lista.value = this.usuario.estado;
+
+       const isNumericInput = (event) => {
+      const key = event.keyCode;
+      return ((key >= 48 && key <= 57) || // Allow number line
+          (key >= 96 && key <= 105) // Allow number pad
+      );
+    };
+
+    const isModifierKey = (event) => {
+      const key = event.keyCode;
+      return (event.shiftKey === true || key === 35 || key === 36) || // Allow Shift, Home, End
+          (key == 8 || key === 9 || key === 13 || key === 46) || // Backspace, Tab, Enter, Delete
+          (key > 36 && key < 41) || // Allow left, up, right, down
+          (
+              // Allow Ctrl/Command + A,C,V,X,Z
+              (event.ctrlKey === true || event.metaKey === true) &&
+              (key === 65 || key === 67 || key === 86 || key === 88 || key === 90)
+          )
+    };
+
+    const enforceFormat = (event) => {
+      // Input must be of a valid number format or a modifier key
+      if(!isNumericInput(event) && !isModifierKey(event)){
+        event.preventDefault();
+      }
+    };
+
+    const formatToPhone = (event) => {
+      if(event.keyCode != 8)
+        if(isModifierKey(event)) return;
+        
+      const input = event.target.value.replace(/\D/g,'').substring(0,12);
+      const areaCode = input.substring(0,2);
+      const middle = input.substring(2,6);
+      const last = input.substring(6,12);
+
+      if(input.length > 10)
+        this.usuario.celular = `(${areaCode}) ${middle}${last[0]}-${last.substring(1)}`;
+      else if(input.length > 6)
+        this.usuario.celular = `(${areaCode}) ${middle}-${last}`;
+      else if(input.length > 2)
+        this.usuario.celular = `(${areaCode}) ${middle}`;
+      else if(input.length > 0)
+        this.usuario.celular = `(${areaCode}`;
+    };
+
+    const inputElement = document.getElementById('celular');
+    inputElement.addEventListener('keydown', enforceFormat);
+    inputElement.addEventListener('keyup', formatToPhone);
   },
-  created() {
+  created() 
+  {
     document.title = "Configurações";
 
     this.$http
-      .get("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
-      .then(response => {
-        for (var i = 0; i < response.body.length; i++)
-          this.siglas.push(response.body[i].sigla);
-      });
+    .get("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+    .then(response => this.siglas = response.body);
 
     this.getUsuario();
   },
-  beforeCreate() {
+  beforeCreate() 
+  {
     if (!this.$session.exists())
       this.$router.push('/');
   }
@@ -371,6 +386,106 @@ export default {
 
 <style scoped src="../../css/estrelas.css"></style>
 <style scoped>
+.flex {
+  display: flex;
+  grid-gap: 15px;
+}
+
+.nascimento {
+  margin: 0 0 5px;
+  background-color: #74747473;
+  border-radius: 5px;
+  border: 2px solid #acacac;
+  position: relavite;
+}
+
+.nascimento label {
+  color: rgb(11, 92, 163);
+  font-size: .9em;
+  font-weight: bold;
+  margin: 2px 8px;
+  position: absolute;
+}
+
+#dataNasc {
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+  border-radius: 5px;
+  padding: 14px 0 0;
+}
+
+#dataNasc p {
+  color: rgb(11, 92, 163);
+  font-size: 1.5em;
+  margin: 0 ;
+}
+
+#dataNasc input{
+  width: 30%;
+  border: none;
+  font-size: 1.2em;
+  border-radius: 5px;
+  width: 100%;
+  padding: 0 25px;
+  box-sizing: border-box;
+  background: transparent;
+  color: whitesmoke;
+}
+
+.input-container {
+  position: relative;
+}
+
+.input-container label {
+  position: absolute;
+  font-size: 1.2em;
+  top: 28%;
+  left: 20px;
+  cursor: text;
+  color: rgb(11, 92, 163);
+  font-weight: bold;
+}
+
+.input-container input {
+  border-radius: 5px;
+  border: 2px solid #acacac;
+  padding: 20px 8px 2px;
+}
+
+.campos:focus + label, .campo-valido label {
+  top: 8%;
+  left: 10px;
+  font-size: 0.9em;
+}
+
+.campos {
+  font-size: 1.2em;
+  width: 100%;
+  padding: 18px 15px 2px;
+  box-sizing: border-box;
+}
+
+.cidade_estado {
+  display: flex;
+  background-color: rgba(116, 116, 116, 0.45);
+  border: 2px solid #acacac;
+  width: fit-content;
+  border-radius: 5px;
+}
+
+#cidade {
+  background: transparent;
+  border: none;
+  padding: 18px 10px 2px !important;
+}
+
+#estado {
+  width: fit-content;
+  background-color: rgba(116, 116, 116, 0.45) !important;
+  border-left: 2px solid #acacac;
+}
+
 .rating>label {
     color: #ddd;
     float: right;
@@ -433,6 +548,7 @@ export default {
 #informacoes {
   display: flex;
   align-items: stretch;
+  grid-gap: 10px;
 }
 
 .informacoes {
@@ -442,16 +558,8 @@ export default {
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  grid-gap: 15px;
   box-sizing: border-box;
-}
-
-#outras{
-  display: flex;
-}
-
-#outras input{
-  width: 50%;
 }
 
 #principal {
@@ -465,6 +573,10 @@ export default {
 
   #foto {
     margin: auto;
+  }
+
+  .flex {
+    flex-direction: column;
   }
 }
 
@@ -488,10 +600,6 @@ export default {
   flex-direction: column;
 }
 
-/* #avaliacao div {
-   width: 100%; 
-} */
-
 #avaliacao .enunciado:hover {
   text-decoration: underline;
   cursor: pointer;
@@ -504,18 +612,17 @@ export default {
 
 #editar {
   position: absolute;
-  display: grid;
   width: inherit;
   height: inherit;
-  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  background: rgba(0, 0, 0, 0.32);
   opacity: 0;
   border-radius: 15px;
-  transition: opacity 0.25s;
-}
-
-#imgEditar {
-  margin: auto;
-  width: 80px;
+  transition: all .2s ease-in-out;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 4em;
 }
 
 #imgPerfil {
@@ -537,12 +644,6 @@ export default {
   justify-content: space-around;
 }
 
-.enunciado {
-  font-size: 1.5em;
-  color: rgb(11, 92, 163);
-  font-weight: bold;
-}
-
 label{
   color: whitesmoke;
 }
@@ -551,7 +652,6 @@ label{
   box-sizing: border-box;
   border-radius: 5px;
   background-color: rgba(116, 116, 116, 0.45);
-  border: 1px solid gray;
   padding: 4px 15px;
   color: whitesmoke;
   font-size: 1.3em;
@@ -568,14 +668,6 @@ label{
   cursor: pointer;
   width: 100%;
   box-sizing: border-box;
-}
-
-.divi {
-  width: 5px;
-  border-radius: 87px;
-  height: 100;
-  margin: 5px;
-  background: rgba(0, 0, 0, 0);
 }
 
 #dataNasc {
@@ -595,11 +687,6 @@ label{
   font-size: 2.5em;
   color: rgb(11, 83, 148);
   margin: 0;
-}
-
-#estado {
-  width: fit-content;
-  background-color: rgba(116, 116, 116, 0.45) !important;
 }
 
 .botoes {

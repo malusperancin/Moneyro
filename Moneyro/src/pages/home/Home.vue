@@ -1,24 +1,23 @@
 <template>
   <div class="pag">
-    <Cabecalho :filtro="filtro" v-on:sair="deslogar"/>
+    <Cabecalho :filtro="filtro" v-on:sair="mensagemDeslogar()"/>
     <Menu v-if="$session.exists()"/>
     <Topo />
     <Mensagem
-      :msg="msg"
+      :msg="msg" 
       v-if="msg.visivel" 
       v-on:cancelar="msg.visivel = false"
       v-on:logar="login = true, msg.visivel = false"
       v-on:sair="(msg.visivel = false), $session.destroy(), $router.go()"/>
     <Login v-show="login" v-on:fechar="login = false"/>
     <div class="centro">
-       <input class="filtro" placeholder="Pesquisar" v-model="filtro" type="text" />
-      <div id="conteudo">
+      <div v-if="conteudos.carregado" id="conteudo">
         <div class="feed">
           <div class="postagem" v-bind:key='i' v-for="(postagem,i) of filtraPostagens">
             <!-- BLOG E NOTICIA -->
             <div v-if="postagem.tipo == 'blog' || postagem.tipo == 'noticia'" :id="postagem.id">
               <p class="titulo">{{ postagem.titulo }}</p>
-              <div class="data">{{ postagem.data }}</div>
+              <div class="data"><ion-icon name="calendar-outline" v-pre></ion-icon> {{ postagem.data }}</div>
               <p class="texto">{{ postagem.texto }}</p>
               <img alt="" class="imagem" :src="postagem.imagem" />
               <div class="rodape">
@@ -33,9 +32,11 @@
             <!-- VIDEO -->
             <div v-if="postagem.tipo == 'video'" :id="postagem.id">
               <p class="titulo">{{ postagem.titulo }}</p>
-              <div class="data">{{ postagem.data }}</div>
+              <div class="data"><ion-icon name="calendar-outline" v-pre></ion-icon>{{ postagem.data }}</div>
               <p class="texto">{{ postagem.texto }}</p>
-              <iframe width="560" height="315" src="https://www.youtube.com/embed/t5eapLCabOU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              <div class="video">
+                <iframe src="https://www.youtube.com/embed/t5eapLCabOU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              </div>
               <div class="rodape">
                 <span>
                   <div class="assunto">{{ postagem.assunto }}</div>
@@ -48,14 +49,14 @@
             <!-- DICA -->
             <div v-if="postagem.tipo == 'dica'" :id="postagem.id">
               <p class="titulo">{{postagem.titulo}} once said: </p>
-              <div class="data">{{ postagem.data }}</div>
+              <div class="data"><ion-icon name="calendar-outline" v-pre></ion-icon>{{ postagem.data }}</div>
               <p class="texto">{{ postagem.texto }}</p>
               <div class="rodape">
                 <span>
                   <div class="assunto">{{ postagem.assunto }}</div>
                 </span>
                 <div class="curtidas" v-bind:class="{like: postagem.curtido}" v-on:click="postagem.curtido?descurtir(i):curtir(i)">
-                  {{ postagem.curtidas }} <img src="../../images/fav.svg" />
+                  {{ postagem.curtidas }} <img alt="" src="../../images/fav.svg" />
                 </div>
               </div>
             </div>
@@ -67,42 +68,47 @@
               <p>{{ $session.get("usuario").apelido }}</p>
               <p><big><strong> {{ $session.get("usuario").pontos }}</strong></big> pontos</p>
             </div>
-            <img :src="'src/images/perfil' + $session.get('foto') + '.png'"/>
+            <img alt="" :src="'src/images/perfil' + $session.get('foto') + '.png'"/>
           </div>
+          <input class="filtro" placeholder="Pesquisar" v-model="filtro" type="text" />
           <div class="filtros">
             <p class="titulo">Mostrar apenas:</p>
-            <br>
-            <label class="container"
-              >Notícias
-              <input type="checkbox" name="radio" checked="checked" v-model="tipo" value="noticia"/>
-              <span class="checkmark"></span>
-            </label>
-            <label class="container"
-              >Vídeos
-              <input type="checkbox" name="radio" checked="checked" v-model="tipo" value="video"/>
-              <span class="checkmark"></span>
-            </label>
-            <label class="container"
-              >Blogs
-              <input type="checkbox" name="radio" checked="checked" v-model="tipo" value="blog"/>
-              <span class="checkmark"></span>
-            </label>
-            <label class="container"
-              >Dicas
-              <input type="checkbox" name="radio" checked="checked" v-model="tipo" value="dica"/>
-              <span class="checkmark"></span>
-            </label>
+            <div>
+              <label class="container"
+                >Notícias
+                <input type="checkbox" name="radio" checked="checked" v-model="tipos" value="noticia"/>
+                <span class="checkmark"></span>
+              </label>
+              <label class="container"
+                >Vídeos
+                <input type="checkbox" name="radio" checked="checked" v-model="tipos" value="video"/>
+                <span class="checkmark"></span>
+              </label>
+              <label class="container"
+                >Blogs
+                <input type="checkbox" name="radio" checked="checked" v-model="tipos" value="blog"/>
+                <span class="checkmark"></span>
+              </label>
+              <label class="container"
+                >Dicas
+                <input type="checkbox" name="radio" checked="checked" v-model="tipos" value="dica"/>
+                <span class="checkmark"></span>
+              </label>
+            </div>
           </div>
           <div class="alta">
             <p class="titulo">Em alta</p>
-            <div v-bind:key='i' v-for="(conteudo, i) in conteudos">
-             <div class="enumeracao" v-if="conteudo.emAlta" v-else="i--" v-on:click ="clicou(conteudo.id)">
-              <span class="numeros">{{ i + 1}}</span>
+            <div v-bind:key='i' v-for="(conteudo, i) in conteudos.conteudos">
+             <div class="enumeracao" v-if="conteudo.emAlta" v-on:click="irParaConteudo(conteudo.id)">
+              <span class="numeros">{{ i }}</span>
               <p class="tit">{{ conteudo.titulo }}</p>
              </div> 
             </div>
           </div>
         </div>
+      </div>
+      <div v-else>
+        
       </div>
     </div>
   </div>
@@ -127,10 +133,13 @@ export default {
     return {
       posiScroll: 0,
       login: false,
-      tipo: ["noticia", "video", "blog", "dica"],
+      tipos: ["noticia", "video", "blog", "dica"],
       altas: [],
-      filtro:"",
-      conteudos: [],
+      filtro: "",
+      conteudos: {
+        carregado: false,
+        conteudos: []
+      },
       msg: {
         visivel: false,
         titulo: "",
@@ -140,7 +149,7 @@ export default {
     };
   },
   methods: {
-    deslogar(){
+    mensagemDeslogar() {
       this.msg = {
         visivel: true,
         titulo: "Sair da sessão",
@@ -156,11 +165,30 @@ export default {
           }]
       };
     },
-    clicou(id){
+    mensagemCurtir()
+    {
+      this.msg = {
+        visivel: true,
+        titulo: "Ops",
+        mensagem: "Você precisa estar logado para curtir as postagens!",
+        botoes: [
+          {
+            mensagem: "Cancelar",
+            evento: "cancelar",
+          },
+          {
+            mensagem: "Entrar",
+            evento: "logar",
+          }
+        ],
+      };
+    },
+    irParaConteudo(id){
       document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'center' });
     },
     getConteudos(){
       var id = 0
+
       if(this.$session.exists())
         id = this.$session.get("id");
 
@@ -168,65 +196,46 @@ export default {
         .get("https://localhost:5001/api/conteudos/" + id) 
         .then(
           dados => {
-            this.conteudos = dados.body;
-            this.conteudos.map(c => {
-              var data =  c.data.split("T")[0];
-              var partes = data.split("-");
-              c.data = partes[2] + "/" + partes[1] + "/" + partes[0];
+            this.conteudos.carregado = true;
+            this.conteudos.conteudos = dados.body;
+            this.conteudos.conteudos.map(c => {
+              c.data = new Date(c.data).toLocaleDateString().split('T')[0].replace("-", ")");
             });
           }
         ); 
-    
     },
     curtir(i){
-      if(this.$session.exists())
+      if(!this.$session.exists())
       {
-        var post = {
-          id: 1,
-          idConteudo: this.conteudos[i].id,
-          idUsuario: this.$session.get("id")
-        };
-        
-        this.$http
-        .post("https://localhost:5001/api/curtidasUsuarios", post) 
-        .then(
-        dados => {
-          this.conteudos[i].curtidas++;
-          this.conteudos[i].curtido = true;
-        }); 
-      } 
-      else
-      {
-        this.msg = {
-          visivel: true,
-          titulo: "Ops",
-          mensagem: "Você precisa estar logado para curtir as postagens!",
-          botoes: [
-            {
-              mensagem: "Cancelar",
-              evento: "cancelar",
-            },
-            {
-              mensagem: "Logar",
-              evento: "logar",
-            }
-          ],
-        };
+        this.mensagemCurtir();
+        return;
       }
+
+      var post = {
+        id: 1,
+        idConteudo: this.conteudos.conteudos[i].id,
+        idUsuario: this.$session.get("id")
+      };
+      
+      this.$http
+        .post("https://localhost:5001/api/curtidasUsuarios", post) 
+        .then(dados => {
+          this.conteudos.conteudos[i].curtidas++;
+          this.conteudos.conteudos[i].curtido = true;
+        }); 
     },
     descurtir(i){
       var post = {
-          id: 1,
-          idConteudo: this.conteudos[i].id,
-          idUsuario: this.$session.get("id")
-        };
+        id: 1,
+        idConteudo: this.conteudos.conteudos[i].id,
+        idUsuario: this.$session.get("id")
+      };
 
       this.$http
         .put("https://localhost:5001/api/curtidasUsuarios", post) 
-        .then(
-        dados => {
-          this.conteudos[i].curtidas--;
-          this.conteudos[i].curtido = false;
+        .then(dados => {
+          this.conteudos.conteudos[i].curtidas--;
+          this.conteudos.conteudos[i].curtido = false;
         });
     },
     getPerfil() {
@@ -250,14 +259,8 @@ export default {
 
       this.$http
         .get("https://localhost:5001/api/situacoes")
-        .then(
-          dados => {
-            document.getElementsByClassName("saldo")[0].style.backgroundColor = dados.body[(situacao-1)].cor;
-          },
-          erro => {
-            console.log(erro.bodyText);
-          }
-        );
+        .then(dados => document.getElementsByClassName("saldo")[0].style.backgroundColor = dados.body[(situacao-1)].cor)
+        .carch(erro => console.log(erro.bodyText));
     }
   },
   created() {
@@ -270,7 +273,6 @@ export default {
 
     this.posiScroll = window.pageYOffset;
     window.onscroll = function() {
-
       if(window.scrollY.valueOf() > 200)
       {
         if (this.posiScroll > window.pageYOffset) //subiu => mostrou
@@ -284,7 +286,7 @@ export default {
   },
   computed: {
     filtraPostagens() {
-      var ret = this.conteudos.filter(c => this.tipo.includes(c.tipo));
+      var ret = this.conteudos.conteudos.filter(c => this.tipos.includes(c.tipo));
 
       if (this.filtro) {
         let exp = new RegExp(this.filtro.trim(), "i");
@@ -292,37 +294,52 @@ export default {
       }
 
       return ret;
-    },
+    }
   }
 };
 </script>
 
 <style scoped>
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 800px) {
   #conteudo {
     flex-direction: column-reverse;
   }
 
   .centro {
-    padding: 160px 120px !important;
+    padding: 160px 45px !important;
+  }
+
+  #direita {
+    max-width: 100% !important;
+    flex-direction: column-reverse !important;
+  }
+
+  .filtro {
+    margin: 50px 0 0 !important;
+  }
+
+  .filtros {
+    padding: 1% 3% !important;
+  }
+
+  .alta {
+    padding: 2% 3% !important;
+  }
+
+  .filtros div {
+    display: flex;
+    flex-wrap: wrap;
+    grid-gap: 0px 15px;
+  }
+
+  .feed {
+    max-width: 100% !important;
+    min-width: 100% !important;
   }
 }
 
-.filtro{
-  border-radius: 5px;
-  border: none;
-  padding: 7px 14px;
-  flex: 1;
-  margin: 20px 0;
-  box-sizing: border-box;
-  font-size: 1.2em;
-  color: rgb(255, 255, 255);
-  background: rgba(255, 255, 255, 0.078);
-  width: 65%;
-}
-
 .centro {
-  padding: 160px 180px;
+  padding: 160px 10%;
 }
 
 #conteudo {
@@ -331,16 +348,132 @@ export default {
   color: white;
   grid-gap: 10px;
   min-height: 800px;
+  justify-content: flex-end;
 }
 
 .feed {
+  flex-basis: 60%;
 }
 
 #direita{
-  min-width: 400px;
+  min-width: 150px;
+  max-width: 350px;
   display: flex;
   flex-direction: column;
   grid-gap: 10px;
+  flex: 1;
+}
+
+/* ---------- FEED ----------- */
+
+p {
+  padding: 0;
+  margin: 0;
+}
+
+.postagem {
+  background: #101010;
+  padding: 25px 30px 35px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: solid 3px #232323;
+  font-size: 1.2em;
+  line-height: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.imagem {
+  flex: 1;
+  width: 96%;
+  border-radius: 5px;
+  margin-left: 15px;
+}
+
+.rodape {
+  display: flex;
+  margin-top: 10px;
+  font-size: 1.25em;
+  justify-content: space-between;
+  padding: 0 0 0 15px;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.rodape span {
+  display: flex;
+}
+
+.rodape span div {
+  margin: 0 10px 0 0;
+}
+
+.assunto {
+  background: #202020;
+  border-radius: 5px;
+  padding: 2px 14px;
+}
+
+.curtidas {
+  display: flex;
+  font-size: 1.8em;
+  background: gray;
+  justify-content: center;
+  align-items: center;
+  padding: 0 8px 2px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+}
+
+.like {
+  color: #ff3232;
+  background: white;
+  font-weight:550;
+}
+
+.like img {
+  filter: contrast(116%) invert(68%) sepia(90%) saturate(6532%) hue-rotate(338deg) brightness(95%);
+}
+
+.curtidas img {
+  margin: 4px 0 0 5px;
+}
+
+.data {
+  font-size: 0.8em;
+  color: gray;
+  display: flex;
+  align-items: center;
+  grid-gap: 5px;
+}
+
+.titulo {
+  font-size: 1.5em;
+  line-height: 32px;
+  margin-bottom: 1%;
+  font-weight: bold;
+  color: Gainsboro;
+  word-break: break-word;
+}  
+
+.texto {
+  margin: 10px 0 20px 15px;
+  color: Gainsboro;
+  font-size: 19px;
+  line-height: 25px;
+  word-wrap: break-word;
+}
+
+.video {
+  margin: 10px 0 20px 15px;
+  height: fit-content;
+}
+
+iframe{
+  height: 296px;
+  width: 100%;
+  border-radius: 5px;
 }
 
 .saldo {
@@ -362,108 +495,15 @@ export default {
   border-radius: 10px;
 }
 
-/* ---------- FEED ----------- */
-
-p {
-  padding: 0;
-  margin: 0;
-}
-
-.postagem {
-  background: #101010;
-  padding: 40px 30px;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  border: solid 3px #232323;
+.filtro{
+  border-radius: 5px;
+  border: none;
+  padding: 7px 14px;
+  box-sizing: border-box;
   font-size: 1.2em;
-  line-height: 32px;
-  display: flex;
-  flex-direction: column;
-}
-
-.texto {
-  margin: 10px 0 20px 15px;
-  color: Gainsboro;
-  font-size: 19px;
-  line-height: 25px;
-  word-wrap: break-word;
-}
-
-.imagem {
-  flex: 1;
-  width: 96%;
-  border-radius: 5px;
-  margin-left: 15px;
-}
-
-.rodape {
-  display: flex;
-  margin-top: 10px;
-  font-size: 1.25em;
-  justify-content: space-between;
-  padding: 0 0 0 15px;
-  align-items: center;
-  /*background: red;*/
-}
-
-.rodape span {
-  display: flex;
-}
-
-.rodape span div {
-  margin: 0 10px 0 0;
-}
-
-.assunto {
-  background: #202020;
-  border-radius: 5px;
-  padding: 2px 14px;
-}
-
-.curtidas {
-  display: flex;
-  margin: 0 10px;
-  font-size: 1.8em;
-  background: gray;
-  justify-content: center;
-  align-items: center;
-  padding: 0 8px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1.1em;
-}
-
-.like {
-  color: #ff3232;
-  background: white;
-  font-weight:550;
-}
-
-.like img{
-  /* filter:red; */
-  filter: contrast(116%) invert(68%) sepia(90%) saturate(6532%) hue-rotate(338deg) brightness(95%);
-}
-
-.curtidas img {
-  margin: 4px 0 0 5px;
-}
-
-.data {
-  font-size: 0.75em;
-  color: gray;
-}
-
-.titulo {
-  font-size: 1.5em;
-  line-height: 32px;
-  margin-bottom: 1%;
-  font-weight: bold;
-  color: Gainsboro;
-  word-break: break-word;
-}  
-
-iframe{
-  margin-left: 15px;
+  color: rgb(255, 255, 255);
+  background: rgba(255, 255, 255, 0.078);
+  width: 100%;
 }
 
 /*------- FILTRO DE RADIO BUTTONS ------*/
@@ -471,7 +511,11 @@ iframe{
 .filtros {
   background-color: #303030;
   border-radius: 10px;
-  padding: 8% 0 5% 8%;
+  padding: 10px 25px 10px;
+}
+
+.filtros .titulo {
+  padding: 10px 0 5px;
 }
 
 .container {
@@ -520,26 +564,29 @@ iframe{
 .alta {
   background-color: #303030;
   border-radius: 10px;
-  padding: 5px 15px 5px 30px;
+  padding: 15px 25px;
+  display: flex;
+  flex-direction: column;
+  grid-gap: 5px;
 }
 
 .alta .titulo {
-  padding: 15px 0px;
+  padding: 0 0 5px;
 }
 
 .enumeracao {
   display: flex;
   position: relative;
-  margin: 0 0 4% -5%;
   background-color: rgba(255, 255, 255, 0.078);
   border-radius: 10px;
   min-height: 35px;
-  padding: 2% 4% 2% 0;
+  padding: 10px 5px;
   align-items: center;
+  justify-content: space-between;
 }
 
 .tit {
-  margin: 0 0 0 15%;
+  margin: 0 0 0 50px;
 }
 
 .numeros {
