@@ -4,7 +4,6 @@
     <div id="footer">
       <div class="footer-corpo">
         <div class="footer-logo"><b>Moneyro</b></div>
-  
         <div class="footer-coluna">
           <div class="footer-container" v-on:click="$router.push('/')">
             <p> Feed </p>
@@ -17,7 +16,7 @@
             <p> Cadastro </p>
            <ion-icon name="person-add" v-pre></ion-icon>
           </div>
-          <img v-else class="footer-img" src="src/images/logo.png" />
+          <img alt="" v-else class="footer-img" src="src/images/logo.png" />
           </div>  
         </div>
         <div class="footer-coluna">  
@@ -68,7 +67,42 @@ export default {
 
 <style src="./css/responsivo.css"></style>
 <style>
+html {
+  scroll-behavior: smooth;
+}
   
+
+* {
+  transition: all 0.3s;
+  font-family: "Baloo Chettan 2", cursive;
+  outline: none;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  height: 100%;
+}
+
+html {
+  height: 100%;
+}
+
+.web {
+  height: 100vh;
+}
+
+.pag {
+  /* background-color: rgb(255, 227, 74); */
+  background-color: #0a0a0aeb;
+  min-height: 100%;
+}
+
+.centro {
+  height: 100%;
+  padding: 3% 10%;
+}
+
 #footer {
   color: white;
   background-color: rgb(67, 67, 67);
@@ -76,7 +110,7 @@ export default {
 
 .footer-corpo {
   display: flex;
-  padding: 30px 25px;
+  padding: 30px 2%;
 }
 
 .footer-container {
@@ -92,7 +126,6 @@ export default {
   min-width: 60px;
   margin-top: -20px;
 }
-
 
 .footer-container:hover {
   background-color: rgb(130, 73, 73);
@@ -169,40 +202,5 @@ export default {
   flex: 2;
   text-align: center;
   font-size: 2em;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-* {
-  transition: all 0.3s;
-  font-family: "Baloo Chettan 2", cursive;
-  outline: none;
-}
-
-body {
-  min-height: 100%;
-  margin: 0;
-  height: 100%;
-}
-
-html {
-  height: 100%;
-}
-
-.web {
-  height: 100vh;
-}
-
-.pag {
-  /* background-color: rgb(255, 227, 74); */
-  background-color: #0a0a0aeb;
-  min-height: 100%;
-}
-
-.centro {
-  height: 100%;
-  padding: 3% 10%;
 }
 </style>

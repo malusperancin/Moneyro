@@ -8,45 +8,47 @@
 
       <div class="corpo">
         <div class="produto" v-if="carrinho[0]">
-         <img alt="" :src="'../src/images/' + carrinho[carrinho.length-1].foto + '.png'"> 
+          <img alt="" :src="'../src/images/' + carrinho[carrinho.length - 1].foto + '.png'"/>
           <div class="flex">
-            <p>{{carrinho[carrinho.length-1].nome}}</p>
-            <p class="prec">R${{carrinho[carrinho.length-1].preco}}</p>
+            <p class="nome">{{ carrinho[carrinho.length - 1].nome }}</p>
+            <p class="prec">R${{ carrinho[carrinho.length - 1].preco }}</p>
           </div>
         </div>
 
         <div class="carrinho">
-          <p style="font-size: 1.3em">Seu carrinho: {{carrinho[0]?"":"Vazio"}}</p>
+          <p style="font-size: 1.3em">
+            Seu carrinho: {{ carrinho[0] ? "" : "Vazio" }}
+          </p>
           <div class="carrinho_produto flex" v-for="(prod, i) in carrinho">
-            <p>{{prod.quantidade>1?prod.quantidade+"x":""}}{{prod.nome}}</p>
-            <p class="preco">R${{prod.preco}} <span class="remover" v-on:click="remover(prod, i)">-</span></p>
-            
+            <p>
+              {{ prod.quantidade > 1 ? prod.quantidade + "x" : ""
+              }}{{ prod.nome }}
+            </p>
+            <p class="preco">
+              R${{ prod.preco }}
+              <span class="remover" v-on:click="remover(prod, i)">-</span>
+            </p>
           </div>
         </div>
       </div>
-        <div class="risco"></div>
+      <div class="risco"></div>
 
-        <div class="baixo">
-          <div class="total">
-            <p>Total: R${{Math.round(total * 100) / 100}}</p>
-          </div>
-          <div class="cep_div" >
-            <p>CEP</p>
-            <input 
-              type="text" 
-              v-model="cep" 
-              placeholder="_____-___" 
-              pattern="[0-9]{5}-[0-9]{3}" 
-              required
-            />
-          </div>
+      <div class="baixo">
+        <div class="total">
+          <p>Total: <br> R${{ Math.round(total * 100) / 100 }}</p>
         </div>
-        
-        <button class="botao" v-on:click="carrinho.total = total, $router.push({ path: 'boleto', query: { cep: cep, carrinho: carrinho} })">Finalizar</button>
-    </form> 
-  </div>
+        <div :class="['input-container', {'campo-valido' : cep != ''}]">
+          <input type="text" class="campos" id="cep" maxlength="9" v-model="cep" pattern="[0-9]{5}-[0-9]{3}" required/>
+          <label for="cep">CEP</label>
+        </div>
+      </div>
 
-</template> 
+      <button class="botao" v-on:click="(carrinho.total = total), $router.push({path: 'boleto', query: { cep: cep, carrinho: carrinho }})">
+        Finalizar
+      </button>
+    </form>
+  </div>
+</template>
 
 <script>
 export default {
@@ -54,17 +56,15 @@ export default {
   data() {
     return {
       visivel: false,
-      cep: null,
+      cep: "",
       qtd: 1,
-      total: 0,
+      total: 0
     };
   },
   methods: {
-    remover(produto, i){
-      if(this.carrinho[i].quantidade == 1)
-        this.carrinho.splice(i, 1);
-      else
-      {
+    remover(produto, i) {
+      if (this.carrinho[i].quantidade == 1) this.carrinho.splice(i, 1);
+      else {
         produto.quantidade -= 1;
         this.carrinho.splice(i, 1);
         this.carrinho.push(produto);
@@ -75,27 +75,65 @@ export default {
     this.total = 0;
 
     this.carrinho.map(p => {
-      if(p.quantidade)
-        this.total += p.preco*p.quantidade;
-      else
-        this.total += p.preco;
+      if (p.quantidade) this.total += p.preco * p.quantidade;
+      else this.total += p.preco;
     });
   },
+  mounted() {
+    const isNumericInput = (event) => {
+      const key = event.keyCode;
+      return ((key >= 48 && key <= 57) || // Allow number line
+          (key >= 96 && key <= 105) // Allow number pad
+      );
+    };
+
+    const isModifierKey = (event) => {
+      const key = event.keyCode;
+      return (event.shiftKey === true || key === 35 || key === 36) || // Allow Shift, Home, End
+          (key == 8 || key === 9 || key === 13 || key === 46) || // Backspace, Tab, Enter, Delete
+          (key > 36 && key < 41) || // Allow left, up, right, down
+          (
+              // Allow Ctrl/Command + A,C,V,X,Z
+              (event.ctrlKey === true || event.metaKey === true) &&
+              (key === 65 || key === 67 || key === 86 || key === 88 || key === 90)
+          )
+    };
+
+    const enforceFormat = (event) => {
+      if(!isNumericInput(event) && !isModifierKey(event))
+        event.preventDefault();
+    };
+
+    const formatToPhone = (event) => {
+      if(event.keyCode != 8)
+        if(isModifierKey(event)) return;
+        
+      const input = event.target.value.replace(/\D/g,'').substring(0,9);
+      const comeco = input.substring(0,5);
+      const fim = input.substring(5,8);
+
+      if(input.length > 5)
+        this.cep = `${comeco}-${fim}`;
+      else if(input.length > 0)
+        this.cep = `${comeco}`;
+    };
+
+    const inputElement = document.getElementById('cep');
+    inputElement.addEventListener('keydown', enforceFormat);
+    inputElement.addEventListener('keyup', formatToPhone);
+  },
   watch: {
-    carrinho(){
+    carrinho() {
       this.total = 0;
 
-       this.carrinho.map(p => {
-        if(p.quantidade)
-          this.total += p.preco*p.quantidade;
-        else
-          this.total += p.preco;
+      this.carrinho.map(p => {
+        if (p.quantidade) this.total += p.preco * p.quantidade;
+        else this.total += p.preco;
       });
     }
-  },
+  }
 };
 </script>
-
 
 <style scoped>
 .modal-conteudo {
@@ -109,27 +147,32 @@ export default {
 
 /* Track */
 .modal-conteudo::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: #f1f1f1;
 }
- 
+
 /* Handle */
 .modal-conteudo::-webkit-scrollbar-thumb {
-  background: #888; 
+  background: #888;
 }
 
 /* Handle on hover */
 .modal-conteudo::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
 }
-
 
 .preco {
   display: flex;
   grid-gap: 15px;
 }
 
-.prec{
+.prec {
   color: hsl(208, 80%, 5%);
+}
+
+.nome {
+  overflow:hidden; 
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .risco {
@@ -140,22 +183,22 @@ export default {
 }
 
 .modal {
-    z-index: 99999;
-    display: flex;
-    font-family: "Baloo Chettan 2", cursive;
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: 25%;
-    height: 100%;
-    align-items: center;
+  z-index: 99999;
+  display: flex;
+  font-family: "Baloo Chettan 2", cursive;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 25%;
+  height: 100%;
+  align-items: center;
 }
-  
+
 .cima {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 5px 0 0 15px;
+  padding: 5px 0 0 5px;
 }
 
 .cima p {
@@ -164,7 +207,7 @@ export default {
   grid-gap: 10px;
   font-size: 1.75em;
 }
-  
+
 .fechar {
   font-family: "sans-serif";
   color: #000;
@@ -199,7 +242,7 @@ p {
   margin: 0;
   padding: 0;
 }
-    
+
 form {
   border-radius: 25px 0 0 25px;
   background-color: #fefefe;
@@ -223,7 +266,7 @@ form {
 .produto img {
   width: 70%;
   height: 200px;
-  object-fit: cover;  
+  object-fit: cover;
   border-radius: 15px;
 }
 
@@ -232,7 +275,7 @@ form {
   justify-content: space-between;
   font-size: 1.75em;
   width: 100%;
-  padding: 15px 0;
+  padding: 10px 0;
   box-sizing: border-box;
 }
 
@@ -247,17 +290,17 @@ form {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: rgb(134, 99, 99);
 }
- 
+
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888; 
+  background: #888;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
 }
 
 .carrinho_produto {
@@ -275,20 +318,56 @@ form {
   justify-content: space-between;
 }
 
+.input-container {
+  position: relative;
+}
+
+.input-container label {
+  position: absolute;
+  font-size: 1.25em;
+  top: 16%;
+  left: 20px;
+  color: grey;
+  cursor: text;
+}
+
+.input-container input {
+  border-radius: 5px;
+  border: 3px solid #acacac;
+}
+
+.campos:focus + label, .campo-valido label {
+  top: 6%;
+  left: 10px;
+  font-size: 0.8em;
+}
+
+.campos {
+  font-size: 1.2em;
+  background-color: whitesmoke;
+  box-sizing: border-box;
+}
+
+#cep {
+  padding: 10px 12px 0px;
+  width: 115px;
+}
+
 .total {
   display: flex;
   font-size: 1.25em;
+  line-height: 20px;
 }
 
-.cep_div, .quantia{
+.quantia {
   display: flex;
   grid-gap: 12px;
   align-items: center;
   justify-content: flex-end;
-  font-size: 1.25em;
+  font-size: 1.2em;
 }
 
-#qtd{
+#qtd {
   width: 20%;
 }
 
@@ -323,8 +402,8 @@ input {
   border-radius: 5px;
   font-size: 1.5em;
   padding: 1px;
-  max-width:15px;
-  max-height:15px;
+  max-width: 15px;
+  max-height: 15px;
   cursor: pointer;
   display: flex;
   align-items: center;

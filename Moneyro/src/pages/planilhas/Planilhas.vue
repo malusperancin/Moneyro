@@ -1,7 +1,6 @@
 <template>
   <div class="pag">
     <Menu v-on:atualizar="getRegistros()"/>
-    <Perfil />
     <Card v-if="verCard" :id="id" v-on:atualizar="getRegistros()"  v-on:mostrarMsg="mostrarMensagem" v-on:fechar="verCard = false" />
      <Mensagem
       :msg="msg"
@@ -21,6 +20,10 @@
           <select name="ordem" class="filtro" @change="ordem" id="ordem">
             <option value="recentes" selected>Mais Recentes</option>
             <option value="antigos">Mais Antigos</option>
+          </select> 
+          <select name="ordem" class="filtro" v-model="filtro_tag" id="tag">
+            <option value="" selected>Todos</option>
+            <option v-for="tag in tags" :key="tag.id" :value="tag.nome">{{tag.nome}}</option>
           </select> 
         </div>
         <input type="search" placeholder="Busque um registro..." id="buscaNome" v-model="pesquisa"/>
@@ -100,6 +103,7 @@ export default {
       id: 0,
       verCard: false,
       filtro: "todos",
+      filtro_tag: "",
       pesquisa: "",
       msg: {},
     };
@@ -146,7 +150,8 @@ export default {
       data = data.split("T")[0].split("-");
       return data[2] + " de " + this.meses[parseInt(data[1])-1] + " de " + data[0];
     },
-    ordem(){
+    ordem()
+    {
       var select = document.getElementById('ordem').value;
 
       if(select == "recentes")
@@ -155,8 +160,10 @@ export default {
       if(select == "antigos")
         document.getElementById("registros").style = "flex-direction: column-reverse";      
     },
-    getRegistros(){
+    getRegistros()
+    {
       this.verCard = false;
+
       this.$http
         .get("https://localhost:5001/api/registros/todos/" + this.$session.get("id"))
         .then(dados => {
@@ -173,9 +180,10 @@ export default {
             registro.tag = this.tags.filter(t => t.id == registro.idTag)[0];
           }
         })
-        .catch( erro => alert("algo deu errado3"));
+        .catch(erro => alert("algo deu errado3"));
     },
-    setCompartilhamentos(index, registro){
+    setCompartilhamentos(index, registro)
+    {
       this.$http
           .get("https://localhost:5001/api/compartilhadoRegistros/"+registro.id)
           .then(dados => {
@@ -184,7 +192,8 @@ export default {
           })
           .catch(erro => console.log("Erro:" + erro.text));
     },
-    getUsuario(i, id) {
+    getUsuario(i, id) 
+    {
       this.$http
           .get("https://localhost:5001/api/usuarios/" + id)
           .then(dados => { 
@@ -197,7 +206,8 @@ export default {
           })
           .catch(erro => console.log("Erro: " + erro.text));
     },
-    organizar(vetor){
+    organizar(vetor)
+    {
       var ret = [];
 
       for(let i = 0; i < vetor.length; i++)
@@ -219,11 +229,13 @@ export default {
       return ret;
     },
   },
-  beforeCreate() {
+  beforeCreate() 
+  {
     if (!this.$session.exists())
       this.$router.push('/')
   },
-  created(){
+  created()
+  {
     document.title = "Planilhas";
 
     this.$http
@@ -237,23 +249,43 @@ export default {
   },
   computed: {
     filtraReg() {
-      if(this.pesquisa)
-        return this.organizar(this.registros.filter(r => r.nome.toLowerCase().includes(this.pesquisa.toLowerCase())));
+      var ret = this.registros;
 
-      if(this.filtro == "todos")
-        return this.organizar(this.registros);
-        
       if(this.filtro == "despesa")
-        return this.organizar(this.registros.filter(r => r.quantia < 0));
+        ret = ret.filter(r => r.quantia < 0);
 
       if(this.filtro == "receita")
-        return this.organizar(this.registros.filter(r => r.quantia > 0));
+        ret = ret.filter(r => r.quantia > 0);
+
+      if(this.filtro_tag)
+        ret = ret.filter(r => r.tag.nome == this.filtro_tag);
+
+      if(this.pesquisa)
+        ret = ret.filter(r => r.nome.toLowerCase().includes(this.pesquisa.toLowerCase()));
+    
+      return this.organizar(ret);
     }
   },
 };
 </script>
 
 <style scoped>
+@media only screen and (max-width: 1000px) {
+  .filtros {
+    flex-wrap: wrap !important;
+  }
+  .filtros div {
+    width: 100%;
+  }
+  .filtros select {
+    width: 50% !important;
+  }
+  #buscaNome {
+    width: 100% !important;
+    margin-top: 10px !important;
+  }
+}
+
 .nav_icon{
   font-size: 30px;
 }
