@@ -30,6 +30,7 @@ class _HomePageState extends State<HomeScreen> {
   }
 
   void _login() {
+    print("entro");
     Usuario usuario =
         new Usuario.login(_apelidoController.text, _senhaController.text);
 
