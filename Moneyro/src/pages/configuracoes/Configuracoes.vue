@@ -210,8 +210,8 @@ export default {
        idUsuario: this.$session.get('id')
       }
 
-       this.$http.post("https://localhost:5001/api/avaliacoes", avaliacao).then(
-          response => { 
+       this.$http.post("https://localhost:5001/api/avaliacoes", avaliacao)
+       .then(response => { 
             this.qtdEstrelas = "";
             this.comentario = "";
             
@@ -225,19 +225,18 @@ export default {
               }],
               visivel: true
             };
-          },
-          response => {
-            this.msg.titulo = "Opa neném";
-            this.msg.mensagem = "Algo deu errado ao enviar sua avaliação.";
-            this.msg.botoes = [
-             {
+          })
+          .catch(erro => {
+            this.msg = {
+              titulo: "Opa neném",
+              mensagem: "Algo deu errado ao enviar sua avaliação.",
+              botoes: [{
                mensagem: "Tentar Novamente",
                evento: "fechar"
-             }
-            ];
-            this.msg.visivel = true;
-          }
-        );
+              }],
+              visivel: true
+            };
+          });
     },
     salvar()
     {
@@ -393,7 +392,7 @@ export default {
 
 .nascimento {
   margin: 0 0 5px;
-  background-color: #74747473;
+  background-color: transparent;
   border-radius: 5px;
   border: 2px solid #acacac;
   position: relavite;
@@ -427,7 +426,6 @@ export default {
   font-size: 1.2em;
   border-radius: 5px;
   width: 100%;
-  padding: 0 25px;
   box-sizing: border-box;
   background: transparent;
   color: whitesmoke;
@@ -440,7 +438,7 @@ export default {
 .input-container label {
   position: absolute;
   font-size: 1.2em;
-  top: 28%;
+  top: 22%;
   left: 20px;
   cursor: text;
   color: rgb(11, 92, 163);
@@ -468,7 +466,7 @@ export default {
 
 .cidade_estado {
   display: flex;
-  background-color: rgba(116, 116, 116, 0.45);
+  background-color: transparent;
   border: 2px solid #acacac;
   width: fit-content;
   border-radius: 5px;
@@ -562,6 +560,10 @@ export default {
   box-sizing: border-box;
 }
 
+.informacoes:nth-child(2) > div:last-child {
+  margin-top: auto;
+}
+
 #principal {
   display: flex;
 }
@@ -651,7 +653,7 @@ label{
 .campos {
   box-sizing: border-box;
   border-radius: 5px;
-  background-color: rgba(116, 116, 116, 0.45);
+  background-color: transparent;
   padding: 4px 15px;
   color: whitesmoke;
   font-size: 1.3em;
@@ -701,12 +703,12 @@ label{
 
 .cancelar {
   background: transparent;
-  border: 2px solid #00000000;
+  border: 2px solid pink;
   border-radius: 30px;
 }
 
 .cancelar:hover {
-  border: 2px solid rgb(73, 73, 73);
+  border: 2px solid rgb(255, 99, 99);
 }
 
 #salvar {

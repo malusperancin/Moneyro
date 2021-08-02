@@ -1,6 +1,6 @@
 <template>
   <div class="web">
-    <router-view></router-view>
+    <router-view v-on:tema="tema"></router-view>
     <div id="footer">
       <div class="footer-corpo">
         <div class="footer-logo"><b>Moneyro</b></div>
@@ -61,6 +61,9 @@ export default {
     else
       this.$router.push('/usuario')
     },
+    tema() {
+      alert(2);
+    }
   }
 };
 </script>
@@ -70,7 +73,11 @@ export default {
 html {
   scroll-behavior: smooth;
 }
-  
+
+:root {
+  --fundo: #1d1d1d;;
+  --font: #ffffff;
+} 
 
 * {
   transition: all 0.3s;
@@ -94,7 +101,7 @@ html {
 
 .pag {
   /* background-color: rgb(255, 227, 74); */
-  background-color: #0a0a0aeb;
+  background-color: var(--fundo);
   min-height: 100%;
 }
 

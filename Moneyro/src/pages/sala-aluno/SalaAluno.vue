@@ -8,7 +8,6 @@ d<template>
       v-on:ok="msg.visivel = false"
       v-on:sairAula="sairSala(), msg.visivel = false"/>
     <div class="centro">
-    <div id="botao"> </div>
       <div v-if="sala.id">
         <div class="cima">
           <div class="infoSala">
@@ -43,14 +42,19 @@ d<template>
           <div class="cod-sala">
             <input
               type="text"
-              id="email"
+              id="codigo"
               placeholder="Código da sala"
               v-model="sala.codigo"
-              maxlength=""
+              maxlength="6"
               required
+              
             >
             <button class="botao-entrar" v-on:click="entrarSala(sala.codigo)">Entrar</button>
           </div>
+        </div>
+        <div class="ou">
+          <p>OU</p> 
+          <div class="linha"></div>
         </div>
         <div class="quadrado">
           <p class="p-else">Se torne professor!</p>
@@ -155,6 +159,9 @@ export default {
         this.$router.push('/jogo');
     },
     entrarSala(cod) {
+      if(cod == "" || cod == null || cod == undefined)
+        return;
+
       this.$http.put("https://localhost:5001/api/usuarios/sala/" + cod, this.$session.get("usuario")).then(
         dados => {
           this.$session.set("idSala", dados.body.id);
@@ -221,7 +228,7 @@ export default {
     }
   },
   beforeCreate() {
-    if (!this.$session.exists() || this.$session.get('MA'))
+    if (!this.$session.exists())
       this.$router.push('/');
   },
   created() {
@@ -234,6 +241,18 @@ export default {
 </script>
 
 <style scoped>
+@media only screen and (max-width: 800px) {
+  .inicio {
+    flex-direction: column;
+  }
+
+  .ou .linha{
+    height: 2px !important;
+    width: 300px !important;
+  }
+
+}
+
 .icone {
   width: 1.5em;
  margin-right: 05px;
@@ -272,21 +291,51 @@ export default {
 
 .inicio {
   display: flex;
-  flex-direction:inherit;
   justify-content: center;
-  align-items:center;
+  align-items: center;
+  padding: 8% 1%;
+  transition: all 0s !important;
+}
+
+.ou {
+  margin: 15px;
+  position: relative;
+  background: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column wrap;
+}
+
+.ou p {
+  z-index: 55;
+  background: #1d1d1d;
+  color: whitesmoke;
+  padding: 5px;
+  border: 2px solid darkcyan;
+  border-radius: 87px;
+}
+
+.ou .linha {
+  position: absolute;
+  background: darkcyan;
+  width: 2px;
+  height: 350px;
+  border-radius: 87px;
 }
 
 .quadrado{
   font-size: 3em;
   display: flex;
   flex-direction: column;
+  grid-gap: 15px;
   box-sizing: border-box;
   padding: 20px;
   background: #f5f5f517;
-  border-radius: 20px;
+  border-radius: 10px;
   color: whitesmoke;
-  margin-right:5%;
+  min-width: 350px;
+  width: fit-content;
 }
 
 img {
@@ -305,25 +354,20 @@ input{
 p {
   margin: 0;
   color:white;
-  padding: 3px;
 }
 
 .p-else{
   font-size:0.6em;
-  text-align: center;
-  margin-bottom:3%;
 }
 
 .cod-sala{
   display: flex;
-  flex-direction: row;
-  height:15%;
-  margin-top: 5%;
+  grid-gap: 10px;
+
 }
 
-.cod-sala input{
-  width:80%;
-  margin-left: 5%;
+.cod-sala input {
+  width: 150px;
 }
 
 button{
@@ -331,20 +375,19 @@ button{
   border: none;
   color: white;
   background-color: rgba(241, 174, 30, 0.863);
-  border-radius: 13px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 1000;
   text-align: center;
-  width:60%;
+}
+
+.botao-entrar {
+  padding: 2px 30px;
+  width: 100%;
 }
 
 .botao {
-  padding: 5px;
-  margin: 5% auto 0; 
-}
-
-.cod-sala button{
-  margin-left: 3%; 
+  padding: 2px 35px;
 }
 
 .cima{

@@ -25,12 +25,13 @@ class _MaisPageState extends State<MaisScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             // aqui só carrega quando já pegou os dados
-            return Center(
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
               child: Container(
                 child: Text('mais'),
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width
-                )
+              )
             );
           } else {
             // aqui eh tipo uma tela de espera

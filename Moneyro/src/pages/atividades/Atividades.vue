@@ -103,14 +103,27 @@ export default {
   padding: 30px 15vw;
   display: flex;
   flex-direction: column;
-  justify-content: stretch;
+  align-content: stretch;
 }
 
 .conteudo {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 1% 5%;
   box-sizing: border-box;
-  justify-content: space-between;
+}
+
+.quadrado img {
+  width: 100%;
+  border-radius: 20px;
+  border-right: 12px solid #00000050;
+  border-bottom: 12px solid #00000050;
+}
+
+.quadrado{
+  cursor: pointer;
+  position: relative;
+  width:fit-content;
 }
 
 .retangulo {
@@ -125,20 +138,4 @@ export default {
   width: 100%;
    border-radius: 20px;
 }
-
-.quadrado img {
-  width: 270px;
-  border-radius: 20px;
-  margin:2%;
-  border-right: 12px solid #00000050;
-  border-bottom: 12px solid #00000050;
-}
-
-.quadrado{
-  cursor: pointer;
-  position: relative;
-  width:fit-content;
-  margin-bottom:1%;
-}
-
 </style>

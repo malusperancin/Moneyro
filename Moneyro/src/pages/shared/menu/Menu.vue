@@ -125,6 +125,9 @@ export default {
             evento: "fechar",
           }]
       };
+    },
+    tema() {
+      this.$emit('tema');
     }
   },
 };
@@ -173,6 +176,16 @@ export default {
       justify-content: space-between;
       overflow: hidden;
     }
+
+    ::-webkit-scrollbar {
+      width: 0;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgb(255, 255, 255);
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+    }
+
 
     .nav__list {
       overflow-y: scroll;
