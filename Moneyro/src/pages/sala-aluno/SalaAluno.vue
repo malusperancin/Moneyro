@@ -312,13 +312,13 @@ export default {
   background: #1d1d1d;
   color: whitesmoke;
   padding: 5px;
-  border: 2px solid darkcyan;
+  border: 2px solid rgb(12 ,64, 111);
   border-radius: 87px;
 }
 
 .ou .linha {
   position: absolute;
-  background: darkcyan;
+  background: rgb(12 ,64, 111);
   width: 2px;
   height: 350px;
   border-radius: 87px;

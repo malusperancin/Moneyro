@@ -47,6 +47,7 @@
 <script>
 import { routes } from "./routes";
 
+
 export default {
   data() {
     return {
@@ -63,16 +64,13 @@ export default {
     
 
     },
-
-    created(){
-      document.documentElement.style.overflow = 'hidden';
-
     tema() {
       alert(2);
-
     }
-  }
-  }
+  },
+    created(){
+      document.documentElement.style.overflow = 'hidden';
+    }
 };
 </script>
 

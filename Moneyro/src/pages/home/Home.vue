@@ -260,7 +260,7 @@ export default {
       this.$http
         .get("https://localhost:5001/api/situacoes")
         .then(dados => document.getElementsByClassName("saldo")[0].style.backgroundColor = dados.body[(situacao-1)].cor)
-        .carch(erro => console.log(erro.bodyText));
+        .catch(erro => console.log(erro.bodyText));
     }
   },
   created() {

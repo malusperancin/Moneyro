@@ -146,7 +146,7 @@ export default {
       if(carrinho.find(p => p.id == 1)) {
         this.usuario.professor = true;
         this.usuario.idSala = 1;
-        this.$session.set("professor", true);
+        this.$session.set("professor", 1);
       }
 
       this.$http.get("https://localhost:5001/api/usuarios/cmp-prof/" + this.usuario.id)

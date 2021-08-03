@@ -19,7 +19,7 @@
               <div id="editar" v-on:click="mudarFoto = true">
                 <ion-icon name="create" v-pre></ion-icon>
               </div>
-              <img alt="" :src="'src/images/' + usuario.foto + '.png'" id="imgPerfil" />
+              <img alt="" :src="'src/images/perfil' + usuario.foto + '.png'" id="imgPerfil" />
               <Lista
                 v-on:receber="receber($event)"
                 v-on:fechar="mudarFoto = false"
@@ -183,12 +183,12 @@ export default {
         .get("https://localhost:5001/api/usuarios/" + this.$session.get("id"))
         .then(response => {
           this.usuario = response.body;
-          this.usuario.foto = "perfil" + this.usuario.foto;
+          
           this.usuario.dataDeNascimento = response.body.dataDeNascimento.split("T")[0];
 
           var data = new Date(response.body.dataDeNascimento);
 
-          this.dia = data.getDate();
+          this.dia = data.getDate()+ 1;
           this.mes = data.getMonth()+1;
           this.ano = data.getFullYear();
         });
@@ -244,8 +244,6 @@ export default {
       var mm = String(this.mes).padStart(2, '0');
       this.usuario.dataDeNascimento = this.ano + "-" + mm + "-" + dd;
 
-      this.usuario.foto = this.usuario.foto.substring(6);
-
       this.$session.set("MA", this.usuario.modoAnonimo);
       this.$session.set("foto", this.usuario.foto);
       this.$session.set("nome", this.usuario.nome);
@@ -253,7 +251,6 @@ export default {
       this.$http.put("https://localhost:5001/api/usuarios/" + this.usuario.id, this.usuario)
       .then(
           response => {
-            this.usuario.foto = "perfil" + this.usuario.foto;
             this.msg = {
               titulo: "Sucesso",
               mensagem: "Suas informações foram alteradas com sucesso",

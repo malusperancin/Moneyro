@@ -87,7 +87,7 @@ export default {
       despesas: [],
       registros: [],
       teste: [],
-      anos: ["2015", "2016", "2017", "2018", "2019", "2020"],
+      anos: ["2019", "2020", "2021"],
       ano: "2020",
       mes: 1,
       meses: [

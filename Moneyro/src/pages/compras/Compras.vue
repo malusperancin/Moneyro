@@ -102,8 +102,9 @@ export default {
   methods: {
     cancela(){
        this.$http
-          .get("https://localhost:5001/api/usuario/prof/"+this.$session.get("id"))
+          .get("https://localhost:5001/api/usuarios/prof/"+this.$session.get("id"))
           .then(response => {
+            this.$session.set("professor", 0);
             this.msg = {
               visivel: true,
               titulo: 'Feito',

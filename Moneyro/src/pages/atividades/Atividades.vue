@@ -56,13 +56,13 @@ export default {
   },
   methods: {
     irJogo(){
-      if(this.$session.get('idSala') != 1) 
+      if(this.$session.get('idSala') != 1 || this.$session.get('professor') == 1) 
         this.$router.push('/jogo');
      
       this.msg = {
         visivel: true,
         titulo: "Humm que pena!",
-        mensagem: "Este conteúdo é apenas para estudantes!",
+        mensagem: "Este conteúdo é apenas para estudantes e professores!",
         botoes: [{
             mensagem: "Ok",
             evento: "cancelar",

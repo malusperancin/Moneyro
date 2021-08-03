@@ -64,6 +64,7 @@ export default {
   padding: 3px 14px;
   cursor: pointer;
   grid-gap: 10px;
+  margin-left: 80px;
 }
 
 .nav__link:hover {
@@ -74,4 +75,5 @@ export default {
 .nav__icon {
   margin-right: 8px;
 }
+
 </style>

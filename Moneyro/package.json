@@ -18,7 +18,8 @@
     "vue": "^2.5.11",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.1.6",
-    "vue-session": "^1.0.0"
+    "vue-session": "^1.0.0",
+    "vue-unity-webgl": "git+https://github.com/votetake/vue-unity-webgl.git"
   },
   "browserslist": [
     "> 1%",
