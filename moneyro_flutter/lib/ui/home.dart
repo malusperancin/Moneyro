@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tcc/data/api_services.dart';
-import 'package:tcc/models/usuario_model.dart';
+import 'package:tcc/ui/cofre/cofre.dart';
+import 'package:tcc/ui/feed/feed.dart';
+import 'package:tcc/ui/login.dart';
+import 'package:tcc/ui/mais/mais.dart';
+import 'package:tcc/ui/planilha/planilha.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_session/flutter_session.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -11,141 +15,152 @@ class HomeScreen extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-const _url = 'http://localhost:8080/#/cadastro';
-void _launchURL() async =>
-    await canLaunch(_url) ? await launch(_url) : throw 'Could not launch $_url';
-
-final _apelidoController = TextEditingController();
-final _senhaController = TextEditingController();
-
 class _HomePageState extends State<HomeScreen> {
-  Future<void> createInstances() async {}
+  List<Widget> _children = [
+    new CofreScreen(),
+    new PlanilhaScreen(),
+    new FeedScreen(),
+    new MaisScreen()
+  ];
 
-  String erro = "";
+  int _selectedPage = 0;
 
-  String _erro_login() {
-    if (erro != "") return erro;
-
-    return null;
-  }
-
-  void _login() {
-    print("entro");
-    Usuario usuario =
-        new Usuario.login(_apelidoController.text, _senhaController.text);
-
-    APIServices.login(usuario).then((response) {
-      if (response.statusCode == 200) {
-        print("foi");
-        //bota sessão e redireciona
-        //  Navigator.of(context).pushReplacement(
-        //    MaterialPageRoute(builder: (_) => CofreScreen(id: usu.id)));
-      } else {
-        erro = response.body;
-      }
+  Future<void> createInstances() async {
+    setState(() {
+      _children = [
+        new CofreScreen(),
+        new PlanilhaScreen(),
+        new FeedScreen(),
+        new MaisScreen()
+      ];
     });
   }
 
+  Future<bool> fetchData() async {
+    bool sessao_ativa = await FlutterSession().get("id") == null ? false : true;
+
+    if (!sessao_ativa)
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
+
+    return true;
+  }
+
+  /*
+  Telas do menu:
+    - Planilha
+    - Cofre
+    - Feed
+    - Mais
+
+  Telas do mais (só fazer se sobrar tempo): 
+    - Amigos
+    - Metas
+    - Perfil
+    - Sobre
+    - Sair
+  */
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: Center(
-          child: Padding(
-        padding: EdgeInsets.all(30),
-        child: Form(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SizedBox(
-                    width: 150,
-                    height: 150,
-                    child: Image.asset("assets/images/logo.png"))),
-            SizedBox(height: 80),
-            TextFormField(
-                controller: _apelidoController,
-                keyboardType: TextInputType.text,
-                cursorColor: Colors.white,
-                style: TextStyle(color: Colors.white, fontSize: 18),
-                decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Colors.white70, fontSize: 23),
-                    fillColor: Colors.white,
-                    hoverColor: Colors.blue,
-                    focusColor: Colors.white,
-                    labelText: "Apelido",
-                    contentPadding: EdgeInsets.fromLTRB(15.0, 30.0, 15.0, 0.0),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70, width: 2.0),
+    return FutureBuilder(
+        future: fetchData(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return RefreshIndicator(
+                onRefresh: createInstances,
+                child: Scaffold(
+                    backgroundColor: Theme.of(context).backgroundColor,
+                    body: IndexedStack(
+                      index: _selectedPage,
+                      children: _children,
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70, width: 2.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70, width: 2.0),
-                    ))),
-            SizedBox(height: 20),
-            TextFormField(
-                controller: _senhaController,
-                keyboardType: TextInputType.text,
-                cursorColor: Colors.white,
-                style: TextStyle(color: Colors.white, fontSize: 18),
-                obscureText: true,
-                decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Colors.white70, fontSize: 23),
-                    fillColor: Colors.white,
-                    hoverColor: Colors.blue,
-                    focusColor: Colors.white,
-                    errorText: _erro_login(),
-                    labelText: "Senha",
-                    contentPadding: EdgeInsets.fromLTRB(15.0, 30.0, 15.0, 0.0),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70, width: 2.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70, width: 2.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70, width: 2.0),
-                    ))),
-            SizedBox(height: 35),
-            ElevatedButton(
-              child: Text("Entrar"),
-              style: ElevatedButton.styleFrom(
-                primary: Theme.of(context).buttonColor,
-                textStyle: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0)),
-              ),
-              onPressed: () {
-                _login();
-              },
-            ),
-            SizedBox(height: 30),
-            Container(
-                height: 100,
-                alignment: Alignment.center,
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      "Você não possui uma conta ainda?",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    TextButton(
-                      onPressed: _launchURL,
-                      child: Text(
-                        'Clique aqui para criar!',
+                    floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, //specify the location of the FAB
+                    floatingActionButton: FloatingActionButton(
+                      onPressed: () {
+                        setState(() { 
+                          
+                        });
+                      },
+                      tooltip: "Adicionar registro",
+                      child: Container(
+                        margin: EdgeInsets.all(5.0),
+                        child: Icon(Icons.add_rounded, size: 30.0),
                       ),
+                      elevation: 2.0,
                     ),
-                  ],
-                )),
-          ],
-        )),
-      )),
-    );
+                    bottomNavigationBar: BottomAppBar(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 20.0),
+                        height: 70,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _selectedPage = 0;
+                                });
+                              },
+                              icon: Icon(Icons.savings_rounded,
+                                  color: _selectedPage == 0
+                                      ? Colors.green[500]
+                                      : Colors.green[100]),
+                              iconSize: 35.0,
+                              splashColor: Colors.green[50],
+                              tooltip: 'Cofre',
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _selectedPage = 1;
+                                });
+                              },
+                              icon: Icon(Icons.reorder_rounded,
+                                  color: _selectedPage == 1
+                                      ? Colors.amber[500]
+                                      : Colors.amber[100]),
+                              iconSize: 35.0,
+                              splashColor: Colors.amber[50],
+                              tooltip: 'Planilha',
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _selectedPage = 2;
+                                });
+                              },
+                              icon: Icon(Icons.article_rounded,
+                                  color: _selectedPage == 2
+                                      ? Colors.indigo[500]
+                                      : Colors.indigo[100]),
+                              iconSize: 35.0,
+                              splashColor: Colors.indigo[50],
+                              tooltip: 'Feed',
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _selectedPage = 3;
+                                });
+                              },
+                              icon: Icon(Icons.face_rounded,
+                                  color: _selectedPage == 3
+                                      ? Colors.cyan[500]
+                                      : Colors.cyan[100]),
+                              iconSize: 35.0,
+                              splashColor: Colors.cyan[50],
+                              tooltip: 'Mais',
+                            )
+                          ],
+                        ),
+                      ),
+                      shape: CircularNotchedRectangle()
+                    )));
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
   }
 }

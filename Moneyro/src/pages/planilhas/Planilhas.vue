@@ -29,39 +29,55 @@
         <input type="search" placeholder="Busque um registro..." id="buscaNome" v-model="pesquisa"/>
       </div>
       <div id="registros">
-        <div v-if="!filtraReg[0]">
-          <h1 style="color: white">Minha nossa mas não tem nada aqui! <br> Faça alguns registros e eles ficarão paradinhos te esperando...</h1>
+        <div v-if="!registros.carregado">
+          <div class="placeholder">
+            <div class="dia"></div>
+            <div class="registro"></div>
+            <div class="registro"></div>
+            <div class="registro"></div>
+            <div class="dia"></div>
+            <div class="registro"></div>
+            <div class="registro"></div>
+            <div class="registro"></div>
+            <div class="registro"></div>
+            <div class="registro"></div>
+          </div>
         </div>
-        <div v-else class="umDia" v-for="(dia, i) in filtraReg" :key="i">
-          <p class="data">{{ formataData(dia.data)}}</p>
-          <table cellspacin="0">
-            <tr
-              v-for="(reg, j) in dia.registros"
-              :key="j"
-              :class="[{'despesa' : reg.quantia < 0}, {'receita' : reg.quantia > 0}]"
-              v-on:click="abrirRegistro(reg)"
-            >
-              <td class="tag">
-                <img src="src/images/tag.png" alt class="tagImg" />
-                {{reg.tag.nome}}
-              </td>
-              <td class="nome">{{reg.nome}}</td>
-              <td class="compart">
-                <div class="amigos">
-                  <img v-for="(amigo, i) in reg.compartilhamentos" :title="amigo.nome" v-bind:key="i" :src="'src/images/perfil'+ amigo.foto + '.png'" alt />
-                </div>
-              </td>
-              <td class="quantia">
-                <img src="src/images/moeda.png" class="moedaImg" />
-                &nbsp; {{(Math.abs(reg.quantia)).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}}
-              </td>
-              <td class="sair">
-                <div v-if="reg.idUsuario != $session.get('id')">
-                  <ion-icon  name="log-out-outline" class="nav_icon" title="Sair" v-pre></ion-icon>
-                </div>
-              </td>
-            </tr>
-          </table>
+        <div v-else>
+          <div v-if="!filtraReg[0]">
+            <h1 style="color: white">Minha nossa mas não tem nada aqui! <br> Faça alguns registros e eles ficarão paradinhos te esperando...</h1>
+          </div>
+          <div v-else class="umDia" v-for="(dia, i) in filtraReg" :key="i">
+            <p class="data">{{ formataData(dia.data)}}</p>
+            <table cellspacin="0">
+              <tr
+                v-for="(reg, j) in dia.registros"
+                :key="j"
+                :class="[{'despesa' : reg.quantia < 0}, {'receita' : reg.quantia > 0}]"
+                v-on:click="abrirRegistro(reg)"
+              >
+                <td class="tag">
+                  <img src="src/images/tag.png" alt class="tagImg" />
+                  {{reg.tag.nome}}
+                </td>
+                <td class="nome">{{reg.nome}}</td>
+                <td class="compart">
+                  <div class="amigos">
+                    <img v-for="(amigo, i) in reg.compartilhamentos" :title="amigo.nome" v-bind:key="i" :src="'src/images/perfil'+ amigo.foto + '.png'" alt />
+                  </div>
+                </td>
+                <td class="quantia">
+                  <img src="src/images/moeda.png" class="moedaImg" />
+                  &nbsp; {{(Math.abs(reg.quantia)).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}}
+                </td>
+                <td class="sair">
+                  <div v-if="reg.idUsuario != $session.get('id')">
+                    <ion-icon  name="log-out-outline" class="nav_icon" title="Sair" v-pre></ion-icon>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -85,7 +101,10 @@ export default {
   },
   data() {
     return {
-      registros: [],
+      registros: {
+        carregado: false,
+        dados: []
+      },
       meses: [
         "Janeiro",
         "Fevereiro",
@@ -100,6 +119,7 @@ export default {
         "Novembro",
         "Dezembro"
       ],
+      tags: [],
       id: 0,
       verCard: false,
       filtro: "todos",
@@ -132,8 +152,8 @@ export default {
     },
     sairRegistro() 
     {
-      this.$http.delete("https://localhost:5001/api/compartilhadoRegistros/"+this.id+"/"+this.$session.get('id'));
-      this.registros = this.registros.filter(r => r.id != this.id);
+      this.$http.delete("https://localhost:5001/api/compartilhadoRegistros/"+this.id+"/"+this.$session.get('id'))
+                .then(() => {this.registros.dados = this.registros.dados.filter(r => r.id != this.id)});
     },
     mostrarMensagem(){
       this.msg = {
@@ -167,9 +187,10 @@ export default {
       this.$http
         .get("https://localhost:5001/api/registros/todos/" + this.$session.get("id"))
         .then(dados => {
-          this.registros = dados.body;
+          this.registros.carregado = true;
+          this.registros.dados = dados.body;
           
-          for(let [i, registro] of this.registros.entries())
+          for(let [i, registro] of this.registros.dados.entries())
           {
             this.setCompartilhamentos(i, registro);
               
@@ -180,14 +201,17 @@ export default {
             registro.tag = this.tags.filter(t => t.id == registro.idTag)[0];
           }
         })
-        .catch(erro => alert("algo deu errado3"));
+        .catch(erro => {
+          this.registros.carregado = false;
+          alert("algo deu errado3");
+        });
     },
     setCompartilhamentos(index, registro)
     {
       this.$http
           .get("https://localhost:5001/api/compartilhadoRegistros/"+registro.id)
           .then(dados => {
-            this.registros[index].compartilhamentos = dados.body;
+            this.registros.dados[index].compartilhamentos = dados.body;
             this.$forceUpdate();
           })
           .catch(erro => console.log("Erro:" + erro.text));
@@ -197,7 +221,7 @@ export default {
       this.$http
           .get("https://localhost:5001/api/usuarios/" + id)
           .then(dados => { 
-            this.registros[i].compartilhamentos.push({
+            this.registros.dados[i].compartilhamentos.push({
               id: dados.body.id,
               nome: dados.body.nome,
               foto: dados.body.foto
@@ -208,6 +232,9 @@ export default {
     },
     organizar(vetor)
     {
+      if(vetor == null)
+        return [];
+
       var ret = [];
 
       for(let i = 0; i < vetor.length; i++)
@@ -243,13 +270,20 @@ export default {
     .then(dados => {
       this.tags = dados.body;
       this.getRegistros();
-    }, erro => {
-      alert("Erro ao recuperar tags");
+    })
+    .catch(erro => {
+      console.log("Erro ao recuperar tags: " + erro.bodyText);
     });
   },
-  computed: {
+  mounted() {
+    var divs = document.getElementsByClassName("placeholder")[0].children;
+    for(let i = 0; i < divs.length; i++)
+      divs[i].style.animationDelay = i*150+'ms';
+  },
+  computed: 
+  {
     filtraReg() {
-      var ret = this.registros;
+      var ret = this.registros.dados;
 
       if(this.filtro == "despesa")
         ret = ret.filter(r => r.quantia < 0);
@@ -270,6 +304,47 @@ export default {
 </script>
 
 <style scoped>
+@keyframes pulse {
+  50% {
+    background: rgba(128, 128, 128, 0.4);
+  }
+}
+
+.placeholder div {
+  animation: pulse 3.5s ease-in-out infinite;
+}
+
+.placeholder .dia{
+  height: 30px;
+  width: 250px;
+  background: rgba(128, 128, 128, 0.2);
+  border-radius: 5px;
+  margin: 15px 0;
+}
+
+.dia:first-child{
+  width: 250px;
+}
+
+.dia:nth-child(1){
+  width: 300px !important;
+}
+
+.placeholder .registro {
+  width: 100%;
+  height: 40px;
+  background: rgba(128, 128, 128, 0.2);
+  margin-bottom: 5px;
+}
+
+.placeholder .registro:nth-child(2), .registro:nth-child(6) {
+  border-radius: 5px 5px 0 0;
+}
+
+.placeholder .registro:nth-child(4), .registro:nth-child(10) {
+  border-radius: 0 0 5px 5px;
+}
+
 @media only screen and (max-width: 1000px) {
   .filtros {
     flex-wrap: wrap !important;
@@ -413,6 +488,7 @@ tr:last-child { border-bottom-right-radius: 10px; }
 
 .filtros div{
   display: flex;
+  grid-gap: 10px;
   justify-content: space-between;
 }
 
@@ -439,7 +515,6 @@ tr:last-child { border-bottom-right-radius: 10px; }
 }*/
 
 .filtro {
-  margin: 0 5px 0 0;
   border-radius: 5px;
   border: 0px;
   padding: 7px 14px;
