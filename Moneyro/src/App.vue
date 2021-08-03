@@ -60,7 +60,12 @@ export default {
       this.$router.push('cadastro')
     else
       this.$router.push('/usuario')
+    
+
     },
+    created(){
+      document.documentElement.style.overflow = 'hidden';
+    }
   }
 };
 </script>
@@ -106,11 +111,13 @@ html {
 #footer {
   color: white;
   background-color: rgb(67, 67, 67);
+  z-index: 9999999;
 }
 
 .footer-corpo {
   display: flex;
   padding: 30px 2%;
+  z-index: 9999999;
 }
 
 .footer-container {
