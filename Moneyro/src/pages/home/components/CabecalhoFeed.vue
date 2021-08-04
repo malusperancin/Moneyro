@@ -9,7 +9,7 @@
     <login v-show="login" v-on:fechar="login = false"/>
     <div class="marca">
       <img class="logo" src="src/images/logo.png" alt />
-      <h1>Feed</h1>
+      <h1>Moneyro</h1>
     </div>
 
     <div class="nav__list">

@@ -69,7 +69,7 @@ export default {
     }
   },
     created(){
-      document.documentElement.style.overflow = 'hidden';
+     // document.documentElement.style.overflow = 'hidden';
     }
 };
 </script>

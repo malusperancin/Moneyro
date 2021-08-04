@@ -42,7 +42,7 @@ class Usuario {
     this.apelido = o["apelido"];
     this.email = o["email"];
     this.celular = o["celular"];
-    this.dataDeNascimento = o["dataDeNascimento"];
+    this.dataDeNascimento = new DateTime.now();
     this.foto = o["foto"];
     this.senha = o["senha"];
     this.cidade = o["cidade"];
@@ -52,6 +52,28 @@ class Usuario {
     this.professor = o["professor"];
     this.idSala = o["idSala"];
     this.pontos = o["pontos"];
+  }
+
+  Map<String, dynamic> toMap() {
+    var map = Map<String, dynamic>();
+    map["nome"] = nome;
+    map["id"] = id;
+    map["nome"] = nome;
+    map["apelido"] = apelido;
+    map["email"] = email;
+    map["celular"] = celular;
+    map["dataDeNascimento"] = dataDeNascimento.toIso8601String();
+    map["foto"] = foto;
+    map["senha"] = senha;
+    map["cidade"] = cidade;
+    map["modoAnonimo"] = modoAnonimo;
+    map["notificacoes"] = notificacoes;
+    map["saldo"] = saldo;
+    map["professor"] = professor;
+    map["idSala"] = idSala;
+    map["pontos"] = pontos;
+
+    return map;
   }
 
   Map toJson() => {

@@ -102,7 +102,7 @@ class _HomePageState extends State<HomeScreen> {
                                     _selectedPage = 0;
                                   });
                                 },
-                                icon: Icon(Icons.save,
+                                icon: Icon(Icons.point_of_sale_rounded,
                                     color: _selectedPage == 0
                                         ? Colors.green[500]
                                         : Colors.green[100]),

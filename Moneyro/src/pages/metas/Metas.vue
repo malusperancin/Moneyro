@@ -81,6 +81,7 @@ export default {
             this.msg.visivel = true;
     },
     mensagemNao(){
+          this.verMeta = false;
           this.msg.titulo = "Ops :P";
             this.msg.mensagem = "Você não pode mudar os compartilhados pois não é o criador dessa meta!";
             this.msg.botoes = [

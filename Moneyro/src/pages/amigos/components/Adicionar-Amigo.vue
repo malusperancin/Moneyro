@@ -168,7 +168,6 @@ export default {
       this.$http
         .get("https://localhost:5001/api/notificacoes/especifica/amizade/"+ idOrigem + "/"+this.$session.get("id"))
         .then(dados => {
-         alert("apagou");
         }, erro => {
           alert("algo deu negar");
         });

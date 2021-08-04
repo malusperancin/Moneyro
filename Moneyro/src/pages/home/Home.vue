@@ -173,12 +173,12 @@ export default {
         mensagem: "Você precisa estar logado para curtir as postagens!",
         botoes: [
           {
-            mensagem: "Cancelar",
-            evento: "cancelar",
-          },
-          {
             mensagem: "Entrar",
             evento: "logar",
+          },
+          {
+            mensagem: "Cancelar",
+            evento: "cancelar",
           }
         ],
       };

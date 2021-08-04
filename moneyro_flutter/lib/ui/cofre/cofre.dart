@@ -10,11 +10,10 @@ class CofreScreen extends StatefulWidget {
 }
 
 class _CofrePageState extends State<CofreScreen> {
-
-
+  var nome;
   Future<bool> fetchData() async {
     // se precisar pegar algo do banco ou da sessao faz aqui
-
+    nome = await FlutterSession().get('nome');
     return true;
   }
 
@@ -26,17 +25,14 @@ class _CofrePageState extends State<CofreScreen> {
           if (snapshot.hasData) {
             // aqui só carrega quando já pegou os dados
             return Center(
-              child: Container(
-                child: Text('cofre'),
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width
-                )
-            );
+                child: Container(
+                    child: Text(nome),
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width));
           } else {
             // aqui eh tipo uma tela de espera
             return CircularProgressIndicator();
           }
-        }
-      );
+        });
   }
 }
