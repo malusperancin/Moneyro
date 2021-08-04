@@ -1,69 +1,25 @@
 <template>
   <div class="pag">
-    <cabecalho :titulo="'Moneyro'"></cabecalho>
+    <cabecalho :titulo="'Contato'"></cabecalho>
 
-    <div id="porque">
-      <h3 id="titulo">
-        <b>O que é o Moneyro?</b>
-      </h3>
-      <p id="texto"> Moneyro é um aplicativo de gestao financeira para crianças e adolescentes. <br> 
-      É um conjunto de tecnologias, composto por um site e um aplicativo mobile para crianças e jovens de 6 a 18 anos, que contém jogos, 
-      simulações, parte de seleção de conteúdos, a sua própria área de gestão financeira e um produto à parte: o cofre tecnológico que separa 
-      e conta o seu dinheiro.
-      </p>
-      <h3 id="titulo">
-        <b>Por que eu devo usar o Moneyro?</b>
-      </h3>
-      <table id="tablepq">
-        <tr>
-          <td class="pqs">
-            <img src="src/images/1.png" />
-            <p class="titulo">Controlar seu dinheiro direitin</p>
-          </td>
-          <td class="pqs">
-            <img src="src/images/2.png" />
-            <p class="titulo">Não gastar com besteira</p>
-          </td>
-          <td class="pqs">
-            <img src="src/images/3.png" />
-            <p class="titulo">Se informar sobre economia</p>
-          </td>
-          <td class="pqs">
-            <img src="src/images/4.png" />
-            <p class="titulo">Layout simples, belo e fácil</p>
-          </td>
-        </tr>
-        <tr>
-          <td class="pqs">
-            <img src="src/images/5.png" />
-            <p class="titulo">Analisar seus gastos</p>
-          </td>
-          <td class="pqs">
-            <img src="src/images/6.png" />
-            <p>Receber diquinhas</p>
-          </td>
-          <td class="pqs">
-            <img src="src/images/7.png" />
-            <p>
-              Feito especialmente para você,
-              <br />jovem gafanhoto
-            </p>
-          </td>
-          <td class="pqs">
-            <img src="src/images/8.png" />
-            <p class="titulo">O jeito mais moneyro de economizar!</p>
-          </td>
-        </tr>
-      </table>
-      <h3 id="titulo">
-        <b>Qual nosso objetivo?</b>
-      </h3>
-      <p id="texto"> Com o Moneyro, visamos tornar o ensino de gestão financeira pessoal mais acessível e eficiente para crianças e jovens do Brasil.
-     <br> Buscamos, portanto, incentivar a educação financeira da população brasileira desde cedo para que, futuramente, tenhamos mais adultos responsáveis e financeiramente saudáveis. <br>
-Gestão financeira pessoal não é apenas quanto dinheiro devo gastar ou não, nisso ou naquilo, mas é sobre ser cidadão, ter um consumo consciente e sustentável, e ser uma dona ou um dono responsável do seu próprio dinheiro. 
+        <div id="centro">
+        <form method="POST" action="https://formspree.io/f/mleapolz">
+        <fieldset>
+            <input type="hidden" name="_subject" value="Novo contato!" />
+            <input type="hidden" name="_next" value="https://www.rossener.com/contato/mensagem-enviada/" />
+            <input type="hidden" name="_language" value="pt" />
 
-  </p>
-    </div>
+            <input type="text" name="nome" placeholder="Seu nome" required>
+
+            <input type="text" name="email" placeholder="Seu e-mail" required>
+
+            <textarea name="mensagem" placeholder="Sua mensagem" required></textarea>
+
+            <input type="submit" text="Enviar"></input>
+        </fieldset>
+        </form>
+        </div>
+
     <login v-if="login" v-on:fechar="login = false"></login>
   </div>
 </template>
@@ -93,7 +49,64 @@ export default {
 </script>
 
 <style scoped>
+#centro {
+  display: flex;
+  flex-direction: column;
+  }
+form{
+    max-width: 1000px;
+    margin: 12% auto 0 auto;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: weight;
+    padding: 10px;
+    width: 100%;
+
+
+}
+fieldset{
+    border:none;
+}
+        
+input[type="text"], input[type="email"], textarea{
+
+        box-sizing: border-box;
+        outline: none;
+        display: block;
+        color: #333333;
+        width: 100%;
+        padding: 11px;
+        border: none;
+        border-radius: 10px;
+        border-bottom: 5px solid #ddd;
+        margin-bottom: 30px;
+        font-family: inherit;
+        font-size: 21px;
+        height: 55px;
+    }
+    textarea{
+        height: 200px;
+    }
+    input[type="submit"]
+    {
+        font-size: 20px;
+        background-color: rgba(12, 65, 111,0.9);
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        border-radius: 15px;
+    }
+
+    input[type="submit"]:hover
+    {
+         background-color: rgba(12, 65, 111,0.8);
+    }
+
+
 .pag {
+
 }
 
 @media only screen and (max-width: 1000px) {

@@ -30,9 +30,9 @@
             <div class="icones"> 
               <ion-icon name="logo-twitter" v-pre></ion-icon>
               <ion-icon name="logo-facebook" v-pre></ion-icon>
-              <ion-icon name="logo-instagram" v-pre></ion-icon>
+             <a href="https://www.instagram.com/moneyro.startup/"> <ion-icon name="logo-instagram" v-pre></ion-icon> </a>
             </div>
-            <button> Contato </button>
+            <button v-on:click="$router.push('contato')"> Contato </button>
           </div>
         </div>
       </div>
@@ -46,7 +46,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
 import { routes } from "./routes";
-
 
 export default {
   data() {
@@ -64,6 +63,10 @@ export default {
     
 
     },
+
+    abrirContato(){
+
+    },
     tema() {
       alert(2);
     }
@@ -76,6 +79,9 @@ export default {
 
 <style src="./css/responsivo.css"></style>
 <style>
+button:hover{
+ cursor: pointer;
+}
 html {
   scroll-behavior: smooth;
 }

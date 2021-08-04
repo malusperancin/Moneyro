@@ -16,6 +16,7 @@ import Pontos from './pages/pontos/Pontos.vue';
 import Quiz from './pages/quiz/Quiz.vue';
 import Jogo from './pages/jogo/Jogo.vue';
 import Sobre from './pages/sobre/Sobre.vue';
+import Contato from './pages/contato/Contato.vue';
 
 export const routes = [
     { path: '', component: Home, title: 'Home' },
@@ -35,5 +36,6 @@ export const routes = [
     { path: '/pontos', component: Pontos, title: 'Pontos' },
     { path: '/quiz', component: Quiz, title: 'Quiz' },
     { path: '/jogo', component: Jogo, title: 'Jogo' },
-    { path: '/sobre', component: Sobre, title: 'Sobre' }
+    { path: '/sobre', component: Sobre, title: 'Sobre' },
+    { path: '/contato', component: Contato, title: 'Contato' }
 ]
