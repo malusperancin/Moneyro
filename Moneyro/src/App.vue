@@ -89,6 +89,7 @@ html {
 :root {
   --fundo: #1d1d1d;;
   --font: #ffffff;
+  --amarelo: #ecb318;
 } 
 
 * {

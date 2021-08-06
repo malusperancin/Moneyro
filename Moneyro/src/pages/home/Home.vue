@@ -3,6 +3,7 @@
     <Cabecalho :filtro="filtro" v-on:sair="mensagemDeslogar()"/>
     <Menu v-if="$session.exists()"/>
     <Topo />
+    <Bolinhas />
     <Mensagem
       :msg="msg" 
       v-if="msg.visivel" 
@@ -120,6 +121,7 @@ import Menu from "../shared/menu/Menu.vue";
 import Topo from "../shared/voltar-topo/Voltar-Topo.vue";
 import Mensagem from "../shared/mensagem/Mensagem.vue";
 import Login from '../shared/login/Login.vue'
+import Bolinhas from '../shared/bolinhas/Bolinhas.vue'
 
 export default {
   components: {
@@ -127,7 +129,8 @@ export default {
     Menu,
     Topo,
     Mensagem,
-    Login
+    Login,
+    Bolinhas
   },
   data() {
     return {
@@ -312,6 +315,7 @@ export default {
   #direita {
     max-width: 100% !important;
     flex-direction: column-reverse !important;
+    z-index: 1;
   }
 
   .filtro {
@@ -362,6 +366,7 @@ export default {
   flex-direction: column;
   grid-gap: 10px;
   flex: 1;
+  z-index: 1;
 }
 
 /* ---------- FEED ----------- */

@@ -55,7 +55,7 @@
       <h1> Troca de Pontos </h1>
       <div class="conteudo">
         <div class="quadrado" v-for="produto in produtos">
-          <img :src="'../src/images/'+produto.foto+'.png'">
+          <img :src="'../src/images/perfil'+produto.foto+'.png'">
           <p class="infotroca">{{produto.nome}} </p>
           <p class="infotroca">{{produto.preco}} pontos </p>
           <button class="btncompra" v-on:click="trocar(produto)">Trocar</button>
