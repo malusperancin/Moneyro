@@ -48,10 +48,10 @@ class _HomePageState extends State<HomeScreen> {
 
   /*
   Telas do menu:
-    - Planilha
+    - Planilha (só fazer se sobrar tempo)
     - Cofre
-    - Feed
-    - Mais
+    - Feed (só fazer se sobrar tempo)
+    - Mais (só fazer se sobrar tempo)
 
   Telas do mais (só fazer se sobrar tempo): 
     - Amigos
@@ -69,93 +69,98 @@ class _HomePageState extends State<HomeScreen> {
           if (snapshot.hasData) {
             return RefreshIndicator(
                 onRefresh: createInstances,
-                child: Scaffold(
-                    backgroundColor: Theme.of(context).backgroundColor,
-                    body: IndexedStack(
-                      index: _selectedPage,
-                      children: _children,
-                    ),
-                    floatingActionButtonLocation: FloatingActionButtonLocation
-                        .centerDocked, //specify the location of the FAB
-                    floatingActionButton: FloatingActionButton(
-                      onPressed: () {
-                        setState(() {});
-                      },
-                      tooltip: "Adicionar registro",
-                      child: Container(
-                        margin: EdgeInsets.all(5.0),
-                        child: Icon(Icons.add_rounded, size: 30.0),
-                      ),
-                      elevation: 2.0,
-                    ),
-                    bottomNavigationBar: BottomAppBar(
-                        child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 20.0),
-                          height: 70,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _selectedPage = 0;
-                                  });
-                                },
-                                icon: Icon(Icons.point_of_sale_rounded,
-                                    color: _selectedPage == 0
-                                        ? Colors.green[500]
-                                        : Colors.green[100]),
-                                iconSize: 35.0,
-                                splashColor: Colors.green[50],
-                                tooltip: 'Cofre',
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _selectedPage = 1;
-                                  });
-                                },
-                                icon: Icon(Icons.reorder_rounded,
-                                    color: _selectedPage == 1
-                                        ? Colors.amber[500]
-                                        : Colors.amber[100]),
-                                iconSize: 35.0,
-                                splashColor: Colors.amber[50],
-                                tooltip: 'Planilha',
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _selectedPage = 2;
-                                  });
-                                },
-                                icon: Icon(Icons.article_rounded,
-                                    color: _selectedPage == 2
-                                        ? Colors.indigo[500]
-                                        : Colors.indigo[100]),
-                                iconSize: 35.0,
-                                splashColor: Colors.indigo[50],
-                                tooltip: 'Feed',
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _selectedPage = 3;
-                                  });
-                                },
-                                icon: Icon(Icons.face_rounded,
-                                    color: _selectedPage == 3
-                                        ? Colors.cyan[500]
-                                        : Colors.cyan[100]),
-                                iconSize: 35.0,
-                                splashColor: Colors.cyan[50],
-                                tooltip: 'Mais',
-                              )
-                            ],
-                          ),
+                child: SafeArea(
+                    child: Scaffold(
+                        backgroundColor: Theme.of(context).backgroundColor,
+                        body: IndexedStack(
+                          index: _selectedPage,
+                          children: _children,
                         ),
-                        shape: CircularNotchedRectangle())));
+                        floatingActionButtonLocation:
+                            FloatingActionButtonLocation
+                                .centerDocked, //specify the location of the FAB
+                        floatingActionButton: FloatingActionButton(
+                          onPressed: () {
+                            setState(() {});
+                          },
+                          tooltip: "Adicionar registro",
+                          child: Container(
+                            margin: EdgeInsets.all(5.0),
+                            child: Icon(Icons.add_rounded, size: 30.0),
+                          ),
+                          elevation: 2.0,
+                        ),
+                        bottomNavigationBar: BottomAppBar(
+                            child: Container(
+                              height: 70,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Spacer(),
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedPage = 0;
+                                      });
+                                    },
+                                    icon: Icon(Icons.point_of_sale_rounded,
+                                        color: _selectedPage == 0
+                                            ? Colors.green[500]
+                                            : Colors.green[100]),
+                                    iconSize: 35.0,
+                                    splashColor: Colors.green[50],
+                                    tooltip: 'Cofre',
+                                  ),
+                                  Spacer(),
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedPage = 1;
+                                      });
+                                    },
+                                    icon: Icon(Icons.reorder_rounded,
+                                        color: _selectedPage == 1
+                                            ? Colors.amber[500]
+                                            : Colors.amber[300]),
+                                    iconSize: 35.0,
+                                    splashColor: Colors.amber[50],
+                                    tooltip: 'Planilha',
+                                  ),
+                                  Spacer(flex: 2),
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedPage = 2;
+                                      });
+                                    },
+                                    icon: Icon(Icons.article_rounded,
+                                        color: _selectedPage == 2
+                                            ? Colors.indigo[500]
+                                            : Colors.indigo[100]),
+                                    iconSize: 35.0,
+                                    splashColor: Colors.indigo[50],
+                                    tooltip: 'Feed',
+                                  ),
+                                  Spacer(),
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedPage = 3;
+                                      });
+                                    },
+                                    icon: Icon(Icons.face_rounded,
+                                        color: _selectedPage == 3
+                                            ? Colors.cyan[500]
+                                            : Colors.cyan[100]),
+                                    iconSize: 35.0,
+                                    splashColor: Colors.cyan[50],
+                                    tooltip: 'Mais',
+                                  ),
+                                  Spacer()
+                                ],
+                              ),
+                            ),
+                            shape: CircularNotchedRectangle()))));
           } else {
             return CircularProgressIndicator();
           }

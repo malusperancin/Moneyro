@@ -10,8 +10,6 @@ class MaisScreen extends StatefulWidget {
 }
 
 class _MaisPageState extends State<MaisScreen> {
-
-
   Future<bool> fetchData() async {
     // se precisar pegar algo do banco ou da sessao faz aqui
 
@@ -26,18 +24,15 @@ class _MaisPageState extends State<MaisScreen> {
           if (snapshot.hasData) {
             // aqui só carrega quando já pegou os dados
             return Padding(
-              padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
-              child: Container(
-                child: Text('mais'),
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width
-              )
-            );
+                padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+                child: Container(
+                    child: Text('mais'),
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width));
           } else {
             // aqui eh tipo uma tela de espera
             return CircularProgressIndicator();
           }
-        }
-      );
+        });
   }
 }
