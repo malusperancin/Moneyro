@@ -39,7 +39,7 @@ class _HomePageState extends State<HomeScreen> {
   Future<bool> fetchData() async {
     bool sessao_ativa = await FlutterSession().get("id") == null ? false : true;
 
-    if (!sessao_ativa)
+    if (sessao_ativa)
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
 
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomeScreen> {
                         ),
                         bottomNavigationBar: BottomAppBar(
                             child: Container(
-                              height: 70,
+                              height: 60,
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
@@ -126,7 +126,7 @@ class _HomePageState extends State<HomeScreen> {
                                     splashColor: Colors.amber[50],
                                     tooltip: 'Planilha',
                                   ),
-                                  Spacer(flex: 2),
+                                  Spacer(flex: 3),
                                   IconButton(
                                     onPressed: () {
                                       setState(() {
