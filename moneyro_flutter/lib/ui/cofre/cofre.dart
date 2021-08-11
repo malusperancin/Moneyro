@@ -13,7 +13,8 @@ class CofreScreen extends StatefulWidget {
 class _CofrePageState extends State<CofreScreen> {
   final _url = 'http://localhost:8080/#/compra';
   var nome;
-  var cofre = false;
+  var cofre = true;
+  var conectado = true;
   var quantia = 7;
 
   void _launchURL() async => await canLaunch(_url)
@@ -55,7 +56,7 @@ class _CofrePageState extends State<CofreScreen> {
                         child: Image.asset("images/status5.png")));
   }
 
-  Widget cabecalho(titulo) {
+  Widget cabecalho(titulo, icone, cor) {
     return Padding(
         padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         child: Expanded(
@@ -72,7 +73,7 @@ class _CofrePageState extends State<CofreScreen> {
                     color: Theme.of(context).primaryColorLight,
                     borderRadius: BorderRadius.circular(100)),
                 child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 5),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -86,13 +87,13 @@ class _CofrePageState extends State<CofreScreen> {
                                       color: Colors.white))),
                           Container(
                             decoration: BoxDecoration(
-                                color: Colors.green[500],
+                                color: cor,
                                 borderRadius: BorderRadius.circular(100)),
                             child: IconButton(
                               color: Colors.white,
                               onPressed: () {},
-                              icon: Icon(Icons.point_of_sale_rounded),
-                              iconSize: 25,
+                              icon: Icon(icone),
+                              iconSize: 28,
                             ),
                           )
                         ])))));
@@ -108,74 +109,134 @@ class _CofrePageState extends State<CofreScreen> {
             return Container(
                 width: MediaQuery.of(context).size.width,
                 child: Column(children: <Widget>[
-                  cabecalho("Cofre"),
+                  cabecalho("Cofre", Icons.savings_rounded, Colors.green[500]),
                   Expanded(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      //Não tem cofre
-                      Padding(
-                          padding: EdgeInsets.only(left: 25),
-                          child: Row(children: <Widget>[
-                            Image.asset(
-                              "images/status11.png",
-                              fit: BoxFit.cover,
-                              width: 300,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                    child: Text("Humn que pena...",
+                      child: cofre
+                          ? conectado
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text("tela normal")
+                                  ])
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.asset('assets/images/status11.png',
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.6),
+                                    Text("Cofre desconectado",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.w900,
-                                            fontSize: 35,
-                                            fontFamily: 'Malu',
-                                            color: Colors.white))),
-                                Expanded(
-                                    child: Text(
-                                        "Você precisa de um cofre para usar esta aba",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.normal,
+                                            height: 0.8,
+                                            fontWeight: FontWeight.w100,
                                             fontSize: 18,
                                             fontFamily: 'Malu',
-                                            color: Colors.white)))
+                                            color: Colors.black45)),
+                                    SizedBox(
+                                      height: 70,
+                                    ),
+                                    ElevatedButton(
+                                        child: Text(
+                                          "Conectar",
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          primary:
+                                              Theme.of(context).buttonColor,
+                                          textStyle: TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.w900,
+                                              fontFamily: 'Malu'),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                        onPressed: () {
+                                          _launchURL();
+                                        })
+                                  ],
+                                )
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                //Não tem cofre
+                                Container(
+                                  color: Theme.of(context).backgroundColor,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Padding(
+                                      padding: EdgeInsets.only(left: 25),
+                                      child: Row(children: <Widget>[
+                                        Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.5,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Humn que pena...",
+                                                    style: TextStyle(
+                                                        height: 0.8,
+                                                        fontWeight:
+                                                            FontWeight.w900,
+                                                        fontSize: 40,
+                                                        fontFamily: 'Malu',
+                                                        color: Colors.white)),
+                                                Text(
+                                                    "Você precisa de um cofre para usar esta aba",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                        fontSize: 18,
+                                                        fontFamily: 'Malu',
+                                                        color: Colors.white))
+                                              ],
+                                            )),
+                                        Image.asset(
+                                            'assets/images/status11.png',
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.55),
+                                      ])),
+                                ),
+                                //Comprar cofre
+                                Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 25, vertical: 50),
+                                    child: Row(children: <Widget>[
+                                      Expanded(
+                                        child: Text(
+                                            "Caso queira adquirir um, este botão te levará direto para nossa loja",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 16,
+                                                fontFamily: 'Malu',
+                                                color: Colors.white,
+                                                height: .9)),
+                                      ),
+                                      SizedBox(width: 6.0),
+                                      ElevatedButton(
+                                          child: Text(
+                                            "Comprar",
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            primary:
+                                                Theme.of(context).buttonColor,
+                                            textStyle: TextStyle(
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.w900,
+                                                fontFamily: 'Malu'),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                          onPressed: () {
+                                            _launchURL();
+                                          })
+                                    ]))
                               ],
-                            ),
-                          ])),
-                      //Comprar cofre
-                      Padding(
-                          padding: EdgeInsets.all(25),
-                          child: Row(children: <Widget>[
-                            Expanded(
-                              child: Text(
-                                  "Caso queira adquirir um, este botão te levará direto para nossa loja",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 18,
-                                      fontFamily: 'Malu',
-                                      color: Colors.white)),
-                            ),
-                            SizedBox(width: 5.0),
-                            ElevatedButton(
-                                child: Text(
-                                  "Comprar",
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Theme.of(context).buttonColor,
-                                  textStyle: TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w900,
-                                      fontFamily: 'Malu'),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                ),
-                                onPressed: () {
-                                  _launchURL();
-                                }),
-                          ]))
-                    ],
-                  )),
+                            )),
                 ]));
           } else {
             // aqui eh tipo uma tela de espera

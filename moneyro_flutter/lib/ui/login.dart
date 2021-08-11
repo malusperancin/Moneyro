@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tcc/data/api_services.dart';
-import 'package:tcc/models/usuario_model.dart';
-import 'package:tcc/ui/home.dart';
+import 'package:Moneyro/data/api_services.dart';
+import 'package:Moneyro/models/usuario_model.dart';
+import 'package:Moneyro/ui/home.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'dart:convert';

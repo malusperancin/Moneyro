@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tcc/ui/cofre/cofre.dart';
-import 'package:tcc/ui/feed/feed.dart';
-import 'package:tcc/ui/login.dart';
-import 'package:tcc/ui/mais/mais.dart';
-import 'package:tcc/ui/planilha/planilha.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:Moneyro/ui/cofre/cofre.dart';
+import 'package:Moneyro/ui/feed/feed.dart';
+import 'package:Moneyro/ui/login.dart';
+import 'package:Moneyro/ui/mais/mais.dart';
+import 'package:Moneyro/ui/planilha/planilha.dart';
 import 'package:flutter_session/flutter_session.dart';
 
 class HomeScreen extends StatefulWidget {

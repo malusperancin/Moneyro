@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:tcc/models/usuario_model.dart';
+import 'package:Moneyro/models/usuario_model.dart';
 
 class APIServices {
   static final String url = 'http://192.168.15.155:5000/api/';

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_session/flutter_session.dart';
 
 class MaisScreen extends StatefulWidget {
   MaisScreen({Key key}) : super(key: key);
@@ -16,6 +15,50 @@ class _MaisPageState extends State<MaisScreen> {
     return true;
   }
 
+  Widget cabecalho(titulo, icone, cor) {
+    return Padding(
+        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+        child: Expanded(
+            child: Container(
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.4),
+                        spreadRadius: 2,
+                        blurRadius: 15,
+                        offset: Offset(0, 5), // changes position of shadow
+                      ),
+                    ],
+                    color: Theme.of(context).primaryColorLight,
+                    borderRadius: BorderRadius.circular(100)),
+                child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Padding(
+                              padding: EdgeInsets.fromLTRB(10.0, 0, 0, 4.0),
+                              child: Text(titulo,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 35,
+                                      fontFamily: 'Malu',
+                                      color: Colors.white))),
+                          Container(
+                            decoration: BoxDecoration(
+                                color: cor,
+                                borderRadius: BorderRadius.circular(100)),
+                            child: IconButton(
+                              color: Colors.white,
+                              onPressed: () {},
+                              icon: Icon(icone),
+                              iconSize: 28,
+                            ),
+                          )
+                        ])))));
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -23,12 +66,11 @@ class _MaisPageState extends State<MaisScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             // aqui só carrega quando já pegou os dados
-            return Padding(
-                padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
-                child: Container(
-                    child: Text('mais'),
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width));
+            return Container(
+                width: MediaQuery.of(context).size.width,
+                child: Column(children: <Widget>[
+                  cabecalho("Você", Icons.face_rounded, Colors.cyan[500])
+                ]));
           } else {
             // aqui eh tipo uma tela de espera
             return CircularProgressIndicator();
