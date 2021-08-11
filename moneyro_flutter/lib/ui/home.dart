@@ -38,7 +38,7 @@ class _HomePageState extends State<HomeScreen> {
   Future<bool> fetchData() async {
     bool sessao_ativa = await FlutterSession().get("id") == null ? false : true;
 
-    if (sessao_ativa)
+    if (!sessao_ativa)
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
 

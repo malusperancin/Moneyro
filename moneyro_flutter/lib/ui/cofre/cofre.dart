@@ -1,7 +1,9 @@
+import 'package:Moneyro/models/situacao_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 
 class CofreScreen extends StatefulWidget {
   CofreScreen({Key key}) : super(key: key);
@@ -12,10 +14,11 @@ class CofreScreen extends StatefulWidget {
 
 class _CofrePageState extends State<CofreScreen> {
   final _url = 'http://localhost:8080/#/compra';
-  var nome;
+
   var cofre = true;
   var conectado = true;
   var quantia = 7;
+  //var situacoes = List<Situacao>;
 
   void _launchURL() async => await canLaunch(_url)
       ? await launch(_url)
@@ -23,7 +26,12 @@ class _CofrePageState extends State<CofreScreen> {
 
   Future<bool> fetchData() async {
     // se precisar pegar algo do banco ou da sessao faz aqui
-    nome = await FlutterSession().get('nome');
+    quantia = await FlutterSession().get('cofre');
+    quantia >= 0 ? cofre = true : cofre = false;
+
+    NumberFormat formater = NumberFormat.simpleCurrency();
+    formater.format(quantia);
+
     return true;
   }
 
@@ -36,7 +44,44 @@ class _CofrePageState extends State<CofreScreen> {
   */
 
   Widget getSituacao() {
-    return SizedBox(
+    var texto = "R\u0024" + quantia.toString();
+
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      color: Colors.amber,
+      child: Row(
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(left: 25, top: 30, bottom: 40),
+              child: Container(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                    Text("Quantia no cofre:",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w100,
+                            fontSize: 20,
+                            fontFamily: 'Malu',
+                            color: Colors.white)),
+                    Text(texto,
+                        style: TextStyle(
+                            height: 1.2,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 60,
+                            fontFamily: 'Malu2',
+                            color: Colors.white)),
+                    Text("Frase",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 22,
+                            fontFamily: 'Malu',
+                            color: Colors.white))
+                  ]))),
+          Image.asset("assets/images/status1.png")
+        ],
+      ),
+    );
+    /*return SizedBox(
         width: 300,
         height: 300,
         child: quantia < 5
@@ -53,7 +98,78 @@ class _CofrePageState extends State<CofreScreen> {
                         child: Image.asset("images/status4.png"))
                     : ClipRRect(
                         borderRadius: BorderRadius.circular(20.0),
-                        child: Image.asset("images/status5.png")));
+                        child: Image.asset("images/status5.png")));*/
+  }
+
+  Widget getCard() {
+    return Padding(
+        padding: EdgeInsets.all(50),
+        child: Column(children: <Widget>[
+          Container(
+              color: Color(0xFF545454),
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("R\u0024 " + quantia.toString(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 55,
+                              fontFamily: 'Malu2',
+                              color: Colors.white)),
+                    ],
+                  ))),
+          Container(
+              color: Color(0xFF545454),
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ClipOval(
+                    child: Material(
+                      color: Colors.purple[400], // button color
+                      child: InkWell(
+                        splashColor: Colors.purple[900], // inkwell color
+                        child: SizedBox(
+                            width: 56,
+                            height: 56,
+                            child:
+                                Icon(Icons.edit_rounded, color: Colors.white)),
+                        onTap: () {},
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                      child: Text("Cancelar"),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red[400],
+                        textStyle: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red[200]),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0)),
+                      ),
+                      onPressed: () {}),
+                  ElevatedButton(
+                      child: Text("Confirmar"),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.yellow[700],
+                        textStyle: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green[700]),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0)),
+                      ),
+                      onPressed: () {
+                        // faz negocio no banco
+                      })
+                ],
+              ))
+        ]));
   }
 
   Widget cabecalho(titulo, icone, cor) {
@@ -107,137 +223,123 @@ class _CofrePageState extends State<CofreScreen> {
           if (snapshot.hasData) {
             // aqui só carrega quando já pegou os dados
             return Container(
-                width: MediaQuery.of(context).size.width,
                 child: Column(children: <Widget>[
-                  cabecalho("Cofre", Icons.savings_rounded, Colors.green[500]),
-                  Expanded(
-                      child: cofre
-                          ? conectado
-                              ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("tela normal")
-                                  ])
-                              : Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
+              cabecalho("Cofre", Icons.point_of_sale_rounded, Colors.blue[500]),
+              Expanded(
+                  child: cofre
+                      ? conectado
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[getSituacao(), getCard()])
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Image.asset('assets/images/status11.png',
+                                    width: MediaQuery.of(context).size.width *
+                                        0.6),
+                                Text("Cofre desconectado",
+                                    style: TextStyle(
+                                        height: 0.8,
+                                        fontWeight: FontWeight.w100,
+                                        fontSize: 18,
+                                        fontFamily: 'Malu',
+                                        color: Colors.black45)),
+                                SizedBox(
+                                  height: 70,
+                                ),
+                                ElevatedButton(
+                                    child: Text(
+                                      "Conectar",
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Theme.of(context).buttonColor,
+                                      textStyle: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.w900,
+                                          fontFamily: 'Malu'),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                    onPressed: () {})
+                              ],
+                            )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            //Não tem cofre
+                            Container(
+                              color: Theme.of(context).backgroundColor,
+                              width: MediaQuery.of(context).size.width,
+                              child: Padding(
+                                  padding: EdgeInsets.only(left: 25),
+                                  child: Row(children: <Widget>[
+                                    Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.5,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text("Humn que pena...",
+                                                style: TextStyle(
+                                                    height: 0.8,
+                                                    fontWeight: FontWeight.w900,
+                                                    fontSize: 40,
+                                                    fontFamily: 'Malu',
+                                                    color: Colors.white)),
+                                            Text(
+                                                "Você precisa de um cofre para usar esta aba",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 18,
+                                                    fontFamily: 'Malu',
+                                                    color: Colors.white))
+                                          ],
+                                        )),
                                     Image.asset('assets/images/status11.png',
                                         width:
                                             MediaQuery.of(context).size.width *
-                                                0.6),
-                                    Text("Cofre desconectado",
-                                        style: TextStyle(
-                                            height: 0.8,
-                                            fontWeight: FontWeight.w100,
-                                            fontSize: 18,
-                                            fontFamily: 'Malu',
-                                            color: Colors.black45)),
-                                    SizedBox(
-                                      height: 70,
-                                    ),
-                                    ElevatedButton(
-                                        child: Text(
-                                          "Conectar",
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          primary:
-                                              Theme.of(context).buttonColor,
-                                          textStyle: TextStyle(
-                                              fontSize: 30,
-                                              fontWeight: FontWeight.w900,
-                                              fontFamily: 'Malu'),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                        ),
-                                        onPressed: () {
-                                          _launchURL();
-                                        })
-                                  ],
-                                )
-                          : Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                //Não tem cofre
-                                Container(
-                                  color: Theme.of(context).backgroundColor,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Padding(
-                                      padding: EdgeInsets.only(left: 25),
-                                      child: Row(children: <Widget>[
-                                        Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.5,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text("Humn que pena...",
-                                                    style: TextStyle(
-                                                        height: 0.8,
-                                                        fontWeight:
-                                                            FontWeight.w900,
-                                                        fontSize: 40,
-                                                        fontFamily: 'Malu',
-                                                        color: Colors.white)),
-                                                Text(
-                                                    "Você precisa de um cofre para usar esta aba",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                        fontSize: 18,
-                                                        fontFamily: 'Malu',
-                                                        color: Colors.white))
-                                              ],
-                                            )),
-                                        Image.asset(
-                                            'assets/images/status11.png',
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
                                                 0.55),
-                                      ])),
-                                ),
-                                //Comprar cofre
-                                Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 25, vertical: 50),
-                                    child: Row(children: <Widget>[
-                                      Expanded(
-                                        child: Text(
-                                            "Caso queira adquirir um, este botão te levará direto para nossa loja",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.normal,
-                                                fontSize: 16,
-                                                fontFamily: 'Malu',
-                                                color: Colors.white,
-                                                height: .9)),
+                                  ])),
+                            ),
+                            //Comprar cofre
+                            Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 25, vertical: 50),
+                                child: Row(children: <Widget>[
+                                  Expanded(
+                                    child: Text(
+                                        "Caso queira adquirir um, este botão te levará direto para nossa loja",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 16,
+                                            fontFamily: 'Malu',
+                                            color: Colors.white,
+                                            height: .9)),
+                                  ),
+                                  SizedBox(width: 6.0),
+                                  ElevatedButton(
+                                      child: Text(
+                                        "Comprar",
                                       ),
-                                      SizedBox(width: 6.0),
-                                      ElevatedButton(
-                                          child: Text(
-                                            "Comprar",
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            primary:
-                                                Theme.of(context).buttonColor,
-                                            textStyle: TextStyle(
-                                                fontSize: 30,
-                                                fontWeight: FontWeight.w900,
-                                                fontFamily: 'Malu'),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                          ),
-                                          onPressed: () {
-                                            _launchURL();
-                                          })
-                                    ]))
-                              ],
-                            )),
-                ]));
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Theme.of(context).buttonColor,
+                                        textStyle: TextStyle(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.w900,
+                                            fontFamily: 'Malu'),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                      ),
+                                      onPressed: () {})
+                                ]))
+                          ],
+                        )),
+            ]));
           } else {
             // aqui eh tipo uma tela de espera
             return CircularProgressIndicator();

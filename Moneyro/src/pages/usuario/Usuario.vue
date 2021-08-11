@@ -5,8 +5,14 @@
     <div class="centro">
       <div class="inicio">
         <div class="frase">
-          <small>Bem-vinda(o) de volta,</small>
-          <big>{{nome}}</big> 
+          <div class="horizontal">
+            <small>Bem-vinda(o) de volta,</small>
+            <big>{{nome}}</big> 
+          </div>
+          <div class="cofre" v-if="this.has" >
+              <small>Cofre:</small>
+              <span>{{(Math.abs(cofre)).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}}</span>
+          </div>
         </div>
         <span class="linha"></span>
         <div class="saldo">
@@ -40,7 +46,9 @@ export default {
       saldo: 0.0,
       situacao: -1,
       msg:"",
-      cor:""
+      cor:"",
+      cofre:0.0,
+      has: false
     };
   },
   methods: {
@@ -77,7 +85,16 @@ export default {
         .get("https://localhost:5001/api/usuarios/" + this.$session.get("id"))
         .then(dados => {
           dados = dados.body;
-          
+
+          if( dados.cofre == -1.0)
+            this.has = false;
+          else
+          {
+            this.has = true;
+            this.cofre = dados.cofre;
+          } 
+
+
           this.nome = dados.nome;
           this.saldo = Math.floor(dados.saldo*100)/100;
           
@@ -109,12 +126,41 @@ img{
 .frase{
   font-size: 3em;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   box-sizing: border-box;
-  padding: 15px 20px;
   background: #f5f5f517;
   border-radius: 5px;
   color: whitesmoke;
+  flex-wrap: wrap;
+}
+
+.horizontal {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 35px;
+}
+
+.cofre {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background: #404040;
+  padding: 0 30px 0 40px;
+  border-radius: 15px 0 0 15px;
+}
+
+.cofre span, .cofre small{
+  padding: 0;
+  margin: 0;
+}
+
+.cofre small {
+  padding: 15px 0 0;
+}
+
+.cofre span{
+  font-size: 1.1em;
+  font-weight: 600;
 }
 
 small{
@@ -125,7 +171,7 @@ small{
   /* background: red; */
   display: flex;
   flex-direction: column;
-  /* display: inline-flex; */
+   /*display: inline-flex; */
 }
 
 .linha {

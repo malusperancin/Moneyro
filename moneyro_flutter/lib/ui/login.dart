@@ -36,6 +36,7 @@ class _LoginPageState extends State<LoginScreen> {
     await session.set("nome", user.nome);
     await session.set("apelido", user.apelido);
     await session.set("email", user.email);
+    await session.set("cofre", user.cofre);
   }
 
   void _login() {
@@ -55,7 +56,8 @@ class _LoginPageState extends State<LoginScreen> {
         5.0,
         false,
         1,
-        0);
+        0,
+        0.0);
 
     APIServices.login(usuario).then((response) {
       if (response.statusCode == 200) {

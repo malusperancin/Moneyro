@@ -51,6 +51,7 @@ export default {
                 this.$session.set("professor", response.body.professor);
                 this.$session.set("idSala", response.body.idSala);
                 this.$session.set("pontos", response.body.pontos);
+                this.$session.set("cofre", response.body.cofre);
                 this.$http.headers.common["Authorization"] = "Bearer " + response.body.id;
               
                 this.$router.go()

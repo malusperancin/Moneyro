@@ -135,7 +135,8 @@ export default {
         saldo: 0.0,
         professor: false,
         pontos: 0,
-        idSala:1 
+        idSala:1,
+        cofre: 0.0
       },
     };
   },
@@ -143,11 +144,11 @@ export default {
     gerar(){
       var carrinho = this.$route.query.carrinho;
 
-      if(carrinho.find(p => p.id == 1)) {
+      if(carrinho.find(p => p.id == 2)) {
         this.usuario.professor = true;
         this.usuario.idSala = 1;
         this.$session.set("professor", 1);
-      }
+
 
       this.$http.get("https://localhost:5001/api/usuarios/cmp-prof/" + this.usuario.id)
       .then(
@@ -172,10 +173,47 @@ export default {
               evento: "fechar"
             }]
           };
-          
+        },         
+          );
           this.getUsuario();
         }
-      );
+
+        if(carrinho.find(p => p.id == 1)) {
+        this.usuario.cofre = 0.0;
+        this.$session.set("cofre", 0.0);
+        alert("entou");
+
+        this.$http.put("https://localhost:5001/api/usuarios/" + this.usuario.id, this.usuario)
+      .then(
+          response => {
+            this.msg = {
+            visivel: true,
+            titulo: "COMPRA REALIZADA COM SUCESSO!",
+            mensagem: "Enviamos o boleto ao seu email!",
+            botoes: [{
+              mensagem: "OK",
+              evento: "home"
+            }]
+          };
+          },
+          erro => {
+            this.msg = {
+              titulo: "Opa neném",
+              mensagem: "Algo deu errado ao comprar o cofre",
+              botoes: [
+              {
+               mensagem: "Tentar Novamente",
+               evento: "fechar"
+              }]
+            };
+            
+            this.getUsuario();
+          }
+        );
+
+        }
+
+
     },
     getUsuario(){
       this.$http

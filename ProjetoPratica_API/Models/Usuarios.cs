@@ -22,5 +22,6 @@ namespace ProjetoPratica_API.Models
         public bool Professor { get; set; }
         public int IdSala { get; set; }
         public int Pontos { get; set; }
+        public decimal Cofre { get; set; }
     }
 }

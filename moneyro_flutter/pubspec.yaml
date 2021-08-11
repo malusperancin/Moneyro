@@ -57,6 +57,10 @@ flutter:
     fonts:
       - asset: assets/fonts/Baloo.ttf
         weight: 500
+  - family: Malu2
+    fonts:
+      - asset: assets/fonts/BalooExtraBold.ttf
+        weight: 700
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/

@@ -15,6 +15,7 @@ class Usuario {
   bool professor;
   int idSala;
   int pontos;
+  double cofre;
 
   Usuario(
       this.id,
@@ -32,7 +33,8 @@ class Usuario {
       this.saldo,
       this.professor,
       this.idSala,
-      this.pontos);
+      this.pontos,
+      this.cofre);
 
   Usuario.login(this.apelido, this.senha);
 
@@ -52,6 +54,7 @@ class Usuario {
     this.professor = o["professor"];
     this.idSala = o["idSala"];
     this.pontos = o["pontos"];
+    this.cofre = o["cofre"];
   }
 
   Map<String, dynamic> toMap() {
@@ -72,6 +75,7 @@ class Usuario {
     map["professor"] = professor;
     map["idSala"] = idSala;
     map["pontos"] = pontos;
+    map["cofre"] = cofre;
 
     return map;
   }
@@ -92,6 +96,7 @@ class Usuario {
         'saldo': saldo,
         'professor': professor,
         'idSala': idSala,
-        'pontos': pontos
+        'pontos': pontos,
+        'cofre': cofre
       };
 }

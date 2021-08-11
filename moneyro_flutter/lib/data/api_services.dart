@@ -20,10 +20,10 @@ class APIServices {
         body: usuBody);
     return res;
   }
-/*
-  static Future buscarUsuarios() async {
-    return await http.get(Uri.parse(url + 'usuarios'));
-  }*/
+
+  static Future buscarSituacoes() async {
+    return await http.get(Uri.parse(url + 'situacoes'));
+  }
   /*
   static Future buscarEventos() async {
     return await http.get(Uri.parse(url + 'eventos'));

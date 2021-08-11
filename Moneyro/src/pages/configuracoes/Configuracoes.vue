@@ -155,7 +155,8 @@ export default {
         saldo: 0.0,
         professor: false,
         pontos: 0,
-        idSala: 1 
+        idSala: 1,
+        cofre: 0.0
       },
       dia: 1,
       mes: 1,
