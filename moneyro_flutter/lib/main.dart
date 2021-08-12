@@ -7,6 +7,14 @@ void main() {
   runApp(MyApp());
 }
 
+/*
+* deixar bonitx
+* colocar icone,
+* tela de carregamento,
+* tap page la em cima pois mt feia está
+* algo no menu sla, mudar a cor, botas umas bordas umas sombrax
+* */
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override

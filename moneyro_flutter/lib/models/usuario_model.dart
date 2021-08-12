@@ -36,6 +36,8 @@ class Usuario {
       this.pontos,
       this.cofre);
 
+  Usuario.vazio();
+
   Usuario.login(this.apelido, this.senha);
 
   Usuario.fromObject(dynamic o) {
