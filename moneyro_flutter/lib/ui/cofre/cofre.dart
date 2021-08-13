@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:Moneyro/data/api_services.dart';
 import 'package:Moneyro/models/situacao_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:Moneyro/models/usuario_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,11 +18,12 @@ class CofreScreen extends StatefulWidget {
 
 class _CofrePageState extends State<CofreScreen> {
   final _url = 'http://localhost:8080/#/compra';
-
+  Usuario usuario;
   var cofre = true;
   var conectado = true;
   var quantia = 7;
-  //var situacoes = List<Situacao>;
+  List<Situacao> situacoes;
+  Situacao situacao;
 
   void _launchURL() async => await canLaunch(_url)
       ? await launch(_url)
@@ -26,7 +31,29 @@ class _CofrePageState extends State<CofreScreen> {
 
   Future<bool> fetchData() async {
     // se precisar pegar algo do banco ou da sessao faz aqui
-    quantia = await FlutterSession().get('cofre');
+    APIServices.getUsuario(await FlutterSession().get('id')).then((response) {
+      if (response.statusCode == 200) {
+        usuario = new Usuario.fromObject(json.decode(response.body));
+      }
+    });
+
+    APIServices.getSituacoes().then((response) {
+      if (response.statusCode == 200) {
+        Iterable list = json.decode(response.body);
+        List<Situacao> listaSituacao = [];
+        listaSituacao =
+            list.map((model) => Situacao.fromObject(model)).toList();
+        setState(() {
+          situacoes = listaSituacao;
+        });
+
+        if (usuario.cofre > 15) situacao = situacoes[9];
+        if (usuario.cofre <= 15) situacao = situacoes[8];
+        if (usuario.cofre <= 10) situacao = situacoes[7];
+        if (usuario.cofre <= 5) situacao = situacoes[6];
+        if (usuario.cofre < 0) situacao = situacoes[5];
+      }
+    });
     quantia >= 0 ? cofre = true : cofre = false;
 
     NumberFormat formater = NumberFormat.simpleCurrency();
@@ -44,87 +71,101 @@ class _CofrePageState extends State<CofreScreen> {
   */
 
   Widget getSituacao() {
-    var texto = "R\u0024" + quantia.toString();
-
+    /*usuario.saldo
+              .toStringAsFixed(2)
+              .replaceAll(".", ",")*/
     return Container(
+      margin: EdgeInsets.symmetric(vertical: 15),
       width: MediaQuery.of(context).size.width,
-      color: Colors.amber,
+      color: Color(
+          int.parse(situacao.cor.substring(1, 7), radix: 16) + 0xFF000000),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Padding(
-              padding: EdgeInsets.only(left: 25, top: 30, bottom: 40),
-              child: Container(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                    Text("Quantia no cofre:",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w100,
-                            fontSize: 20,
-                            fontFamily: 'Malu',
-                            color: Colors.white)),
-                    Text(texto,
-                        style: TextStyle(
-                            height: 1.2,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 60,
-                            fontFamily: 'Malu2',
-                            color: Colors.white)),
-                    Text("Frase",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 22,
-                            fontFamily: 'Malu',
-                            color: Colors.white))
-                  ]))),
-          Image.asset("assets/images/status1.png")
+          Expanded(
+            child: AspectRatio(
+                aspectRatio: 2 / 3,
+                child: Container(
+                    padding: EdgeInsets.only(left: 25, top: 30, bottom: 40),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          usuario.cofre < 0
+                              ? SizedBox(width: 6.0)
+                              : Text("Quantia no cofre:",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w100,
+                                      fontSize: 20,
+                                      fontFamily: 'Malu',
+                                      color: Colors.white)),
+                          usuario.cofre < 0
+                              ? SizedBox(width: 6.0)
+                              : Text(
+                                  "R\$" +
+                                      usuario.cofre
+                                          .toStringAsFixed(2)
+                                          .replaceAll(".", ","),
+                                  style: TextStyle(
+                                      height: 1.2,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 60,
+                                      fontFamily: 'Malu2',
+                                      color: Colors.white)),
+                          Text(situacao.mensagem.toString(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 22,
+                                  fontFamily: 'Malu',
+                                  color: Colors.white)),
+                        ]))),
+          ),
+          usuario.cofre < 0
+              ? Image.asset(
+                  "assets/images/status1.png",
+                  width: MediaQuery.of(context).size.width * 0.5,
+                )
+              : usuario.cofre < 5
+                  ? Image.asset(
+                      "assets/images/status2.png",
+                      width: MediaQuery.of(context).size.width * 0.5,
+                    )
+                  : usuario.cofre < 10
+                      ? Image.asset(
+                          "assets/images/status3.png",
+                          width: MediaQuery.of(context).size.width * 0.5,
+                        )
+                      : usuario.cofre < 15
+                          ? Image.asset(
+                              "assets/images/status4.png",
+                              width: MediaQuery.of(context).size.width * 0.5,
+                            )
+                          : Image.asset(
+                              "assets/images/status5.png",
+                              width: MediaQuery.of(context).size.width * 0.5,
+                            )
         ],
       ),
     );
-    /*return SizedBox(
-        width: 300,
-        height: 300,
-        child: quantia < 5
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(20.0),
-                child: Image.asset("images/status2.png"))
-            : quantia < 10
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                    child: Image.asset("images/status3.png"))
-                : quantia < 15
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(20.0),
-                        child: Image.asset("images/status4.png"))
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(20.0),
-                        child: Image.asset("images/status5.png")));*/
   }
 
   Widget getCard() {
-    return Padding(
-        padding: EdgeInsets.all(50),
-        child: Column(children: <Widget>[
-          Container(
-              color: Color(0xFF545454),
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: Padding(
-                  padding: EdgeInsets.all(15),
+    return Container(
+        padding: EdgeInsets.only(top: 5, right: 20, left: 20, bottom: 15),
+        color: Color(0xFF545454),
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text("R\$" + quantia.toString(),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 55,
+                      fontFamily: 'Malu2',
+                      color: Colors.white)),
+              SizedBox(height: 20),
+              Container(
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("R\u0024 " + quantia.toString(),
-                          style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 55,
-                              fontFamily: 'Malu2',
-                              color: Colors.white)),
-                    ],
-                  ))),
-          Container(
-              color: Color(0xFF545454),
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ClipOval(
@@ -142,7 +183,9 @@ class _CofrePageState extends State<CofreScreen> {
                     ),
                   ),
                   ElevatedButton(
-                      child: Text("Cancelar"),
+                      child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          child: Text("Cancelar")),
                       style: ElevatedButton.styleFrom(
                         primary: Colors.red[400],
                         textStyle: TextStyle(
@@ -169,7 +212,7 @@ class _CofrePageState extends State<CofreScreen> {
                       })
                 ],
               ))
-        ]));
+            ]));
   }
 
   Widget cabecalho(titulo, icone, cor) {
@@ -342,7 +385,7 @@ class _CofrePageState extends State<CofreScreen> {
             ]));
           } else {
             // aqui eh tipo uma tela de espera
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
         });
   }

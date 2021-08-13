@@ -36,7 +36,8 @@ class _HomePageState extends State<HomeScreen> {
   }
 
   Future<bool> fetchData() async {
-    bool sessao_ativa = await FlutterSession().get("id") == null ? false : true;
+    var id = await FlutterSession().get("id");
+    bool sessao_ativa = id == null || id <= 0 ? false : true;
 
     if (!sessao_ativa)
       Navigator.of(context)

@@ -5,7 +5,7 @@ class Usuario {
   String email;
   String celular;
   DateTime dataDeNascimento;
-  String foto;
+  dynamic foto;
   String senha;
   String cidade;
   String estado;

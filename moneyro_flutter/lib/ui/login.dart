@@ -33,10 +33,6 @@ class _LoginPageState extends State<LoginScreen> {
   void iniciar_sessao(Usuario user) async {
     var session = FlutterSession();
     await session.set("id", user.id);
-    await session.set("nome", user.nome);
-    await session.set("apelido", user.apelido);
-    await session.set("email", user.email);
-    await session.set("cofre", user.cofre);
   }
 
   void _login() {

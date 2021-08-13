@@ -1,6 +1,5 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:Moneyro/models/usuario_model.dart';
 
 class APIServices {
@@ -21,7 +20,11 @@ class APIServices {
     return res;
   }
 
-  static Future buscarSituacoes() async {
+  static Future getUsuario(int id) async {
+    return await http.get(Uri.parse(url + 'usuarios/' + id.toString()));
+  }
+
+  static Future getSituacoes() async {
     return await http.get(Uri.parse(url + 'situacoes'));
   }
   /*

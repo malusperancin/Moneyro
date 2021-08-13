@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:Moneyro/data/api_services.dart';
 import 'package:Moneyro/models/usuario_model.dart';
+import 'package:Moneyro/ui/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
 
 class MaisScreen extends StatefulWidget {
   MaisScreen({Key key}) : super(key: key);
@@ -10,17 +15,16 @@ class MaisScreen extends StatefulWidget {
 }
 
 class _MaisPageState extends State<MaisScreen> {
-
-  Usuario user = new Usuario.vazio();
+  Usuario usuario = new Usuario.vazio();
 
   Future<bool> fetchData() async {
     // se precisar pegar algo do banco ou da sessao faz aqui
-    user.foto = "status1.png";//await FlutterSession().get('foto');
-    user.saldo = 118.25;//await FlutterSession().get('saldo');
-    user.pontos = 25;//await FlutterSession().get('pontos');
-    user.nome = "Maria Luiza";//await FlutterSession().get('nome');
-    user.email = "malu@gmail.com";//await FlutterSession().get('email');
-    user.apelido = "maru";//await FlutterSession().get('apelido');
+    await APIServices.getUsuario(await FlutterSession().get('id'))
+        .then((response) {
+      if (response.statusCode == 200) {
+        usuario = new Usuario.fromObject(json.decode(response.body));
+      }
+    });
 
     return true;
   }
@@ -68,6 +72,12 @@ class _MaisPageState extends State<MaisScreen> {
                         ])))));
   }
 
+  void sairSessao() async {
+    await FlutterSession().set("id", -1);
+
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_context) => LoginScreen()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +106,13 @@ class _MaisPageState extends State<MaisScreen> {
                         children: <Widget>[
                           Flexible(
                               flex: 2,
-                              child: Image.asset("assets/images/"+user.foto,
-                              )),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  child: Image.asset(
+                                    "assets/images/perfil" +
+                                        usuario.foto.toString() +
+                                        ".png",
+                                  ))),
                           Flexible(
                               flex: 4,
                               child: Container(
@@ -106,21 +121,21 @@ class _MaisPageState extends State<MaisScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text(user.apelido,
+                                    Text(usuario.apelido,
                                         style: TextStyle(
                                             height: 2,
                                             fontWeight: FontWeight.w700,
                                             fontSize: 25,
                                             fontFamily: 'Malu2',
                                             color: Colors.white)),
-                                    Text(user.nome,
+                                    Text(usuario.nome,
                                         style: TextStyle(
                                             fontWeight: FontWeight.normal,
                                             fontSize: 20,
                                             height: 0.8,
                                             fontFamily: 'Malu',
                                             color: Colors.white)),
-                                    Text(user.email,
+                                    Text(usuario.email,
                                         style: TextStyle(
                                             fontWeight: FontWeight.normal,
                                             fontSize: 20,
@@ -129,8 +144,7 @@ class _MaisPageState extends State<MaisScreen> {
                                             color: Colors.white)),
                                   ],
                                 ),
-                              )
-                          )
+                              ))
                         ],
                       ),
                       Padding(
@@ -157,7 +171,10 @@ class _MaisPageState extends State<MaisScreen> {
                                       fontSize: 20,
                                       fontFamily: 'Malu2',
                                       color: Color(0xFF69CC47))),
-                              Text(user.saldo.toStringAsFixed(2).replaceAll(".", ","),
+                              Text(
+                                  usuario.saldo
+                                      .toStringAsFixed(2)
+                                      .replaceAll(".", ","),
                                   style: TextStyle(
                                       height: 0.8,
                                       fontWeight: FontWeight.w900,
@@ -169,7 +186,7 @@ class _MaisPageState extends State<MaisScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
-                              Text(user.pontos.toString(),
+                              Text(usuario.pontos.toString(),
                                   style: TextStyle(
                                       fontWeight: FontWeight.w900,
                                       fontSize: 55,
@@ -198,11 +215,12 @@ class _MaisPageState extends State<MaisScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                    onPressed: (){},
+                    onPressed: () {},
                     child: Container(
                       child: Row(
                         children: [
-                          Icon(Icons.account_circle_rounded,color: Colors.amber, size: 35),
+                          Icon(Icons.account_circle_rounded,
+                              color: Colors.amber, size: 35),
                           Spacer(flex: 1),
                           Text("Nome",
                               style: TextStyle(
@@ -211,7 +229,8 @@ class _MaisPageState extends State<MaisScreen> {
                                   fontFamily: 'Malu2',
                                   color: Colors.amber)),
                           Spacer(flex: 10),
-                          Icon(Icons.navigate_next_rounded, color: Colors.amber, size: 35)
+                          Icon(Icons.navigate_next_rounded,
+                              color: Colors.amber, size: 35)
                         ],
                       ),
                     ),
@@ -225,11 +244,12 @@ class _MaisPageState extends State<MaisScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                    onPressed: (){},
+                    onPressed: () {},
                     child: Container(
                       child: Row(
                         children: [
-                          Icon(Icons.account_circle_rounded,color: Colors.blueAccent, size: 35),
+                          Icon(Icons.account_circle_rounded,
+                              color: Colors.blueAccent, size: 35),
                           Spacer(flex: 1),
                           Text("Nome",
                               style: TextStyle(
@@ -238,7 +258,8 @@ class _MaisPageState extends State<MaisScreen> {
                                   fontFamily: 'Malu2',
                                   color: Colors.blueAccent)),
                           Spacer(flex: 10),
-                          Icon(Icons.navigate_next_rounded, color: Colors.blueAccent, size: 35)
+                          Icon(Icons.navigate_next_rounded,
+                              color: Colors.blueAccent, size: 35)
                         ],
                       ),
                     ),
@@ -252,11 +273,12 @@ class _MaisPageState extends State<MaisScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                    onPressed: (){},
+                    onPressed: () {},
                     child: Container(
                       child: Row(
                         children: [
-                          Icon(Icons.account_circle_rounded,color: Colors.green, size: 35),
+                          Icon(Icons.account_circle_rounded,
+                              color: Colors.green, size: 35),
                           Spacer(flex: 1),
                           Text("Nome",
                               style: TextStyle(
@@ -265,7 +287,8 @@ class _MaisPageState extends State<MaisScreen> {
                                   fontFamily: 'Malu2',
                                   color: Colors.green)),
                           Spacer(flex: 10),
-                          Icon(Icons.navigate_next_rounded, color: Colors.green, size: 35)
+                          Icon(Icons.navigate_next_rounded,
+                              color: Colors.green, size: 35)
                         ],
                       ),
                     ),
@@ -279,7 +302,9 @@ class _MaisPageState extends State<MaisScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                    onPressed: (){},
+                    onPressed: () {
+                      sairSessao();
+                    },
                     child: Container(
                       child: Row(
                         children: [
@@ -290,7 +315,8 @@ class _MaisPageState extends State<MaisScreen> {
                                   fontFamily: 'Malu2',
                                   color: Colors.redAccent)),
                           Spacer(),
-                          Icon(Icons.logout_rounded, color: Colors.redAccent, size: 35)
+                          Icon(Icons.exit_to_app_rounded,
+                              color: Colors.redAccent, size: 35)
                         ],
                       ),
                     ),
@@ -300,7 +326,7 @@ class _MaisPageState extends State<MaisScreen> {
             );
           } else {
             // aqui eh tipo uma tela de espera
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
         });
   }
