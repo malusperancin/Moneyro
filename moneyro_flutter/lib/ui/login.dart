@@ -38,18 +38,18 @@ class _LoginPageState extends State<LoginScreen> {
   void _login() {
     Usuario usuario = new Usuario(
         1,
-        'Teste',
+        '',
         _apelidoController.text,
-        'a@a.c',
-        '999',
-        new DateTime(2004, 2, 12),
-        '2',
+        '',
+        '',
+        new DateTime(1900, 1, 1),
+        '',
         _senhaController.text,
-        'cidade',
-        'SP',
+        '',
+        '',
         false,
-        true,
-        5.0,
+        false,
+        0.0,
         false,
         1,
         0,
@@ -58,7 +58,6 @@ class _LoginPageState extends State<LoginScreen> {
     APIServices.login(usuario).then((response) {
       if (response.statusCode == 200) {
         usuario = new Usuario.fromObject(json.decode(response.body));
-        print(usuario);
         iniciar_sessao(usuario);
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));

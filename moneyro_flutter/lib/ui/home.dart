@@ -91,8 +91,13 @@ class _HomePageState extends State<HomeScreen> {
                           elevation: 2.0,
                         ),
                         bottomNavigationBar: BottomAppBar(
+                          color: Theme.of(context).primaryColorDark,
+                          notchMargin: 8,
                             child: Container(
-                              height: 60,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10)
+                              ),
+                              height: 65,
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
@@ -106,7 +111,7 @@ class _HomePageState extends State<HomeScreen> {
                                     icon: Icon(Icons.point_of_sale_rounded,
                                         color: _selectedPage == 0
                                             ? Colors.green[500]
-                                            : Colors.green[100]),
+                                            :  Colors.white30),
                                     iconSize: 35.0,
                                     splashColor: Colors.green[50],
                                     tooltip: 'Cofre',
@@ -121,12 +126,12 @@ class _HomePageState extends State<HomeScreen> {
                                     icon: Icon(Icons.reorder_rounded,
                                         color: _selectedPage == 1
                                             ? Colors.amber[500]
-                                            : Colors.amber[300]),
+                                            : Colors.white30),
                                     iconSize: 35.0,
                                     splashColor: Colors.amber[50],
                                     tooltip: 'Planilha',
                                   ),
-                                  Spacer(flex: 3),
+                                  Spacer(flex: 4),
                                   IconButton(
                                     onPressed: () {
                                       setState(() {
@@ -136,7 +141,7 @@ class _HomePageState extends State<HomeScreen> {
                                     icon: Icon(Icons.article_rounded,
                                         color: _selectedPage == 2
                                             ? Colors.indigo[500]
-                                            : Colors.indigo[100]),
+                                            :  Colors.white30),
                                     iconSize: 35.0,
                                     splashColor: Colors.indigo[50],
                                     tooltip: 'Feed',
@@ -151,7 +156,7 @@ class _HomePageState extends State<HomeScreen> {
                                     icon: Icon(Icons.face_rounded,
                                         color: _selectedPage == 3
                                             ? Colors.cyan[500]
-                                            : Colors.cyan[100]),
+                                            :  Colors.white30),
                                     iconSize: 35.0,
                                     splashColor: Colors.cyan[50],
                                     tooltip: 'Mais',
