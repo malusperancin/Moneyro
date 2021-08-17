@@ -1,3 +1,5 @@
+import 'compartilhados_model.dart';
+
 class Registro {
   int id;
   int idUsuario;
@@ -6,7 +8,7 @@ class Registro {
   int idTag;
   String lugar;
   double quantia;
-
+  List<Compartilhados> usuarios;
 
   Registro(this.id, this.idUsuario, this.data, this.nome, this.idTag,
       this.lugar, this.quantia);
@@ -14,11 +16,14 @@ class Registro {
   Registro.fromObject(dynamic o) {
     this.id = o["id"];
     this.idUsuario = o["idUsuario"];
-    this.data = new DateTime.now();
+    var data = o["data"].split("T")[0].split("-");
+    this.data = new DateTime(
+        int.parse(data[0]), int.parse(data[1]), int.parse(data[2]));
     this.nome = o["nome"];
     this.idTag = o["idTag"];
     this.lugar = o["lugar"];
     this.quantia = o["quantia"];
+    this.usuarios = [];
   }
 
   Map<String, dynamic> toMap() {
@@ -36,12 +41,12 @@ class Registro {
   }
 
   Map toJson() => {
-    'id': id,
-    'idUsuario': idUsuario,
-    'data': data,
-    'nome': nome,
-    'idTag': idTag,
-    'lugar': lugar,
-    'quantia': quantia,
-  };
+        'id': id,
+        'idUsuario': idUsuario,
+        'data': data,
+        'nome': nome,
+        'idTag': idTag,
+        'lugar': lugar,
+        'quantia': quantia,
+      };
 }

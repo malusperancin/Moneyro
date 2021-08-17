@@ -940,6 +940,35 @@ namespace ProjetoPratica_API.Data
             return result;
         }
 
+
+        public List<Object> GetCompByIdUsuario(int IdUsuario)
+        {
+            SqlConnection conn = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", conn);
+            cmd.CommandText = "select distinct u.id, u.foto, u.nome, rg.idRegistro from Usuarios u, CompartilhadosRegistro rg , Registros r where (u.id = rg.idCompartilhado and r.id = rg.idRegistro and  r.idUsuario = " +IdUsuario +") or (u.id = rg.idCompartilhado and rg.idCompartilhado = " +IdUsuario +" )";
+
+            SqlDataReader leitor = cmd.ExecuteReader();
+
+            var result = new List<Object>();
+
+            while (leitor.Read())
+            {
+                Object[] dados = {
+                    (int)leitor["id"], 
+                    (string)leitor["foto"], 
+                    (string)leitor["nome"],
+                    (int)leitor["idRegistro"]
+                };
+
+                result.Add(dados);
+            }
+
+            conn.Close();
+
+            return result;
+        }
         public List<Compartilhados> GetCompByIdRegistro(int RegistroId)
         {
             SqlConnection conn = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);

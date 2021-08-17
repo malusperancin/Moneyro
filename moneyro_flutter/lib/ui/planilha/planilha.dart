@@ -1,10 +1,13 @@
 import 'dart:convert';
 
 import 'package:Moneyro/data/api_services.dart';
+import 'package:Moneyro/models/compartilhados_model.dart';
 import 'package:Moneyro/models/registro_model.dart';
+import 'package:Moneyro/models/registros_dia_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
+import "package:collection/collection.dart";
 
 class PlanilhaScreen extends StatefulWidget {
   PlanilhaScreen({Key key}) : super(key: key);
@@ -14,10 +17,12 @@ class PlanilhaScreen extends StatefulWidget {
 }
 
 class _PlanilhaPageState extends State<PlanilhaScreen> {
-  List<Registro> registros;
+  List<RegistrosDia> registrosDias = [];
 
   Future<bool> fetchData() async {
-    // se precisar pegar algo do banco ou da sessao faz aqui
+    registrosDias = [];
+    List<Compartilhados> compartilhados = [];
+    List<Registro> registros = [];
 
     await APIServices.getRegistros(await FlutterSession().get('id'))
         .then((response) {
@@ -26,6 +31,34 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
         registros = list.map((model) => Registro.fromObject(model)).toList();
       }
     });
+
+    await APIServices.getCompartilhados(await FlutterSession().get('id'))
+        .then((response) {
+      if (response.statusCode == 200) {
+        Iterable list = json.decode(response.body);
+        compartilhados =
+            list.map((model) => Compartilhados.fromObject(model)).toList();
+
+        registros.forEach((reg) {
+          for (int i = 0; i < compartilhados.length; i++) {
+            if (compartilhados[i].idRegistro == reg.id)
+              reg.usuarios.add(compartilhados[i]);
+          }
+        });
+      }
+    });
+
+    for (int i = 0; i < registros.length; i++) {
+      var data = registros[i].data;
+      List<Registro> dia = [];
+
+      for (; i < registros.length && registros[i].data == data; i++)
+        dia.add(registros[i]);
+
+      i--;
+
+      registrosDias.add(new RegistrosDia(data, dia));
+    }
 
     return true;
   }
@@ -84,7 +117,7 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
                       shrinkWrap: true,
                       itemBuilder: (context, index, animation) {
                         return Container(
-                          child: Text(registros[index].nome),
+                          child: Text("teste"),
                         );
 
                         /*return SlideTransition(

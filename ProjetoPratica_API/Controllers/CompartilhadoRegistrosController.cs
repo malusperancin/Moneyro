@@ -36,6 +36,20 @@ namespace ProjetoPratica_API.Controllers
             }
         }
 
+        [HttpGet("usu/{IdUsuario}")]
+        public async Task<IActionResult> GetCompByIdUsuario(int IdUsuario)
+        {
+            try
+            {
+                var result = this.Repo.GetCompByIdUsuario(IdUsuario);
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
         [HttpPost("{RegistroId}")]
         public async Task<IActionResult> post(int[] compartilhados, int RegistroId)
         {

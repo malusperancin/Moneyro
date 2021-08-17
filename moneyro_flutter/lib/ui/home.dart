@@ -91,12 +91,11 @@ class _HomePageState extends State<HomeScreen> {
                           elevation: 2.0,
                         ),
                         bottomNavigationBar: BottomAppBar(
-                          color: Theme.of(context).primaryColorDark,
-                          notchMargin: 8,
+                            color: Theme.of(context).primaryColorDark,
+                            notchMargin: 8,
                             child: Container(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10)
-                              ),
+                                  borderRadius: BorderRadius.circular(10)),
                               height: 65,
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
@@ -108,10 +107,10 @@ class _HomePageState extends State<HomeScreen> {
                                         _selectedPage = 0;
                                       });
                                     },
-                                    icon: Icon(Icons.point_of_sale_rounded,
+                                    icon: Icon(Icons.savings_rounded,
                                         color: _selectedPage == 0
                                             ? Colors.green[500]
-                                            :  Colors.white30),
+                                            : Colors.white30),
                                     iconSize: 35.0,
                                     splashColor: Colors.green[50],
                                     tooltip: 'Cofre',
@@ -141,7 +140,7 @@ class _HomePageState extends State<HomeScreen> {
                                     icon: Icon(Icons.article_rounded,
                                         color: _selectedPage == 2
                                             ? Colors.indigo[500]
-                                            :  Colors.white30),
+                                            : Colors.white30),
                                     iconSize: 35.0,
                                     splashColor: Colors.indigo[50],
                                     tooltip: 'Feed',
@@ -156,7 +155,7 @@ class _HomePageState extends State<HomeScreen> {
                                     icon: Icon(Icons.face_rounded,
                                         color: _selectedPage == 3
                                             ? Colors.cyan[500]
-                                            :  Colors.white30),
+                                            : Colors.white30),
                                     iconSize: 35.0,
                                     splashColor: Colors.cyan[50],
                                     tooltip: 'Mais',

@@ -36,6 +36,7 @@ namespace ProjetoPratica_API.Data
         List<Registros> SpGetRegistrosByUsuario(int IdUsuario);
 
         List<Compartilhados> GetCompByIdRegistro(int RegistroId);
+        List<Object> GetCompByIdUsuario(int IdUsuario);
         Task<CompartilhadosRegistro> GetCompById(int IdCompartilhamento);
 
 

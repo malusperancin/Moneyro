@@ -5,9 +5,11 @@ import 'package:Moneyro/models/situacao_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Moneyro/models/usuario_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
+import 'package:soundpool/soundpool.dart';
 
 class CofreScreen extends StatefulWidget {
   CofreScreen({Key key}) : super(key: key);
@@ -57,6 +59,8 @@ class _CofrePageState extends State<CofreScreen> {
     3: ok 5 - 10
     4: uau 10 - 15
     5: rei 15 - infinito
+
+    
   */
 
   Widget getSituacao() {
@@ -113,6 +117,74 @@ class _CofrePageState extends State<CofreScreen> {
         ],
       ),
     );
+  }
+
+  _showMyDialog(double valor) {
+    // playSom();
+
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      Navigator.of(context).pop();
+    });
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Stack(alignment: Alignment.center, children: <Widget>[
+            Image.asset("assets/images/alerta.png"),
+            Positioned(
+              bottom: 90,
+              right: 110,
+              child: Text("\¢$valor",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 70,
+                      fontFamily: 'Malu2',
+                      color: Colors.white)),
+            )
+          ]),
+        );
+      },
+    );
+  }
+
+  Widget getDesconectado() {
+    return Container(
+        padding: EdgeInsets.only(left: 25, right: 25, top: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                Image.asset('assets/images/cofre_desconectado.png',
+                    width: MediaQuery.of(context).size.width * 0.4),
+                Text("Cofre desconectado!",
+                    style: TextStyle(
+                        height: 0.8,
+                        fontWeight: FontWeight.w100,
+                        fontSize: 18,
+                        fontFamily: 'Malu',
+                        color: Colors.black45)),
+              ],
+            ),
+            ElevatedButton(
+                child: Text(
+                  "Conectar",
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Theme.of(context).buttonColor,
+                  textStyle: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w900,
+                      fontFamily: 'Malu'),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+                onPressed: () {})
+          ],
+        ));
   }
 
   Widget getCard() {
@@ -229,70 +301,47 @@ class _CofrePageState extends State<CofreScreen> {
             // aqui só carrega quando já pegou os dados
             return Container(
                 child: Column(children: <Widget>[
-              cabecalho("Cofre", Icons.point_of_sale_rounded, Colors.blue[500]),
+              cabecalho("Cofre", Icons.savings_rounded, Colors.blue[500]),
               Expanded(
                   child: usuario.cofre >= 0.0
-                      ? conectado
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[getSituacao(), getCard()])
-                          : Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Image.asset('assets/images/cofre_desconectado.png',
-                                    width: MediaQuery.of(context).size.width *
-                                        0.6),
-                                Text("Cofre desconectado",
-                                    style: TextStyle(
-                                        height: 0.8,
-                                        fontWeight: FontWeight.w100,
-                                        fontSize: 18,
-                                        fontFamily: 'Malu',
-                                        color: Colors.black45)),
-                                SizedBox(
-                                  height: 70,
-                                ),
-                                ElevatedButton(
-                                    child: Text(
-                                      "Conectar",
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      primary: Theme.of(context).buttonColor,
-                                      textStyle: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.w900,
-                                          fontFamily: 'Malu'),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                    ),
-                                    onPressed: () {})
-                              ],
-                            )
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                              getSituacao(),
+                              conectado
+                                  ? MaterialButton(
+                                      child: Text("mostrar"),
+                                      onPressed: () {
+                                        _showMyDialog(5);
+                                      })
+                                  : getDesconectado()
+                            ])
                       : Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             //Não tem cofre
                             Expanded(
-                              child:  Container(
+                              child: Container(
                                 color: Theme.of(context).backgroundColor,
                                 margin: EdgeInsets.only(top: 20),
                                 padding: EdgeInsets.only(left: 20),
                                 width: MediaQuery.of(context).size.width,
                                 child: Stack(children: <Widget>[
                                   Positioned(
-                                      child: Image.asset('assets/images/status1.png',
-                                          width: MediaQuery.of(context).size.width *
-                                              0.55),
-                                      right: -25,
+                                    child: Image.asset(
+                                        'assets/images/status1.png',
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.55),
+                                    right: -25,
                                     top: -25,
                                   ),
                                   Container(
-                                      width:
-                                      MediaQuery.of(context).size.width * 0.5,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.5,
                                       child: Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text("Humn que pena...",
                                               style: TextStyle(
@@ -355,5 +404,15 @@ class _CofrePageState extends State<CofreScreen> {
             return Center(child: CircularProgressIndicator());
           }
         });
+  }
+
+  Future<void> playSom() async {
+    Soundpool pool = Soundpool(streamType: StreamType.notification);
+    int soundId = await rootBundle
+        .load("assets/sounds/bemtevi.mp4")
+        .then((ByteData soundData) {
+      return pool.load(soundData);
+    });
+    int streamId = await pool.play(soundId);
   }
 }
