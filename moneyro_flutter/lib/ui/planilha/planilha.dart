@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 import "package:collection/collection.dart";
+import 'package:intl/intl.dart';
 
 class PlanilhaScreen extends StatefulWidget {
   PlanilhaScreen({Key key}) : super(key: key);
@@ -17,6 +18,10 @@ class PlanilhaScreen extends StatefulWidget {
 }
 
 class _PlanilhaPageState extends State<PlanilhaScreen> {
+  /// Will used to access the Animated list
+  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+
+  /// This holds the items
   List<RegistrosDia> registrosDias = [];
 
   Future<bool> fetchData() async {
@@ -63,6 +68,23 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
     return true;
   }
 
+  List<Widget> getCompartilhados(Registro reg) {
+    List<Widget> ret = [];
+
+    if (reg.usuarios.length == 0) return ret;
+
+    for (Compartilhados user in reg.usuarios)
+      ret.add(Container(
+          width: 40,
+          height: 40,
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(100.0),
+              child:
+                  Image.asset("assets/images/perfil" + user.foto + ".png"))));
+
+    return ret;
+  }
+
   Widget cabecalho(titulo, icone, cor) {
     return Container(
         margin: EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
@@ -101,6 +123,134 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
             ]));
   }
 
+  Widget Dia(BuildContext context, int index, animation) {
+    RegistrosDia item = registrosDias[index];
+
+    List<Widget> registros = [];
+    NumberFormat formatter = NumberFormat("00.00");
+
+    for (Registro reg in item.registros) {
+      registros.add(SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(-1, 0),
+          end: Offset(0, 0),
+        ).animate(animation),
+        child: SizedBox(
+          height: 120.0,
+          child: Container(
+            margin: EdgeInsets.only(bottom: 10),
+            padding: EdgeInsets.only(left: 15, right: 15, bottom: 5, top: 5),
+            decoration: BoxDecoration(
+                color: reg.quantia < 0 ? Colors.red[400] : Colors.green[800],
+                borderRadius: BorderRadius.circular(10)),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text("Tag:",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w100,
+                                fontSize: 20,
+                                fontFamily: 'Malu',
+                                color: Colors.white)),
+                        Text(reg.nome,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w100,
+                                fontSize: 30,
+                                fontFamily: 'Malu2',
+                                color: Colors.white)),
+                      ]),
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                            reg.quantia >= 0
+                                ? "R\$" +
+                                    formatter.format(reg.quantia).toString()
+                                : "R\$" +
+                                    formatter
+                                        .format(reg.quantia)
+                                        .toString()
+                                        .substring(1),
+                            style: TextStyle(
+                                fontWeight: FontWeight.w100,
+                                fontSize: 30,
+                                fontFamily: 'Malu2',
+                                color: Colors.white)),
+                        Row(
+                          children: getCompartilhados(reg),
+                        )
+                      ])
+                ]),
+          ),
+        ),
+      ));
+    }
+
+    return Container(
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_today,
+                          size: 22.0, color: Colors.white),
+                      Text(
+                          "" +
+                              item.data.day.toString() +
+                              "/" +
+                              item.data.month.toString() +
+                              "/" +
+                              item.data.year.toString(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w100,
+                              fontSize: 22,
+                              fontFamily: 'Malu2',
+                              color: Colors.white))
+                    ],
+                  )),
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: registros)
+            ]));
+  }
+
+  void inserirRegistro(Registro r) {
+    listKey.currentState
+        .insertItem(0, duration: const Duration(milliseconds: 500));
+
+    /*
+    inserirNoDia
+    registrosDias = []
+      ..add(r)
+      ..addAll(registrosDias);*/
+  }
+
+  void removerRegistro(Registro r) {
+    listKey.currentState.removeItem(
+        0, (_, animation) => Dia(context, 0, animation),
+        duration: const Duration(milliseconds: 500));
+
+    /*
+      remover do vetor
+      _items.removeAt(0);
+      */
+  }
+
+  /*
+  data
+  [
+    {},{}
+  ]
+  */
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -114,18 +264,13 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
                   cabecalho(
                       "Planilha", Icons.reorder_rounded, Colors.amber[500]),
                   AnimatedList(
-                      shrinkWrap: true,
-                      itemBuilder: (context, index, animation) {
-                        return Container(
-                          child: Text("teste"),
-                        );
-
-                        /*return SlideTransition(
-                          child: ListTile(
-                            title: Text(registros[index].nome),
-                          ),
-                        );*/
-                      })
+                    shrinkWrap: true,
+                    key: listKey,
+                    initialItemCount: registrosDias.length,
+                    itemBuilder: (context, index, animation) {
+                      return Dia(context, index, animation); // Refer step 3
+                    },
+                  )
                 ]));
           } else {
             // aqui eh tipo uma tela de espera

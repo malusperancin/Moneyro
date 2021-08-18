@@ -28,6 +28,54 @@ class _CofrePageState extends State<CofreScreen> {
       ? await launch(_url)
       : throw 'Could not launch $_url';
 
+  void _abreBT() {
+    /*FlutterBlue flutterBlue = FlutterBlue.instance;
+     //Start scanning
+    flutterBlue.startScan(timeout: Duration(seconds: 4));
+
+    // Listen to scan results
+    var subscription = flutterBlue.scanResults.listen((results) {
+    // do something with scan results
+    for (ScanResult r in results) {
+        print('${r.device.name} found! rssi: ${r.rssi}');
+    }
+    
+    });
+
+    // Stop scanning
+    flutterBlue.stopScan();*/
+  }
+
+  void _conectaBT() {
+    /*
+    // Connect to the device
+    await device.connect();
+
+    // Disconnect from device
+    device.disconnect();*/
+  }
+
+  void _readDescriptor() {
+    /*
+    // Reads all descriptors
+    var descriptors = characteristic.descriptors;
+    for(BluetoothDescriptor d in descriptors) {
+        List<int> value = await d.read();
+        print(value);
+    }
+
+    // Writes to a descriptor
+    await d.write([0x12, 0x34])
+     */
+  }
+
+  void _setNotifications() {
+    /*await characteristic.setNotifyValue(true);
+characteristic.value.listen((value) {
+    // do something with new value
+});*/
+  }
+
   Future<bool> fetchData() async {
     // se precisar pegar algo do banco ou da sessao faz aqui
     await APIServices.getUsuario(await FlutterSession().get('id'))
@@ -49,6 +97,8 @@ class _CofrePageState extends State<CofreScreen> {
         if (usuario.cofre <= 5) situacao = listaSituacao[6];
       }
     });
+
+    if (usuario.cofre >= 0) _abreBT();
 
     return true;
   }
