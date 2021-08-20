@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:Moneyro/models/usuario_model.dart';
 
 class APIServices {
-  static final String url = 'http://192.168.15.155:5000/api/';
+  static final String url = 'http://192.168.15.90:5000/api/';
+  //static final String url = 'http://192.168.15.155:5000/api/';
   //static final String url = 'http://143.106.203.92:5000/api/';
 
   static Map<String, String> header = {
@@ -31,6 +32,10 @@ class APIServices {
   static Future getCompartilhados(int id) async {
     return await http
         .get(Uri.parse(url + 'compartilhadoRegistros/usu/' + id.toString()));
+  }
+
+  static Future getTags() async {
+    return await http.get(Uri.parse(url + 'tags'));
   }
 
   /*
