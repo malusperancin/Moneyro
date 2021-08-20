@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Moneyro/data/api_services.dart';
 import 'package:Moneyro/models/compartilhados_model.dart';
 import 'package:Moneyro/models/registro_model.dart';
+import 'package:Moneyro/models/tag_model.dart';
 import 'package:Moneyro/models/registros_dia_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +24,20 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
 
   /// This holds the items
   List<RegistrosDia> registrosDias = [];
+  List<Tag> tags = [];
 
   Future<bool> fetchData() async {
     registrosDias = [];
+    tags = [];
     List<Compartilhados> compartilhados = [];
     List<Registro> registros = [];
+
+    await APIServices.getTags().then((response) {
+      if (response.statusCode == 200) {
+        Iterable list = json.decode(response.body);
+        tags = list.map((model) => Tag.fromObject(model)).toList();
+      }
+    });
 
     await APIServices.getRegistros(await FlutterSession().get('id'))
         .then((response) {
@@ -150,7 +160,7 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text("Tag:",
+                        Text(tags[reg.idTag].nome.toString(),
                             style: TextStyle(
                                 fontWeight: FontWeight.w100,
                                 fontSize: 20,

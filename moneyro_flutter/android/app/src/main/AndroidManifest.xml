@@ -1,8 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cotuca.unicamp.tcc">
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
    <application
         android:label="Moneyro"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher">        
+        
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -37,8 +42,5 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <uses-permission android:name="android.permission.BLUETOOTH" />  
-        <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />  
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/> 
     </application>
 </manifest>
