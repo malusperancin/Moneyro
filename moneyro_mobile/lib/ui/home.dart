@@ -23,7 +23,7 @@ class _HomePageState extends State<HomeScreen> {
     new MaisScreen()
   ];
 
-  int _selectedPage = 0;
+  int _selectedPage = 2;
 
   Future<void> createInstances() async {
     setState(() {
@@ -138,7 +138,7 @@ class _HomePageState extends State<HomeScreen> {
                                         _selectedPage = 2;
                                       });
                                     },
-                                    icon: Icon(Icons.article_rounded,
+                                    icon: Icon(Icons.calendar_view_day_rounded,
                                         color: _selectedPage == 2
                                             ? Colors.indigo[500]
                                             : Colors.white30),

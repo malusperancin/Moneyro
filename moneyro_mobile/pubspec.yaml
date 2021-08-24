@@ -28,7 +28,9 @@ dependencies:
   multi_select_flutter: ^4.0.0
   font_awesome_flutter: '>= 4.7.0'
   soundpool: ^0.5.3
-  #flutter_bluetooth_serial: ^0.2.2
+  flutter_bluetooth_serial: ^0.2.2
+  youtube_player_flutter: ^8.0.0
+
 
   flutter:
     sdk: flutter
