@@ -17,6 +17,16 @@ class APIServices {
         headers: header, body: json.encode(usuario.toMap()));
   }
 
+  static Future curtir(Object post) async {
+    return await http.post(Uri.parse(url + 'curtidasUsuarios'),
+        headers: header, body: json.encode(post));
+  }
+
+  static Future descurtir(Object post) async {
+    return await http.put(Uri.parse(url + 'curtidasUsuarios'),
+        headers: header, body: json.encode(post));
+  }
+
   static Future getUsuario(int id) async {
     return await http.get(Uri.parse(url + 'usuarios/' + id.toString()));
   }

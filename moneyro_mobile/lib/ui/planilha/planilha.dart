@@ -26,8 +26,6 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
   List<Tag> tags = [];
 
   Future<bool> fetchData() async {
-    registrosDias = [];
-    tags = [];
     List<Compartilhados> compartilhados = [];
     List<Registro> registros = [];
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:moneyro_mobile/data/api_services.dart';
 import 'package:moneyro_mobile/models/conteudo_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -17,10 +18,13 @@ class FeedScreen extends StatefulWidget {
 class _FeedPageState extends State<FeedScreen> {
   List<Conteudo> conteudos = [];
   YoutubePlayerController _controller = null;
+  String erro = "";
+
+  void _launchURL(url) async =>
+      await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
 
   Future<bool> fetchData() async {
     // se precisar pegar algo do banco ou da sessao faz aqui
-    conteudos = [];
 
     await APIServices.getConteudos(await FlutterSession().get('id'))
         .then((response) {
@@ -32,56 +36,169 @@ class _FeedPageState extends State<FeedScreen> {
     return true;
   }
 
-  Widget getDica(Conteudo dica) {
-    return Container(
-        decoration: BoxDecoration(
-            color: Colors.red, borderRadius: BorderRadius.circular(10)),
-        padding: EdgeInsets.only(left: 20, right: 20, top: 10),
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Icon(Icons.format_quote_rounded, size: 50, color: Colors.white),
-              Text(dica.titulo,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w100,
-                      fontSize: 35,
-                      fontFamily: 'Malu2',
-                      color: Colors.white)),
-              Text(dica.texto,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w100,
-                      fontSize: 20,
-                      fontFamily: 'Malu',
-                      color: Colors.white)),
-              Row(children: <Widget>[
-                Icon(Icons.calendar_today_rounded, color: Colors.white70),
-                Text(
-                    dica.data.day.toString() +
-                        "/" +
-                        dica.data.month.toString() +
-                        "/" +
-                        dica.data.year.toString(),
-                    style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 20,
-                        fontFamily: 'Malu',
-                        color: Colors.white70)),
-              ])
-            ]));
+  void curtir(int idCont, int index) async {
+    var map = Map<String, dynamic>();
+
+    map["id"] = 1;
+    map["idConteudo"] = idCont;
+    map["idUsuario"] = await FlutterSession().get('id');
+
+    APIServices.curtir(map).then((response) {
+      if (response.statusCode == 200) {
+        setState(() {
+          conteudos[index].curtidas += 1;
+          conteudos[index].curtido = true;
+        });
+      } else {
+        erro = response.body;
+      }
+    });
   }
 
-  Widget getNoticia(Conteudo noticia) {
+  void descurtir(int idCont, int index) async {
+    var map = Map<String, dynamic>();
+
+    map["id"] = 1;
+    map["idConteudo"] = idCont;
+    map["idUsuario"] = await FlutterSession().get('id');
+
+    APIServices.descurtir(map).then((response) {
+      if (response.statusCode == 200) {
+        setState(() {
+          conteudos[index].curtidas -= 1;
+          conteudos[index].curtido = true;
+        });
+      } else {
+        erro = response.body;
+      }
+    });
+  }
+
+  Widget getDica(Conteudo dica, int index) {
     return Container(
-        decoration: BoxDecoration(color: Colors.black),
-        padding: EdgeInsets.only(left: 25, right: 25, top: 20),
+        margin: EdgeInsets.only(top: 1),
+        decoration: BoxDecoration(color: Colors.black87),
+        padding: EdgeInsets.only(left: 30, right: 30, top: 25, bottom: 20),
+        width: MediaQuery.of(context).size.width,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+            Widget>[
+          Row(children: [
+            Icon(Icons.format_quote_rounded, size: 25, color: Colors.white),
+            Spacer(),
+            Padding(
+              child: Icon(Icons.calendar_today, size: 15, color: Colors.white),
+              padding: EdgeInsets.only(right: 5),
+            ),
+            Text(
+                "" +
+                    dica.data.day.toString() +
+                    "/" +
+                    dica.data.month.toString() +
+                    "/" +
+                    dica.data.year.toString(),
+                style: TextStyle(
+                    fontWeight: FontWeight.w100,
+                    fontSize: 14,
+                    fontFamily: 'Malu2',
+                    color: Colors.grey)),
+          ]),
+          Text(dica.titulo,
+              style: TextStyle(
+                  fontWeight: FontWeight.w100,
+                  fontSize: 22,
+                  fontFamily: 'Malu2',
+                  color: Colors.white)),
+          Padding(
+              padding: EdgeInsets.all(15),
+              child: Text('"' + dica.texto + '"',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w100,
+                      fontSize: 17,
+                      fontFamily: 'Malu',
+                      color: Colors.white))),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(children: [
+                Padding(
+                  child: Icon(Icons.info, size: 15, color: Colors.white),
+                  padding: EdgeInsets.only(right: 5),
+                ),
+                Text(dica.assunto,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w100,
+                        fontSize: 14,
+                        fontFamily: 'Malu2',
+                        color: Colors.grey)),
+              ]),
+              Row(
+                children: [
+                  MaterialButton(
+                      onPressed: () {
+                        dica.curtido
+                            ? descurtir(dica.id, index)
+                            : curtir(dica.id, index);
+                      },
+                      child: Container(
+                          padding: EdgeInsets.only(left: 10, right: 5),
+                          decoration: BoxDecoration(
+                              color:
+                                  dica.curtido ? (Colors.red) : (Colors.white),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Row(children: [
+                            Text(
+                              dica.curtidas.toString(),
+                              style: TextStyle(
+                                color: dica.curtido
+                                    ? (Colors.white)
+                                    : (Colors.grey[600]),
+                                fontWeight: FontWeight.w100,
+                                fontSize: 15,
+                                fontFamily: 'Malu2',
+                              ),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.05,
+                              height: MediaQuery.of(context).size.width * 0.05,
+                              child: Icon(Icons.favorite_rounded,
+                                  size: 15,
+                                  color: dica.curtido
+                                      ? (Colors.red)
+                                      : (Colors.grey)),
+                            )
+                          ]))),
+                  GestureDetector(
+                      onTap: () {
+                        _launchURL(dica.link);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)),
+                        width: MediaQuery.of(context).size.width * 0.05,
+                        height: MediaQuery.of(context).size.width * 0.05,
+                        child: Icon(Icons.open_in_new_rounded,
+                            size: 15, color: (Colors.grey)),
+                      ))
+                ],
+              )
+            ],
+          )
+        ]));
+  }
+
+  Widget getNoticia(Conteudo noticia, int index) {
+    return Container(
+        margin: EdgeInsets.only(top: 1),
+        decoration: BoxDecoration(color: Colors.black54),
+        padding: EdgeInsets.only(left: 30, right: 30, top: 25, bottom: 20),
         width: MediaQuery.of(context).size.width,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
             Widget>[
           Text(noticia.titulo,
               style: TextStyle(
                   fontWeight: FontWeight.w100,
-                  fontSize: 20,
+                  fontSize: 24,
                   fontFamily: 'Malu2',
                   height: 0.9,
                   color: Colors.white)),
@@ -100,7 +217,7 @@ class _FeedPageState extends State<FeedScreen> {
                     noticia.data.year.toString(),
                 style: TextStyle(
                     fontWeight: FontWeight.w100,
-                    fontSize: 12,
+                    fontSize: 14,
                     fontFamily: 'Malu2',
                     color: Colors.grey)),
           ]),
@@ -111,7 +228,7 @@ class _FeedPageState extends State<FeedScreen> {
                     style: TextStyle(
                         fontWeight: FontWeight.w900,
                         height: 0.9,
-                        fontSize: 15,
+                        fontSize: 17,
                         fontFamily: 'Malu',
                         color: Colors.white)),
                 SizedBox(height: 15),
@@ -123,30 +240,68 @@ class _FeedPageState extends State<FeedScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Icon(Icons.info, size: 20, color: Colors.white),
-                    Text(noticia.assunto,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w100,
-                            fontSize: 15,
-                            fontFamily: 'Malu',
-                            color: Colors.white)),
-                  ]),
+              Row(children: [
+                Padding(
+                  child: Icon(Icons.info, size: 18, color: Colors.white),
+                  padding: EdgeInsets.only(right: 5),
+                ),
+                Text(noticia.assunto,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w100,
+                        fontSize: 16,
+                        fontFamily: 'Malu2',
+                        color: Colors.grey)),
+              ]),
               Row(
                 children: [
-                  Text(
-                    noticia.curtidas.toString(),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: noticia.curtido ? (Colors.red) : (Colors.white),
-                        borderRadius: BorderRadius.circular(10)),
-                    width: MediaQuery.of(context).size.width,
-                    child: Icon(Icons.favorite, size: 15, color: Colors.white),
-                  )
+                  MaterialButton(
+                      onPressed: () {
+                        noticia.curtido
+                            ? descurtir(noticia.id, index)
+                            : curtir(noticia.id, index);
+                      },
+                      child: Container(
+                          padding: EdgeInsets.only(left: 10, right: 5),
+                          decoration: BoxDecoration(
+                              color: noticia.curtido
+                                  ? (Colors.red)
+                                  : (Colors.white),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Row(children: [
+                            Text(
+                              noticia.curtidas.toString(),
+                              style: TextStyle(
+                                color: noticia.curtido
+                                    ? (Colors.white)
+                                    : (Colors.grey[600]),
+                                fontWeight: FontWeight.w100,
+                                fontSize: 15,
+                                fontFamily: 'Malu2',
+                              ),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.05,
+                              height: MediaQuery.of(context).size.width * 0.05,
+                              child: Icon(Icons.favorite_rounded,
+                                  size: 15,
+                                  color: noticia.curtido
+                                      ? (Colors.white)
+                                      : (Colors.grey)),
+                            )
+                          ]))),
+                  GestureDetector(
+                      onTap: () {
+                        _launchURL(noticia.link);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)),
+                        width: MediaQuery.of(context).size.width * 0.05,
+                        height: MediaQuery.of(context).size.width * 0.05,
+                        child: Icon(Icons.open_in_new_rounded,
+                            size: 15, color: (Colors.grey)),
+                      ))
                 ],
               )
             ],
@@ -154,156 +309,177 @@ class _FeedPageState extends State<FeedScreen> {
         ]));
   }
 
-  Widget getBlog(Conteudo blog) {
-    return Text("Blog");
-  }
-
-  Widget getVideo(Conteudo video) {
+  Widget getVideo(Conteudo video, int index) {
     return Container(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
-            Widget>[
-      Container(
-          decoration: BoxDecoration(color: Colors.black),
-          padding: EdgeInsets.only(left: 25, right: 25, top: 20),
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              Text(video.titulo,
+        margin: EdgeInsets.only(top: 1),
+        decoration: BoxDecoration(color: Colors.black54),
+        padding: EdgeInsets.only(left: 30, right: 30, top: 25, bottom: 20),
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          children: [
+            Text(video.titulo,
+                style: TextStyle(
+                    fontWeight: FontWeight.w100,
+                    fontSize: 22,
+                    fontFamily: 'Malu2',
+                    height: 0.9,
+                    color: Colors.white)),
+            SizedBox(height: 5),
+            Row(children: [
+              Padding(
+                child:
+                    Icon(Icons.calendar_today, size: 15, color: Colors.white),
+                padding: EdgeInsets.only(right: 5),
+              ),
+              Text(
+                  "" +
+                      video.data.day.toString() +
+                      "/" +
+                      video.data.month.toString() +
+                      "/" +
+                      video.data.year.toString(),
                   style: TextStyle(
                       fontWeight: FontWeight.w100,
-                      fontSize: 20,
+                      fontSize: 14,
                       fontFamily: 'Malu2',
-                      height: 0.9,
-                      color: Colors.white)),
-              SizedBox(height: 5),
-              Row(children: [
-                Padding(
-                  child:
-                      Icon(Icons.calendar_today, size: 15, color: Colors.white),
-                  padding: EdgeInsets.only(right: 5),
-                ),
-                Text(
-                    "" +
-                        video.data.day.toString() +
-                        "/" +
-                        video.data.month.toString() +
-                        "/" +
-                        video.data.year.toString(),
-                    style: TextStyle(
-                        fontWeight: FontWeight.w100,
-                        fontSize: 12,
-                        fontFamily: 'Malu2',
-                        color: Colors.grey)),
-              ]),
-              Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Column(children: [
-                    Text(video.texto,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w900,
-                            height: 0.9,
-                            fontSize: 15,
-                            fontFamily: 'Malu',
-                            color: Colors.white)),
-                    SizedBox(height: 10),
-                    YoutubePlayer(
-                      controller: YoutubePlayerController(
-                        initialVideoId: YoutubePlayer.convertUrlToId(
-                            video.link), //Add videoID.
-                        flags: YoutubePlayerFlags(
-                          hideControls: false,
-                          controlsVisibleAtStart: true,
-                          autoPlay: false,
-                          mute: false,
-                        ),
+                      color: Colors.grey)),
+            ]),
+            Padding(
+                padding: EdgeInsets.all(15),
+                child: Column(children: [
+                  Text(video.texto,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          height: 0.9,
+                          fontSize: 17,
+                          fontFamily: 'Malu',
+                          color: Colors.white)),
+                  SizedBox(height: 10),
+                  YoutubePlayer(
+                    controller: YoutubePlayerController(
+                      initialVideoId: YoutubePlayer.convertUrlToId(
+                          video.link), //Add videoID.
+                      flags: YoutubePlayerFlags(
+                        hideControls: false,
+                        controlsVisibleAtStart: true,
+                        autoPlay: false,
+                        mute: false,
                       ),
-                      showVideoProgressIndicator: true,
-                      progressIndicatorColor: Colors.amber,
-                    )
-                  ])),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Icon(Icons.info, size: 20, color: Colors.white),
-                        Text(video.assunto,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w100,
-                                fontSize: 15,
-                                fontFamily: 'Malu',
-                                color: Colors.white)),
-                      ]),
-                  Row(
-                    children: [
-                      Text(
-                        video.curtidas.toString(),
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                            color:
-                                video.curtido ? (Colors.red) : (Colors.white),
-                            borderRadius: BorderRadius.circular(10)),
-                        width: MediaQuery.of(context).size.width,
-                        child:
-                            Icon(Icons.favorite, size: 15, color: Colors.white),
-                      )
-                    ],
+                    ),
+                    showVideoProgressIndicator: true,
+                    progressIndicatorColor: Colors.amber,
                   )
-                ],
-              )
-            ],
-          ))
-    ]));
+                ])),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(children: [
+                  Padding(
+                    child: Icon(Icons.info, size: 15, color: Colors.white),
+                    padding: EdgeInsets.only(right: 5),
+                  ),
+                  Text(video.assunto,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w100,
+                          fontSize: 14,
+                          fontFamily: 'Malu2',
+                          color: Colors.grey)),
+                ]),
+                Row(
+                  children: [
+                    MaterialButton(
+                        onPressed: () {
+                          video.curtido
+                              ? descurtir(video.id, index)
+                              : curtir(video.id, index);
+                        },
+                        child: Container(
+                            padding: EdgeInsets.only(left: 10, right: 5),
+                            decoration: BoxDecoration(
+                                color: video.curtido
+                                    ? (Colors.red)
+                                    : (Colors.white),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Row(children: [
+                              Text(
+                                video.curtidas.toString(),
+                                style: TextStyle(
+                                  color: video.curtido
+                                      ? (Colors.white)
+                                      : (Colors.grey[600]),
+                                  fontWeight: FontWeight.w100,
+                                  fontSize: 15,
+                                  fontFamily: 'Malu2',
+                                ),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.05,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.05,
+                                child: Icon(Icons.favorite_rounded,
+                                    size: 15,
+                                    color: video.curtido
+                                        ? (Colors.white)
+                                        : (Colors.grey)),
+                              )
+                            ]))),
+                    GestureDetector(
+                        onTap: () {
+                          _launchURL(video.link);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10)),
+                          width: MediaQuery.of(context).size.width * 0.05,
+                          height: MediaQuery.of(context).size.width * 0.05,
+                          child: Icon(Icons.open_in_new_rounded,
+                              size: 15, color: (Colors.grey)),
+                        ))
+                  ],
+                )
+              ],
+            )
+          ],
+        ));
   }
 
   Widget getCabecalho() {
     return Column(children: <Widget>[
       Container(
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(color: Color(0xFF073763)),
-          child: Row(children: <Widget>[
-            Autocomplete<String>(
-              optionsBuilder: (TextEditingValue textEditingValue) {
-                if (textEditingValue.text == '') {
-                  return const Iterable<String>.empty();
-                }
-
-                String pesquisa = textEditingValue.text.toLowerCase();
-
-                List<String> ret = [];
-
-                conteudos.forEach((Conteudo conteudo) {
-                  ret.addAll(conteudo.texto
-                      .split(" ")
-                      .where((String palavra) => palavra.contains(pesquisa)));
-                  ret.addAll(conteudo.assunto
-                      .split(" ")
-                      .where((String palavra) => palavra.contains(pesquisa)));
-                  ret.addAll(conteudo.titulo
-                      .split(" ")
-                      .where((String palavra) => palavra.contains(pesquisa)));
-                });
-
-                return ret.toSet().toList();
-              },
-              onSelected: (String selection) {
-                print('pesquisar com $selection');
-              },
-            )
-          ])),
+          decoration: BoxDecoration(color: Theme.of(context).primaryColorDark),
+          child: Row(children: <Widget>[])),
       Container(
-          decoration: BoxDecoration(color: Color(0xFF20124D)),
-          width: MediaQuery.of(context).size.width,
-          height: 120,
+          decoration: BoxDecoration(color: Theme.of(context).primaryColorDark),
+          height: 100,
           child: ListView(
-              shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.all(8),
               children: <Widget>[
-                Container(width: 150, height: 150, child: Text("Text"))
+                TextButton(
+                    child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(100)),
+                        child: Text("Text"))),
+                TextButton(
+                    child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(100)),
+                        child: Text("Text"))),
+                TextButton(
+                    child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(100)),
+                        child: Text("Text"))),
               ])),
     ]);
   }
@@ -315,24 +491,23 @@ class _FeedPageState extends State<FeedScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             // aqui só carrega quando já pegou os dados
-            return ListView(children: <Widget>[
-              getCabecalho(),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: conteudos.length,
-                itemBuilder: (BuildContext context, int index) {
+            return CustomScrollView(slivers: <Widget>[
+              SliverAppBar(
+                floating: true,
+                expandedHeight: 100.0,
+                flexibleSpace: FlexibleSpaceBar(background: getCabecalho()),
+              ),
+              SliverList(delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
                   if (conteudos[index].tipo == "dica")
-                    return getDica(conteudos[index]);
+                    return getDica(conteudos[index], index);
 
                   if (conteudos[index].tipo == "video")
-                    return getVideo(conteudos[index]);
+                    return getVideo(conteudos[index], index);
 
-                  if (conteudos[index].tipo == "blog")
-                    return getBlog(conteudos[index]);
-
-                  return getNoticia(conteudos[index]);
+                  return getNoticia(conteudos[index], index);
                 },
-              )
+              ))
             ]);
           } else {
             // aqui eh tipo uma tela de espera
