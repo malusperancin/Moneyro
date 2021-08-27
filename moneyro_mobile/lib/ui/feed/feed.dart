@@ -19,6 +19,7 @@ class _FeedPageState extends State<FeedScreen> {
   List<Conteudo> conteudos = [];
   YoutubePlayerController _controller = null;
   String erro = "";
+  final _pesquisa = TextEditingController();
 
   void _launchURL(url) async =>
       await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
@@ -163,7 +164,7 @@ class _FeedPageState extends State<FeedScreen> {
                               child: Icon(Icons.favorite_rounded,
                                   size: 15,
                                   color: dica.curtido
-                                      ? (Colors.red)
+                                      ? (Colors.white)
                                       : (Colors.grey)),
                             )
                           ]))),
@@ -191,7 +192,7 @@ class _FeedPageState extends State<FeedScreen> {
     return Container(
         margin: EdgeInsets.only(top: 1),
         decoration: BoxDecoration(color: Colors.black54),
-        padding: EdgeInsets.only(left: 30, right: 30, top: 25, bottom: 20),
+        padding: EdgeInsets.only(left: 28, right: 28, top: 22, bottom: 16),
         width: MediaQuery.of(context).size.width,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
             Widget>[
@@ -209,8 +210,7 @@ class _FeedPageState extends State<FeedScreen> {
               padding: EdgeInsets.only(right: 5),
             ),
             Text(
-                "" +
-                    noticia.data.day.toString() +
+                noticia.data.day.toString() +
                     "/" +
                     noticia.data.month.toString() +
                     "/" +
@@ -222,7 +222,7 @@ class _FeedPageState extends State<FeedScreen> {
                     color: Colors.grey)),
           ]),
           Padding(
-              padding: EdgeInsets.all(15),
+              padding: EdgeInsets.only(left: 15, bottom: 15, top: 15),
               child: Column(children: [
                 Text(noticia.texto,
                     style: TextStyle(
@@ -242,13 +242,13 @@ class _FeedPageState extends State<FeedScreen> {
             children: [
               Row(children: [
                 Padding(
-                  child: Icon(Icons.info, size: 18, color: Colors.white),
+                  child: Icon(Icons.info, size: 15, color: Colors.white),
                   padding: EdgeInsets.only(right: 5),
                 ),
                 Text(noticia.assunto,
                     style: TextStyle(
                         fontWeight: FontWeight.w100,
-                        fontSize: 16,
+                        fontSize: 14,
                         fontFamily: 'Malu2',
                         color: Colors.grey)),
               ]),
@@ -446,40 +446,87 @@ class _FeedPageState extends State<FeedScreen> {
 
   Widget getCabecalho() {
     return Column(children: <Widget>[
+      Padding(
+          padding: EdgeInsets.only(left: 15, top: 10, right: 15, bottom: 5),
+          child: TextFormField(
+              controller: _pesquisa,
+              keyboardType: TextInputType.text,
+              cursorColor: Colors.black54,
+              style: TextStyle(color: Colors.black54, fontSize: 15),
+              decoration: InputDecoration(
+                  filled: true,
+                  prefixIcon: Padding(
+                      padding: EdgeInsets.only(left: 15, right: 10),
+                      child: Icon(Icons.search, color: Colors.black45)),
+                  labelStyle: TextStyle(color: Colors.white70, fontSize: 15),
+                  fillColor: Colors.white,
+                  hoverColor: Colors.black,
+                  focusColor: Colors.black,
+                  contentPadding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(80),
+                    borderSide: BorderSide(color: Colors.white, width: 1.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(80),
+                    borderSide: BorderSide(color: Colors.grey, width: 1.5),
+                  )))),
       Container(
-          decoration: BoxDecoration(color: Theme.of(context).primaryColorDark),
-          child: Row(children: <Widget>[])),
-      Container(
-          decoration: BoxDecoration(color: Theme.of(context).primaryColorDark),
-          height: 100,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context).primaryColorDark,
+              Color(0xFF000e3b),
+            ],
+          )),
+          height: 55,
           child: ListView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.all(8),
               children: <Widget>[
-                TextButton(
+                MaterialButton(
                     child: Container(
                         padding:
                             EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                         decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).primaryColorLight,
                             borderRadius: BorderRadius.circular(100)),
-                        child: Text("Text"))),
-                TextButton(
+                        child: Text(
+                          "Notícias",
+                          style: TextStyle(color: Colors.white),
+                        ))),
+                MaterialButton(
+                    color: Colors.white,
                     child: Container(
                         padding:
                             EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                         decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).primaryColorLight,
                             borderRadius: BorderRadius.circular(100)),
-                        child: Text("Text"))),
-                TextButton(
+                        child: Text("Dicas",
+                            style: TextStyle(color: Colors.white)))),
+                MaterialButton(
+                    color: Colors.white,
                     child: Container(
                         padding:
                             EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                         decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).primaryColorLight,
                             borderRadius: BorderRadius.circular(100)),
-                        child: Text("Text"))),
+                        child: Text("Blogs",
+                            style: TextStyle(color: Colors.white)))),
+                MaterialButton(
+                    color: Colors.white,
+                    child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColorLight,
+                            borderRadius: BorderRadius.circular(100)),
+                        child: Text("Vídeos",
+                            style: TextStyle(color: Colors.white)))),
               ])),
     ]);
   }
@@ -493,9 +540,11 @@ class _FeedPageState extends State<FeedScreen> {
             // aqui só carrega quando já pegou os dados
             return CustomScrollView(slivers: <Widget>[
               SliverAppBar(
+                backgroundColor: Theme.of(context).primaryColorDark,
                 floating: true,
-                expandedHeight: 100.0,
-                flexibleSpace: FlexibleSpaceBar(background: getCabecalho()),
+                expandedHeight: 118.0,
+                flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.pin, background: getCabecalho()),
               ),
               SliverList(delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {

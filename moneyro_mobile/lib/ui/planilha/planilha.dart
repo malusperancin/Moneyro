@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:intl/intl.dart';
+import 'package:moneyro_mobile/ui/appBar/Cabecalho.dart';
 
 class PlanilhaScreen extends StatefulWidget {
   PlanilhaScreen({Key key}) : super(key: key);
@@ -90,44 +91,6 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
                   Image.asset("assets/images/perfil" + user.foto + ".png"))));
 
     return ret;
-  }
-
-  Widget cabecalho(titulo, icone, cor) {
-    return Container(
-        margin: EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
-        padding: EdgeInsets.only(
-          top: 5.0,
-          bottom: 5.0,
-          right: 10.0,
-          left: 20.0,
-        ),
-        decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(0.4),
-                  blurRadius: 15,
-                  offset: Offset(0, 5))
-            ],
-            color: Theme.of(context).primaryColorLight,
-            borderRadius: BorderRadius.circular(100)),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(titulo,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 38,
-                      fontFamily: 'Malu2',
-                      color: Colors.white)),
-              Container(
-                  decoration: BoxDecoration(
-                      color: cor, borderRadius: BorderRadius.circular(100)),
-                  child: IconButton(
-                      color: Colors.white,
-                      onPressed: () {},
-                      icon: Icon(icone),
-                      iconSize: 32))
-            ]));
   }
 
   Widget Dia(BuildContext context, int index, animation) {
@@ -240,7 +203,7 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
                           style: TextStyle(
                               fontWeight: FontWeight.w100,
                               fontSize: 22,
-                              fontFamily: 'Malu2',
+                              fontFamily: 'Malu',
                               color: Colors.white))
                     ],
                   )),
@@ -289,8 +252,10 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
             return Container(
                 width: MediaQuery.of(context).size.width,
                 child: Column(children: <Widget>[
-                  cabecalho(
-                      "Planilha", Icons.reorder_rounded, Colors.amber[500]),
+                  Cabecalho(
+                      titulo: "Planilha",
+                      icone: Icons.reorder_rounded,
+                      cor: Colors.amber[500]),
                   AnimatedList(
                     shrinkWrap: true,
                     key: listKey,

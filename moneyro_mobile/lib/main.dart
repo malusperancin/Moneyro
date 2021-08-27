@@ -23,10 +23,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          buttonColor: Color.fromRGBO(236, 179, 24, 1.0), //amarelo
+          buttonColor: Color.fromRGBO(236, 165, 24, 1.0), //amarelo
           backgroundColor: Color.fromRGBO(67, 67, 67, 1.0), //cinza
-          primaryColorDark: Color.fromRGBO(12, 65, 111, 1),
-          primaryColorLight: Color.fromRGBO(11, 83, 148, 1)), //azul
+          //primaryColorDark: Color.fromRGBO(12, 65, 111, 1), // azulao
+          primaryColorDark: Color.fromRGBO(25, 22, 87, 1), // roxao
+          //primaryColorLight: Color.fromRGBO(11, 83, 148, 1)), //azulzin
+          primaryColorLight: Color.fromRGBO(69, 64, 173, 1)), // roxin
+
       home: HomeScreen(),
     );
   }
