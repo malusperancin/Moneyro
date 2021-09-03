@@ -460,7 +460,6 @@ class _FeedPageState extends State<FeedScreen> {
                       child: Icon(Icons.search, color: Colors.black45)),
                   labelStyle: TextStyle(color: Colors.white70, fontSize: 15),
                   fillColor: Colors.white,
-                  hoverColor: Colors.black,
                   focusColor: Colors.black,
                   contentPadding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
                   border: OutlineInputBorder(

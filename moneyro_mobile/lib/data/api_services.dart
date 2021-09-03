@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:moneyro_mobile/models/registro_model.dart';
 import 'dart:convert';
 import 'package:moneyro_mobile/models/usuario_model.dart';
 
@@ -15,6 +16,11 @@ class APIServices {
   static Future login(Usuario usuario) async {
     return await http.post(Uri.parse(url + 'usuarios/login/'),
         headers: header, body: json.encode(usuario.toMap()));
+  }
+
+  static Future addRegistro(Registro reg) async {
+    return await http.post(Uri.parse(url + 'registros'),
+        headers: header, body: json.encode(reg.toMap()));
   }
 
   static Future curtir(Object post) async {

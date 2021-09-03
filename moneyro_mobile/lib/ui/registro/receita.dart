@@ -1,5 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
+import 'package:moneyro_mobile/data/api_services.dart';
+import 'package:moneyro_mobile/models/registro_model.dart';
+import 'package:moneyro_mobile/models/tag_model.dart';
+import 'package:moneyro_mobile/ui/planilha/planilha.dart';
 
 class Receita extends StatefulWidget {
   Receita({Key key}) : super(key: key);
@@ -12,8 +19,11 @@ final _valor = TextEditingController();
 final _nome = TextEditingController();
 final _data = TextEditingController();
 final _local = TextEditingController();
+var erro = '';
 
-String tag = "One";
+List<Tag> tags = new List<Tag>();
+
+Tag tag = Tag(0, '');
 DateTime _dateTime = DateTime.now();
 
 class _ReceitaState extends State<Receita> {
@@ -29,135 +39,188 @@ class _ReceitaState extends State<Receita> {
       });
   }
 
+  Future<bool> fetchData() async {
+    // se precisar pegar algo do banco ou da sessao faz aqui
+    await APIServices.getTags().then((response) {
+      if (response.statusCode == 200) {
+        Iterable list = json.decode(response.body);
+        tags = list.map((model) => Tag.fromObject(model)).toList();
+
+        if (tag.id == 0) tag = tags[0];
+      }
+    });
+
+    return true;
+  }
+
+  Future<void> registrar() async {
+    Registro reg = new Registro(
+        1,
+        await FlutterSession().get('id'),
+        _dateTime,
+        _nome.text,
+        tag.id,
+        _local.text,
+        -double.parse(_valor.value.toString()));
+
+    APIServices.addRegistro(reg).then((response) {
+      if (response.statusCode == 200) {
+        reg = new Registro.fromObject(json.decode(response.body));
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => PlanilhaScreen()));
+      } else {
+        erro = response.body;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      Padding(
-          padding: EdgeInsets.symmetric(horizontal: 45.0),
-          child: TextFormField(
-              controller: _valor,
-              keyboardType: TextInputType.text,
-              cursorColor: Colors.black54,
-              style: TextStyle(color: Colors.black54, fontSize: 15),
-              decoration: InputDecoration(
-                  filled: true,
-                  prefixIcon: Padding(
-                      padding: EdgeInsets.only(left: 15, right: 10),
-                      child: Icon(Icons.attach_money_rounded,
-                          color: Colors.black45)),
-                  labelStyle: TextStyle(color: Colors.white70, fontSize: 15),
-                  fillColor: Colors.white,
-                  hoverColor: Colors.black,
-                  focusColor: Colors.black,
-                  contentPadding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
-                  border: UnderlineInputBorder(
-                    borderRadius: BorderRadius.circular(50),
-                    borderSide: BorderSide(color: Colors.grey, width: 2),
+    return FutureBuilder(
+        future: fetchData(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Column(children: <Widget>[
+                  Spacer(),
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 45.0),
+                      child: TextFormField(
+                          controller: _valor,
+                          keyboardType: TextInputType.number,
+                          cursorColor: Colors.black54,
+                          style: TextStyle(color: Colors.black54, fontSize: 15),
+                          decoration: InputDecoration(
+                              filled: true,
+                              prefixIcon: Padding(
+                                  padding: EdgeInsets.only(left: 15, right: 10),
+                                  child: Icon(Icons.attach_money_rounded,
+                                      color: Colors.black45)),
+                              labelStyle: TextStyle(
+                                  color: Colors.white70, fontSize: 17),
+                              fillColor: Colors.white,
+                              focusColor: Colors.black,
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                              border: UnderlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 2),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 2),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 2),
+                              )))),
+                  Spacer(flex: 3),
+                  Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: TextFormField(
+                          controller: _nome,
+                          keyboardType: TextInputType.text,
+                          cursorColor: Colors.black54,
+                          style: TextStyle(color: Colors.black54, fontSize: 15),
+                          decoration: InputDecoration(
+                              filled: true,
+                              labelStyle: TextStyle(
+                                  color: Colors.black54, fontSize: 15),
+                              fillColor: Colors.grey[200],
+                              labelText: "Nome",
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                    color: Colors.grey[200], width: 1.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                    color: Colors.grey[200], width: 1.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                    color: Colors.grey[200], width: 1.0),
+                              )))),
+                  Spacer(),
+                  Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.grey[200])),
+                          onPressed: () => _selectDate(context),
+                          child: Container(
+                              margin: EdgeInsets.all(10),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      "Data : " +
+                                          _dateTime.day.toString() +
+                                          "/" +
+                                          _dateTime.month.toString() +
+                                          "/" +
+                                          _dateTime.year.toString(),
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                    Icon(Icons.calendar_today,
+                                        color: Colors.black54)
+                                  ])))),
+                  Spacer(),
+                  DropdownButton<Tag>(
+                    value: tag,
+                    icon: const Icon(Icons.local_offer_rounded),
+                    iconSize: 24,
+                    elevation: 2,
+                    style: const TextStyle(color: Colors.black54),
+                    underline: Container(
+                      height: 2,
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.black54,
+                    ),
+                    onChanged: (Tag newValue) {
+                      tag = newValue;
+                    },
+                    items: tags.map<DropdownMenuItem<Tag>>((Tag value) {
+                      return DropdownMenuItem<Tag>(
+                        value: value,
+                        child: Text(value.nome),
+                      );
+                    }).toList(),
                   ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderRadius: BorderRadius.circular(50),
-                    borderSide: BorderSide(color: Colors.grey, width: 2),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderRadius: BorderRadius.circular(50),
-                    borderSide: BorderSide(color: Colors.grey, width: 2),
-                  )))),
-      Padding(
-          padding: EdgeInsets.only(top: 10, right: 15, left: 15),
-          child: TextFormField(
-              controller: _nome,
-              keyboardType: TextInputType.text,
-              cursorColor: Colors.black54,
-              style: TextStyle(color: Colors.black54, fontSize: 15),
-              decoration: InputDecoration(
-                  filled: true,
-                  labelStyle: TextStyle(color: Colors.black54, fontSize: 15),
-                  fillColor: Colors.grey[200],
-                  hoverColor: Colors.black,
-                  focusColor: Colors.black,
-                  labelText: "Nome",
-                  contentPadding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey[200], width: 1.0),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey[200], width: 1.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey[200], width: 1.0),
-                  )))),
-      Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            RaisedButton(
-              color: Colors.grey[200],
-              onPressed: () => _selectDate(context),
-              child: Text(
-                "Data : " +
-                    _dateTime.day.toString() +
-                    "/" +
-                    _dateTime.month.toString() +
-                    "/" +
-                    _dateTime.year.toString(),
-              ),
-            ),
-          ],
-        ),
-      ),
-      Padding(
-          padding: EdgeInsets.only(top: 10, right: 15, left: 15),
-          child: TextFormField(
-              controller: _local,
-              keyboardType: TextInputType.text,
-              cursorColor: Colors.black54,
-              style: TextStyle(color: Colors.black54, fontSize: 15),
-              decoration: InputDecoration(
-                  filled: true,
-                  labelStyle: TextStyle(color: Colors.black54, fontSize: 15),
-                  fillColor: Colors.grey[200],
-                  hoverColor: Colors.black,
-                  focusColor: Colors.black,
-                  labelText: "Local",
-                  contentPadding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey[200], width: 1.0),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey[200], width: 1.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey[200], width: 1.0),
-                  )))),
-      DropdownButton<String>(
-        value: tag,
-        icon: const Icon(Icons.arrow_downward),
-        iconSize: 24,
-        elevation: 16,
-        style: const TextStyle(color: Colors.deepPurple),
-        underline: Container(
-          height: 2,
-          color: Colors.deepPurpleAccent,
-        ),
-        onChanged: (String newValue) {
-          setState(() {
-            tag = newValue;
-          });
-        },
-        items: <String>["One", "Two", "Free", "Four"]
-            .map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      )
-    ]);
+                  Spacer(flex: 5),
+                  ElevatedButton(
+                      child: Padding(
+                          child: Text("Salvar"), padding: EdgeInsets.all(10)),
+                      style: ElevatedButton.styleFrom(
+                        primary: Theme.of(context).primaryColorDark,
+                        textStyle: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0)),
+                      ),
+                      onPressed: () {
+                        registrar();
+                      }),
+                  Spacer(),
+                ]));
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
   }
 }

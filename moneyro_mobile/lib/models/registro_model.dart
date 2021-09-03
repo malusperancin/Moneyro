@@ -41,12 +41,12 @@ class Registro {
   }
 
   Map toJson() => {
-    'id': id,
-    'idUsuario': idUsuario,
-    'data': data,
-    'nome': nome,
-    'idTag': idTag,
-    'lugar': lugar,
-    'quantia': quantia,
-  };
+        'id': id,
+        'idUsuario': idUsuario,
+        'data': data,
+        'nome': nome,
+        'idTag': idTag,
+        'lugar': lugar,
+        'quantia': quantia,
+      };
 }

@@ -4,8 +4,11 @@ import 'dart:core';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
 import 'package:moneyro_mobile/data/api_services.dart';
+import 'package:moneyro_mobile/models/registro_model.dart';
 import 'package:moneyro_mobile/models/tag_model.dart';
+import 'package:moneyro_mobile/ui/planilha/planilha.dart';
 
 class Despesa extends StatefulWidget {
   Despesa({Key key}) : super(key: key);
@@ -19,6 +22,7 @@ final _nome = TextEditingController();
 final _data = TextEditingController();
 final _local = TextEditingController();
 List<Tag> tags = new List<Tag>();
+var erro = '';
 
 Tag tag = Tag(0, '');
 DateTime _dateTime = DateTime.now();
@@ -28,7 +32,7 @@ class _DespesaState extends State<Despesa> {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: _dateTime,
-        firstDate: DateTime(2015, 8),
+        firstDate: DateTime(2020, 1),
         builder: (BuildContext context, Widget child) {
           return Theme(
             data: ThemeData.dark().copyWith(
@@ -60,6 +64,27 @@ class _DespesaState extends State<Despesa> {
     return true;
   }
 
+  Future<void> registrar() async {
+    Registro reg = new Registro(
+        1,
+        await FlutterSession().get('id'),
+        _dateTime,
+        _nome.text,
+        tag.id,
+        _local.text,
+        -double.parse(_valor.value.toString()));
+
+    APIServices.addRegistro(reg).then((response) {
+      if (response.statusCode == 200) {
+        reg = new Registro.fromObject(json.decode(response.body));
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => PlanilhaScreen()));
+      } else {
+        erro = response.body;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -70,11 +95,12 @@ class _DespesaState extends State<Despesa> {
             return Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15),
                 child: Column(children: <Widget>[
+                  Spacer(),
                   Padding(
                       padding: EdgeInsets.symmetric(horizontal: 45.0),
                       child: TextFormField(
                           controller: _valor,
-                          keyboardType: TextInputType.text,
+                          keyboardType: TextInputType.number,
                           cursorColor: Colors.black54,
                           style: TextStyle(color: Colors.black54, fontSize: 15),
                           decoration: InputDecoration(
@@ -84,9 +110,8 @@ class _DespesaState extends State<Despesa> {
                                   child: Icon(Icons.attach_money_rounded,
                                       color: Colors.black45)),
                               labelStyle: TextStyle(
-                                  color: Colors.white70, fontSize: 15),
+                                  color: Colors.white70, fontSize: 17),
                               fillColor: Colors.white,
-                              hoverColor: Colors.black,
                               focusColor: Colors.black,
                               contentPadding:
                                   EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
@@ -105,6 +130,7 @@ class _DespesaState extends State<Despesa> {
                                 borderSide:
                                     BorderSide(color: Colors.grey, width: 2),
                               )))),
+                  Spacer(flex: 3),
                   Padding(
                       padding: EdgeInsets.only(top: 10),
                       child: TextFormField(
@@ -135,6 +161,7 @@ class _DespesaState extends State<Despesa> {
                                 borderSide: BorderSide(
                                     color: Colors.grey[200], width: 1.0),
                               )))),
+                  Spacer(),
                   Padding(
                       padding: EdgeInsets.only(top: 10),
                       child: ElevatedButton(
@@ -156,13 +183,14 @@ class _DespesaState extends State<Despesa> {
                                           "/" +
                                           _dateTime.year.toString(),
                                       style: TextStyle(
-                                          color: Colors.black54,
-                                          fontSize: 15,
-                                          fontFamily: "Malu"),
+                                        color: Colors.black54,
+                                        fontSize: 15,
+                                      ),
                                     ),
                                     Icon(Icons.calendar_today,
                                         color: Colors.black54)
                                   ])))),
+                  Spacer(),
                   Padding(
                       padding: EdgeInsets.only(top: 10),
                       child: TextFormField(
@@ -193,6 +221,7 @@ class _DespesaState extends State<Despesa> {
                                 borderSide: BorderSide(
                                     color: Colors.grey[200], width: 1.0),
                               )))),
+                  Spacer(),
                   DropdownButton<Tag>(
                     value: tag,
                     icon: const Icon(Icons.local_offer_rounded),
@@ -201,6 +230,7 @@ class _DespesaState extends State<Despesa> {
                     style: const TextStyle(color: Colors.black54),
                     underline: Container(
                       height: 2,
+                      width: MediaQuery.of(context).size.width,
                       color: Colors.black54,
                     ),
                     onChanged: (Tag newValue) {
@@ -212,7 +242,24 @@ class _DespesaState extends State<Despesa> {
                         child: Text(value.nome),
                       );
                     }).toList(),
-                  )
+                  ),
+                  Spacer(flex: 5),
+                  ElevatedButton(
+                      child: Padding(
+                          child: Text("Salvar"), padding: EdgeInsets.all(10)),
+                      style: ElevatedButton.styleFrom(
+                        primary: Theme.of(context).primaryColorDark,
+                        textStyle: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0)),
+                      ),
+                      onPressed: () {
+                        registrar();
+                      }),
+                  Spacer(),
                 ]));
           } else {
             return CircularProgressIndicator();

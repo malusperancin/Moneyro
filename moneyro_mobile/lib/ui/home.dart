@@ -95,36 +95,37 @@ class _HomePageState extends State<HomeScreen> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          child: DefaultTabController(
-            length: 2,
-            child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: Theme.of(context).primaryColorDark,
-                bottom: TabBar(
-                  indicatorColor: Theme.of(context).primaryColorLight,
-                  tabs: [
-                    Tab(
-                        child: Row(children: <Widget>[
-                      Text("Despesa"),
-                      Icon(Icons.arrow_circle_up_rounded)
-                    ])),
-                    Tab(
-                        child: Row(children: <Widget>[
-                      Text("Receita"),
-                      Icon(Icons.arrow_circle_down_rounded)
-                    ])),
-                  ],
+            elevation: 0,
+            child: SizedBox(
+              height: 500,
+              child: DefaultTabController(
+                length: 2,
+                child: Scaffold(
+                  appBar: AppBar(
+                    backgroundColor: Theme.of(context).primaryColorDark,
+                    bottom: TabBar(
+                      indicatorColor: Theme.of(context).primaryColorLight,
+                      tabs: [
+                        Tab(
+                            child: Row(children: <Widget>[
+                          Text("Despesa"),
+                          Icon(Icons.arrow_circle_up_rounded)
+                        ])),
+                        Tab(
+                            child: Row(children: <Widget>[
+                          Text("Receita"),
+                          Icon(Icons.arrow_circle_down_rounded)
+                        ])),
+                      ],
+                    ),
+                    title: Text('Novo Registro'),
+                  ),
+                  body: TabBarView(
+                    children: [Despesa(), Receita()],
+                  ),
                 ),
-                title: Text('Novo Registro'),
               ),
-              body: TabBarView(
-                children: [Despesa(), Receita()],
-              ),
-            ),
-          ),
-        );
+            ));
       },
     );
   }
