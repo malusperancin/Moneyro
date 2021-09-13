@@ -83,38 +83,40 @@ class _FeedPageState extends State<FeedScreen> {
         width: MediaQuery.of(context).size.width,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
             Widget>[
-          Row(children: [
-            Icon(Icons.format_quote_rounded, size: 25, color: Colors.white),
-            Spacer(),
-            Padding(
-              child: Icon(Icons.calendar_today, size: 15, color: Colors.white),
-              padding: EdgeInsets.only(right: 5),
-            ),
-            Text(
-                "" +
-                    dica.data.day.toString() +
-                    "/" +
-                    dica.data.month.toString() +
-                    "/" +
-                    dica.data.year.toString(),
-                style: TextStyle(
-                    fontWeight: FontWeight.w100,
-                    fontSize: 14,
-                    fontFamily: 'Malu2',
-                    color: Colors.grey)),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Icon(Icons.format_quote_rounded, size: 35, color: Colors.white),
+            Row(children: [
+              Padding(
+                child:
+                    Icon(Icons.calendar_today, size: 15, color: Colors.white),
+                padding: EdgeInsets.only(right: 5),
+              ),
+              Text(
+                  dica.data.day.toString() +
+                      "/" +
+                      dica.data.month.toString() +
+                      "/" +
+                      dica.data.year.toString(),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w100,
+                      fontSize: 14,
+                      fontFamily: 'Malu2',
+                      color: Colors.grey)),
+            ])
           ]),
           Text(dica.titulo,
               style: TextStyle(
                   fontWeight: FontWeight.w100,
-                  fontSize: 22,
+                  fontSize: 25,
                   fontFamily: 'Malu2',
                   color: Colors.white)),
           Padding(
-              padding: EdgeInsets.all(15),
+              padding: EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 15),
               child: Text('"' + dica.texto + '"',
                   style: TextStyle(
                       fontWeight: FontWeight.w100,
                       fontSize: 17,
+                      height: 1,
                       fontFamily: 'Malu',
                       color: Colors.white))),
           Row(
@@ -122,26 +124,27 @@ class _FeedPageState extends State<FeedScreen> {
             children: [
               Row(children: [
                 Padding(
-                  child: Icon(Icons.info, size: 15, color: Colors.white),
+                  child: Icon(Icons.info, size: 14, color: Colors.grey),
                   padding: EdgeInsets.only(right: 5),
                 ),
                 Text(dica.assunto,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                         fontWeight: FontWeight.w100,
-                        fontSize: 14,
+                        fontSize: 15,
                         fontFamily: 'Malu2',
                         color: Colors.grey)),
               ]),
               Row(
                 children: [
-                  MaterialButton(
-                      onPressed: () {
+                  GestureDetector(
+                      onTap: () {
                         dica.curtido
                             ? descurtir(dica.id, index)
                             : curtir(dica.id, index);
                       },
                       child: Container(
-                          padding: EdgeInsets.only(left: 10, right: 5),
+                          padding: EdgeInsets.only(right: 10, left: 10),
                           decoration: BoxDecoration(
                               color:
                                   dica.curtido ? (Colors.red) : (Colors.white),
@@ -158,26 +161,23 @@ class _FeedPageState extends State<FeedScreen> {
                                 fontFamily: 'Malu2',
                               ),
                             ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.05,
-                              height: MediaQuery.of(context).size.width * 0.05,
-                              child: Icon(Icons.favorite_rounded,
-                                  size: 15,
-                                  color: dica.curtido
-                                      ? (Colors.white)
-                                      : (Colors.grey)),
-                            )
+                            SizedBox(width: 2),
+                            Icon(Icons.favorite_rounded,
+                                size: 15,
+                                color: dica.curtido
+                                    ? (Colors.white)
+                                    : (Colors.grey)),
                           ]))),
+                  SizedBox(width: 10),
                   GestureDetector(
                       onTap: () {
                         _launchURL(dica.link);
                       },
                       child: Container(
+                        padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10)),
-                        width: MediaQuery.of(context).size.width * 0.05,
-                        height: MediaQuery.of(context).size.width * 0.05,
                         child: Icon(Icons.open_in_new_rounded,
                             size: 15, color: (Colors.grey)),
                       ))
@@ -192,121 +192,123 @@ class _FeedPageState extends State<FeedScreen> {
     return Container(
         margin: EdgeInsets.only(top: 1),
         decoration: BoxDecoration(color: Colors.black54),
-        padding: EdgeInsets.only(left: 28, right: 28, top: 22, bottom: 16),
+        padding: EdgeInsets.only(left: 26, right: 26, top: 22, bottom: 16),
         width: MediaQuery.of(context).size.width,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
-            Widget>[
-          Text(noticia.titulo,
-              style: TextStyle(
-                  fontWeight: FontWeight.w100,
-                  fontSize: 24,
-                  fontFamily: 'Malu2',
-                  height: 0.9,
-                  color: Colors.white)),
-          SizedBox(height: 5),
-          Row(children: [
-            Padding(
-              child: Icon(Icons.calendar_today, size: 15, color: Colors.white),
-              padding: EdgeInsets.only(right: 5),
-            ),
-            Text(
-                noticia.data.day.toString() +
-                    "/" +
-                    noticia.data.month.toString() +
-                    "/" +
-                    noticia.data.year.toString(),
-                style: TextStyle(
-                    fontWeight: FontWeight.w100,
-                    fontSize: 14,
-                    fontFamily: 'Malu2',
-                    color: Colors.grey)),
-          ]),
-          Padding(
-              padding: EdgeInsets.only(left: 15, bottom: 15, top: 15),
-              child: Column(children: [
-                Text(noticia.texto,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        height: 0.9,
-                        fontSize: 17,
-                        fontFamily: 'Malu',
-                        color: Colors.white)),
-                SizedBox(height: 15),
-                Image.network(
-                  noticia.imagem,
-                  fit: BoxFit.fill,
-                )
-              ])),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(noticia.titulo,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w100,
+                      fontSize: 24,
+                      fontFamily: 'Malu2',
+                      height: 0.9,
+                      color: Colors.white)),
+              SizedBox(height: 5),
               Row(children: [
                 Padding(
-                  child: Icon(Icons.info, size: 15, color: Colors.white),
+                  child:
+                      Icon(Icons.calendar_today, size: 15, color: Colors.white),
                   padding: EdgeInsets.only(right: 5),
                 ),
-                Text(noticia.assunto,
+                Text(
+                    noticia.data.day.toString() +
+                        "/" +
+                        noticia.data.month.toString() +
+                        "/" +
+                        noticia.data.year.toString(),
                     style: TextStyle(
                         fontWeight: FontWeight.w100,
                         fontSize: 14,
                         fontFamily: 'Malu2',
                         color: Colors.grey)),
               ]),
+              Padding(
+                  padding: EdgeInsets.only(left: 15, bottom: 15, top: 15),
+                  child: Column(children: [
+                    Text(noticia.texto,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 5,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            height: 0.9,
+                            fontSize: 17,
+                            fontFamily: 'Malu',
+                            color: Colors.white)),
+                    SizedBox(height: 15),
+                    Image.network(
+                      noticia.imagem,
+                      fit: BoxFit.fill,
+                    )
+                  ])),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  MaterialButton(
-                      onPressed: () {
-                        noticia.curtido
-                            ? descurtir(noticia.id, index)
-                            : curtir(noticia.id, index);
-                      },
-                      child: Container(
-                          padding: EdgeInsets.only(left: 10, right: 5),
-                          decoration: BoxDecoration(
-                              color: noticia.curtido
-                                  ? (Colors.red)
-                                  : (Colors.white),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Row(children: [
-                            Text(
-                              noticia.curtidas.toString(),
-                              style: TextStyle(
-                                color: noticia.curtido
-                                    ? (Colors.white)
-                                    : (Colors.grey[600]),
-                                fontWeight: FontWeight.w100,
-                                fontSize: 15,
-                                fontFamily: 'Malu2',
-                              ),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.05,
-                              height: MediaQuery.of(context).size.width * 0.05,
-                              child: Icon(Icons.favorite_rounded,
-                                  size: 15,
+                  Row(children: [
+                    Padding(
+                      child: Icon(Icons.info, size: 14, color: Colors.grey),
+                      padding: EdgeInsets.only(right: 5),
+                    ),
+                    Text(noticia.assunto,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w100,
+                            fontSize: 15,
+                            fontFamily: 'Malu2',
+                            color: Colors.grey)),
+                  ]),
+                  Row(
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            noticia.curtido
+                                ? descurtir(noticia.id, index)
+                                : curtir(noticia.id, index);
+                          },
+                          child: Container(
+                              padding: EdgeInsets.only(right: 10, left: 10),
+                              decoration: BoxDecoration(
                                   color: noticia.curtido
-                                      ? (Colors.white)
-                                      : (Colors.grey)),
-                            )
-                          ]))),
-                  GestureDetector(
-                      onTap: () {
-                        _launchURL(noticia.link);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)),
-                        width: MediaQuery.of(context).size.width * 0.05,
-                        height: MediaQuery.of(context).size.width * 0.05,
-                        child: Icon(Icons.open_in_new_rounded,
-                            size: 15, color: (Colors.grey)),
-                      ))
+                                      ? (Colors.red)
+                                      : (Colors.white),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Row(children: [
+                                Text(
+                                  noticia.curtidas.toString(),
+                                  style: TextStyle(
+                                    color: noticia.curtido
+                                        ? (Colors.white)
+                                        : (Colors.grey[600]),
+                                    fontWeight: FontWeight.w100,
+                                    fontSize: 15,
+                                    fontFamily: 'Malu2',
+                                  ),
+                                ),
+                                SizedBox(width: 2),
+                                Icon(Icons.favorite_rounded,
+                                    size: 15,
+                                    color: noticia.curtido
+                                        ? (Colors.white)
+                                        : (Colors.grey)),
+                              ]))),
+                      SizedBox(width: 10),
+                      GestureDetector(
+                          onTap: () {
+                            _launchURL(noticia.link);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Icon(Icons.open_in_new_rounded,
+                                size: 15, color: (Colors.grey)),
+                          ))
+                    ],
+                  )
                 ],
               )
-            ],
-          )
-        ]));
+            ]));
   }
 
   Widget getVideo(Conteudo video, int index) {
@@ -332,8 +334,7 @@ class _FeedPageState extends State<FeedScreen> {
                 padding: EdgeInsets.only(right: 5),
               ),
               Text(
-                  "" +
-                      video.data.day.toString() +
+                  video.data.day.toString() +
                       "/" +
                       video.data.month.toString() +
                       "/" +
@@ -345,9 +346,11 @@ class _FeedPageState extends State<FeedScreen> {
                       color: Colors.grey)),
             ]),
             Padding(
-                padding: EdgeInsets.all(15),
+                padding: EdgeInsets.only(left: 15, bottom: 15, top: 15),
                 child: Column(children: [
                   Text(video.texto,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 5,
                       style: TextStyle(
                           fontWeight: FontWeight.w900,
                           height: 0.9,
@@ -375,26 +378,27 @@ class _FeedPageState extends State<FeedScreen> {
               children: [
                 Row(children: [
                   Padding(
-                    child: Icon(Icons.info, size: 15, color: Colors.white),
+                    child: Icon(Icons.info, size: 14, color: Colors.grey),
                     padding: EdgeInsets.only(right: 5),
                   ),
                   Text(video.assunto,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           fontWeight: FontWeight.w100,
-                          fontSize: 14,
+                          fontSize: 15,
                           fontFamily: 'Malu2',
                           color: Colors.grey)),
                 ]),
                 Row(
                   children: [
-                    MaterialButton(
-                        onPressed: () {
+                    GestureDetector(
+                        onTap: () {
                           video.curtido
                               ? descurtir(video.id, index)
                               : curtir(video.id, index);
                         },
                         child: Container(
-                            padding: EdgeInsets.only(left: 10, right: 5),
+                            padding: EdgeInsets.only(right: 10, left: 10),
                             decoration: BoxDecoration(
                                 color: video.curtido
                                     ? (Colors.red)
@@ -412,27 +416,23 @@ class _FeedPageState extends State<FeedScreen> {
                                   fontFamily: 'Malu2',
                                 ),
                               ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.05,
-                                height:
-                                    MediaQuery.of(context).size.width * 0.05,
-                                child: Icon(Icons.favorite_rounded,
-                                    size: 15,
-                                    color: video.curtido
-                                        ? (Colors.white)
-                                        : (Colors.grey)),
-                              )
+                              SizedBox(width: 2),
+                              Icon(Icons.favorite_rounded,
+                                  size: 15,
+                                  color: video.curtido
+                                      ? (Colors.white)
+                                      : (Colors.grey)),
                             ]))),
+                    SizedBox(width: 10),
                     GestureDetector(
                         onTap: () {
                           _launchURL(video.link);
                         },
                         child: Container(
+                          padding: EdgeInsets.all(5),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10)),
-                          width: MediaQuery.of(context).size.width * 0.05,
-                          height: MediaQuery.of(context).size.width * 0.05,
                           child: Icon(Icons.open_in_new_rounded,
                               size: 15, color: (Colors.grey)),
                         ))
@@ -483,7 +483,7 @@ class _FeedPageState extends State<FeedScreen> {
           height: 55,
           child: ListView(
               scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 8),
               children: <Widget>[
                 MaterialButton(
                     child: Container(
@@ -537,29 +537,31 @@ class _FeedPageState extends State<FeedScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             // aqui só carrega quando já pegou os dados
-            return CustomScrollView(slivers: <Widget>[
-              SliverAppBar(
-                backgroundColor: Theme.of(context).primaryColorDark,
-                floating: true,
-                expandedHeight: 118.0,
-                flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.pin, background: getCabecalho()),
-              ),
-              SliverList(delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  if (conteudos[index].tipo == "dica")
-                    return getDica(conteudos[index], index);
+            return Padding(padding: EdgeInsets.only(bottom: 60),
+              child: CustomScrollView(slivers: <Widget>[
+                SliverAppBar(
+                  backgroundColor: Theme.of(context).primaryColorDark,
+                  floating: true,
+                  expandedHeight: 118.0,
+                  flexibleSpace: FlexibleSpaceBar(
+                      collapseMode: CollapseMode.pin, background: getCabecalho()),
+                ),
+                SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                          if (conteudos[index].tipo == "dica")
+                            return getDica(conteudos[index], index);
 
-                  if (conteudos[index].tipo == "video")
-                    return getVideo(conteudos[index], index);
+                          if (conteudos[index].tipo == "video")
+                            return getVideo(conteudos[index], index);
 
-                  return getNoticia(conteudos[index], index);
-                },
-              ))
-            ]);
+                          return getNoticia(conteudos[index], index);
+                        }, childCount: conteudos.length
+                    ))
+              ]));
           } else {
             // aqui eh tipo uma tela de espera
-            return CircularProgressIndicator();
+            return Center( child: CircularProgressIndicator());
           }
         });
   }

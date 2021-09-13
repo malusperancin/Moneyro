@@ -106,69 +106,73 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
           end: Offset(0, 0),
         ).animate(animation),
         child: SizedBox(
-          height: 120.0,
           child: Container(
             margin: EdgeInsets.only(bottom: 10),
             padding: EdgeInsets.only(left: 15, right: 15, bottom: 5, top: 5),
             decoration: BoxDecoration(
                 color: reg.quantia < 0 ? Colors.red[400] : Colors.green[800],
                 borderRadius: BorderRadius.circular(10)),
-            child: Row(
+            child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Column(
+                  Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Row(
-                          children: [
-                            Padding(
-                              child: Icon(Icons.local_offer,
-                                  size: 26.0, color: Colors.white),
-                              padding: EdgeInsets.only(right: 5, top: 5),
-                            ),
-                            Text(tags[reg.idTag].nome.toString(),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w100,
-                                    fontSize: 20,
-                                    fontFamily: 'Malu',
-                                    color: Colors.white))
-                          ],
-                        ),
                         Text(reg.nome,
                             style: TextStyle(
                                 fontWeight: FontWeight.w100,
                                 fontSize: 30,
                                 fontFamily: 'Malu2',
                                 color: Colors.white)),
+                        Padding(
+                            padding:
+                            EdgeInsets.only(right: 5, top: 5, bottom: 5),
+                            child: Row(
+                              children: [
+                                Icon(Icons.local_offer,
+                                    size: 22, color: Colors.white),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(tags[reg.idTag].nome.toString(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w100,
+                                        fontSize: 20,
+                                        fontFamily: 'Malu',
+                                        color: Colors.white)),
+                              ],
+                            )),
                       ]),
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Row(children: <Widget>[
-                          Padding(
-                            child: Text("R\$",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w100,
-                                    fontSize: 15,
-                                    fontFamily: 'Malu2',
-                                    color: Colors.white)),
-                            padding: EdgeInsets.all(5),
-                          ),
-                          Text(
-                              reg.quantia >= 0
-                                  ? formatter.format(reg.quantia).toString()
-                                  : formatter
+                        Padding(
+                          child: Row(
+                            children: [
+                              Text("R\$",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w100,
+                                      fontSize: 15,
+                                      fontFamily: 'Malu2',
+                                      color: Colors.white)),
+                              Text(
+                                  reg.quantia >= 0
+                                      ? formatter.format(reg.quantia).toString()
+                                      : formatter
                                       .format(reg.quantia)
                                       .toString()
                                       .substring(1),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w100,
-                                  fontSize: 30,
-                                  fontFamily: 'Malu2',
-                                  color: Colors.white))
-                        ]),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w100,
+                                      fontSize: 30,
+                                      fontFamily: 'Malu2',
+                                      color: Colors.white))
+                            ],
+                          ),
+                          padding: EdgeInsets.only(right: 5),
+                        ),
                         Row(
                           children: getCompartilhados(reg),
                         )
@@ -249,14 +253,14 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             // aqui só carrega quando já pegou os dados
-            return Container(
-                width: MediaQuery.of(context).size.width,
-                child: Column(children: <Widget>[
-                  Cabecalho(
-                      titulo: "Planilha",
-                      icone: Icons.reorder_rounded,
-                      cor: Colors.amber[500]),
-                  AnimatedList(
+            return Column(
+              children: [
+                Cabecalho(
+                    titulo: "Planilha",
+                    icone: Icons.reorder_rounded,
+                    cor: Colors.amber[500]),
+                Expanded(
+                  child: AnimatedList(
                     shrinkWrap: true,
                     key: listKey,
                     initialItemCount: registrosDias.length,
@@ -264,7 +268,12 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
                       return Dia(context, index, animation); // Refer step 3
                     },
                   )
-                ]));
+                ),
+                SizedBox(
+                  height: 60,
+                )
+              ],
+            );
           } else {
             // aqui eh tipo uma tela de espera
             return CircularProgressIndicator();

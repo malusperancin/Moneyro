@@ -56,6 +56,7 @@ namespace ProjetoPratica_API.Data
 
             return await consultaUsuarios.ToArrayAsync();
         }
+        
         public async Task<Usuarios> GetUsuarioById(int Id)
         {
 

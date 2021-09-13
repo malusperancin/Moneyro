@@ -26,7 +26,7 @@ class _HomePageState extends State<HomeScreen> {
     new MaisScreen()
   ];
 
-  int _selectedPage = 2;
+  int _selectedPage = 0;
 
   Future<void> createInstances() async {
     setState(() {
@@ -46,6 +46,8 @@ class _HomePageState extends State<HomeScreen> {
     if (!sessao_ativa)
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
+
+    _showMyDialog();
 
     return true;
   }
@@ -95,25 +97,51 @@ class _HomePageState extends State<HomeScreen> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          insetPadding: EdgeInsets.only(left: 25, right: 25, bottom: 65, top: 45),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)),
             elevation: 0,
-            child: SizedBox(
-              height: 500,
-              child: DefaultTabController(
+            child: DefaultTabController(
                 length: 2,
                 child: Scaffold(
+                  backgroundColor: Colors.black12,
+                  floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, //specify the location of the FAB
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () {
+                      _showMyDialog();
+                    },
+                    tooltip: "Adicionar registro",
+                    backgroundColor: Theme.of(context).buttonColor,
+                    child: Container(
+                      margin: EdgeInsets.all(5.0),
+                      child: Icon(Icons.add_rounded, size: 30.0),
+                    ),
+                    elevation: 2.0,
+                  ),
                   appBar: AppBar(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15))),
+                    primary: false,
+                    centerTitle: true,
                     backgroundColor: Theme.of(context).primaryColorDark,
                     bottom: TabBar(
+                      indicatorWeight: 5,
                       indicatorColor: Theme.of(context).primaryColorLight,
                       tabs: [
                         Tab(
-                            child: Row(children: <Widget>[
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
                           Text("Despesa"),
+                          SizedBox(width: 8),
                           Icon(Icons.arrow_circle_up_rounded)
                         ])),
                         Tab(
-                            child: Row(children: <Widget>[
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
                           Text("Receita"),
+                          SizedBox(width: 8),
                           Icon(Icons.arrow_circle_down_rounded)
                         ])),
                       ],
@@ -121,11 +149,11 @@ class _HomePageState extends State<HomeScreen> {
                     title: Text('Novo Registro'),
                   ),
                   body: TabBarView(
-                    children: [Despesa(), Receita()],
+                    children: [Despesa(), Text("data")],
                   ),
                 ),
               ),
-            ));
+            );
       },
     );
   }

@@ -82,9 +82,9 @@ class _MaisPageState extends State<MaisScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             // aqui só carrega quando já pegou os dados
-            return ListView(
+            return Expanded(
+                child: ListView(
               shrinkWrap: true,
-              padding: EdgeInsets.only(bottom: 45),
               children: <Widget>[
                 cabecalho("Você", Icons.face_rounded, Colors.cyan[500]),
                 // INFORMAÇÕES DO USUARIO
@@ -320,7 +320,7 @@ class _MaisPageState extends State<MaisScreen> {
                   ),
                 ),
               ],
-            );
+                ));
           } else {
             // aqui eh tipo uma tela de espera
             return Center(child: CircularProgressIndicator());
