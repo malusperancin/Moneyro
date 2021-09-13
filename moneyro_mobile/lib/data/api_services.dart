@@ -5,9 +5,9 @@ import 'package:moneyro_mobile/models/usuario_model.dart';
 
 class APIServices {
   //static final String url = 'http://192.168.15.90:5000/api/';
-  // final String url = 'http://192.168.15.155:5000/api/';
-  static final String url = 'http://143.106.201.98:5000/api/';
-  
+  static final String url = 'http://192.168.15.155:5000/api/';
+  //static final String url = 'http://143.106.201.98:5000/api/';
+
   static Map<String, String> header = {
     'Content-type': 'application/json',
     'Accept': 'application/json'
@@ -19,7 +19,7 @@ class APIServices {
   }
 
   static Future addRegistro(Registro reg) async {
-    return await http.post(Uri.parse(url + 'registros'),
+    return await http.post(Uri.parse(url + 'registros/app/'),
         headers: header, body: json.encode(reg.toMap()));
   }
 

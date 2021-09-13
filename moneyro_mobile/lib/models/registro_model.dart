@@ -13,6 +13,9 @@ class Registro {
   Registro(this.id, this.idUsuario, this.data, this.nome, this.idTag,
       this.lugar, this.quantia);
 
+/*  Registro.SemId(this.idUsuario, this.data, this.nome, this.idTag, this.lugar,
+      this.quantia);*/
+
   Registro.fromObject(dynamic o) {
     this.id = o["id"];
     this.idUsuario = o["idUsuario"];

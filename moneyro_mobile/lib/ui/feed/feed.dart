@@ -17,8 +17,10 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedPageState extends State<FeedScreen> {
   List<Conteudo> conteudos = [];
+  List<Conteudo> filtrados = [];
   YoutubePlayerController _controller = null;
   String erro = "";
+  int selecionado = 0;
   final _pesquisa = TextEditingController();
 
   void _launchURL(url) async =>
@@ -32,8 +34,10 @@ class _FeedPageState extends State<FeedScreen> {
       if (response.statusCode == 200) {
         Iterable list = json.decode(response.body);
         conteudos = list.map((model) => Conteudo.fromObject(model)).toList();
+        filtrados = conteudos;
       }
     });
+
     return true;
   }
 
@@ -47,8 +51,8 @@ class _FeedPageState extends State<FeedScreen> {
     APIServices.curtir(map).then((response) {
       if (response.statusCode == 200) {
         setState(() {
-          conteudos[index].curtidas += 1;
-          conteudos[index].curtido = true;
+          filtrados[index].curtidas += 1;
+          filtrados[index].curtido = true;
         });
       } else {
         erro = response.body;
@@ -66,8 +70,8 @@ class _FeedPageState extends State<FeedScreen> {
     APIServices.descurtir(map).then((response) {
       if (response.statusCode == 200) {
         setState(() {
-          conteudos[index].curtidas -= 1;
-          conteudos[index].curtido = true;
+          filtrados[index].curtidas -= 1;
+          filtrados[index].curtido = true;
         });
       } else {
         erro = response.body;
@@ -486,43 +490,116 @@ class _FeedPageState extends State<FeedScreen> {
               padding: EdgeInsets.symmetric(horizontal: 0, vertical: 8),
               children: <Widget>[
                 MaterialButton(
+                    onPressed: () {
+                      if (selecionado == 1) {
+                        setState(() {
+                          selecionado = 0;
+                          filtrados = filtrados
+                              .where((element) => element.tipo != "")
+                              .toList();
+                        });
+                      } else {
+                        setState(() {
+                          selecionado = 1;
+                          filtrados = filtrados
+                              .where((element) => element.tipo == "noticia")
+                              .toList();
+                        });
+                      }
+                    },
                     child: Container(
                         padding:
                             EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                         decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColorLight,
+                            color: selecionado == 1
+                                ? Theme.of(context).primaryColorDark
+                                : Theme.of(context).primaryColorLight,
                             borderRadius: BorderRadius.circular(100)),
                         child: Text(
                           "Notícias",
                           style: TextStyle(color: Colors.white),
                         ))),
                 MaterialButton(
-                    color: Colors.white,
+                    onPressed: () {
+                      if (selecionado == 2) {
+                        selecionado = 0;
+                        setState(() {
+                          filtrados = filtrados
+                              .where((element) => element.tipo != "")
+                              .toList();
+                        });
+                      } else {
+                        setState(() {
+                          selecionado = 2;
+                          filtrados = filtrados
+                              .where((element) => element.tipo == "dica")
+                              .toList();
+                        });
+                      }
+                    },
                     child: Container(
                         padding:
                             EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                         decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColorLight,
+                            color: selecionado == 2
+                                ? Theme.of(context).primaryColorDark
+                                : Theme.of(context).primaryColorLight,
                             borderRadius: BorderRadius.circular(100)),
                         child: Text("Dicas",
                             style: TextStyle(color: Colors.white)))),
                 MaterialButton(
-                    color: Colors.white,
+                    onPressed: () {
+                      if (selecionado == 3) {
+                        selecionado = 0;
+                        setState(() {
+                          filtrados = filtrados
+                              .where((element) => element.tipo != "")
+                              .toList();
+                        });
+                      } else {
+                        setState(() {
+                          selecionado = 3;
+                          filtrados = filtrados
+                              .where((element) => element.tipo == "blog")
+                              .toList();
+                        });
+                      }
+                    },
                     child: Container(
                         padding:
                             EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                         decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColorLight,
+                            color: selecionado == 3
+                                ? Theme.of(context).primaryColorDark
+                                : Theme.of(context).primaryColorLight,
                             borderRadius: BorderRadius.circular(100)),
                         child: Text("Blogs",
                             style: TextStyle(color: Colors.white)))),
                 MaterialButton(
-                    color: Colors.white,
+                    onPressed: () {
+                      if (selecionado == 4) {
+                        setState(() {
+                          selecionado = 0;
+                          filtrados = filtrados
+                              .where((element) => element.tipo != "")
+                              .toList();
+                        });
+                      } else {
+                        selecionado = 4;
+                        setState(() {
+                          filtrados = filtrados
+                              .where((element) => element.tipo == "video")
+                              .toList();
+                        });
+                      }
+                    },
                     child: Container(
                         padding:
                             EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                         decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColorLight,
+                            color: selecionado == 4
+                                ? Theme.of(context).primaryColorDark
+                                : Theme.of(context).primaryColorLight,
                             borderRadius: BorderRadius.circular(100)),
                         child: Text("Vídeos",
                             style: TextStyle(color: Colors.white)))),
@@ -537,31 +614,42 @@ class _FeedPageState extends State<FeedScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             // aqui só carrega quando já pegou os dados
-            return Padding(padding: EdgeInsets.only(bottom: 60),
-              child: CustomScrollView(slivers: <Widget>[
-                SliverAppBar(
-                  backgroundColor: Theme.of(context).primaryColorDark,
-                  floating: true,
-                  expandedHeight: 118.0,
-                  flexibleSpace: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.pin, background: getCabecalho()),
-                ),
-                SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          if (conteudos[index].tipo == "dica")
-                            return getDica(conteudos[index], index);
+            return Padding(
+                padding: EdgeInsets.only(bottom: 60),
+                child: CustomScrollView(slivers: <Widget>[
+                  SliverAppBar(
+                    backgroundColor: Theme.of(context).primaryColorDark,
+                    floating: true,
+                    expandedHeight: 118.0,
+                    flexibleSpace: FlexibleSpaceBar(
+                        collapseMode: CollapseMode.pin,
+                        background: getCabecalho()),
+                  ),
+                  SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                    if (filtrados[index].tipo == "dica" &&
+                        (selecionado == 0 || selecionado == 2))
+                      return getDica(filtrados[index], index);
 
-                          if (conteudos[index].tipo == "video")
-                            return getVideo(conteudos[index], index);
+                    if (filtrados[index].tipo == "noticia" &&
+                        (selecionado == 0 || selecionado == 1))
+                      return getNoticia(filtrados[index], index);
 
-                          return getNoticia(conteudos[index], index);
-                        }, childCount: conteudos.length
-                    ))
-              ]));
+                    if (filtrados[index].tipo == "video" &&
+                        (selecionado == 0 || selecionado == 4))
+                      return getVideo(filtrados[index], index);
+
+                    if (filtrados[index].tipo == "blog" &&
+                        (selecionado == 0 || selecionado == 3))
+                      return getNoticia(filtrados[index], index);
+
+                    return null;
+                  }, childCount: filtrados.length))
+                ]));
           } else {
             // aqui eh tipo uma tela de espera
-            return Center( child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           }
         });
   }

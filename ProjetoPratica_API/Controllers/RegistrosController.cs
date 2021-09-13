@@ -123,6 +123,22 @@ namespace ProjetoPratica_API.Controllers
             return BadRequest();
         }
 
+        [HttpPost]
+        [Route("app/")]
+        public async Task<IActionResult> postApp(Registros modelo)
+        {
+            try
+            {
+                this.Repo.PostRegistroApp(modelo);
+                return Ok();
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+             return BadRequest();
+        }
+
         [HttpPut("{RegistroId}")]
         public async Task<IActionResult> put(int RegistroId, Registros model)
         {

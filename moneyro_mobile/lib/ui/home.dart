@@ -47,8 +47,6 @@ class _HomePageState extends State<HomeScreen> {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
 
-    _showMyDialog();
-
     return true;
   }
 
@@ -65,95 +63,65 @@ class _HomePageState extends State<HomeScreen> {
     - Perfil
     - Sobre
     - Sair
-    
-      DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          appBar: AppBar(
-            bottom: const TabBar(
-              tabs: [
-                Tab(icon: Icon(Icons.directions_car)),
-                Tab(icon: Icon(Icons.directions_transit)),
-                Tab(icon: Icon(Icons.directions_bike)),
-              ],
-            ),
-            title: const Text('Tabs Demo'),
-          ),
-          body: const TabBarView(
-            children: [
-              Icon(Icons.directions_car),
-              Icon(Icons.directions_transit),
-              Icon(Icons.directions_bike),
-            ],
-          ),
-        ),
-      ),
-    
   */
+
   _showMyDialog() {
     // playSom();
 
+    var despesa = Despesa(modal: context);
+    var receita = Receita(modal: context);
+
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (_) {
         return Dialog(
-          insetPadding: EdgeInsets.only(left: 25, right: 25, bottom: 65, top: 45),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15)),
-            elevation: 0,
-            child: DefaultTabController(
-                length: 2,
-                child: Scaffold(
-                  backgroundColor: Colors.black12,
-                  floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, //specify the location of the FAB
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () {
-                      _showMyDialog();
-                    },
-                    tooltip: "Adicionar registro",
-                    backgroundColor: Theme.of(context).buttonColor,
-                    child: Container(
-                      margin: EdgeInsets.all(5.0),
-                      child: Icon(Icons.add_rounded, size: 30.0),
-                    ),
-                    elevation: 2.0,
-                  ),
-                  appBar: AppBar(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15))),
-                    primary: false,
-                    centerTitle: true,
-                    backgroundColor: Theme.of(context).primaryColorDark,
-                    bottom: TabBar(
-                      indicatorWeight: 5,
-                      indicatorColor: Theme.of(context).primaryColorLight,
-                      tabs: [
-                        Tab(
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
+          insetPadding:
+              EdgeInsets.only(left: 25, right: 25, bottom: 65, top: 45),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          elevation: 0,
+          child: DefaultTabController(
+            length: 2,
+            child: Scaffold(
+              backgroundColor: Colors.black12,
+              appBar: AppBar(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15))),
+                primary: false,
+                centerTitle: true,
+                backgroundColor: Theme.of(context).primaryColorDark,
+                bottom: TabBar(
+                  indicatorWeight: 5,
+                  indicatorColor: Theme.of(context).primaryColorLight,
+                  tabs: [
+                    Tab(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
                           Text("Despesa"),
                           SizedBox(width: 8),
                           Icon(Icons.arrow_circle_up_rounded)
                         ])),
-                        Tab(
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
+                    Tab(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
                           Text("Receita"),
                           SizedBox(width: 8),
                           Icon(Icons.arrow_circle_down_rounded)
                         ])),
-                      ],
-                    ),
-                    title: Text('Novo Registro'),
-                  ),
-                  body: TabBarView(
-                    children: [Despesa(), Text("data")],
-                  ),
+                  ],
                 ),
+                title: Text('Novo Registro'),
               ),
-            );
+              body: TabBarView(
+                children: [despesa, receita],
+              ),
+            ),
+          ),
+        );
       },
     );
   }

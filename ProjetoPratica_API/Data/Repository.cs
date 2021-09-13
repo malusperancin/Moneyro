@@ -138,6 +138,23 @@ namespace ProjetoPratica_API.Data
             consultaRegistros = consultaRegistros.OrderByDescending(r => r.Data).Where(registro => registro.Quantia > 0);
             return await consultaRegistros.ToArrayAsync();
         }
+
+
+      
+        public void PostRegistroApp(Registros modelo)
+        {
+            SqlConnection con = new SqlConnection(this.Context.Database.GetDbConnection().ConnectionString);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("comando", con); // id idusuario idtag nome lugar data quantia
+
+            cmd.CommandText = $"insert into Registros values({modelo.IdUsuario}, {modelo.IdTag}, '{modelo.Nome}', '{modelo.Lugar}', '{modelo.Data}', {modelo.Quantia})";
+            cmd.ExecuteNonQuery();
+
+            con.Close();
+        }
+
+
         public async Task<Metas[]> GetMetasCompartilhadas(int UsuarioId, int AmigoId)
         {
             IQueryable<Metas> consultaMeta = (IQueryable<Metas>)this.Context.Metas;

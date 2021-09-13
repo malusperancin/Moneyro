@@ -127,7 +127,7 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
                                 color: Colors.white)),
                         Padding(
                             padding:
-                            EdgeInsets.only(right: 5, top: 5, bottom: 5),
+                                EdgeInsets.only(right: 5, top: 5, bottom: 5),
                             child: Row(
                               children: [
                                 Icon(Icons.local_offer,
@@ -161,9 +161,9 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
                                   reg.quantia >= 0
                                       ? formatter.format(reg.quantia).toString()
                                       : formatter
-                                      .format(reg.quantia)
-                                      .toString()
-                                      .substring(1),
+                                          .format(reg.quantia)
+                                          .toString()
+                                          .substring(1),
                                   style: TextStyle(
                                       fontWeight: FontWeight.w100,
                                       fontSize: 30,
@@ -239,13 +239,6 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
       */
   }
 
-  /*
-  data
-  [
-    {},{}
-  ]
-  */
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -260,15 +253,14 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
                     icone: Icons.reorder_rounded,
                     cor: Colors.amber[500]),
                 Expanded(
-                  child: AnimatedList(
-                    shrinkWrap: true,
-                    key: listKey,
-                    initialItemCount: registrosDias.length,
-                    itemBuilder: (context, index, animation) {
-                      return Dia(context, index, animation); // Refer step 3
-                    },
-                  )
-                ),
+                    child: AnimatedList(
+                  shrinkWrap: true,
+                  key: listKey,
+                  initialItemCount: registrosDias.length,
+                  itemBuilder: (context, index, animation) {
+                    return Dia(context, index, animation); // Refer step 3
+                  },
+                )),
                 SizedBox(
                   height: 60,
                 )

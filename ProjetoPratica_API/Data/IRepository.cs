@@ -28,6 +28,7 @@ namespace ProjetoPratica_API.Data
 
         Task<Conquistas[]> GetAllConquistas();
 
+        void PostRegistroApp(Registros modelo);
         Task<Registros[]> GetAllRegistros();
         List<Registros> SpGetRegistrosCompartilhados(int UsuarioId, int AmigoId);
         Task<Registros> GetRegistroById(int Id);
