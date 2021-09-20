@@ -65,13 +65,13 @@ namespace ProjetoPratica_API.Controllers
             }
         }*/
 
-        [HttpPut]
+       /* [HttpPut]
         [Route("cofre/{id}")]
         public async Task<IActionResult> updateCofre(Usuarios modelo)
         {
             try
             {
-                var result = await this.Repo.
+                this.Repo.Update(modelo);
 
                 if (result == null)
                     return this.StatusCode(StatusCodes.Status409Conflict, "Este apelido não está registrado T-T.");
@@ -83,7 +83,7 @@ namespace ProjetoPratica_API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
         }
-
+*/
         [HttpPost]
         [Route("login/")]
         public async Task<IActionResult> postLogin(Usuarios modelo)

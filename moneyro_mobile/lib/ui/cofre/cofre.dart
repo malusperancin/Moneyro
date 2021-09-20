@@ -26,6 +26,7 @@ class _CofrePageState extends State<CofreScreen> {
   final _url = 'http://localhost:8080/#/compra';
   Usuario usuario;
   Situacao situacao;
+  bool editar = false;
 
   BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
   BluetoothDevice selectedDevice;
@@ -262,7 +263,7 @@ class _CofrePageState extends State<CofreScreen> {
             borderRadius: BorderRadius.circular(10), color: Color(0xFF545454)),
         padding: EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 15),
         margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width / 1.2,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
             Widget>[
           /*FormField(
@@ -272,30 +273,44 @@ class _CofrePageState extends State<CofreScreen> {
                       fontSize: 55,
                       fontFamily: 'Malu2',
                       color: Colors.white)),*/
-          TextFormField(
-              controller: _valorRecebido,
-              keyboardType: TextInputType.text,
-              cursorColor: Colors.black54,
-              style: TextStyle(color: Colors.black54, fontSize: 15),
-              decoration: InputDecoration(
-                  filled: true,
-                  labelStyle: TextStyle(color: Colors.black54, fontSize: 15),
-                  fillColor: Colors.grey[200],
-                  labelText: "Valor",
-                  contentPadding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey[200], width: 1.0),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey[200], width: 1.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey[200], width: 1.0),
-                  ))),
-          SizedBox(height: 20),
+          Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: TextFormField(
+                controller: _valorRecebido,
+                enabled: editar,
+                keyboardType: TextInputType.text,
+                cursorColor: Colors.black54,
+                style: TextStyle(color: Colors.black54, fontSize: 18),
+                decoration: InputDecoration(
+                    filled: editar,
+                    labelStyle: TextStyle(
+                        color: Colors.black54,
+                        fontSize: editar ? 22 : 40,
+                        fontFamily: 'Malu2'),
+                    fillColor: Colors.grey[200],
+                    labelText: "Valor",
+                    contentPadding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                    disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide:
+                            BorderSide(color: Colors.transparent, width: 1.0)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: Colors.grey[200], width: 1.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: Colors.grey[200], width: 1.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: Colors.grey[200], width: 1.0),
+                    ))),
+          ),
+          SizedBox(height: 15),
           Container(
               child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -310,17 +325,21 @@ class _CofrePageState extends State<CofreScreen> {
                         height: 42,
                         child: Icon(Icons.edit_rounded, color: Colors.white)),
                     onTap: () {
-                      // faz o text virar edit e troca
+                      editar = true;
                     },
                   ),
                 ),
               ),
               ElevatedButton(
-                  child: Container(child: Text("Cancelar")),
+                  child: Container(
+                      child: Padding(
+                    child: Text("Cancelar"),
+                    padding: EdgeInsets.all(5),
+                  )),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red[400],
                     textStyle: TextStyle(
-                        fontSize: 22,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.red[200]),
                     shape: RoundedRectangleBorder(
@@ -330,11 +349,14 @@ class _CofrePageState extends State<CofreScreen> {
                     _valorRecebido.text = "";
                   }),
               ElevatedButton(
-                  child: Text("Confirmar"),
+                  child: Padding(
+                    child: Text(editar ? "Salvar alteração" : "Confirmar"),
+                    padding: EdgeInsets.all(5),
+                  ),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.yellow[700],
                     textStyle: TextStyle(
-                        fontSize: 22,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.green[700]),
                     shape: RoundedRectangleBorder(
@@ -343,7 +365,10 @@ class _CofrePageState extends State<CofreScreen> {
                   onPressed: () {
                     //
                     // faz negocio no banco
-                    updateCofre();
+                    if (editar)
+                      editar = false;
+                    else
+                      updateCofre();
                   })
             ],
           ))
