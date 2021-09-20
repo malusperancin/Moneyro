@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moneyro_mobile/ui/amigos/amigos.dart';
+import 'package:moneyro_mobile/ui/cofre/cofre.dart';
 import 'package:moneyro_mobile/ui/feed/feed.dart';
 import 'package:moneyro_mobile/ui/home.dart';
 import 'package:intl/intl.dart';
@@ -15,7 +16,7 @@ void main() {
 * tela de carregamento,
 * tap page la em cima pois mt feia está
 * algo no menu sla, mudar a cor, botas umas bordas umas sombrax
-* */
+*/
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.

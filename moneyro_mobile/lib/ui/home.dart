@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:moneyro_mobile/models/registro_model.dart';
 import 'package:moneyro_mobile/ui/feed/feed.dart';
 import 'package:moneyro_mobile/ui/mais/mais.dart';

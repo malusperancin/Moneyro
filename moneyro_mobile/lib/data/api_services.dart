@@ -5,8 +5,8 @@ import 'package:moneyro_mobile/models/usuario_model.dart';
 
 class APIServices {
   //static final String url = 'http://192.168.15.90:5000/api/';
-  static final String url = 'http://192.168.15.155:5000/api/';
-  //static final String url = 'http://143.106.201.98:5000/api/';
+  //static final String url = 'http://192.168.15.155:5000/api/';
+  static final String url = 'http://143.106.201.97:5000/api/';
 
   static Map<String, String> header = {
     'Content-type': 'application/json',
@@ -31,6 +31,11 @@ class APIServices {
   static Future descurtir(Object post) async {
     return await http.put(Uri.parse(url + 'curtidasUsuarios'),
         headers: header, body: json.encode(post));
+  }
+
+  static Future updateUsuario(Usuario usuario) async {
+    return await http.put(Uri.parse(url + 'usuarios/' + usuario.id.toString()),
+        headers: header, body: json.encode(usuario));
   }
 
   static Future getUsuario(int id) async {

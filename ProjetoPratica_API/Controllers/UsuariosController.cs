@@ -65,6 +65,25 @@ namespace ProjetoPratica_API.Controllers
             }
         }*/
 
+        [HttpPut]
+        [Route("cofre/{id}")]
+        public async Task<IActionResult> updateCofre(Usuarios modelo)
+        {
+            try
+            {
+                var result = await this.Repo.
+
+                if (result == null)
+                    return this.StatusCode(StatusCodes.Status409Conflict, "Este apelido não está registrado T-T.");
+
+                return Ok(result);
+            }
+            catch
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+            }
+        }
+
         [HttpPost]
         [Route("login/")]
         public async Task<IActionResult> postLogin(Usuarios modelo)

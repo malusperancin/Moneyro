@@ -32,6 +32,7 @@ dependencies:
   youtube_player_flutter: ^8.0.0
   flutter_inappwebview: ^5.3.2
   flutter_money_formatter: ^0.8.3
+  convert: ^3.0.1
 
   flutter:
     sdk: flutter

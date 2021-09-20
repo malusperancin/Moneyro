@@ -5,6 +5,7 @@ import 'package:moneyro_mobile/models/usuario_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
+import 'package:moneyro_mobile/ui/appBar/Cabecalho.dart';
 
 import '../../login.dart';
 
@@ -30,44 +31,6 @@ class _MaisPageState extends State<MaisScreen> {
     return true;
   }
 
-  Widget cabecalho(titulo, icone, cor) {
-    return Container(
-        margin: EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
-        padding: EdgeInsets.only(
-          top: 5.0,
-          bottom: 5.0,
-          right: 10.0,
-          left: 20.0,
-        ),
-        decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(0.4),
-                  blurRadius: 15,
-                  offset: Offset(0, 5))
-            ],
-            color: Theme.of(context).primaryColorLight,
-            borderRadius: BorderRadius.circular(100)),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(titulo,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 38,
-                      fontFamily: 'Malu2',
-                      color: Colors.white)),
-              Container(
-                  decoration: BoxDecoration(
-                      color: cor, borderRadius: BorderRadius.circular(100)),
-                  child: IconButton(
-                      color: Colors.white,
-                      onPressed: () {},
-                      icon: Icon(icone),
-                      iconSize: 32))
-            ]));
-  }
-
   void sairSessao() async {
     await FlutterSession().set("id", -1);
 
@@ -86,7 +49,7 @@ class _MaisPageState extends State<MaisScreen> {
                 child: ListView(
               shrinkWrap: true,
               children: <Widget>[
-                cabecalho("Você", Icons.face_rounded, Colors.cyan[500]),
+                Cabecalho(titulo: "Você", icone: Icons.face_rounded, cor: Colors.cyan[500]),
                 // INFORMAÇÕES DO USUARIO
                 Container(
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),

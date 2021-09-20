@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:moneyro_mobile/data/api_services.dart';
 import 'package:moneyro_mobile/models/situacao_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,8 +9,11 @@ import 'package:moneyro_mobile/models/usuario_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_session/flutter_session.dart';
+import 'package:moneyro_mobile/ui/appBar/Cabecalho.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:soundpool/soundpool.dart';
+
+import '../DiscoveryPage.dart';
 
 class CofreScreen extends StatefulWidget {
   CofreScreen({Key key}) : super(key: key);
@@ -20,59 +25,44 @@ class CofreScreen extends StatefulWidget {
 class _CofrePageState extends State<CofreScreen> {
   final _url = 'http://localhost:8080/#/compra';
   Usuario usuario;
-  var conectado = true;
   Situacao situacao;
+
+  BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
+  BluetoothDevice selectedDevice;
+  BluetoothConnection connection;
+  TextEditingController _valorRecebido = new TextEditingController();
+
+  bool get estaConectado => (connection.isConnected ? true : false);
 
   void _launchURL() async => await canLaunch(_url)
       ? await launch(_url)
       : throw 'Could not launch $_url';
 
-  void _abreBT() {
-    /*FlutterBlue flutterBlue = FlutterBlue.instance;
-     //Start scanning
-    flutterBlue.startScan(timeout: Duration(seconds: 4));
+  connect(String address) async {
+    try {
+      await FlutterSession().set("cofre", address);
+      connection = await BluetoothConnection.toAddress(address);
+      print('Connected to the device');
 
-    // Listen to scan results
-    var subscription = flutterBlue.scanResults.listen((results) {
-    // do something with scan results
-    for (ScanResult r in results) {
-        print('${r.device.name} found! rssi: ${r.rssi}');
+      connection.input.listen((Uint8List data) {
+        print(ascii.decode(data));
+      }).onData((Uint8List data) {
+        double valor = double.parse(String.fromCharCodes(data));
+        setState(() {
+          _valorRecebido.text =
+              (double.parse(_valorRecebido.text) + valor).toString();
+        });
+        _showMyDialog(valor);
+        print(_valorRecebido.text);
+      });
+    } catch (exception) {
+      print('Cannot connect, exception occured');
     }
-
-    });
-
-    // Stop scanning
-    flutterBlue.stopScan();*/
   }
 
-  void _conectaBT() {
-    /*
-    // Connect to the device
-    await device.connect();
-
-    // Disconnect from device
-    device.disconnect();*/
-  }
-
-  void _readDescriptor() {
-    /*
-    // Reads all descriptors
-    var descriptors = characteristic.descriptors;
-    for(BluetoothDescriptor d in descriptors) {
-        List<int> value = await d.read();
-        print(value);
-    }
-
-    // Writes to a descriptor
-    await d.write([0x12, 0x34])
-     */
-  }
-
-  void _setNotifications() {
-    /*await characteristic.setNotifyValue(true);
-characteristic.value.listen((value) {
-    // do something with new value
-});*/
+  Future<void> send(String texto) async {
+    connection.output.add(ascii.encode(texto));
+    await connection.output.allSent;
   }
 
   Future<bool> fetchData() async {
@@ -97,7 +87,9 @@ characteristic.value.listen((value) {
       }
     });
 
-    if (usuario.cofre >= 0) _abreBT();
+    String endereco = await FlutterSession().get('cofre');
+
+    if (usuario.cofre >= 0) if (endereco != null) connect(endereco);
 
     return true;
   }
@@ -108,9 +100,18 @@ characteristic.value.listen((value) {
     3: ok 5 - 10
     4: uau 10 - 15
     5: rei 15 - infinito
-
-
   */
+
+  Future<void> updateCofre() async {
+    APIServices.updateUsuario(usuario).then((response) {
+      if (response.statusCode == 200) {
+        setState(() {
+          //usuario.saldo += valorRecebido;
+          _valorRecebido.text = "0,00";
+        });
+      }
+    });
+  }
 
   Widget getSituacao() {
     return Container(
@@ -231,7 +232,26 @@ characteristic.value.listen((value) {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                 ),
-                onPressed: () {})
+                onPressed: () async {
+                  final BluetoothDevice selected =
+                      await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return DiscoveryPage();
+                      },
+                    ),
+                  );
+
+                  if (selected != null) {
+                    print('Discovery -> selected ' + selected.address);
+                    setState(() {
+                      selectedDevice = selected;
+                      connect(selectedDevice.address);
+                    });
+                  } else {
+                    print('Discovery -> no device selected');
+                  }
+                })
           ],
         ));
   }
@@ -243,102 +263,111 @@ characteristic.value.listen((value) {
         padding: EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 15),
         margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         width: MediaQuery.of(context).size.width,
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                  "R\$" + usuario.saldo.toStringAsFixed(2).replaceAll(".", ","),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+            Widget>[
+          /*FormField(
+                  "R\$" + valorRecebido.toStringAsFixed(2).replaceAll(".", ","),
                   style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 55,
                       fontFamily: 'Malu2',
-                      color: Colors.white)),
-              SizedBox(height: 20),
-              Container(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ClipOval(
-                    child: Material(
-                      color: Colors.purple[400], // button color
-                      child: InkWell(
-                        splashColor: Colors.purple[900], // inkwell color
-                        child: SizedBox(
-                            width: 42,
-                            height: 42,
-                            child:
-                                Icon(Icons.edit_rounded, color: Colors.white)),
-                        onTap: () {},
-                      ),
-                    ),
+                      color: Colors.white)),*/
+          TextFormField(
+              controller: _valorRecebido,
+              keyboardType: TextInputType.text,
+              cursorColor: Colors.black54,
+              style: TextStyle(color: Colors.black54, fontSize: 15),
+              decoration: InputDecoration(
+                  filled: true,
+                  labelStyle: TextStyle(color: Colors.black54, fontSize: 15),
+                  fillColor: Colors.grey[200],
+                  labelText: "Valor",
+                  contentPadding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.grey[200], width: 1.0),
                   ),
-                  ElevatedButton(
-                      child: Container(child: Text("Cancelar")),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.red[400],
-                        textStyle: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red[200]),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0)),
-                      ),
-                      onPressed: () {}),
-                  ElevatedButton(
-                      child: Text("Confirmar"),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.yellow[700],
-                        textStyle: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green[700]),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0)),
-                      ),
-                      onPressed: () {
-                        // faz negocio no banco
-                      })
-                ],
-              ))
-            ]));
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.grey[200], width: 1.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.grey[200], width: 1.0),
+                  ))),
+          SizedBox(height: 20),
+          Container(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ClipOval(
+                child: Material(
+                  color: Colors.purple[400], // button color
+                  child: InkWell(
+                    splashColor: Colors.purple[900], // inkwell color
+                    child: SizedBox(
+                        width: 42,
+                        height: 42,
+                        child: Icon(Icons.edit_rounded, color: Colors.white)),
+                    onTap: () {
+                      // faz o text virar edit e troca
+                    },
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                  child: Container(child: Text("Cancelar")),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.red[400],
+                    textStyle: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red[200]),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0)),
+                  ),
+                  onPressed: () {
+                    _valorRecebido.text = "";
+                  }),
+              ElevatedButton(
+                  child: Text("Confirmar"),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.yellow[700],
+                    textStyle: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green[700]),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0)),
+                  ),
+                  onPressed: () {
+                    //
+                    // faz negocio no banco
+                    updateCofre();
+                  })
+            ],
+          ))
+        ]));
   }
 
-  Widget cabecalho(titulo, icone, cor) {
-    return Container(
-        margin: EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
-        padding: EdgeInsets.only(
-          top: 5.0,
-          bottom: 5.0,
-          right: 10.0,
-          left: 20.0,
-        ),
-        decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(0.4),
-                  blurRadius: 15,
-                  offset: Offset(0, 5))
-            ],
-            color: Theme.of(context).primaryColorLight,
-            borderRadius: BorderRadius.circular(100)),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(titulo,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 38,
-                      fontFamily: 'Malu2',
-                      color: Colors.white)),
-              Container(
-                  decoration: BoxDecoration(
-                      color: cor, borderRadius: BorderRadius.circular(100)),
-                  child: IconButton(
-                      color: Colors.white,
-                      onPressed: () {},
-                      icon: Icon(icone),
-                      iconSize: 32))
-            ]));
+  @override
+  void initState() {
+    // TODO: implement initState
+    FlutterBluetoothSerial.instance.state.then((state) {
+      setState(() {
+        _bluetoothState = state;
+      });
+    });
+
+    FlutterBluetoothSerial.instance
+        .onStateChanged()
+        .listen((BluetoothState state) {
+      setState(() {
+        _bluetoothState = state;
+      });
+    });
+
+    super.initState();
   }
 
   @override
@@ -350,30 +379,61 @@ characteristic.value.listen((value) {
             // aqui só carrega quando já pegou os dados
             return Container(
                 child: Column(children: <Widget>[
-              cabecalho("Cofre", Icons.savings_rounded, Colors.blue[500]),
+              Cabecalho(
+                  cor: Colors.blue[500],
+                  titulo: "Cofre",
+                  icone: Icons.savings_rounded),
               Expanded(
                   child: usuario.cofre >= 0.0
+                      // Tem cofre
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                               getSituacao(),
-                              conectado
-                                  ? MaterialButton(
-                                      child: Text("mostrar"),
-                                      onPressed: () {
-                                        _showMyDialog(5);
-                                      })
-                                  : getDesconectado()
+                              // bluetooth ligado
+                              _bluetoothState.isEnabled
+                                  ? estaConectado
+                                      // cofre conectado
+                                      ? getCard()
+                                      : getDesconectado()
+                                  : SwitchListTile(
+                                      title: const Text(
+                                          'Ligue o seu bluetooth:',
+                                          style: TextStyle(
+                                              height: 0.8,
+                                              fontSize: 20,
+                                              fontFamily: 'Malu2',
+                                              color: Colors.white)),
+                                      value: _bluetoothState.isEnabled,
+                                      onChanged: (bool value) {
+                                        // Do the request and update with the true value then
+                                        future() async {
+                                          // async lambda seems to not working
+                                          if (value)
+                                            await FlutterBluetoothSerial
+                                                .instance
+                                                .requestEnable();
+                                          else
+                                            await FlutterBluetoothSerial
+                                                .instance
+                                                .requestDisable();
+                                        }
+
+                                        future().then((_) {
+                                          setState(() {});
+                                        });
+                                      },
+                                    ),
                             ])
+                      // Não tem cofre
                       : Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            //Não tem cofre
                             Expanded(
                               child: Container(
                                 color: Theme.of(context).backgroundColor,
                                 margin: EdgeInsets.only(top: 20),
-                                padding: EdgeInsets.only(left: 20),
+                                padding: EdgeInsets.only(left: 20, bottom: 60),
                                 width: MediaQuery.of(context).size.width,
                                 child: Stack(children: <Widget>[
                                   Positioned(
@@ -413,37 +473,37 @@ characteristic.value.listen((value) {
                             ),
                             //Comprar cofre
                             Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 25, vertical: 50),
-                                child: Row(children: <Widget>[
-                                  Expanded(
-                                    child: Text(
-                                        "Caso queira adquirir um, este botão te levará direto para nossa loja",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 16,
-                                            fontFamily: 'Malu',
-                                            color: Colors.white,
-                                            height: .9)),
-                                  ),
-                                  SizedBox(width: 6.0),
-                                  ElevatedButton(
-                                      child: Text(
-                                        "Comprar",
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Theme.of(context).buttonColor,
-                                        textStyle: TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.w900,
-                                            fontFamily: 'Malu'),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                      ),
-                                      onPressed: () {
-                                        _launchURL();
-                                      })
+                                padding: EdgeInsets.only(
+                                    left: 25, right: 25, bottom: 100),
+                                child: Column(children: <Widget>[
+                                  Text(
+                                      "Caso queira adquirir um, este botão te levará direto para nossa loja",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 16,
+                                          fontFamily: 'Malu',
+                                          color: Colors.white,
+                                          height: .9)),
+                                  SizedBox(height: 10.0), //<b>
+                                  ListTile(
+                                      title: ElevatedButton(
+                                          child: Text(
+                                            "Comprar",
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            primary:
+                                                Theme.of(context).buttonColor,
+                                            textStyle: TextStyle(
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.w900,
+                                                fontFamily: 'Malu'),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                          onPressed: () {
+                                            _launchURL();
+                                          }))
                                 ]))
                           ],
                         )),
