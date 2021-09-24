@@ -128,114 +128,112 @@ class _HomePageState extends State<HomeScreen> {
   }
 
   @override
+  void initState() {
+    fetchData();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: fetchData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return RefreshIndicator(
-                onRefresh: createInstances,
-                child: SafeArea(
-                    child: Scaffold(
-                  extendBody: true,
-                  backgroundColor: Theme.of(context)
-                      .backgroundColor, // erro do floating button
-                  body: IndexedStack(
-                    index: _selectedPage,
-                    children: _children,
-                  ),
-                  floatingActionButtonLocation: FloatingActionButtonLocation
-                      .centerDocked, //specify the location of the FAB
-                  floatingActionButton: FloatingActionButton(
+    return RefreshIndicator(
+        onRefresh: createInstances,
+        child: SafeArea(
+            child: Scaffold(
+          extendBody: true,
+          backgroundColor:
+              Theme.of(context).backgroundColor, // erro do floating button
+          body: IndexedStack(
+            index: _selectedPage,
+            children: _children,
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation
+              .centerDocked, //specify the location of the FAB
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              _showMyDialog();
+            },
+            tooltip: "Adicionar registro",
+            backgroundColor: Theme.of(context).buttonColor,
+            child: Container(
+              margin: EdgeInsets.all(5.0),
+              child: Icon(Icons.add_rounded, size: 30.0),
+            ),
+            elevation: 2.0,
+          ),
+          bottomNavigationBar: BottomAppBar(
+            color: Theme.of(context).primaryColorDark,
+            notchMargin: 4,
+            shape: CircularNotchedRectangle(),
+            child: Container(
+              height: 60,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Spacer(),
+                  IconButton(
                     onPressed: () {
-                      _showMyDialog();
+                      setState(() {
+                        _selectedPage = 0;
+                      });
                     },
-                    tooltip: "Adicionar registro",
-                    backgroundColor: Theme.of(context).buttonColor,
-                    child: Container(
-                      margin: EdgeInsets.all(5.0),
-                      child: Icon(Icons.add_rounded, size: 30.0),
-                    ),
-                    elevation: 2.0,
+                    icon: Icon(Icons.savings_rounded,
+                        color: _selectedPage == 0
+                            ? Colors.green[500]
+                            : Colors.white30),
+                    iconSize: 35.0,
+                    splashColor: Colors.green[50],
+                    tooltip: 'Cofre',
                   ),
-                  bottomNavigationBar: BottomAppBar(
-                    color: Theme.of(context).primaryColorDark,
-                    notchMargin: 4,
-                    shape: CircularNotchedRectangle(),
-                    child: Container(
-                      height: 60,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Spacer(),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _selectedPage = 0;
-                              });
-                            },
-                            icon: Icon(Icons.savings_rounded,
-                                color: _selectedPage == 0
-                                    ? Colors.green[500]
-                                    : Colors.white30),
-                            iconSize: 35.0,
-                            splashColor: Colors.green[50],
-                            tooltip: 'Cofre',
-                          ),
-                          Spacer(),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _selectedPage = 1;
-                              });
-                            },
-                            icon: Icon(Icons.reorder_rounded,
-                                color: _selectedPage == 1
-                                    ? Colors.amber[500]
-                                    : Colors.white30),
-                            iconSize: 35.0,
-                            splashColor: Colors.amber[50],
-                            tooltip: 'Planilha',
-                          ),
-                          Spacer(flex: 5),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _selectedPage = 2;
-                              });
-                            },
-                            icon: Icon(Icons.calendar_view_day_rounded,
-                                color: _selectedPage == 2
-                                    ? Color(0xffed6b0e)
-                                    : Colors.white30),
-                            iconSize: 35.0,
-                            splashColor: Colors.indigo[50],
-                            tooltip: 'Feed',
-                          ),
-                          Spacer(),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _selectedPage = 3;
-                              });
-                            },
-                            icon: Icon(Icons.face_rounded,
-                                color: _selectedPage == 3
-                                    ? Colors.cyan[500]
-                                    : Colors.white30),
-                            iconSize: 35.0,
-                            splashColor: Colors.cyan[50],
-                            tooltip: 'Mais',
-                          ),
-                          Spacer()
-                        ],
-                      ),
-                    ),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedPage = 1;
+                      });
+                    },
+                    icon: Icon(Icons.reorder_rounded,
+                        color: _selectedPage == 1
+                            ? Colors.amber[500]
+                            : Colors.white30),
+                    iconSize: 35.0,
+                    splashColor: Colors.amber[50],
+                    tooltip: 'Planilha',
                   ),
-                )));
-          } else {
-            return CircularProgressIndicator();
-          }
-        });
+                  Spacer(flex: 5),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedPage = 2;
+                      });
+                    },
+                    icon: Icon(Icons.calendar_view_day_rounded,
+                        color: _selectedPage == 2
+                            ? Color(0xffed6b0e)
+                            : Colors.white30),
+                    iconSize: 35.0,
+                    splashColor: Colors.indigo[50],
+                    tooltip: 'Feed',
+                  ),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedPage = 3;
+                      });
+                    },
+                    icon: Icon(Icons.face_rounded,
+                        color: _selectedPage == 3
+                            ? Colors.cyan[500]
+                            : Colors.white30),
+                    iconSize: 35.0,
+                    splashColor: Colors.cyan[50],
+                    tooltip: 'Mais',
+                  ),
+                  Spacer()
+                ],
+              ),
+            ),
+          ),
+        )));
   }
 }

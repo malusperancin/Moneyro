@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:moneyro_mobile/models/usuario_model.dart';
 
 class APIServices {
-  //static final String url = 'http://192.168.15.90:5000/api/';
-  static final String url = 'http://192.168.15.155:5000/api/';
+  static final String url = 'http://143.106.200.17:5000/api/';
+  //static final String url = 'http://192.168.15.155:5000/api/';
   //static final String url = 'http://143.106.201.97:5000/api/';
 
   static Map<String, String> header = {

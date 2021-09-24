@@ -71,7 +71,9 @@ class _CofrePageState extends State<CofreScreen> {
     await APIServices.getUsuario(await FlutterSession().get('id'))
         .then((response) {
       if (response.statusCode == 200) {
-        usuario = new Usuario.fromObject(json.decode(response.body));
+        setState(() {
+          usuario = new Usuario.fromObject(json.decode(response.body));
+        });
       }
     });
 
@@ -81,10 +83,12 @@ class _CofrePageState extends State<CofreScreen> {
         List<Situacao> listaSituacao =
             list.map((model) => Situacao.fromObject(model)).toList();
 
-        if (usuario.cofre > 15) situacao = listaSituacao[9];
-        if (usuario.cofre <= 15) situacao = listaSituacao[8];
-        if (usuario.cofre <= 10) situacao = listaSituacao[7];
-        if (usuario.cofre <= 5) situacao = listaSituacao[6];
+        setState(() {
+          if (usuario.cofre > 15) situacao = listaSituacao[9];
+          if (usuario.cofre <= 15) situacao = listaSituacao[8];
+          if (usuario.cofre <= 10) situacao = listaSituacao[7];
+          if (usuario.cofre <= 5) situacao = listaSituacao[6];
+        });
       }
     });
 
@@ -377,7 +381,8 @@ class _CofrePageState extends State<CofreScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    fetchData();
+
     FlutterBluetoothSerial.instance.state.then((state) {
       setState(() {
         _bluetoothState = state;
@@ -397,147 +402,128 @@ class _CofrePageState extends State<CofreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: fetchData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            // aqui só carrega quando já pegou os dados
-            return Container(
-                child: Column(children: <Widget>[
-              Cabecalho(
-                  cor: Colors.blue[500],
-                  titulo: "Cofre",
-                  icone: Icons.savings_rounded),
-              Expanded(
-                  child: usuario.cofre >= 0.0
-                      // Tem cofre
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                              getSituacao(),
-                              // bluetooth ligado
-                              _bluetoothState.isEnabled
-                                  ? estaConectado
-                                      // cofre conectado
-                                      ? getCard()
-                                      : getDesconectado()
-                                  : SwitchListTile(
-                                      title: const Text(
-                                          'Ligue o seu bluetooth:',
-                                          style: TextStyle(
-                                              height: 0.8,
-                                              fontSize: 20,
-                                              fontFamily: 'Malu2',
-                                              color: Colors.white)),
-                                      value: _bluetoothState.isEnabled,
-                                      onChanged: (bool value) {
-                                        // Do the request and update with the true value then
-                                        future() async {
-                                          // async lambda seems to not working
-                                          if (value)
-                                            await FlutterBluetoothSerial
-                                                .instance
-                                                .requestEnable();
-                                          else
-                                            await FlutterBluetoothSerial
-                                                .instance
-                                                .requestDisable();
-                                        }
+    // aqui só carrega quando já pegou os dados
+    return Container(
+        child: Column(children: <Widget>[
+      Cabecalho(
+          cor: Colors.blue[500], titulo: "Cofre", icone: Icons.savings_rounded),
+      Expanded(
+          child: usuario.cofre >= 0.0
+              // Tem cofre
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                      getSituacao(),
+                      // bluetooth ligado
+                      _bluetoothState.isEnabled
+                          ? estaConectado
+                              // cofre conectado
+                              ? getCard()
+                              : getDesconectado()
+                          : SwitchListTile(
+                              title: const Text('Ligue o seu bluetooth:',
+                                  style: TextStyle(
+                                      height: 0.8,
+                                      fontSize: 20,
+                                      fontFamily: 'Malu2',
+                                      color: Colors.white)),
+                              value: _bluetoothState.isEnabled,
+                              onChanged: (bool value) {
+                                // Do the request and update with the true value then
+                                future() async {
+                                  // async lambda seems to not working
+                                  if (value)
+                                    await FlutterBluetoothSerial.instance
+                                        .requestEnable();
+                                  else
+                                    await FlutterBluetoothSerial.instance
+                                        .requestDisable();
+                                }
 
-                                        future().then((_) {
-                                          setState(() {});
-                                        });
-                                      },
-                                    ),
-                            ])
-                      // Não tem cofre
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Expanded(
-                              child: Container(
-                                color: Theme.of(context).backgroundColor,
-                                margin: EdgeInsets.only(top: 20),
-                                padding: EdgeInsets.only(left: 20, bottom: 60),
-                                width: MediaQuery.of(context).size.width,
-                                child: Stack(children: <Widget>[
-                                  Positioned(
-                                    child: Image.asset(
-                                        'assets/images/status1.png',
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.55),
-                                    right: -25,
-                                    top: -25,
-                                  ),
-                                  Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text("Humn que pena...",
-                                              style: TextStyle(
-                                                  height: 0.8,
-                                                  fontWeight: FontWeight.w900,
-                                                  fontSize: 40,
-                                                  fontFamily: 'Malu2',
-                                                  color: Colors.white)),
-                                          Text(
-                                              "Você precisa de um cofre para usar esta aba",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.normal,
-                                                  fontSize: 18,
-                                                  fontFamily: 'Malu',
-                                                  color: Colors.white))
-                                        ],
-                                      )),
-                                ]),
-                              ),
+                                future().then((_) {
+                                  setState(() {});
+                                });
+                              },
                             ),
-                            //Comprar cofre
-                            Container(
-                                padding: EdgeInsets.only(
-                                    left: 25, right: 25, bottom: 100),
-                                child: Column(children: <Widget>[
+                    ])
+              // Não tem cofre
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        color: Theme.of(context).backgroundColor,
+                        margin: EdgeInsets.only(top: 20),
+                        padding: EdgeInsets.only(left: 20, bottom: 60),
+                        width: MediaQuery.of(context).size.width,
+                        child: Stack(children: <Widget>[
+                          Positioned(
+                            child: Image.asset('assets/images/status1.png',
+                                width:
+                                    MediaQuery.of(context).size.width * 0.55),
+                            right: -25,
+                            top: -25,
+                          ),
+                          Container(
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Humn que pena...",
+                                      style: TextStyle(
+                                          height: 0.8,
+                                          fontWeight: FontWeight.w900,
+                                          fontSize: 40,
+                                          fontFamily: 'Malu2',
+                                          color: Colors.white)),
                                   Text(
-                                      "Caso queira adquirir um, este botão te levará direto para nossa loja",
+                                      "Você precisa de um cofre para usar esta aba",
                                       style: TextStyle(
                                           fontWeight: FontWeight.normal,
-                                          fontSize: 16,
+                                          fontSize: 18,
                                           fontFamily: 'Malu',
-                                          color: Colors.white,
-                                          height: .9)),
-                                  SizedBox(height: 10.0), //<b>
-                                  ListTile(
-                                      title: ElevatedButton(
-                                          child: Text(
-                                            "Comprar",
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            primary:
-                                                Theme.of(context).buttonColor,
-                                            textStyle: TextStyle(
-                                                fontSize: 30,
-                                                fontWeight: FontWeight.w900,
-                                                fontFamily: 'Malu'),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                          ),
-                                          onPressed: () {
-                                            _launchURL();
-                                          }))
-                                ]))
-                          ],
-                        )),
-            ]));
-          } else {
-            // aqui eh tipo uma tela de espera
-            return Center(child: CircularProgressIndicator());
-          }
-        });
+                                          color: Colors.white))
+                                ],
+                              )),
+                        ]),
+                      ),
+                    ),
+                    //Comprar cofre
+                    Container(
+                        padding:
+                            EdgeInsets.only(left: 25, right: 25, bottom: 100),
+                        child: Column(children: <Widget>[
+                          Text(
+                              "Caso queira adquirir um, este botão te levará direto para nossa loja",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 16,
+                                  fontFamily: 'Malu',
+                                  color: Colors.white,
+                                  height: .9)),
+                          SizedBox(height: 10.0), //<b>
+                          ListTile(
+                              title: ElevatedButton(
+                                  child: Text(
+                                    "Comprar",
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Theme.of(context).buttonColor,
+                                    textStyle: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w900,
+                                        fontFamily: 'Malu'),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                  ),
+                                  onPressed: () {
+                                    _launchURL();
+                                  }))
+                        ]))
+                  ],
+                )),
+    ]));
   }
 
   Future<void> playSom() async {

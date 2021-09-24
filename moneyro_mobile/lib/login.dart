@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Color(0xFF2504a6),
       body: Center(
           child: Padding(
         padding: EdgeInsets.all(30),
@@ -132,11 +132,17 @@ class _LoginPageState extends State<LoginScreen> {
                     ))),
             SizedBox(height: 35),
             ElevatedButton(
-                child: Text("Entrar"),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).buttonColor,
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Text("Entrar"),
+                ),
                 style: ElevatedButton.styleFrom(
                   primary: Theme.of(context).buttonColor,
                   textStyle: TextStyle(
-                      fontSize: 25,
+                      fontSize: 30,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                   shape: RoundedRectangleBorder(

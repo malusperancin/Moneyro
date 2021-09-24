@@ -4,6 +4,7 @@ import 'package:moneyro_mobile/ui/cofre/cofre.dart';
 import 'package:moneyro_mobile/ui/feed/feed.dart';
 import 'package:moneyro_mobile/ui/home.dart';
 import 'package:intl/intl.dart';
+import 'package:moneyro_mobile/ui/load/splash.dart';
 
 void main() {
   Intl.defaultLocale = 'pt_BR';
@@ -31,7 +32,8 @@ class MyApp extends StatelessWidget {
           //primaryColorLight: Color.fromRGBO(11, 83, 148, 1)), //azulzin
           primaryColorLight: Color.fromRGBO(69, 64, 173, 1)), // roxin
 
-      home: HomeScreen(),
+      home: SplashPage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

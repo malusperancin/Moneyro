@@ -494,14 +494,12 @@ class _FeedPageState extends State<FeedScreen> {
                       if (selecionado == 1) {
                         setState(() {
                           selecionado = 0;
-                          filtrados = filtrados
-                              .where((element) => element.tipo != "")
-                              .toList();
+                          filtrados = conteudos;
                         });
                       } else {
                         setState(() {
                           selecionado = 1;
-                          filtrados = filtrados
+                          filtrados = conteudos
                               .where((element) => element.tipo == "noticia")
                               .toList();
                         });
@@ -522,16 +520,14 @@ class _FeedPageState extends State<FeedScreen> {
                 MaterialButton(
                     onPressed: () {
                       if (selecionado == 2) {
-                        selecionado = 0;
                         setState(() {
-                          filtrados = filtrados
-                              .where((element) => element.tipo != "")
-                              .toList();
+                          selecionado = 0;
+                          filtrados = conteudos;
                         });
                       } else {
                         setState(() {
                           selecionado = 2;
-                          filtrados = filtrados
+                          filtrados = conteudos
                               .where((element) => element.tipo == "dica")
                               .toList();
                         });
@@ -550,16 +546,14 @@ class _FeedPageState extends State<FeedScreen> {
                 MaterialButton(
                     onPressed: () {
                       if (selecionado == 3) {
-                        selecionado = 0;
                         setState(() {
-                          filtrados = filtrados
-                              .where((element) => element.tipo != "")
-                              .toList();
+                          selecionado = 0;
+                          filtrados = conteudos;
                         });
                       } else {
                         setState(() {
                           selecionado = 3;
-                          filtrados = filtrados
+                          filtrados = conteudos
                               .where((element) => element.tipo == "blog")
                               .toList();
                         });
@@ -578,16 +572,14 @@ class _FeedPageState extends State<FeedScreen> {
                 MaterialButton(
                     onPressed: () {
                       if (selecionado == 4) {
+                        selecionado = 0;
                         setState(() {
-                          selecionado = 0;
-                          filtrados = filtrados
-                              .where((element) => element.tipo != "")
-                              .toList();
+                          filtrados = conteudos;
                         });
                       } else {
                         selecionado = 4;
                         setState(() {
-                          filtrados = filtrados
+                          filtrados = conteudos
                               .where((element) => element.tipo == "video")
                               .toList();
                         });
@@ -608,49 +600,45 @@ class _FeedPageState extends State<FeedScreen> {
   }
 
   @override
+  void initState() {
+    fetchData();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: fetchData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            // aqui só carrega quando já pegou os dados
-            return Padding(
-                padding: EdgeInsets.only(bottom: 60),
-                child: CustomScrollView(slivers: <Widget>[
-                  SliverAppBar(
-                    backgroundColor: Theme.of(context).primaryColorDark,
-                    floating: true,
-                    expandedHeight: 118.0,
-                    flexibleSpace: FlexibleSpaceBar(
-                        collapseMode: CollapseMode.pin,
-                        background: getCabecalho()),
-                  ),
-                  SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                    if (filtrados[index].tipo == "dica" &&
-                        (selecionado == 0 || selecionado == 2))
-                      return getDica(filtrados[index], index);
+    // aqui só carrega quando já pegou os dados
+    return Padding(
+        padding: EdgeInsets.only(bottom: 60),
+        child: CustomScrollView(slivers: <Widget>[
+          SliverAppBar(
+            backgroundColor: Theme.of(context).primaryColorDark,
+            floating: true,
+            expandedHeight: 118.0,
+            flexibleSpace: FlexibleSpaceBar(
+                collapseMode: CollapseMode.pin, background: getCabecalho()),
+          ),
+          SliverList(
+              delegate:
+                  SliverChildBuilderDelegate((BuildContext context, int index) {
+            if (filtrados[index].tipo == "dica")
+              // && (selecionado == 0 || selecionado == 2))
+              return getDica(filtrados[index], index);
 
-                    if (filtrados[index].tipo == "noticia" &&
-                        (selecionado == 0 || selecionado == 1))
-                      return getNoticia(filtrados[index], index);
+            if (filtrados[index].tipo == "noticia")
+              // && (selecionado == 0 || selecionado == 1))
+              return getNoticia(filtrados[index], index);
 
-                    if (filtrados[index].tipo == "video" &&
-                        (selecionado == 0 || selecionado == 4))
-                      return getVideo(filtrados[index], index);
+            if (filtrados[index].tipo == "video")
+              // && (selecionado == 0 || selecionado == 4))
+              return getVideo(filtrados[index], index);
 
-                    if (filtrados[index].tipo == "blog" &&
-                        (selecionado == 0 || selecionado == 3))
-                      return getNoticia(filtrados[index], index);
+            if (filtrados[index].tipo == "blog")
+              // && (selecionado == 0 || selecionado == 3))
+              return getNoticia(filtrados[index], index);
 
-                    return null;
-                  }, childCount: filtrados.length))
-                ]));
-          } else {
-            // aqui eh tipo uma tela de espera
-            return Center(child: CircularProgressIndicator());
-          }
-        });
+            return null;
+          }, childCount: filtrados.length))
+        ]));
   }
 }
