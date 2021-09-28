@@ -1,15 +1,15 @@
 import 'dart:convert';
 
-import 'package:moneyro_mobile/data/api_services.dart';
-import 'package:moneyro_mobile/models/compartilhados_model.dart';
-import 'package:moneyro_mobile/models/registro_model.dart';
-import 'package:moneyro_mobile/models/tag_model.dart';
-import 'package:moneyro_mobile/models/registros_dia_model.dart';
+import 'package:Moneyro/data/api_services.dart';
+import 'package:Moneyro/models/compartilhados_model.dart';
+import 'package:Moneyro/models/registro_model.dart';
+import 'package:Moneyro/models/tag_model.dart';
+import 'package:Moneyro/models/registros_dia_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:intl/intl.dart';
-import 'package:moneyro_mobile/ui/appBar/Cabecalho.dart';
+import 'package:Moneyro/ui/appBar/Cabecalho.dart';
 
 class PlanilhaScreen extends StatefulWidget {
   PlanilhaScreen({Key key}) : super(key: key);
@@ -30,36 +30,39 @@ class _PlanilhaPageState extends State<PlanilhaScreen> {
     List<Compartilhados> compartilhados = [];
     List<Registro> registros = [];
 
-    await APIServices.getTags().then((response) {
-      if (response.statusCode == 200) {
-        Iterable list = json.decode(response.body);
-        tags = list.map((model) => Tag.fromObject(model)).toList();
-      }
-    });
+    if(tags == null || tags.length == 0)
+      await APIServices.getTags().then((response) {
+        if (response.statusCode == 200) {
+          Iterable list = json.decode(response.body);
+          tags = list.map((model) => Tag.fromObject(model)).toList();
+        }
+      });
 
-    await APIServices.getRegistros(await FlutterSession().get('id'))
-        .then((response) {
-      if (response.statusCode == 200) {
-        Iterable list = json.decode(response.body);
-        registros = list.map((model) => Registro.fromObject(model)).toList();
-      }
-    });
+    if(registros == null || registros.length == 0)
+      await APIServices.getRegistros(await FlutterSession().get('id'))
+          .then((response) {
+        if (response.statusCode == 200) {
+          Iterable list = json.decode(response.body);
+          registros = list.map((model) => Registro.fromObject(model)).toList();
+        }
+      });
 
-    await APIServices.getCompartilhados(await FlutterSession().get('id'))
-        .then((response) {
-      if (response.statusCode == 200) {
-        Iterable list = json.decode(response.body);
-        compartilhados =
-            list.map((model) => Compartilhados.fromObject(model)).toList();
+    if(compartilhados == null || compartilhados.length == 0)
+      await APIServices.getCompartilhados(await FlutterSession().get('id'))
+          .then((response) {
+        if (response.statusCode == 200) {
+          Iterable list = json.decode(response.body);
+          compartilhados =
+              list.map((model) => Compartilhados.fromObject(model)).toList();
 
-        registros.forEach((reg) {
-          for (int i = 0; i < compartilhados.length; i++) {
-            if (compartilhados[i].idRegistro == reg.id)
-              reg.usuarios.add(compartilhados[i]);
-          }
-        });
-      }
-    });
+          registros.forEach((reg) {
+            for (int i = 0; i < compartilhados.length; i++) {
+              if (compartilhados[i].idRegistro == reg.id)
+                reg.usuarios.add(compartilhados[i]);
+            }
+          });
+        }
+      });
 
     for (int i = 0; i < registros.length; i++) {
       var data = registros[i].data;

@@ -148,7 +148,8 @@ namespace ProjetoPratica_API.Data
 
             SqlCommand cmd = new SqlCommand("comando", con); // id idusuario idtag nome lugar data quantia
 
-            cmd.CommandText = $"insert into Registros values({modelo.IdUsuario}, {modelo.IdTag}, '{modelo.Nome}', '{modelo.Lugar}', '{modelo.Data}', {modelo.Quantia})";
+            cmd.CommandText = $"insert into Registros values({modelo.IdUsuario}, {modelo.IdTag}, '{modelo.Nome}', '{modelo.Lugar}', '{modelo.Data}', {modelo.Quantia.ToString().Replace(",",".")})";
+            //insert into Registros values(32, 1, 'Teste', 'Farmácia', '2021-09-27', 25.0)
             cmd.ExecuteNonQuery();
 
             con.Close();

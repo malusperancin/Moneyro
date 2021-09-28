@@ -46,7 +46,7 @@ class Registro {
   Map toJson() => {
         'id': id,
         'idUsuario': idUsuario,
-        'data': data,
+        'data': data.toIso8601String(),
         'nome': nome,
         'idTag': idTag,
         'lugar': lugar,

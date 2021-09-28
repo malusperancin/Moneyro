@@ -1,17 +1,23 @@
 import 'package:http/http.dart' as http;
-import 'package:moneyro_mobile/models/registro_model.dart';
+import 'package:Moneyro/models/registro_model.dart';
 import 'dart:convert';
-import 'package:moneyro_mobile/models/usuario_model.dart';
+import 'package:Moneyro/models/usuario_model.dart';
 
 class APIServices {
-  static final String url = 'http://143.106.200.17:5000/api/';
+  //static final String url = 'http://143.106.200.17:5000/api/';
   //static final String url = 'http://192.168.15.155:5000/api/';
-  //static final String url = 'http://143.106.201.97:5000/api/';
+  static final String url = 'http://143.106.200.175:5000/api/';
 
   static Map<String, String> header = {
     'Content-type': 'application/json',
     'Accept': 'application/json'
   };
+
+  /*
+  static Future<bool> checkConnection() async {
+    return await http.
+  }
+  */
 
   static Future login(Usuario usuario) async {
     return await http.post(Uri.parse(url + 'usuarios/login/'),
@@ -20,7 +26,7 @@ class APIServices {
 
   static Future addRegistro(Registro reg) async {
     return await http.post(Uri.parse(url + 'registros/app/'),
-        headers: header, body: json.encode(reg.toMap()));
+        headers: header, body: json.encode(reg));
   }
 
   static Future curtir(Object post) async {

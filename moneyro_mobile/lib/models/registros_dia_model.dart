@@ -1,4 +1,4 @@
-import 'package:moneyro_mobile/models/registro_model.dart';
+import 'package:Moneyro/models/registro_model.dart';
 
 class RegistrosDia {
   DateTime data;

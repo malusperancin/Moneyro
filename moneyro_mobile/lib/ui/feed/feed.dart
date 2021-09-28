@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
-import 'package:moneyro_mobile/data/api_services.dart';
-import 'package:moneyro_mobile/models/conteudo_model.dart';
+import 'package:Moneyro/data/api_services.dart';
+import 'package:Moneyro/models/conteudo_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -29,7 +29,8 @@ class _FeedPageState extends State<FeedScreen> {
   Future<bool> fetchData() async {
     // se precisar pegar algo do banco ou da sessao faz aqui
 
-    await APIServices.getConteudos(await FlutterSession().get('id'))
+    if(conteudos == null || conteudos.length == 0)
+      await APIServices.getConteudos(await FlutterSession().get('id'))
         .then((response) {
       if (response.statusCode == 200) {
         Iterable list = json.decode(response.body);
@@ -453,6 +454,43 @@ class _FeedPageState extends State<FeedScreen> {
       Padding(
           padding: EdgeInsets.only(left: 15, top: 10, right: 15, bottom: 5),
           child: TextFormField(
+              onChanged: (String pesquisa) {
+                setState(() {
+                  if(pesquisa == "")
+                    filtrados = conteudos;
+                  else
+                    {
+                      pesquisa = pesquisa.toLowerCase();
+                      switch(selecionado) {
+                        case 0:
+                          filtrados = conteudos
+                              .where((element) => element.titulo.contains(pesquisa) || element.texto.contains(pesquisa))
+                              .toList();
+                          break;
+                        case 1:
+                          filtrados = conteudos
+                              .where((element) => (element.titulo.toLowerCase().contains(pesquisa) || element.texto.toLowerCase().contains(pesquisa)) && element.tipo == "noticia")
+                              .toList();
+                          break;
+                        case 2:
+                          filtrados = conteudos
+                              .where((element) => (element.titulo.toLowerCase().contains(pesquisa) || element.texto.toLowerCase().contains(pesquisa)) && element.tipo == "dica")
+                              .toList();
+                          break;
+                        case 3:
+                          filtrados = conteudos
+                              .where((element) => (element.titulo.toLowerCase().contains(pesquisa) || element.texto.toLowerCase().contains(pesquisa)) && element.tipo == "blog")
+                              .toList();
+                          break;
+                        case 4:
+                          filtrados = conteudos
+                              .where((element) => (element.titulo.toLowerCase().contains(pesquisa) || element.texto.toLowerCase().contains(pesquisa)) && element.tipo == "video")
+                              .toList();
+                          break;
+                      }
+                    }
+                });
+              },
               controller: _pesquisa,
               keyboardType: TextInputType.text,
               cursorColor: Colors.black54,
@@ -600,45 +638,44 @@ class _FeedPageState extends State<FeedScreen> {
   }
 
   @override
-  void initState() {
-    fetchData();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     // aqui só carrega quando já pegou os dados
-    return Padding(
-        padding: EdgeInsets.only(bottom: 60),
-        child: CustomScrollView(slivers: <Widget>[
-          SliverAppBar(
-            backgroundColor: Theme.of(context).primaryColorDark,
-            floating: true,
-            expandedHeight: 118.0,
-            flexibleSpace: FlexibleSpaceBar(
-                collapseMode: CollapseMode.pin, background: getCabecalho()),
-          ),
-          SliverList(
-              delegate:
-                  SliverChildBuilderDelegate((BuildContext context, int index) {
-            if (filtrados[index].tipo == "dica")
-              // && (selecionado == 0 || selecionado == 2))
-              return getDica(filtrados[index], index);
+    return FutureBuilder<bool>(
+        future: fetchData(),
+        builder: (context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData) {
+            return Padding(
+                padding: EdgeInsets.only(bottom: 60),
+                child: CustomScrollView(slivers: <Widget>[
+                  SliverAppBar(
+                    backgroundColor: Theme.of(context).primaryColorDark,
+                    floating: true,
+                    expandedHeight: 118.0,
+                    flexibleSpace: FlexibleSpaceBar(
+                        collapseMode: CollapseMode.pin, background: getCabecalho()),
+                  ),
+                  SliverList(
+                      delegate:
+                      SliverChildBuilderDelegate((BuildContext context, int index) {
+                        if (filtrados[index].tipo == "dica")
+                          return getDica(filtrados[index], index);
 
-            if (filtrados[index].tipo == "noticia")
-              // && (selecionado == 0 || selecionado == 1))
-              return getNoticia(filtrados[index], index);
+                        if (filtrados[index].tipo == "noticia")
+                          return getNoticia(filtrados[index], index);
 
-            if (filtrados[index].tipo == "video")
-              // && (selecionado == 0 || selecionado == 4))
-              return getVideo(filtrados[index], index);
+                        if (filtrados[index].tipo == "video")
+                          return getVideo(filtrados[index], index);
 
-            if (filtrados[index].tipo == "blog")
-              // && (selecionado == 0 || selecionado == 3))
-              return getNoticia(filtrados[index], index);
+                        if (filtrados[index].tipo == "blog")
+                          return getNoticia(filtrados[index], index);
 
-            return null;
-          }, childCount: filtrados.length))
-        ]));
+                        return null;
+                      }, childCount: filtrados.length))
+                ]));
+          } else {
+            return Center(child:CircularProgressIndicator());
+          }
+        }
+    );
   }
 }

@@ -2,14 +2,14 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'package:moneyro_mobile/data/api_services.dart';
-import 'package:moneyro_mobile/models/situacao_model.dart';
+import 'package:Moneyro/data/api_services.dart';
+import 'package:Moneyro/models/situacao_model.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:moneyro_mobile/models/usuario_model.dart';
+import 'package:Moneyro/models/usuario_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_session/flutter_session.dart';
-import 'package:moneyro_mobile/ui/appBar/Cabecalho.dart';
+import 'package:Moneyro/ui/appBar/Cabecalho.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:soundpool/soundpool.dart';
 
@@ -24,16 +24,22 @@ class CofreScreen extends StatefulWidget {
 
 class _CofrePageState extends State<CofreScreen> {
   final _url = 'http://localhost:8080/#/compra';
+
   Usuario usuario;
   Situacao situacao;
-  bool editar = false;
 
+  // Coisas do card
+  TextEditingController _valorRecebido = new TextEditingController();
+  bool editar = false;
+  double total = 0;
+
+  // Classes do bluetooth
   BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
   BluetoothDevice selectedDevice;
   BluetoothConnection connection;
-  TextEditingController _valorRecebido = new TextEditingController();
 
-  bool get estaConectado => (connection.isConnected ? true : false);
+  bool get estaConectado =>
+      (connection != null && connection.isConnected);
 
   void _launchURL() async => await canLaunch(_url)
       ? await launch(_url)
@@ -41,78 +47,89 @@ class _CofrePageState extends State<CofreScreen> {
 
   connect(String address) async {
     try {
-      await FlutterSession().set("cofre", address);
       connection = await BluetoothConnection.toAddress(address);
       print('Connected to the device');
 
       connection.input.listen((Uint8List data) {
-        print(ascii.decode(data));
+        print("listen: " + ascii.decode(data));
       }).onData((Uint8List data) {
-        double valor = double.parse(String.fromCharCodes(data));
-        setState(() {
-          _valorRecebido.text =
-              (double.parse(_valorRecebido.text) + valor).toString();
-        });
-        _showMyDialog(valor);
-        print(_valorRecebido.text);
+        String recebido = String.fromCharCodes(data);
+        double valor = 0;
+
+        switch(recebido){
+          case "a": valor = 0.10;
+            break;
+          case "b": valor = 0.05;
+            break;
+          case "c": valor = 0.50;
+            break;
+          case "d": valor = 0.25;
+            break;
+          case "e": valor = 1.00;
+            break;
+            default: valor = 0;
+              break;
+        }
+
+        if (valor != 0) {
+          total += valor;
+
+          setState(() {
+            _valorRecebido.text = total.toStringAsFixed(2);
+          });
+
+          _showMyDialog(valor);
+        }
       });
     } catch (exception) {
       print('Cannot connect, exception occured');
     }
   }
 
-  Future<void> send(String texto) async {
-    connection.output.add(ascii.encode(texto));
-    await connection.output.allSent;
-  }
-
   Future<bool> fetchData() async {
     // se precisar pegar algo do banco ou da sessao faz aqui
-    await APIServices.getUsuario(await FlutterSession().get('id'))
-        .then((response) {
-      if (response.statusCode == 200) {
-        setState(() {
+
+    if (usuario == null)
+      await APIServices.getUsuario(await FlutterSession().get('id'))
+          .then((response) {
+        if (response.statusCode == 200)
           usuario = new Usuario.fromObject(json.decode(response.body));
-        });
-      }
-    });
+      });
 
-    await APIServices.getSituacoes().then((response) {
-      if (response.statusCode == 200) {
-        Iterable list = json.decode(response.body);
-        List<Situacao> listaSituacao =
-            list.map((model) => Situacao.fromObject(model)).toList();
+    if (situacao == null)
+      await APIServices.getSituacoes().then((response) {
+        if (response.statusCode == 200) {
+          Iterable list = json.decode(response.body);
+          List<Situacao> listaSituacao =
+              list.map((model) => Situacao.fromObject(model)).toList();
 
-        setState(() {
           if (usuario.cofre > 15) situacao = listaSituacao[9];
           if (usuario.cofre <= 15) situacao = listaSituacao[8];
           if (usuario.cofre <= 10) situacao = listaSituacao[7];
           if (usuario.cofre <= 5) situacao = listaSituacao[6];
-        });
-      }
-    });
+        }
+      });
 
-    String endereco = await FlutterSession().get('cofre');
+    /*String endereco = await FlutterSession().get('cofre');
 
-    if (usuario.cofre >= 0) if (endereco != null) connect(endereco);
+    if (endereco != null && _bluetoothState.isEnabled && usuario.cofre >= 0 && !estaConectado)
+      connect(endereco);
+
+     */
 
     return true;
   }
 
-  /*
-    sattus1: nao tem cofre
-    2: tem 0 - 5
-    3: ok 5 - 10
-    4: uau 10 - 15
-    5: rei 15 - infinito
-  */
-
   Future<void> updateCofre() async {
+    usuario.saldo += total;
+    usuario.cofre += total;
+
     APIServices.updateUsuario(usuario).then((response) {
       if (response.statusCode == 200) {
         setState(() {
-          //usuario.saldo += valorRecebido;
-          _valorRecebido.text = "0,00";
+          usuario.cofre += total;
+          usuario.saldo += total;
+          _valorRecebido.text = "";
         });
       }
     });
@@ -221,7 +238,7 @@ class _CofrePageState extends State<CofreScreen> {
                         fontWeight: FontWeight.w100,
                         fontSize: 18,
                         fontFamily: 'Malu',
-                        color: Colors.black45)),
+                        color: Colors.white)),
               ],
             ),
             ElevatedButton(
@@ -248,11 +265,10 @@ class _CofrePageState extends State<CofreScreen> {
                   );
 
                   if (selected != null) {
-                    print('Discovery -> selected ' + selected.address);
-                    setState(() {
-                      selectedDevice = selected;
-                      connect(selectedDevice.address);
-                    });
+                    selectedDevice = selected;
+                    await connect(selectedDevice.address);
+                    await FlutterSession().set("cofre", selectedDevice.address);
+                    setState(() {});
                   } else {
                     print('Discovery -> no device selected');
                   }
@@ -265,124 +281,109 @@ class _CofrePageState extends State<CofreScreen> {
     return Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10), color: Color(0xFF545454)),
-        padding: EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 15),
+        padding: EdgeInsets.only(top: 15, right: 20, left: 20, bottom: 15),
         margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-        width: MediaQuery.of(context).size.width / 1.2,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
-            Widget>[
-          /*FormField(
-                  "R\$" + valorRecebido.toStringAsFixed(2).replaceAll(".", ","),
-                  style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 55,
-                      fontFamily: 'Malu2',
-                      color: Colors.white)),*/
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-            child: TextFormField(
-                controller: _valorRecebido,
-                enabled: editar,
-                keyboardType: TextInputType.text,
-                cursorColor: Colors.black54,
-                style: TextStyle(color: Colors.black54, fontSize: 18),
-                decoration: InputDecoration(
-                    filled: editar,
-                    labelStyle: TextStyle(
-                        color: Colors.black54,
-                        fontSize: editar ? 22 : 40,
-                        fontFamily: 'Malu2'),
-                    fillColor: Colors.grey[200],
-                    labelText: "Valor",
-                    contentPadding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
-                    disabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide:
-                            BorderSide(color: Colors.transparent, width: 1.0)),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide:
-                          BorderSide(color: Colors.grey[200], width: 1.0),
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+                  Text(
+                    "R\$",
+                    style: TextStyle(
+                        height: 1,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 60,
+                        fontFamily: 'Malu2',
+                        color: Colors.white)),
+                  TextField(
+                    enabled: editar,
+                      controller: _valorRecebido,
+                      keyboardType: TextInputType.number,
+                      cursorHeight: 5,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(top: -10, bottom: -10, left: 15),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.white, width: 5)
+                          )),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 55,
+                          fontFamily: 'Malu2',
+                          color: Colors.white)),
+
+              SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ClipOval(
+                    child: Material(
+                      color: Colors.purple[400], // button color
+                      child: InkWell(
+                        splashColor: Colors.purple[900], // inkwell color
+                        child: SizedBox(
+                            width: 42,
+                            height: 42,
+                            child:
+                                Icon(Icons.edit_rounded, color: Colors.white)),
+                        onTap: () {
+                          setState(() {
+                            editar = !editar;
+                          });
+                        },
+                      ),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide:
-                          BorderSide(color: Colors.grey[200], width: 1.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide:
-                          BorderSide(color: Colors.grey[200], width: 1.0),
-                    ))),
-          ),
-          SizedBox(height: 15),
-          Container(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ClipOval(
-                child: Material(
-                  color: Colors.purple[400], // button color
-                  child: InkWell(
-                    splashColor: Colors.purple[900], // inkwell color
-                    child: SizedBox(
-                        width: 42,
-                        height: 42,
-                        child: Icon(Icons.edit_rounded, color: Colors.white)),
-                    onTap: () {
-                      editar = true;
-                    },
                   ),
-                ),
-              ),
-              ElevatedButton(
-                  child: Container(
+                  ElevatedButton(
+                      child: Container(
+                          child: Padding(
+                        child: Text("Cancelar"),
+                        padding: EdgeInsets.all(5),
+                      )),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red[400],
+                        textStyle: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red[200]),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0)),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _valorRecebido.text = "";
+                          editar = false;
+                        });
+                      }),
+                  ElevatedButton(
                       child: Padding(
-                    child: Text("Cancelar"),
-                    padding: EdgeInsets.all(5),
-                  )),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.red[400],
-                    textStyle: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red[200]),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0)),
-                  ),
-                  onPressed: () {
-                    _valorRecebido.text = "";
-                  }),
-              ElevatedButton(
-                  child: Padding(
-                    child: Text(editar ? "Salvar alteração" : "Confirmar"),
-                    padding: EdgeInsets.all(5),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.yellow[700],
-                    textStyle: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green[700]),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0)),
-                  ),
-                  onPressed: () {
-                    //
-                    // faz negocio no banco
-                    if (editar)
-                      editar = false;
-                    else
-                      updateCofre();
-                  })
-            ],
-          ))
-        ]));
+                        child: Text(editar ? "Salvar" : "Confirmar"),
+                        padding: EdgeInsets.all(5),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.yellow[700],
+                        textStyle: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green[700]),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0)),
+                      ),
+                      onPressed: () async {
+                          if (editar)
+                            editar = false;
+                          else
+                            await updateCofre();
+
+                          setState(() {});
+                      })
+                ],
+              )
+            ]));
   }
 
   @override
   void initState() {
-    fetchData();
-
     FlutterBluetoothSerial.instance.state.then((state) {
       setState(() {
         _bluetoothState = state;
@@ -397,133 +398,151 @@ class _CofrePageState extends State<CofreScreen> {
       });
     });
 
+    _valorRecebido = new TextEditingController();
+
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
-    // aqui só carrega quando já pegou os dados
-    return Container(
-        child: Column(children: <Widget>[
-      Cabecalho(
-          cor: Colors.blue[500], titulo: "Cofre", icone: Icons.savings_rounded),
-      Expanded(
-          child: usuario.cofre >= 0.0
-              // Tem cofre
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                      getSituacao(),
-                      // bluetooth ligado
-                      _bluetoothState.isEnabled
-                          ? estaConectado
-                              // cofre conectado
-                              ? getCard()
-                              : getDesconectado()
-                          : SwitchListTile(
-                              title: const Text('Ligue o seu bluetooth:',
-                                  style: TextStyle(
-                                      height: 0.8,
-                                      fontSize: 20,
-                                      fontFamily: 'Malu2',
-                                      color: Colors.white)),
-                              value: _bluetoothState.isEnabled,
-                              onChanged: (bool value) {
-                                // Do the request and update with the true value then
-                                future() async {
-                                  // async lambda seems to not working
-                                  if (value)
-                                    await FlutterBluetoothSerial.instance
-                                        .requestEnable();
-                                  else
-                                    await FlutterBluetoothSerial.instance
-                                        .requestDisable();
-                                }
+  void dispose() {
+    // TODO: implement dispose
+    _valorRecebido.dispose();
 
-                                future().then((_) {
-                                  setState(() {});
-                                });
-                              },
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+        future: fetchData(),
+        builder: (context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData) {
+            return Column(children: <Widget>[
+              Cabecalho(
+                  cor: Colors.blue[500],
+                  titulo: "Cofre",
+                  icone: Icons.savings_rounded),
+              Expanded(
+                  child: usuario.cofre >= 0.0
+                      // Tem cofre
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                              getSituacao(),
+                              SwitchListTile(
+                                title: const Text('Seu bluetooth:',
+                                    style: TextStyle(
+                                        height: 0.8,
+                                        fontSize: 20,
+                                        fontFamily: 'Malu2',
+                                        color: Colors.white)),
+                                value: _bluetoothState.isEnabled,
+                                onChanged: (bool value) {
+                                  // Do the request and update with the true value then
+                                  future() async {
+                                    // async lambda seems to not working
+                                    if (value)
+                                      await FlutterBluetoothSerial.instance
+                                          .requestEnable();
+                                    else
+                                      await FlutterBluetoothSerial.instance
+                                          .requestDisable();
+                                  }
+
+                                  future().then((_) {
+                                    setState(() {});
+                                  });
+                                },
+                              ),
+                              if(_bluetoothState.isEnabled) estaConectado ? getCard() : getDesconectado()
+                            ])
+                      // Não tem cofre
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(
+                              child: Container(
+                                color: Theme.of(context).backgroundColor,
+                                margin: EdgeInsets.only(top: 20),
+                                padding: EdgeInsets.only(left: 20, bottom: 60),
+                                width: MediaQuery.of(context).size.width,
+                                child: Stack(children: <Widget>[
+                                  Positioned(
+                                    child: Image.asset(
+                                        'assets/images/status1.png',
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.55),
+                                    right: -25,
+                                    top: -25,
+                                  ),
+                                  Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.5,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text("Humn que pena...",
+                                              style: TextStyle(
+                                                  height: 0.8,
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 40,
+                                                  fontFamily: 'Malu2',
+                                                  color: Colors.white)),
+                                          Text(
+                                              "Você precisa de um cofre para usar esta aba",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.normal,
+                                                  fontSize: 18,
+                                                  fontFamily: 'Malu',
+                                                  color: Colors.white))
+                                        ],
+                                      )),
+                                ]),
+                              ),
                             ),
-                    ])
-              // Não tem cofre
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        color: Theme.of(context).backgroundColor,
-                        margin: EdgeInsets.only(top: 20),
-                        padding: EdgeInsets.only(left: 20, bottom: 60),
-                        width: MediaQuery.of(context).size.width,
-                        child: Stack(children: <Widget>[
-                          Positioned(
-                            child: Image.asset('assets/images/status1.png',
-                                width:
-                                    MediaQuery.of(context).size.width * 0.55),
-                            right: -25,
-                            top: -25,
-                          ),
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.5,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Humn que pena...",
-                                      style: TextStyle(
-                                          height: 0.8,
-                                          fontWeight: FontWeight.w900,
-                                          fontSize: 40,
-                                          fontFamily: 'Malu2',
-                                          color: Colors.white)),
+                            //Comprar cofre
+                            Container(
+                                padding: EdgeInsets.only(
+                                    left: 25, right: 25, bottom: 100),
+                                child: Column(children: <Widget>[
                                   Text(
-                                      "Você precisa de um cofre para usar esta aba",
+                                      "Caso queira adquirir um, este botão te levará direto para nossa loja",
                                       style: TextStyle(
                                           fontWeight: FontWeight.normal,
-                                          fontSize: 18,
+                                          fontSize: 16,
                                           fontFamily: 'Malu',
-                                          color: Colors.white))
-                                ],
-                              )),
-                        ]),
-                      ),
-                    ),
-                    //Comprar cofre
-                    Container(
-                        padding:
-                            EdgeInsets.only(left: 25, right: 25, bottom: 100),
-                        child: Column(children: <Widget>[
-                          Text(
-                              "Caso queira adquirir um, este botão te levará direto para nossa loja",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 16,
-                                  fontFamily: 'Malu',
-                                  color: Colors.white,
-                                  height: .9)),
-                          SizedBox(height: 10.0), //<b>
-                          ListTile(
-                              title: ElevatedButton(
-                                  child: Text(
-                                    "Comprar",
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Theme.of(context).buttonColor,
-                                    textStyle: TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.w900,
-                                        fontFamily: 'Malu'),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                  onPressed: () {
-                                    _launchURL();
-                                  }))
-                        ]))
-                  ],
-                )),
-    ]));
+                                          color: Colors.white,
+                                          height: .9)),
+                                  SizedBox(height: 10.0), //<b>
+                                  ListTile(
+                                      title: ElevatedButton(
+                                          child: Text(
+                                            "Comprar",
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            primary:
+                                                Theme.of(context).buttonColor,
+                                            textStyle: TextStyle(
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.w900,
+                                                fontFamily: 'Malu'),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                          onPressed: () {
+                                            _launchURL();
+                                          }))
+                                ]))
+                          ],
+                        )),
+            ]);
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        });
   }
 
   Future<void> playSom() async {
@@ -533,6 +552,7 @@ class _CofrePageState extends State<CofreScreen> {
         .then((ByteData soundData) {
       return pool.load(soundData);
     });
+
     int streamId = await pool.play(soundId);
   }
 }

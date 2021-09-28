@@ -1,10 +1,7 @@
+import 'package:Moneyro/ui/home.dart';
 import 'package:flutter/material.dart';
-import 'package:moneyro_mobile/ui/amigos/amigos.dart';
-import 'package:moneyro_mobile/ui/cofre/cofre.dart';
-import 'package:moneyro_mobile/ui/feed/feed.dart';
-import 'package:moneyro_mobile/ui/home.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:moneyro_mobile/ui/load/splash.dart';
 
 void main() {
   Intl.defaultLocale = 'pt_BR';
@@ -23,6 +20,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Color.fromRGBO(25, 22, 87, 1), statusBarBrightness: Brightness.light, statusBarIconBrightness: Brightness.light));
     return MaterialApp(
       theme: ThemeData(
           buttonColor: Color.fromRGBO(236, 165, 24, 1.0), //amarelo
@@ -32,8 +30,17 @@ class MyApp extends StatelessWidget {
           //primaryColorLight: Color.fromRGBO(11, 83, 148, 1)), //azulzin
           primaryColorLight: Color.fromRGBO(69, 64, 173, 1)), // roxin
 
-      home: SplashPage(),
+      home: HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
+
+/*
+  Verificar quantia
+  Fechar card
+  Botar na Lista
+  Tirar os placaholder flutuante
+  Card do cofre
+
+ */

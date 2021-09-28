@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Usuário\\Documents\\GitHub\\Moneyro\\ProjetoPratica_API\\ProjetoPratica_API.csproj": {}
+    "C:\\Users\\vinic\\Documents\\GitHub\\Moneyro\\ProjetoPratica_API\\ProjetoPratica_API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Usuário\\Documents\\GitHub\\Moneyro\\ProjetoPratica_API\\ProjetoPratica_API.csproj": {
+    "C:\\Users\\vinic\\Documents\\GitHub\\Moneyro\\ProjetoPratica_API\\ProjetoPratica_API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Usuário\\Documents\\GitHub\\Moneyro\\ProjetoPratica_API\\ProjetoPratica_API.csproj",
+        "projectUniqueName": "C:\\Users\\vinic\\Documents\\GitHub\\Moneyro\\ProjetoPratica_API\\ProjetoPratica_API.csproj",
         "projectName": "ProjetoPratica_API",
-        "projectPath": "C:\\Users\\Usuário\\Documents\\GitHub\\Moneyro\\ProjetoPratica_API\\ProjetoPratica_API.csproj",
-        "packagesPath": "C:\\Users\\Usuário\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Usuário\\Documents\\GitHub\\Moneyro\\ProjetoPratica_API\\obj\\",
+        "projectPath": "C:\\Users\\vinic\\Documents\\GitHub\\Moneyro\\ProjetoPratica_API\\ProjetoPratica_API.csproj",
+        "packagesPath": "C:\\Users\\vinic\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\vinic\\Documents\\GitHub\\Moneyro\\ProjetoPratica_API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Usuário\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\vinic\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -24,7 +24,6 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
-            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -36,7 +35,6 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
-          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "Microsoft.AspNetCore.Cors": {
               "target": "Package",
@@ -61,24 +59,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.10, 3.1.10]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[3.1.15, 3.1.15]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[3.1.0, 3.1.0]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[3.1.0, 3.1.0]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -87,7 +67,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.412\\RuntimeIdentifierGraph.json"
         }
       }
     }

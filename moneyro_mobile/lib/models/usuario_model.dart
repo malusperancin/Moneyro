@@ -50,6 +50,7 @@ class Usuario {
     this.foto = o["foto"];
     this.senha = o["senha"];
     this.cidade = o["cidade"];
+    this.estado = o["estado"];
     this.modoAnonimo = o["modoAnonimo"];
     this.notificacoes = o["notificacoes"];
     this.saldo = o["saldo"];
@@ -71,6 +72,7 @@ class Usuario {
     map["foto"] = foto;
     map["senha"] = senha;
     map["cidade"] = cidade;
+    map["estado"] = estado;
     map["modoAnonimo"] = modoAnonimo;
     map["notificacoes"] = notificacoes;
     map["saldo"] = saldo;
@@ -88,7 +90,7 @@ class Usuario {
         'apelido': apelido,
         'email': email,
         'celular': celular,
-        'dataDeNascimento': dataDeNascimento,
+        'dataDeNascimento': dataDeNascimento.toIso8601String(),
         'foto': foto,
         'senha': senha,
         'cidade': cidade,

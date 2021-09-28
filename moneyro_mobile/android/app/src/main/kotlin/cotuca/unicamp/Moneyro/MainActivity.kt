@@ -1,4 +1,4 @@
-package cotuca.unicamp.moneyro_mobile
+package cotuca.unicamp.Moneyro
 
 import io.flutter.embedding.android.FlutterActivity
 

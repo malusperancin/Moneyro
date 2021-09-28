@@ -1,13 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'package:moneyro_mobile/models/registro_model.dart';
-import 'package:moneyro_mobile/ui/feed/feed.dart';
-import 'package:moneyro_mobile/ui/mais/mais.dart';
-import 'package:moneyro_mobile/ui/planilha/planilha.dart';
+import 'package:Moneyro/ui/feed/feed.dart';
+import 'package:Moneyro/ui/mais/mais.dart';
+import 'package:Moneyro/ui/planilha/planilha.dart';
 import 'package:flutter_session/flutter_session.dart';
-import 'package:moneyro_mobile/ui/registro/despesa.dart';
-import 'package:moneyro_mobile/ui/registro/receita.dart';
+import 'package:Moneyro/ui/registro/despesa.dart';
+import 'package:Moneyro/ui/registro/receita.dart';
 
 import '../login.dart';
 import 'cofre/cofre.dart';
@@ -20,33 +17,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomeScreen> {
-  List<Widget> _children = [
-    new CofreScreen(),
-    new PlanilhaScreen(),
-    new FeedScreen(),
-    new MaisScreen()
-  ];
-
+  List<Widget> _children;
   int _selectedPage = 0;
 
-  Future<void> createInstances() async {
-    setState(() {
+  Future<bool> fetchData() async {
+    var id = await FlutterSession().get("id");
+    bool sessaoAtiva = id == null || id <= 0 ? false : true;
+
+    if (!sessaoAtiva)
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
+
+    if (_children == null || _children.length == 0)
       _children = [
         new CofreScreen(),
         new PlanilhaScreen(),
         new FeedScreen(),
         new MaisScreen()
       ];
-    });
-  }
-
-  Future<bool> fetchData() async {
-    var id = await FlutterSession().get("id");
-    bool sessao_ativa = id == null || id <= 0 ? false : true;
-
-    if (!sessao_ativa)
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
 
     return true;
   }
@@ -69,18 +57,18 @@ class _HomePageState extends State<HomeScreen> {
   _showMyDialog() {
     // playSom();
 
-    var despesa = Despesa(modal: context);
-    var receita = Receita(modal: context);
+    var despesa = Despesa();
+    var receita = Receita();
 
     showDialog(
       context: context,
       builder: (_) {
         return Dialog(
           insetPadding:
-              EdgeInsets.only(left: 25, right: 25, bottom: 65, top: 45),
+              EdgeInsets.only(left: 25, right: 25, bottom: 75, top: 55),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          elevation: 0,
+          elevation: 2,
           child: DefaultTabController(
             length: 2,
             child: Scaffold(
@@ -93,29 +81,42 @@ class _HomePageState extends State<HomeScreen> {
                 primary: false,
                 centerTitle: true,
                 backgroundColor: Theme.of(context).primaryColorDark,
+                title: Text('Novo Registro',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 25,
+                        fontFamily: 'Malu2',
+                        color: Colors.white)),
+                toolbarHeight: 85,
                 bottom: TabBar(
+                  padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                  indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      25.0,
+                    ),
+                    color: Colors.deepPurple,
+                  ),
                   indicatorWeight: 5,
                   indicatorColor: Theme.of(context).primaryColorLight,
                   tabs: [
                     Tab(
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                          Text("Despesa"),
-                          SizedBox(width: 8),
-                          Icon(Icons.arrow_circle_up_rounded)
-                        ])),
+                        child: Text("Despesa",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                                height: 1.8,
+                                fontFamily: 'Malu2',
+                                color: Colors.white))),
                     Tab(
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                          Text("Receita"),
-                          SizedBox(width: 8),
-                          Icon(Icons.arrow_circle_down_rounded)
-                        ])),
+                        child: Text("Receita",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                                height: 1.8,
+                                fontFamily: 'Malu2',
+                                color: Colors.white))),
                   ],
                 ),
-                title: Text('Novo Registro'),
               ),
               body: TabBarView(
                 children: [despesa, receita],
@@ -128,112 +129,111 @@ class _HomePageState extends State<HomeScreen> {
   }
 
   @override
-  void initState() {
-    fetchData();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-        onRefresh: createInstances,
-        child: SafeArea(
-            child: Scaffold(
-          extendBody: true,
-          backgroundColor:
-              Theme.of(context).backgroundColor, // erro do floating button
-          body: IndexedStack(
-            index: _selectedPage,
-            children: _children,
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation
-              .centerDocked, //specify the location of the FAB
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              _showMyDialog();
-            },
-            tooltip: "Adicionar registro",
-            backgroundColor: Theme.of(context).buttonColor,
-            child: Container(
-              margin: EdgeInsets.all(5.0),
-              child: Icon(Icons.add_rounded, size: 30.0),
-            ),
-            elevation: 2.0,
-          ),
-          bottomNavigationBar: BottomAppBar(
-            color: Theme.of(context).primaryColorDark,
-            notchMargin: 4,
-            shape: CircularNotchedRectangle(),
-            child: Container(
-              height: 60,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedPage = 0;
-                      });
-                    },
-                    icon: Icon(Icons.savings_rounded,
-                        color: _selectedPage == 0
-                            ? Colors.green[500]
-                            : Colors.white30),
-                    iconSize: 35.0,
-                    splashColor: Colors.green[50],
-                    tooltip: 'Cofre',
-                  ),
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedPage = 1;
-                      });
-                    },
-                    icon: Icon(Icons.reorder_rounded,
-                        color: _selectedPage == 1
-                            ? Colors.amber[500]
-                            : Colors.white30),
-                    iconSize: 35.0,
-                    splashColor: Colors.amber[50],
-                    tooltip: 'Planilha',
-                  ),
-                  Spacer(flex: 5),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedPage = 2;
-                      });
-                    },
-                    icon: Icon(Icons.calendar_view_day_rounded,
-                        color: _selectedPage == 2
-                            ? Color(0xffed6b0e)
-                            : Colors.white30),
-                    iconSize: 35.0,
-                    splashColor: Colors.indigo[50],
-                    tooltip: 'Feed',
-                  ),
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedPage = 3;
-                      });
-                    },
-                    icon: Icon(Icons.face_rounded,
-                        color: _selectedPage == 3
-                            ? Colors.cyan[500]
-                            : Colors.white30),
-                    iconSize: 35.0,
-                    splashColor: Colors.cyan[50],
-                    tooltip: 'Mais',
-                  ),
-                  Spacer()
-                ],
+    return FutureBuilder<bool>(
+        future: fetchData(),
+        builder: (context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData) {
+            return SafeArea(
+                child: Scaffold(
+              extendBody: true,
+              backgroundColor: Theme.of(context).backgroundColor,
+              body: IndexedStack(
+                index: _selectedPage,
+                children: _children,
               ),
-            ),
-          ),
-        )));
+              floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, //specify the location of the FAB
+              resizeToAvoidBottomInset: false,
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  _showMyDialog();
+                },
+                tooltip: "Adicionar registro",
+                backgroundColor: Theme.of(context).buttonColor,
+                child: Container(
+                  margin: EdgeInsets.all(5.0),
+                  child: Icon(Icons.add_rounded, size: 30.0),
+                ),
+                elevation: 2.0,
+              ),
+              bottomNavigationBar: BottomAppBar(
+                color: Theme.of(context).primaryColorDark,
+                notchMargin: 8,
+                shape: CircularNotchedRectangle(),
+                child: Container(
+                  height: 60,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedPage = 0;
+                          });
+                        },
+                        icon: Icon(Icons.savings_rounded,
+                            color: _selectedPage == 0
+                                ? Colors.green[500]
+                                : Colors.white30),
+                        iconSize: 35.0,
+                        splashColor: Colors.green[50],
+                        tooltip: 'Cofre',
+                      ),
+                      Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedPage = 1;
+                          });
+                        },
+                        icon: Icon(Icons.reorder_rounded,
+                            color: _selectedPage == 1
+                                ? Colors.amber[500]
+                                : Colors.white30),
+                        iconSize: 35.0,
+                        splashColor: Colors.amber[50],
+                        tooltip: 'Planilha',
+                      ),
+                      Spacer(flex: 5),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedPage = 2;
+                          });
+                        },
+                        icon: Icon(Icons.calendar_view_day_rounded,
+                            color: _selectedPage == 2
+                                ? Color(0xffed6b0e)
+                                : Colors.white30),
+                        iconSize: 35.0,
+                        splashColor: Colors.indigo[50],
+                        tooltip: 'Feed',
+                      ),
+                      Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedPage = 3;
+                          });
+                        },
+                        icon: Icon(Icons.face_rounded,
+                            color: _selectedPage == 3
+                                ? Colors.cyan[500]
+                                : Colors.white30),
+                        iconSize: 35.0,
+                        splashColor: Colors.cyan[50],
+                        tooltip: 'Mais',
+                      ),
+                      Spacer()
+                    ],
+                  ),
+                ),
+              ),
+            ));
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        });
   }
 }
