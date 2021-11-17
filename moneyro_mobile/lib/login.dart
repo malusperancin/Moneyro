@@ -56,7 +56,9 @@ class _LoginPageState extends State<LoginScreen> {
             .pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
       } else {
         setState(() {
-          erro = String.fromCharCodes(response.bodyBytes).replaceAll("Ã£", "ã").replaceAll("Ã¡", "á");
+          erro = String.fromCharCodes(response.bodyBytes)
+              .replaceAll("Ã£", "ã")
+              .replaceAll("Ã¡", "á");
           print(erro);
         });
       }
@@ -65,7 +67,6 @@ class _LoginPageState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _apelidoController.dispose();
     _senhaController.dispose();
 
@@ -104,14 +105,14 @@ class _LoginPageState extends State<LoginScreen> {
                     cursorColor: Colors.white,
                     style: TextStyle(color: Colors.white, fontSize: 18),
                     decoration: InputDecoration(
-                      errorStyle: TextStyle(
-                        color: Colors.yellow
-                      ),
+                        errorStyle: TextStyle(color: Colors.yellow),
                         errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.yellow, width: 2.0),
+                          borderSide:
+                              BorderSide(color: Colors.yellow, width: 2.0),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.yellowAccent, width: 2.0),
+                          borderSide: BorderSide(
+                              color: Colors.yellowAccent, width: 2.0),
                         ),
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         labelStyle:
@@ -148,14 +149,14 @@ class _LoginPageState extends State<LoginScreen> {
                     style: TextStyle(color: Colors.white, fontSize: 18),
                     obscureText: true,
                     decoration: InputDecoration(
-                        errorStyle: TextStyle(
-                            color: Colors.yellow
-                        ),
+                        errorStyle: TextStyle(color: Colors.yellow),
                         errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.yellow, width: 2.0),
+                          borderSide:
+                              BorderSide(color: Colors.yellow, width: 2.0),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.yellowAccent, width: 2.0),
+                          borderSide: BorderSide(
+                              color: Colors.yellowAccent, width: 2.0),
                         ),
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         labelStyle:

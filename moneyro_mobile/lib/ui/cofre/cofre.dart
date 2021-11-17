@@ -38,8 +38,7 @@ class _CofrePageState extends State<CofreScreen> {
   BluetoothDevice selectedDevice;
   BluetoothConnection connection;
 
-  bool get estaConectado =>
-      (connection != null && connection.isConnected);
+  bool get estaConectado => (connection != null && connection.isConnected);
 
   void _launchURL() async => await canLaunch(_url)
       ? await launch(_url)
@@ -56,19 +55,25 @@ class _CofrePageState extends State<CofreScreen> {
         String recebido = String.fromCharCodes(data);
         double valor = 0;
 
-        switch(recebido){
-          case "a": valor = 0.10;
+        switch (recebido) {
+          case "a":
+            valor = 0.10;
             break;
-          case "b": valor = 0.05;
+          case "b":
+            valor = 0.05;
             break;
-          case "c": valor = 0.50;
+          case "c":
+            valor = 0.50;
             break;
-          case "d": valor = 0.25;
+          case "d":
+            valor = 0.25;
             break;
-          case "e": valor = 1.00;
+          case "e":
+            valor = 1.00;
             break;
-            default: valor = 0;
-              break;
+          default:
+            valor = 0;
+            break;
         }
 
         if (valor != 0) {
@@ -287,31 +292,29 @@ class _CofrePageState extends State<CofreScreen> {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-                  Text(
-                    "R\$",
-                    style: TextStyle(
-                        height: 1,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 60,
-                        fontFamily: 'Malu2',
-                        color: Colors.white)),
-                  TextField(
-                    enabled: editar,
-                      controller: _valorRecebido,
-                      keyboardType: TextInputType.number,
-                      cursorHeight: 5,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(top: -10, bottom: -10, left: 15),
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.white, width: 5)
-                          )),
-                      style: TextStyle(
-                          fontWeight: FontWeight.w900,
-                          fontSize: 55,
-                          fontFamily: 'Malu2',
-                          color: Colors.white)),
-
+              Text("R\$",
+                  style: TextStyle(
+                      height: 1,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 60,
+                      fontFamily: 'Malu2',
+                      color: Colors.white)),
+              TextField(
+                  enabled: editar,
+                  controller: _valorRecebido,
+                  keyboardType: TextInputType.number,
+                  cursorHeight: 5,
+                  decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.only(top: -10, bottom: -10, left: 15),
+                      border: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.white, width: 5))),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 55,
+                      fontFamily: 'Malu2',
+                      color: Colors.white)),
               SizedBox(height: 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -370,12 +373,12 @@ class _CofrePageState extends State<CofreScreen> {
                             borderRadius: BorderRadius.circular(25.0)),
                       ),
                       onPressed: () async {
-                          if (editar)
-                            editar = false;
-                          else
-                            await updateCofre();
+                        if (editar)
+                          editar = false;
+                        else
+                          await updateCofre();
 
-                          setState(() {});
+                        setState(() {});
                       })
                 ],
               )
@@ -405,7 +408,6 @@ class _CofrePageState extends State<CofreScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _valorRecebido.dispose();
 
     super.dispose();
@@ -454,7 +456,8 @@ class _CofrePageState extends State<CofreScreen> {
                                   });
                                 },
                               ),
-                              if(_bluetoothState.isEnabled) estaConectado ? getCard() : getDesconectado()
+                              if (_bluetoothState.isEnabled)
+                                estaConectado ? getCard() : getDesconectado()
                             ])
                       // Não tem cofre
                       : Column(
@@ -553,6 +556,6 @@ class _CofrePageState extends State<CofreScreen> {
       return pool.load(soundData);
     });
 
-    int streamId = await pool.play(soundId);
+    await pool.play(soundId);
   }
 }
